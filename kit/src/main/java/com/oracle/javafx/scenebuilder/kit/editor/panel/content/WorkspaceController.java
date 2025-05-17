@@ -34,13 +34,8 @@ package com.oracle.javafx.scenebuilder.kit.editor.panel.content;
 
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.editor.EditorPlatform;
-import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
 import javafx.animation.FadeTransition;
 import javafx.application.ConditionalFeature;
 import javafx.application.Platform;
@@ -67,13 +62,17 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Window;
 import javafx.util.Duration;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  *
  */
 class WorkspaceController {
-    
+
     private static final double AUTORESIZE_SIZE = 500.0;
-    
+
     private ScrollPane scrollPane;
     private Group scalingGroup;
     private SubScene contentSubScene;
@@ -101,48 +100,48 @@ class WorkspaceController {
         assert contentSubScene != null;
         assert contentGroup != null;
         assert extensionRect != null;
-        
+
         this.scrollPane = scrollPane;
         this.scalingGroup = scalingGroup;
         this.contentSubScene = contentSubScene;
         this.contentGroup = contentGroup;
         this.backgroundPane = backgroundPane;
         this.extensionRect = extensionRect;
-        
+
         // Add scene listener to panelRoot.sceneProperty()
-        this.scrollPane.sceneProperty().addListener((ChangeListener<Scene>) (ov, t, t1) -> sceneDidChange());
-        
+        this.scrollPane.sceneProperty().addListener((ov, t, t1) -> sceneDidChange());
+
         // Make scalingGroup invisible.
         // We'll turn it visible once content panel is displayed in a Scene
         this.scalingGroup.setVisible(false);
-        
+
         // Remove sample content from contentGroup
         this.contentGroup.getChildren().clear();
-        
+
         updateContentGroup();
         updateScalingGroup();
     }
-    
+
     public void setFxomDocument(final FXOMDocument fxomDocument) {
         if (this.fxomDocument != fxomDocument) {
             this.fxomDocument = fxomDocument;
             sceneGraphDidChange();
         }
     }
-    
+
     public void sceneGraphDidChange() {
         if (this.scrollPane != null) {
             updateContentGroup();
             updateScalingGroup();
         }
     }
-    
+
     public boolean isAutoResize3DContent() {
         return autoResize3DContent;
     }
 
     public void setAutoResize3DContent(final boolean autoResize3DContent) {
-        
+
         this.autoResize3DContent = autoResize3DContent;
         if ((scrollPane != null) && (scrollPane.getScene() != null)) {
             adjustWorkspace();
@@ -157,19 +156,19 @@ class WorkspaceController {
         this.scaling = scaling;
         updateScalingGroup();
     }
-    
+
     public List<String> getThemeStyleSheets() {
         return Collections.unmodifiableList(themeStylesheets);
     }
-    
+
     public void setThemeStylesheet(final List<String> themeStylesheets, final EditorPlatform.Theme theme) {
         assert themeStylesheets != null;
         assert theme != null;
         final List<String> stylesheets = new ArrayList<>(EditorPlatform.getStylesheetsForTheme(theme));
-        themeStylesheets.stream()
+        stylesheets.addAll(themeStylesheets.stream()
             .filter(s -> !EditorPlatform.isPlatformThemeStylesheetURL(s))
-            .forEach(stylesheets::add);
-        contentSubScene.setUserAgentStylesheet(stylesheets.stream().findFirst().orElse(null));
+            .toList());
+        stylesheets.stream().findFirst().ifPresent(contentSubScene::setUserAgentStylesheet);
 
         final var currentStylesheets = FXCollections.observableArrayList(stylesheets);
         this.themeStylesheets.clear();
@@ -182,7 +181,7 @@ class WorkspaceController {
             fxomDocument.refreshSceneGraph();
         }
     }
-    
+
     public void setPreviewStyleSheets(final List<String> previewStyleSheets) {
         final var theme = editorController.getTheme();
         final List<String> stylesheets = new ArrayList<>(EditorPlatform.getStylesheetsForTheme(theme));
@@ -192,7 +191,7 @@ class WorkspaceController {
         themeStylesheets.addAll(stylesheets);
         contentGroupApplyCss();
     }
-    
+
     public void layoutContent(final boolean applyCSS) {
         if (scrollPane != null) {
             try {
@@ -201,7 +200,7 @@ class WorkspaceController {
                 }
                 scrollPane.layout();
                 layoutException = null;
-            } catch(final RuntimeException x) {
+            } catch (final RuntimeException x) {
                 layoutException = x;
             }
         }
@@ -210,11 +209,11 @@ class WorkspaceController {
     public RuntimeException getLayoutException() {
         return layoutException;
     }
-    
+
     public void beginInteraction() {
         assert scalingGroup.getParent().isManaged();
         assert scrollPane.getContent() instanceof StackPane;
-        
+
         // Makes the user design and enclosing group unmanaged so
         // that they no longer influence the scroll pane viewport.
         scalingGroup.getParent().setManaged(false);
@@ -232,10 +231,10 @@ class WorkspaceController {
         contentPane.setMaxWidth(Region.USE_PREF_SIZE);
         contentPane.setMaxHeight(Region.USE_PREF_SIZE);
     }
-    
+
     public void endInteraction() {
         assert !scalingGroup.getParent().isManaged();
-        
+
         // Reverts the top stack pane : it now adjusts to the size of its children
         final var contentPane = (StackPane) scrollPane.getContent();
         assert contentPane.getMinWidth() == Region.USE_PREF_SIZE;
@@ -248,21 +247,21 @@ class WorkspaceController {
         contentPane.setPrefHeight(Region.USE_COMPUTED_SIZE);
         contentPane.setMaxWidth(Double.MAX_VALUE);
         contentPane.setMaxHeight(Double.MAX_VALUE);
-        
+
         // Reverts scalingGroup setup
         scalingGroup.getParent().setManaged(true);
     }
-    
+
     /*
      * Private
      */
-    
+
     private void sceneDidChange() {
         assert this.scrollPane != null;
-        
+
         if (scrollPane.getScene() != null) {
             assert !scalingGroup.isVisible();
-            
+
             // Here we'd like to layout the user scene graph immediately
             // i.e. invoke:
             //      1) layoutContent()      // to relayout user scene graph
@@ -275,7 +274,7 @@ class WorkspaceController {
             // Until they are done, scalingGroup is kept invisible to avoid
             // visual artifacts. After the two steps are done, we turn the 
             // visible by calling revealScalingGroup().
-            
+
             Platform.runLater(() -> {
                 layoutContent(true /* applyCSS */);
                 adjustWorkspace();
@@ -286,15 +285,15 @@ class WorkspaceController {
             scalingGroup.setVisible(false);
         }
     }
-    
-    
+
+
     private void updateContentGroup() {
-        
-        
+
+
         /*
-         * fxomRoot 
+         * fxomRoot
          */
-        
+
         final String statusMessageText, statusStyleClass;
         contentGroup.getChildren().clear();
 
@@ -325,7 +324,7 @@ class WorkspaceController {
                 statusStyleClass = "stage-prompt"; //NOI18N
             }
         }
-        
+
         backgroundPane.setText(statusMessageText);
         backgroundPane.getStyleClass().clear();
         backgroundPane.getStyleClass().add(statusStyleClass);
@@ -349,17 +348,17 @@ class WorkspaceController {
             }
 
             final var backgroundPaneFill = new BackgroundFill(backgroundPaneFillPaint,
-                    CornerRadii.EMPTY, Insets.EMPTY);
+                CornerRadii.EMPTY, Insets.EMPTY);
             backgroundPane.setBackground(new Background(backgroundPaneFill));
         }
 
         // If layoutException != null, then this layout call is required
         // so that backgroundPane updates its message... Strange...
         backgroundPane.layout();
-        
+
         adjustWorkspace();
     }
-    
+
     private void updateScalingGroup() {
         if (scalingGroup != null) {
             final double actualScaling;
@@ -372,7 +371,7 @@ class WorkspaceController {
             }
             scalingGroup.setScaleX(actualScaling);
             scalingGroup.setScaleY(actualScaling);
-            
+
             if (Platform.isSupported(ConditionalFeature.SCENE3D)) {
                 scalingGroup.setScaleZ(actualScaling);
             }
@@ -382,10 +381,10 @@ class WorkspaceController {
             // }
         }
     }
-    
+
     private void adjustWorkspace() {
         final Bounds backgroundBounds, extensionBounds;
-        
+
         final Object userSceneGraph;
         if (fxomDocument == null) {
             userSceneGraph = null;
@@ -395,10 +394,10 @@ class WorkspaceController {
         if ((userSceneGraph instanceof final Node rootNode) && (layoutException == null)) {
 
             final var rootBounds = rootNode.getLayoutBounds();
-            
-            if (rootBounds.isEmpty() 
-                    || (rootBounds.getWidth() == 0.0)
-                    || (rootBounds.getHeight() == 0.0)) {
+
+            if (rootBounds.isEmpty()
+                || (rootBounds.getWidth() == 0.0)
+                || (rootBounds.getHeight() == 0.0)) {
                 backgroundBounds = new BoundingBox(0.0, 0.0, 0.0, 0.0);
                 extensionBounds = new BoundingBox(0.0, 0.0, 0.0, 0.0);
             } else {
@@ -418,15 +417,15 @@ class WorkspaceController {
 
                 final var contentBounds = rootNode.localToParent(rootBounds);
                 backgroundBounds = new BoundingBox(0.0, 0.0,
-                        contentBounds.getMinX() + contentBounds.getWidth(),
-                        contentBounds.getMinY() + contentBounds.getHeight());
+                    contentBounds.getMinX() + contentBounds.getWidth(),
+                    contentBounds.getMinY() + contentBounds.getHeight());
 
 
                 final var unclippedRootBounds = computeUnclippedBounds(rootNode);
                 assert unclippedRootBounds.getHeight() != 0.0;
                 assert unclippedRootBounds.getWidth() != 0.0;
                 assert rootNode.getParent() == contentGroup;
-                
+
                 final var unclippedContentBounds = rootNode.localToParent(unclippedRootBounds);
                 extensionBounds = computeExtensionBounds(backgroundBounds, unclippedContentBounds);
             }
@@ -434,25 +433,25 @@ class WorkspaceController {
             backgroundBounds = new BoundingBox(0.0, 0.0, 320.0, 150.0);
             extensionBounds = new BoundingBox(0.0, 0.0, 0.0, 0.0);
         }
-        
+
         backgroundPane.setPrefWidth(backgroundBounds.getWidth());
         backgroundPane.setPrefHeight(backgroundBounds.getHeight());
         extensionRect.setX(extensionBounds.getMinX());
         extensionRect.setY(extensionBounds.getMinY());
         extensionRect.setWidth(extensionBounds.getWidth());
         extensionRect.setHeight(extensionBounds.getHeight());
-        
+
         contentSubScene.setWidth(contentGroup.getLayoutBounds().getWidth());
         contentSubScene.setHeight(contentGroup.getLayoutBounds().getHeight());
     }
-    
+
     private static Bounds computeUnclippedBounds(final Node node) {
         final Bounds layoutBounds;
         double minX, minY, maxX, maxY, minZ, maxZ;
-        
+
         assert node != null;
         assert !node.getLayoutBounds().isEmpty();
-        
+
         layoutBounds = node.getLayoutBounds();
         minX = layoutBounds.getMinX();
         minY = layoutBounds.getMinY();
@@ -460,7 +459,7 @@ class WorkspaceController {
         maxY = layoutBounds.getMaxY();
         minZ = layoutBounds.getMinZ();
         maxZ = layoutBounds.getMaxZ();
-        
+
         if (node instanceof final Parent parent) {
             for (final var child : parent.getChildrenUnmodifiable()) {
                 final var childBounds = child.getBoundsInParent();
@@ -472,15 +471,15 @@ class WorkspaceController {
                 maxZ = Math.max(maxZ, childBounds.getMaxZ());
             }
         }
-        
+
         assert minX <= maxX;
         assert minY <= maxY;
         assert minZ <= maxZ;
-        
-        return new BoundingBox(minX, minY, minZ, maxX-minX, maxY-minY, maxZ-minZ);
+
+        return new BoundingBox(minX, minY, minZ, maxX - minX, maxY - minY, maxZ - minZ);
     }
-    
-    
+
+
     private static Bounds computeExtensionBounds(final Bounds backgroundBounds,
                                                  final Bounds unclippedContentBounds) {
         final var totalBounds = unionOfBounds(backgroundBounds, unclippedContentBounds);
@@ -490,28 +489,28 @@ class WorkspaceController {
         assert totalBounds.contains(backgroundCenterX, backgroundCenterY);
         double extensionHalfWidth, extensionHalfHeight;
         extensionHalfWidth = Math.max(
-                backgroundCenterX - totalBounds.getMinX(),
-                totalBounds.getMaxX() - backgroundCenterX);
+            backgroundCenterX - totalBounds.getMinX(),
+            totalBounds.getMaxX() - backgroundCenterX);
         extensionHalfHeight = Math.max(
-                backgroundCenterY - totalBounds.getMinY(),
-                totalBounds.getMaxY() - backgroundCenterY);
-        
+            backgroundCenterY - totalBounds.getMinY(),
+            totalBounds.getMaxY() - backgroundCenterY);
+
         // We a few pixels in order the parent ring of root object
         // to fit inside the extension rect.
         extensionHalfWidth += 20.0;
         extensionHalfHeight += 20.0;
-        
+
         return new BoundingBox(
-                backgroundCenterX - extensionHalfWidth,
-                backgroundCenterY - extensionHalfHeight,
-                extensionHalfWidth * 2,
-                extensionHalfHeight * 2);
+            backgroundCenterX - extensionHalfWidth,
+            backgroundCenterY - extensionHalfHeight,
+            extensionHalfWidth * 2,
+            extensionHalfHeight * 2);
     }
-    
-    
+
+
     private static Bounds unionOfBounds(final Bounds b1, final Bounds b2) {
         final Bounds result;
-        
+
         if (b1.isEmpty()) {
             result = b2;
         } else if (b2.isEmpty()) {
@@ -523,21 +522,21 @@ class WorkspaceController {
             final var maxX = Math.max(b1.getMaxX(), b2.getMaxX());
             final var maxY = Math.max(b1.getMaxY(), b2.getMaxY());
             final var maxZ = Math.max(b1.getMaxZ(), b2.getMaxZ());
-            
+
             assert minX <= maxX;
             assert minY <= maxY;
             assert minZ <= maxZ;
-            
-            result = new BoundingBox(minX, minY, minZ, maxX-minX, maxY-minY, maxZ-minZ);
+
+            result = new BoundingBox(minX, minY, minZ, maxX - minX, maxY - minY, maxZ - minZ);
         }
-        
+
         return result;
     }
-    
-    
+
+
     private void revealScalingGroup() {
         assert !scalingGroup.isVisible();
-        
+
         scalingGroup.setVisible(true);
         scalingGroup.setOpacity(0.0);
 

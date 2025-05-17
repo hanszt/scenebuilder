@@ -65,7 +65,6 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -86,6 +85,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -429,7 +429,7 @@ public final class SceneBuilderApp extends Application implements AppPlatform.Ap
             updateImportedGluonJars(jarReports);
         });
 
-        userLibrary.explorationCountProperty().addListener((ChangeListener<Number>) (ov, t, t1) -> userLibraryExplorationCountDidChange());
+        userLibrary.explorationCountProperty().addListener((ov, t, t1) -> userLibraryExplorationCountDidChange());
 
         userLibrary.startWatching();
 
@@ -756,22 +756,10 @@ public final class SceneBuilderApp extends Application implements AppPlatform.Ap
         }
 
         // Notifies the user if some documents are dirty
-        final boolean exitConfirmed;
-        switch (pendingDocs.size()) {
-            case 0: {
-                exitConfirmed = true;
-                break;
-            }
-
-            case 1: {
-                final var dwc0 = pendingDocs.getFirst();
-                exitConfirmed = dwc0.performCloseAction() == ActionStatus.DONE;
-                break;
-            }
-
-            default: {
-                assert pendingDocs.size() >= 2;
-
+        final boolean exitConfirmed = switch (pendingDocs.size()) {
+            case 0 -> true;
+            case 1 -> pendingDocs.getFirst().performCloseAction() == ActionStatus.DONE;
+            default -> {
                 final var d = new AlertDialog(null);
                 d.setMessage(I18N.getString("alert.review.question.message", pendingDocs.size()));
                 d.setDetails(I18N.getString("alert.review.question.details"));
@@ -779,29 +767,21 @@ public final class SceneBuilderApp extends Application implements AppPlatform.Ap
                 d.setActionButtonTitle(I18N.getString("label.discard.changes"));
                 d.setActionButtonVisible(true);
 
-                switch (d.showAndWait()) {
-                    default:
-                    case OK: { // Review
+                yield switch (d.showAndWait()) {
+                    case OK -> { // Review
                         var i = 0;
                         ActionStatus status;
                         do {
                             status = pendingDocs.get(i++).performCloseAction();
                         } while ((status == ActionStatus.DONE) && (i < pendingDocs.size()));
-                        exitConfirmed = (status == ActionStatus.DONE);
-                        break;
+                        yield (status == ActionStatus.DONE);
                     }
-                    case CANCEL: {
-                        exitConfirmed = false;
-                        break;
-                    }
-                    case ACTION: { // Do not review
-                        exitConfirmed = true;
-                        break;
-                    }
-                }
-                break;
+                    case CANCEL -> false;
+                    // Do not review
+                    case ACTION -> true;
+                };
             }
-        }
+        };
 
         // Exit if confirmed
         if (exitConfirmed) {
@@ -1024,11 +1004,7 @@ public final class SceneBuilderApp extends Application implements AppPlatform.Ap
         final var dialogDate = recordGlobal.getShowUpdateDialogDate();
         if (dialogDate == null) {
             return true;
-        } else if (dialogDate.isBefore(LocalDate.now())) {
-            return true;
-        } else {
-            return false;
-        }
+        } else return dialogDate.isBefore(LocalDate.now());
     }
 
     private void logInfoMessage(final String key) {
@@ -1045,18 +1021,12 @@ public final class SceneBuilderApp extends Application implements AppPlatform.Ap
 
     private static void updateImportedGluonJars(final List<JarReport> jars) {
         final var pc = PreferencesController.getSingleton();
-        final var recordGlobal = pc.getRecordGlobal();
-        final List<String> jarReportCollection = new ArrayList<>();
-        for (final var jarReport : jars) {
-            if (jarReport.hasControlsFromExternalPlugin()) {
-                jarReportCollection.add(jarReport.getJar().getFileName().toString());
-            }
-        }
-        if (jarReportCollection.isEmpty()) {
-            recordGlobal.setImportedGluonJars(new String[0]);
-        } else {
-            recordGlobal.setImportedGluonJars(jarReportCollection.toArray(new String[0]));
-        }
+        pc.getRecordGlobal().setImportedGluonJars(
+            jars.stream()
+                .filter(JarReport::hasControlsFromExternalPlugin)
+                .map(jarReport -> jarReport.getJar().getFileName().toString())
+                .toArray(String[]::new)
+        );
     }
 
     private static boolean hasGluonJarBeenImported(final String jar) {
@@ -1065,18 +1035,10 @@ public final class SceneBuilderApp extends Application implements AppPlatform.Ap
         if (importedJars == null) {
             return false;
         }
-
-        for (final var importedJar : importedJars) {
-            if (jar.equals(importedJar)) {
-                return true;
-            }
-        }
-        return false;
+        return Set.of(importedJars).contains(jar);
     }
 
     public static void applyToAllDocumentWindows(final Consumer<DocumentWindowController> consumer) {
-        for (final var dwc : getSingleton().getDocumentWindowControllers()) {
-            consumer.accept(dwc);
-        }
+        getSingleton().getDocumentWindowControllers().forEach(consumer);
     }
 }

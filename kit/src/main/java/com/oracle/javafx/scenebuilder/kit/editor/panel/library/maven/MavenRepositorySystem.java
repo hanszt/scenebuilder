@@ -42,6 +42,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
@@ -185,7 +186,7 @@ public class MavenRepositorySystem {
         return new ArrayList<>();
     }
     
-    public Version findLatestVersion(final Artifact artifact) {
+    public Optional<Version> findLatestVersion(final Artifact artifact) {
         final var rangeRequest = new VersionRangeRequest();
         rangeRequest.setArtifact(artifact);
         rangeRequest.setRepositories(getRepositories());
@@ -194,12 +195,11 @@ public class MavenRepositorySystem {
             cleanMetadata(artifact);
             return rangeResult.getVersions().stream()
                 .filter(v -> !v.toString().toLowerCase(Locale.ROOT).contains("snapshot"))
-                .max(Comparator.naturalOrder())
-                .orElse(null);
+                .max(Comparator.naturalOrder());
         } catch (final VersionRangeResolutionException ex) {
             LOG.finer("VersionRangeResolutionException finding latest version for artifact " + artifact + ": " + ex);
+            return Optional.empty();
         }
-        return null;
     }
     
     private void cleanMetadata(final Artifact artifact) {

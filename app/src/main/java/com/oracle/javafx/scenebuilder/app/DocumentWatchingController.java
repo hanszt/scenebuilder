@@ -170,8 +170,8 @@ public class DocumentWatchingController implements FileWatcher.Delegate {
     private boolean isPathMatchingDocumentLocation(final Path p) {
         return editorController.fxomDocument()
                 .flatMap(FXOMDocument::locationPath)
-                .map(p::equals)
-                .orElse(false);
+                .filter(p::equals)
+                .isPresent();
     }
     
     private boolean isPathMatchingResourceLocation(final Path p) {

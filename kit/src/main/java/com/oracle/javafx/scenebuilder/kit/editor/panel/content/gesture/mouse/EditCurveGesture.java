@@ -230,7 +230,7 @@ public class EditCurveGesture extends AbstractMouseGesture {
 
             List<Double> points = null;
             if (editor.getPoints() != null) {
-                points = editor.getPoints().stream().collect(Collectors.toList());
+                points = new ArrayList<>(editor.getPoints());
             }
             userDidCancel();
             

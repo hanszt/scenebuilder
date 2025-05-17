@@ -33,7 +33,6 @@
 package com.oracle.javafx.scenebuilder.kit.editor.panel.library;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.module.ModuleReference;
 import java.lang.module.ResolvedModule;
@@ -41,9 +40,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class LibraryUtil {
 
@@ -63,7 +62,7 @@ public class LibraryUtil {
         }
         return MODULES.stream()
             .map(ResolvedModule::reference)
-            .filter(r -> path.equals(r.location().map(Path::of).orElse(null)))
+            .filter(r -> r.location().map(Path::of).filter(path::equals).isPresent())
             .findFirst();
     }
 
@@ -82,16 +81,13 @@ public class LibraryUtil {
         return pathString.endsWith(".folders"); //NOI18N
     }
 
-    public static List<Path> getFolderPaths(final Path libraryFile) throws FileNotFoundException, IOException {
+    public static List<Path> getFolderPaths(final Path libraryFile) throws IOException {
         return Files.readAllLines(libraryFile).stream()
                 .map(line -> {
                     final var f = new File(line);
-                    if (f.exists() && f.isDirectory())
-                        return f.toPath();
-                    else
-                        return null;
+                    return f.exists() && f.isDirectory() ? f.toPath() : null;
                 })
-                .filter(p -> p != null)
-                .collect(Collectors.toList());
+                .filter(Objects::nonNull)
+                .toList();
     }
 }

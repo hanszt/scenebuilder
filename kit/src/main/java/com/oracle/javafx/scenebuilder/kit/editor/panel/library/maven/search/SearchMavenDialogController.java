@@ -337,14 +337,12 @@ public class SearchMavenDialogController extends AbstractFxmlWindowController {
     }
     
     private void addVersion() {
-        final var version = maven.findLatestVersion(artifact);
-        if (version == null) {
-            return;
-        }
-        
-        final Map<String, String> map = new HashMap<>();
-        map.put("Repository", maven.getRemoteRepository(version).getId());
-        artifact = new DefaultArtifact(artifact.getGroupId()+ ":" + artifact.getArtifactId() + ":" +version.toString(), map);
-        remoteRepository = maven.getRemoteRepository(version);
+        maven.findLatestVersion(artifact).ifPresent(version -> {
+            artifact = new DefaultArtifact(
+                artifact.getGroupId() + ":" + artifact.getArtifactId() + ":" + version,
+                Map.of("Repository", maven.getRemoteRepository(version).getId())
+            );
+            remoteRepository = maven.getRemoteRepository(version);
+        });
     }
 }
