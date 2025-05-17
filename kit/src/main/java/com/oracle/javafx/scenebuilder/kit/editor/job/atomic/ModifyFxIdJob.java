@@ -48,7 +48,7 @@ public class ModifyFxIdJob extends Job {
     private final String newValue;
     private final String oldValue;
 
-    public ModifyFxIdJob(FXOMObject fxomObject, String newValue, EditorController editorController) {
+    public ModifyFxIdJob(final FXOMObject fxomObject, final String newValue, final EditorController editorController) {
         super(editorController);
 
         assert fxomObject != null;
@@ -64,8 +64,8 @@ public class ModifyFxIdJob extends Job {
      */
     @Override
     public boolean isExecutable() {
-        return Objects.equals(oldValue, newValue) == false
-                && ((newValue == null) || JavaLanguage.isIdentifier(newValue));
+        return !Objects.equals(oldValue, newValue)
+               && ((newValue == null) || JavaLanguage.isIdentifier(newValue));
     }
 
     @Override

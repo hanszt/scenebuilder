@@ -67,14 +67,14 @@ public class ColorPropertyMetadata extends ComplexPropertyMetadata<Color> {
             = new DoublePropertyMetadata(new PropertyName("opacity"),
             DoublePropertyMetadata.DoubleKind.OPACITY, true, 1.0, InspectorPath.UNUSED);
 
-    public ColorPropertyMetadata(PropertyName name, boolean readWrite, 
-            Color defaultValue, InspectorPath inspectorPath) {
+    public ColorPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                 final Color defaultValue, final InspectorPath inspectorPath) {
         super(name, Color.class, readWrite, defaultValue, inspectorPath);
     }
 
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(Color value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, Color.class);
+    public FXOMInstance makeFxomInstanceFromValue(final Color value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, Color.class);
 
         redMetadata.setValue(result, value.getRed());
         greenMetadata.setValue(result, value.getGreen());
@@ -85,12 +85,12 @@ public class ColorPropertyMetadata extends ComplexPropertyMetadata<Color> {
     }
 
     @Override
-    public Color makeValueFromString(String string) {
+    public Color makeValueFromString(final String string) {
         return Color.valueOf(string);
     }
 
     @Override
-    public String makeStringFromValue(Color value) {
+    public String makeStringFromValue(final Color value) {
         assert value != null;
         return ColorEncoder.encodeColor(value);
     }

@@ -54,14 +54,14 @@ public class GridPaneHandles extends AbstractNodeHandles<GridPane> {
                     true /* shouldShowTray */,
                     true /* shouldCreateSensors */ );
     
-    public GridPaneHandles(ContentPanelController contentPanelController,
-            FXOMInstance fxomInstance) {
+    public GridPaneHandles(final ContentPanelController contentPanelController,
+                           final FXOMInstance fxomInstance) {
         super(contentPanelController, fxomInstance, GridPane.class);
         
-        getRootNode().getChildren().add(0, mosaic.getTopGroup()); // Below handles
+        getRootNode().getChildren().addFirst(mosaic.getTopGroup()); // Below handles
     }
     
-    public void updateColumnRowSelection(GridSelectionGroup gsg) {
+    public void updateColumnRowSelection(final GridSelectionGroup gsg) {
         
         if (gsg == null) {
             mosaic.setSelectedColumnIndexes(Collections.emptySet());
@@ -99,22 +99,22 @@ public class GridPaneHandles extends AbstractNodeHandles<GridPane> {
         
         // Mosaic update may have created new trays and new sensors. 
         // Attach this handles to them.
-        for (Node node : this.mosaic.getNorthTrayNodes()) {
+        for (final var node : this.mosaic.getNorthTrayNodes()) {
             attachHandles(node);
         }
-        for (Node node : this.mosaic.getSouthTrayNodes()) {
+        for (final var node : this.mosaic.getSouthTrayNodes()) {
             attachHandles(node);
         }
-        for (Node node : this.mosaic.getEastTrayNodes()) {
+        for (final var node : this.mosaic.getEastTrayNodes()) {
             attachHandles(node);
         }
-        for (Node node : this.mosaic.getWestTrayNodes()) {
+        for (final var node : this.mosaic.getWestTrayNodes()) {
             attachHandles(node);
         }
-        for (Node node : this.mosaic.getHgapSensorNodes()) {
+        for (final var node : this.mosaic.getHgapSensorNodes()) {
             attachHandles(node);
         }
-        for (Node node : this.mosaic.getVgapSensorNodes()) {
+        for (final var node : this.mosaic.getVgapSensorNodes()) {
             attachHandles(node);
         }
         
@@ -124,8 +124,8 @@ public class GridPaneHandles extends AbstractNodeHandles<GridPane> {
     }
 
     @Override
-    public AbstractGesture findGesture(Node node) {
-        AbstractGesture result = findGestureInTrays(node);
+    public AbstractGesture findGesture(final Node node) {
+        var result = findGestureInTrays(node);
         if (result == null) {
             result = findGestureInSensors(node);
         }
@@ -134,10 +134,10 @@ public class GridPaneHandles extends AbstractNodeHandles<GridPane> {
     }
     
     
-    private AbstractGesture findGestureInTrays(Node node) {
+    private AbstractGesture findGestureInTrays(final Node node) {
         final GridSelectionGroup.Type feature;
-        
-        int trayIndex = mosaic.getNorthTrayNodes().indexOf(node);
+
+        var trayIndex = mosaic.getNorthTrayNodes().indexOf(node);
         if (trayIndex != -1) {
             feature = GridSelectionGroup.Type.COLUMN;
         } else {
@@ -167,10 +167,10 @@ public class GridPaneHandles extends AbstractNodeHandles<GridPane> {
     }
     
     
-    private AbstractGesture findGestureInSensors(Node node) {
+    private AbstractGesture findGestureInSensors(final Node node) {
         final AbstractGesture result;
-        
-        int sensorIndex = mosaic.getHgapSensorNodes().indexOf(node);
+
+        var sensorIndex = mosaic.getHgapSensorNodes().indexOf(node);
         if (sensorIndex != -1) {
             result = new ResizeColumnGesture(this, sensorIndex);
         } else {
@@ -193,7 +193,7 @@ public class GridPaneHandles extends AbstractNodeHandles<GridPane> {
     /* 
      * Wrapper to avoid the 'leaking this in constructor' warning emitted by NB.
      */
-    private void attachHandles(Node node) {
+    private void attachHandles(final Node node) {
         if (AbstractHandles.lookupHandles(node) == null) {
             attachHandles(node, this);
         }

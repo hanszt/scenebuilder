@@ -44,7 +44,7 @@ class CssPanelMenuController {
     private boolean splitDefaults = false;
     private final CssPanelController cssPanelController;
 
-    public CssPanelMenuController(CssPanelController cssPanelController) {
+    public CssPanelMenuController(final CssPanelController cssPanelController) {
         this.cssPanelController = cssPanelController;
     }
 
@@ -64,7 +64,7 @@ class CssPanelMenuController {
         cssPanelController.copyStyleablePath();
     }
 
-    public void splitDefaultsAction(MenuItem cssPanelSplitDefaultsMi) {
+    public void splitDefaultsAction(final MenuItem cssPanelSplitDefaultsMi) {
         cssPanelController.splitDefaultsAction();
         splitDefaults = !splitDefaults;
         if (splitDefaults) {
@@ -74,7 +74,7 @@ class CssPanelMenuController {
         }
     }
 
-    public void showStyledOnly(MenuItem cssPanelShowStyledOnlyMi) {
+    public void showStyledOnly(final MenuItem cssPanelShowStyledOnlyMi) {
         cssPanelController.showStyledOnly();
         showStyledOnly = !showStyledOnly;
         if (showStyledOnly) {

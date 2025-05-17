@@ -62,11 +62,11 @@ public class GlueElement extends GlueNode {
     
     private GlueElement parent;
     
-    public GlueElement(GlueDocument document, String tagName) {
+    public GlueElement(final GlueDocument document, final String tagName) {
         this(document, tagName, 0, true /* preset */);
     }
 
-    public GlueElement(GlueDocument document, String tagName, int indentDepth, boolean preset) {
+    public GlueElement(final GlueDocument document, final String tagName, final int indentDepth, final boolean preset) {
         assert document != null;
         assert tagName != null;
         
@@ -79,10 +79,10 @@ public class GlueElement extends GlueNode {
         }
     }
 
-    public GlueElement(GlueDocument document, String tagName, GlueElement template) {
+    public GlueElement(final GlueDocument document, final String tagName, final GlueElement template) {
         this(document, tagName, template.indentDepth, false);
         
-        final int templateIndent = template.guessIndent();
+        final var templateIndent = template.guessIndent();
         if (templateIndent != -1) {
             front.add(makeIndentCharacters(templateIndent));
             tail.add(makeIndentCharacters(templateIndent));
@@ -101,9 +101,9 @@ public class GlueElement extends GlueNode {
         return tagName;
     }
 
-    public void setTagName(String tagName) {
+    public void setTagName(final String tagName) {
         assert tagName != null;
-        assert tagName.isEmpty() == false;
+        assert !tagName.isEmpty();
         this.tagName = tagName;
     }
 
@@ -111,11 +111,11 @@ public class GlueElement extends GlueNode {
         return Collections.unmodifiableList(children);
     }
     
-    public void addToParent(GlueElement newParent) {
+    public void addToParent(final GlueElement newParent) {
         addToParent(-1, newParent);
     }
     
-    public void addToParent(int index, GlueElement newParent) {
+    public void addToParent(int index, final GlueElement newParent) {
         assert newParent != null;
         assert newParent != parent;
         assert newParent.getDocument() == document;
@@ -135,13 +135,13 @@ public class GlueElement extends GlueNode {
         this.parent = newParent;
     }
     
-    public void addBefore(GlueElement nextSibling) {
+    public void addBefore(final GlueElement nextSibling) {
         assert nextSibling != null;
         assert nextSibling.getDocument() == document;
         assert nextSibling.getParent() != null;
         
-        final GlueElement siblingParent = nextSibling.getParent();
-        final int nextSiblingIndex = siblingParent.getChildren().indexOf(nextSibling);
+        final var siblingParent = nextSibling.getParent();
+        final var nextSiblingIndex = siblingParent.getChildren().indexOf(nextSibling);
         assert nextSiblingIndex != -1;
         
         addToParent(nextSiblingIndex, siblingParent);
@@ -173,8 +173,8 @@ public class GlueElement extends GlueNode {
     }
 
     public int getDepth() {
-        int result = 0;
-        GlueElement ancestor = parent;
+        var result = 0;
+        var ancestor = parent;
         
         while (ancestor != null) {
             result++;
@@ -184,15 +184,15 @@ public class GlueElement extends GlueNode {
         return result;
     }
 
-    public void updateIndent(int depth) {
+    public void updateIndent(final int depth) {
         if (indentDepth != depth) {
-            final int indentDelta = (depth - indentDepth) * INDENT_STEP;
+            final var indentDelta = (depth - indentDepth) * INDENT_STEP;
             if (front.isEmpty()) {
                 front.add(makeIndentCharacters(depth * INDENT_STEP));
             } else {
-                for (GlueAuxiliary auxiliary : front) {
+                for (final var auxiliary : front) {
                     if (auxiliary instanceof GlueCharacters) {
-                        final GlueCharacters characters = (GlueCharacters) auxiliary;
+                        final var characters = (GlueCharacters) auxiliary;
                         characters.adjustIndentBy(indentDelta);
                     }
                 }
@@ -201,9 +201,9 @@ public class GlueElement extends GlueNode {
             if (tail.isEmpty()) {
                 tail.add(makeIndentCharacters(depth * INDENT_STEP));
             } else {
-                for (GlueAuxiliary auxiliary : tail) {
+                for (final var auxiliary : tail) {
                     if (auxiliary instanceof GlueCharacters) {
-                        final GlueCharacters characters = (GlueCharacters) auxiliary;
+                        final var characters = (GlueCharacters) auxiliary;
                         characters.adjustIndentBy(indentDelta);
                     }
                 }
@@ -211,14 +211,14 @@ public class GlueElement extends GlueNode {
             indentDepth = depth;
         }
         
-        final int nextDepth = synthetic ? depth : depth+1;
-        for (GlueElement child : children) {
+        final var nextDepth = synthetic ? depth : depth + 1;
+        for (final var child : children) {
             child.updateIndent(nextDepth);
         }
     }
 
     public String getContentText() {
-        final GlueCharacters contentHolder = getContentHolder();
+        final var contentHolder = getContentHolder();
         final String result;
         
         if (contentHolder == null) {
@@ -231,11 +231,11 @@ public class GlueElement extends GlueNode {
     }
     
     
-    public void setContentText(String text) {
-        final String currentText = getContentText();
+    public void setContentText(final String text) {
+        final var currentText = getContentText();
         
-        if (Objects.equals(currentText, text) == false) {
-            GlueCharacters contentHolder = getContentHolder();
+        if (!Objects.equals(currentText, text)) {
+            var contentHolder = getContentHolder();
             
             if (text == null) {
                 assert currentText != null;
@@ -255,7 +255,7 @@ public class GlueElement extends GlueNode {
     }
     
     
-    public void moveToDocument(GlueDocument targetDocument) {
+    public void moveToDocument(final GlueDocument targetDocument) {
         
         assert targetDocument != null;
         assert targetDocument != document;
@@ -272,7 +272,7 @@ public class GlueElement extends GlueNode {
         
         document = targetDocument;
         
-        for (GlueElement child : children) {
+        for (final var child : children) {
             child.moveToDocument(targetDocument);
         }
         
@@ -284,7 +284,7 @@ public class GlueElement extends GlueNode {
         return synthetic;
     }
 
-    public void setSynthetic(boolean synthetic) {
+    public void setSynthetic(final boolean synthetic) {
         this.synthetic = synthetic;
     }
 
@@ -299,7 +299,7 @@ public class GlueElement extends GlueNode {
         if (parent == null) {
             result = null;
         } else {
-            int index = parent.children.indexOf(this);
+            final var index = parent.children.indexOf(this);
             assert index != -1;
             if (index+1 < parent.children.size()) {
                 result = parent.children.get(index+1);
@@ -317,7 +317,7 @@ public class GlueElement extends GlueNode {
     
     @Override
     public String toString() {
-        final StringBuilder result = new StringBuilder();
+        final var result = new StringBuilder();
         
         result.append(getClass().getSimpleName());
         result.append(" - "); //NOI18N
@@ -353,10 +353,10 @@ public class GlueElement extends GlueNode {
          */
         
         GlueCharacters result = null;
-        for (int i = content.size()-1; (i >= 0) && (result == null); i--) {
-            final GlueAuxiliary auxiliary = content.get(i);
+        for (var i = content.size() - 1; (i >= 0) && (result == null); i--) {
+            final var auxiliary = content.get(i);
             if (auxiliary instanceof GlueCharacters) {
-                final GlueCharacters c = (GlueCharacters) auxiliary;
+                final var c = (GlueCharacters) auxiliary;
                 if (c.getType() == GlueCharacters.Type.TEXT) {
                     result = c;
                 }
@@ -372,8 +372,8 @@ public class GlueElement extends GlueNode {
         
         if (front.isEmpty()) {
             result = -1;
-        } else if (front.get(0) instanceof GlueCharacters) {
-            final GlueCharacters characters = (GlueCharacters) front.get(0);
+        } else if (front.getFirst() instanceof GlueCharacters) {
+            final var characters = (GlueCharacters) front.getFirst();
             result = characters.guessIndent();
         } else {
             result = -1;
@@ -382,10 +382,10 @@ public class GlueElement extends GlueNode {
         return result;
     }
     
-    private GlueCharacters makeIndentCharacters(int indentSize) {
-        final StringBuffer sb = new StringBuffer();
+    private GlueCharacters makeIndentCharacters(final int indentSize) {
+        final var sb = new StringBuffer();
         sb.append('\n');
-        for (int i = 0; i < indentSize; i++) {
+        for (var i = 0; i < indentSize; i++) {
             sb.append(' ');
         }
         

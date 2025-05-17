@@ -35,8 +35,7 @@ import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.AbstractSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,21 +44,21 @@ import java.util.List;
  */
 public class DeleteObjectSelectionJob extends BatchSelectionJob {
 
-    public DeleteObjectSelectionJob(EditorController editorController) {
+    public DeleteObjectSelectionJob(final EditorController editorController) {
         super(editorController);
     }
 
     @Override
     protected List<Job> makeSubJobs() {
-        final Selection selection = getEditorController().getSelection();
+        final var selection = getEditorController().getSelection();
         assert selection.getGroup() instanceof ObjectSelectionGroup;
-        final ObjectSelectionGroup osg = (ObjectSelectionGroup) selection.getGroup();
+        final var osg = (ObjectSelectionGroup) selection.getGroup();
         final List<Job> result = new ArrayList<>();
         
         // Next we make one DeleteObjectJob for each selected objects
-        int cannotDeleteCount = 0;
-        for (FXOMObject candidate : osg.getFlattenItems()) {
-            final DeleteObjectJob subJob
+        var cannotDeleteCount = 0;
+        for (final var candidate : osg.getFlattenItems()) {
+            final var subJob
                     = new DeleteObjectJob(candidate, getEditorController());
             if (subJob.isExecutable()) {
                 result.add(subJob);
@@ -80,14 +79,14 @@ public class DeleteObjectSelectionJob extends BatchSelectionJob {
     @Override
     protected String makeDescription() {
         final String result;
-        final int subJobCount = getSubJobs().size();
+        final var subJobCount = getSubJobs().size();
         
         switch (subJobCount) {
             case 0:
                 result = "Unexecutable Delete"; // NO18N
                 break;
             case 1: // one delete
-                result = getSubJobs().get(0).getDescription();
+                result = getSubJobs().getFirst().getDescription();
                 break;
             default:
                 result = I18N.getString("label.action.edit.delete.n", subJobCount);

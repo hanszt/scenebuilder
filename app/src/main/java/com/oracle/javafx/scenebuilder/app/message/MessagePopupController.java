@@ -33,7 +33,6 @@ package com.oracle.javafx.scenebuilder.app.message;
 
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.util.AbstractPopupController;
-import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.stage.WindowEvent;
 
@@ -44,7 +43,7 @@ public class MessagePopupController extends AbstractPopupController {
     
     private final MessagePanelController messagePanelController;
     
-    public MessagePopupController(EditorController editorController) {
+    public MessagePopupController(final EditorController editorController) {
         this.messagePanelController = new MessagePanelController(editorController);
     }
     
@@ -59,12 +58,12 @@ public class MessagePopupController extends AbstractPopupController {
     }
 
     @Override
-    protected void onHidden(WindowEvent event) {
+    protected void onHidden(final WindowEvent event) {
     }
 
     @Override
     protected void anchorBoundsDidChange() {
-        final Bounds lb = getAnchor().getLayoutBounds();
+        final var lb = getAnchor().getLayoutBounds();
         messagePanelController.setPanelWidth(lb.getWidth());
         // This callback should not be needed for auto hiding popups
         // See RT-31292 : Popup does not auto hide when resizing the window
@@ -96,8 +95,8 @@ public class MessagePopupController extends AbstractPopupController {
      */
     @Override
     protected void updatePopupLocation() {
-        final Bounds anchorBounds = getAnchor().getLayoutBounds();
-        Point2D popupLocation;
+        final var anchorBounds = getAnchor().getLayoutBounds();
+        final Point2D popupLocation;
         
         assert anchorBounds != null;
         

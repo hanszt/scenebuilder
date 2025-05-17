@@ -55,7 +55,7 @@ public class ArcResizer extends AbstractResizer<Arc> {
     private final PropertyName radiusYName = new PropertyName("radiusY"); //NOI18N
     private final List<PropertyName> propertyNames = new ArrayList<>();
     
-    public ArcResizer(Arc sceneGraphObject) {
+    public ArcResizer(final Arc sceneGraphObject) {
         super(sceneGraphObject);
         originalRadiusX = sceneGraphObject.getRadiusX();
         originalRadiusY = sceneGraphObject.getRadiusY();
@@ -69,14 +69,14 @@ public class ArcResizer extends AbstractResizer<Arc> {
      */
     
     @Override
-    public final Bounds computeBounds(double width, double height) {
+    public final Bounds computeBounds(final double width, final double height) {
         final double radiusX = Math.round(computeRadiusXForWidth(width));
         final double radiusY = Math.round(computeRadiusYForHeight(height));
         
-        final double minX = canonicalBounds.getMinX() * radiusX;
-        final double maxX = canonicalBounds.getMaxX() * radiusX;
-        final double minY = canonicalBounds.getMinY() * radiusY;
-        final double maxY = canonicalBounds.getMaxY() * radiusY;
+        final var minX = canonicalBounds.getMinX() * radiusX;
+        final var maxX = canonicalBounds.getMaxX() * radiusX;
+        final var minY = canonicalBounds.getMinY() * radiusY;
+        final var maxY = canonicalBounds.getMaxY() * radiusY;
         
         return new BoundingBox(minX, minY, maxX- minX, maxY - minY);
     }
@@ -87,13 +87,13 @@ public class ArcResizer extends AbstractResizer<Arc> {
     }
 
     @Override
-    public void changeWidth(double width) {
+    public void changeWidth(final double width) {
         final double radiusX = Math.round(computeRadiusXForWidth(width));
         sceneGraphObject.setRadiusX(radiusX);
     }
 
     @Override
-    public void changeHeight(double height) {
+    public void changeHeight(final double height) {
         final double radiusY = Math.round(computeRadiusYForHeight(height));
         sceneGraphObject.setRadiusY(radiusY);
     }
@@ -110,7 +110,7 @@ public class ArcResizer extends AbstractResizer<Arc> {
     }
 
     @Override
-    public Object getValue(PropertyName propertyName) {
+    public Object getValue(final PropertyName propertyName) {
         assert propertyName != null;
         assert propertyNames.contains(propertyName);
         
@@ -130,10 +130,10 @@ public class ArcResizer extends AbstractResizer<Arc> {
     @Override
     public Map<PropertyName, Object> getChangeMap() {
         final Map<PropertyName, Object> result = new HashMap<>();
-        if (MathUtils.equals(sceneGraphObject.getRadiusX(), originalRadiusX) == false) {
+        if (!MathUtils.equals(sceneGraphObject.getRadiusX(), originalRadiusX)) {
             result.put(radiusXName, sceneGraphObject.getRadiusX());
         }
-        if (MathUtils.equals(sceneGraphObject.getRadiusY(), originalRadiusY) == false) {
+        if (!MathUtils.equals(sceneGraphObject.getRadiusY(), originalRadiusY)) {
             result.put(radiusYName, sceneGraphObject.getRadiusY());
         }
         return result;
@@ -144,17 +144,17 @@ public class ArcResizer extends AbstractResizer<Arc> {
      * Private
      */
     
-    private double computeRadiusXForWidth(double width) {
+    private double computeRadiusXForWidth(final double width) {
         return width / canonicalBounds.getWidth();
     }
     
-    private double computeRadiusYForHeight(double height) {
+    private double computeRadiusYForHeight(final double height) {
         return height / canonicalBounds.getHeight();
     }
     
     
     private Bounds computeCanonicalBounds() {
-        final Arc arc = new Arc();
+        final var arc = new Arc();
         arc.setStartAngle(sceneGraphObject.getStartAngle());
         arc.setLength(sceneGraphObject.getLength());
         arc.setRadiusX(1.0);

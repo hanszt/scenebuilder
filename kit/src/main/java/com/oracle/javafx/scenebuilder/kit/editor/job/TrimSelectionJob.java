@@ -38,11 +38,9 @@ import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.RemoveObjectJob;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.AbstractSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMFxIdIndex;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +49,7 @@ import java.util.List;
  */
 public class TrimSelectionJob extends BatchSelectionJob {
 
-    public TrimSelectionJob(EditorController editorController) {
+    public TrimSelectionJob(final EditorController editorController) {
         super(editorController);
     }
 
@@ -61,12 +59,12 @@ public class TrimSelectionJob extends BatchSelectionJob {
 
         if (canTrim()) {
 
-            final Selection selection = getEditorController().getSelection();
+            final var selection = getEditorController().getSelection();
             assert selection.getGroup() instanceof ObjectSelectionGroup; // Because (1)
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) selection.getGroup();
+            final var osg = (ObjectSelectionGroup) selection.getGroup();
             assert osg.getItems().size() == 1;
-            final FXOMObject oldRoot = getEditorController().getFxomDocument().getFxomRoot();
-            final FXOMObject candidateRoot = osg.getItems().iterator().next();
+            final var oldRoot = getEditorController().getFxomDocument().getFxomRoot();
+            final var candidateRoot = osg.getItems().iterator().next();
 
             /*
              *  This job is composed of subjobs:
@@ -80,15 +78,15 @@ public class TrimSelectionJob extends BatchSelectionJob {
              *      4) Add fx:controller/fx:root (if defined) to the new root object
              */
             assert oldRoot instanceof FXOMInstance;
-            boolean isFxRoot = ((FXOMInstance) oldRoot).isFxRoot();
-            final String fxController = oldRoot.getFxController();
+            final var isFxRoot = ((FXOMInstance) oldRoot).isFxRoot();
+            final var fxController = oldRoot.getFxController();
             // First remove the fx:controller/fx:root from the old root object
             if (isFxRoot) {
-                final ToggleFxRootJob fxRootJob = new ToggleFxRootJob(getEditorController());
+                final var fxRootJob = new ToggleFxRootJob(getEditorController());
                 result.add(fxRootJob);
             }
             if (fxController != null) {
-                final ModifyFxControllerJob fxControllerJob
+                final var fxControllerJob
                         = new ModifyFxControllerJob(oldRoot, null, getEditorController());
                 result.add(fxControllerJob);
             }
@@ -101,11 +99,11 @@ public class TrimSelectionJob extends BatchSelectionJob {
 
             // Finally add the fx:controller/fx:root to the new root object
             if (isFxRoot) {
-                final ToggleFxRootJob fxRootJob = new ToggleFxRootJob(getEditorController());
+                final var fxRootJob = new ToggleFxRootJob(getEditorController());
                 result.add(fxRootJob);
             }
             if (fxController != null) {
-                final ModifyFxControllerJob fxControllerJob
+                final var fxControllerJob
                         = new ModifyFxControllerJob(candidateRoot, fxController, getEditorController());
                 result.add(fxControllerJob);
             }
@@ -126,19 +124,19 @@ public class TrimSelectionJob extends BatchSelectionJob {
     }
 
     private boolean canTrim() {
-        final Selection selection = getEditorController().getSelection();
+        final var selection = getEditorController().getSelection();
         final boolean result;
 
         if (selection.getGroup() instanceof ObjectSelectionGroup) {
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) selection.getGroup();
+            final var osg = (ObjectSelectionGroup) selection.getGroup();
             if (osg.getItems().size() == 1) {
                 // We can trim if:
                 //  - object is an FXOMInstance
                 //  - object is not already the root
                 //  - object is self contained
-                final FXOMObject fxomObject = osg.getItems().iterator().next();
+                final var fxomObject = osg.getItems().iterator().next();
                 if (fxomObject instanceof FXOMInstance) {
-                    final FXOMDocument fxomDocument = fxomObject.getFxomDocument();
+                    final var fxomDocument = fxomObject.getFxomDocument();
                     result = (fxomObject != fxomDocument.getFxomRoot())
                             && FXOMFxIdIndex.isSelfContainedObject(fxomObject);
                 } else {

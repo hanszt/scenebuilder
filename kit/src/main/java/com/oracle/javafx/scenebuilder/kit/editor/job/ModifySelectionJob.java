@@ -38,7 +38,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.ModifyObjectJob;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.AbstractSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.GridSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMIntrinsic;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
@@ -58,8 +57,8 @@ public class ModifySelectionJob extends BatchDocumentJob {
     protected final ValuePropertyMetadata propertyMetadata;
     protected final Object newValue;
 
-    public ModifySelectionJob(ValuePropertyMetadata propertyMetadata,
-            Object newValue, EditorController editorController) {
+    public ModifySelectionJob(final ValuePropertyMetadata propertyMetadata,
+                              final Object newValue, final EditorController editorController) {
         super(editorController);
         this.propertyMetadata = propertyMetadata;
         this.newValue = newValue;
@@ -69,7 +68,7 @@ public class ModifySelectionJob extends BatchDocumentJob {
     protected List<Job> makeSubJobs() {
         final List<Job> result = new ArrayList<>();
         final Set<FXOMInstance> candidates = new HashSet<>();
-        final Selection selection = getEditorController().getSelection();
+        final var selection = getEditorController().getSelection();
         if (selection.getGroup() instanceof ObjectSelectionGroup) {
             handleObjectSelectionGroup(selection.getGroup(), candidates);
         } else if (selection.getGroup() instanceof GridSelectionGroup) {
@@ -78,8 +77,8 @@ public class ModifySelectionJob extends BatchDocumentJob {
             assert selection.getGroup() == null : "Add implementation for " + selection.getGroup();
         }
         // Add ModifyObject jobs
-        for (FXOMInstance fxomInstance : candidates) {
-            final ModifyObjectJob subJob = new ModifyObjectJob(
+        for (final var fxomInstance : candidates) {
+            final var subJob = new ModifyObjectJob(
                     fxomInstance, propertyMetadata, newValue, getEditorController());
             if (subJob.isExecutable()) {
                 result.add(subJob);
@@ -88,35 +87,35 @@ public class ModifySelectionJob extends BatchDocumentJob {
         return result;
     }
 
-    private void handleObjectSelectionGroup(AbstractSelectionGroup group, Set<FXOMInstance> candidates) {
-        final ObjectSelectionGroup osg = (ObjectSelectionGroup) group;
-        for (FXOMObject fxomObject : osg.getItems()) {
+    private void handleObjectSelectionGroup(final AbstractSelectionGroup group, final Set<FXOMInstance> candidates) {
+        final var osg = (ObjectSelectionGroup) group;
+        for (final var fxomObject : osg.getItems()) {
             handleFxomInstance(fxomObject, candidates);
             handleFxomIntrinsic(fxomObject, candidates);
         }
     }
 
 
-    private void handleFxomInstance(FXOMObject fxomObject, Set<FXOMInstance> candidates) {
+    private void handleFxomInstance(final FXOMObject fxomObject, final Set<FXOMInstance> candidates) {
         if (fxomObject instanceof FXOMInstance) {
             candidates.add((FXOMInstance) fxomObject);
         }
 
     }
 
-    private void handleFxomIntrinsic(FXOMObject fxomObject, Set<FXOMInstance> candidates) {
+    private void handleFxomIntrinsic(final FXOMObject fxomObject, final Set<FXOMInstance> candidates) {
         if(fxomObject instanceof FXOMIntrinsic) {
-            FXOMIntrinsic intrinsic = (FXOMIntrinsic) fxomObject;
-            FXOMInstance fxomInstance = intrinsic.createFxomInstanceFromIntrinsic();
+            final var intrinsic = (FXOMIntrinsic) fxomObject;
+            final var fxomInstance = intrinsic.createFxomInstanceFromIntrinsic();
             candidates.add(fxomInstance);
         }
     }
 
 
-    private void handleGridSelectionGroup(AbstractSelectionGroup group, Set<FXOMInstance> candidates) {
-        final GridSelectionGroup gsg = (GridSelectionGroup) group;
-        final DesignHierarchyMask mask = new DesignHierarchyMask(gsg.getAncestor());
-        for (int index : gsg.getIndexes()) {
+    private void handleGridSelectionGroup(final AbstractSelectionGroup group, final Set<FXOMInstance> candidates) {
+        final var gsg = (GridSelectionGroup) group;
+        final var mask = new DesignHierarchyMask(gsg.getAncestor());
+        for (final int index : gsg.getIndexes()) {
             FXOMObject constraints = null;
             switch (gsg.getType()) {
                 case COLUMN:
@@ -137,15 +136,15 @@ public class ModifySelectionJob extends BatchDocumentJob {
     @Override
     protected String makeDescription() {
         final String result;
-        final List<Job> subJobs = getSubJobs();
-        final int subJobCount = subJobs.size();
+        final var subJobs = getSubJobs();
+        final var subJobCount = subJobs.size();
 
         switch (subJobCount) {
             case 0:
                 result = "Unexecutable Set"; //NOI18N
                 break;
             case 1: // Single selection
-                result = subJobs.get(0).getDescription();
+                result = subJobs.getFirst().getDescription();
                 break;
             default:
                 result = I18N.getString("label.action.edit.set.n",

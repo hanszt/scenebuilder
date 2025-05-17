@@ -59,8 +59,8 @@ public class PointLightPropertyMetadata extends ComplexPropertyMetadata<Light.Po
             = new DoublePropertyMetadata(new PropertyName("z"), //NOI18N
             DoublePropertyMetadata.DoubleKind.COORDINATE, true, 0.0, InspectorPath.UNUSED);
     
-    public PointLightPropertyMetadata(PropertyName name, boolean readWrite, 
-            Light.Point defaultValue, InspectorPath inspectorPath) {
+    public PointLightPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                      final Light.Point defaultValue, final InspectorPath inspectorPath) {
         super(name, Light.Point.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -69,8 +69,8 @@ public class PointLightPropertyMetadata extends ComplexPropertyMetadata<Light.Po
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(Light.Point value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, getValueClass());
+    public FXOMInstance makeFxomInstanceFromValue(final Light.Point value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, getValueClass());
         
         colorMetadata.setValue(result, value.getColor());
         xMetadata.setValue(result, value.getX());

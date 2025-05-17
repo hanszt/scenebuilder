@@ -49,12 +49,12 @@ public class JarReport {
     private final ObservableList<JarReportEntry> entries = FXCollections.observableArrayList();
     private boolean hasControlsFromExternalPlugin = false;
 
-    public JarReport(Path jar) {
+    public JarReport(final Path jar) {
         this.jar = jar;
         this.entries.addListener((ListChangeListener<JarReportEntry>) c -> {
             while (c.next()) {
                 if (c.wasAdded()) {
-                    for (JarReportEntry entry : c.getAddedSubList()) {
+                    for (final var entry : c.getAddedSubList()) {
                         if (entry.isClassFromExternalPlugin()) {
                             hasControlsFromExternalPlugin = true;
                         }

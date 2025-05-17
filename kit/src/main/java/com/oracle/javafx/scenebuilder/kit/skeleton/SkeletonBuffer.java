@@ -33,8 +33,6 @@
 package com.oracle.javafx.scenebuilder.kit.skeleton;
 
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyT;
 import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
 import com.oracle.javafx.scenebuilder.kit.util.eventnames.FindEventNamesUtil;
 
@@ -50,21 +48,21 @@ class SkeletonBuffer {
 
     private final SkeletonCreator skeletonCreator = new SkeletonCreator();
 
-    SkeletonBuffer(FXOMDocument document, String documentName) {
+    SkeletonBuffer(final FXOMDocument document, final String documentName) {
         assert document != null;
         this.document = document;
         this.documentName = documentName;
     }
 
-    void setLanguage(SkeletonSettings.LANGUAGE language) {
+    void setLanguage(final SkeletonSettings.LANGUAGE language) {
         settings.setLanguage(language);
     }
 
-    void setTextType(SkeletonSettings.TEXT_TYPE type) {
+    void setTextType(final SkeletonSettings.TEXT_TYPE type) {
         settings.setTextType(type);
     }
 
-    void setFormat(SkeletonSettings.FORMAT_TYPE format) {
+    void setFormat(final SkeletonSettings.FORMAT_TYPE format) {
         settings.setFormat(format);
     }
 
@@ -77,7 +75,7 @@ class SkeletonBuffer {
         if (document.getFxomRoot() == null) {
             return I18N.getString("skeleton.empty");
         } else {
-            SkeletonContext.Builder builder = SkeletonContext.builder()
+            final var builder = SkeletonContext.builder()
                 .withFxController(document.getFxomRoot().getFxController())
                 .withDocumentName(documentName)
                 .withSettings(settings);
@@ -88,28 +86,28 @@ class SkeletonBuffer {
         }
     }
 
-    private void construct(SkeletonContext.Builder builder) {
+    private void construct(final SkeletonContext.Builder builder) {
         constructFxIds(builder);
         constructEventHandlers(builder);
         constructAdditionalImports(builder);
     }
 
-    private void constructFxIds(SkeletonContext.Builder builder) {
-        for (FXOMObject value : document.collectFxIds().values()) {
+    private void constructFxIds(final SkeletonContext.Builder builder) {
+        for (final var value : document.collectFxIds().values()) {
             builder.addFxId(value);
         }
     }
 
-    private void constructEventHandlers(SkeletonContext.Builder builder) {
+    private void constructEventHandlers(final SkeletonContext.Builder builder) {
         // need to initialize the internal events map
         FindEventNamesUtil.initializeEventsMap();
 
-        for (FXOMPropertyT eventHandler : document.getFxomRoot().collectEventHandlers()) {
+        for (final var eventHandler : document.getFxomRoot().collectEventHandlers()) {
             builder.addEventHandler(eventHandler);
         }
     }
 
-    private void constructAdditionalImports(SkeletonContext.Builder builder) {
+    private void constructAdditionalImports(final SkeletonContext.Builder builder) {
         if (isFull()) {
             builder.addImportsFor(URL.class, ResourceBundle.class);
         }

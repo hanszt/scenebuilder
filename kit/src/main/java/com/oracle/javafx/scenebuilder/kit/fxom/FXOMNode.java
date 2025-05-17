@@ -41,7 +41,7 @@ public abstract class FXOMNode {
     
     private FXOMDocument fxomDocument;
     
-    FXOMNode(FXOMDocument fxomDocument) {
+    FXOMNode(final FXOMDocument fxomDocument) {
         assert fxomDocument != null;
         this.fxomDocument = fxomDocument;
     }
@@ -54,7 +54,7 @@ public abstract class FXOMNode {
     
     public abstract void documentLocationWillChange(URL newLocation);
     
-    protected void changeFxomDocument(FXOMDocument destination) {
+    protected void changeFxomDocument(final FXOMDocument destination) {
         assert destination != null;
         assert destination != fxomDocument;
         fxomDocument = destination;

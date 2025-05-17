@@ -88,7 +88,7 @@ public enum Template {
     private String uiNameKey;
     private String descriptionKey;
 
-    Template(Type type, String fxmlFileName, String imageFileName, String uiNameKey, String descriptionKey) {
+    Template(final Type type, final String fxmlFileName, final String imageFileName, final String uiNameKey, final String descriptionKey) {
         this.type = type;
         this.fxmlFileName = fxmlFileName;
         this.imageFileName = imageFileName;

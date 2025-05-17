@@ -57,7 +57,7 @@ public class AccessoryDropTarget extends AbstractDropTarget {
     private final FXOMInstance targetContainer;
     private final Accessory accessory;
 
-    public AccessoryDropTarget(FXOMInstance targetContainer, Accessory accessory) {
+    public AccessoryDropTarget(final FXOMInstance targetContainer, final Accessory accessory) {
         assert targetContainer != null;
         this.targetContainer = targetContainer;
         this.accessory = accessory;
@@ -77,15 +77,15 @@ public class AccessoryDropTarget extends AbstractDropTarget {
     }
 
     @Override
-    public boolean acceptDragSource(AbstractDragSource dragSource) {
+    public boolean acceptDragSource(final AbstractDragSource dragSource) {
         assert dragSource != null;
         
         final boolean result;
         if (dragSource.getDraggedObjects().size() != 1) {
             result = false;
         } else {
-            final DesignHierarchyMask m = new DesignHierarchyMask(targetContainer);
-            final FXOMObject draggedObject = dragSource.getDraggedObjects().get(0);
+            final var m = new DesignHierarchyMask(targetContainer);
+            final var draggedObject = dragSource.getDraggedObjects().getFirst();
             result = m.isAcceptingAccessory(accessory, draggedObject)
                     && m.getAccessory(accessory) == null;
         }
@@ -94,16 +94,16 @@ public class AccessoryDropTarget extends AbstractDropTarget {
     }
 
     @Override
-    public Job makeDropJob(AbstractDragSource dragSource, EditorController editorController) {
+    public Job makeDropJob(final AbstractDragSource dragSource, final EditorController editorController) {
         assert acceptDragSource(dragSource);
         assert editorController != null;
         
-        final boolean shouldRefreshSceneGraph = true;
-        final BatchJob result = new BatchJob(editorController,
+        final var shouldRefreshSceneGraph = true;
+        final var result = new BatchJob(editorController,
                 shouldRefreshSceneGraph, dragSource.makeDropJobDescription());
         
-        final FXOMObject draggedObject = dragSource.getDraggedObjects().get(0);
-        final FXOMObject currentParent = draggedObject.getParentObject();
+        final var draggedObject = dragSource.getDraggedObjects().getFirst();
+        final var currentParent = draggedObject.getParentObject();
         
         // Two steps :
         //  - remove drag source object from its current parent (if any)
@@ -120,11 +120,11 @@ public class AccessoryDropTarget extends AbstractDropTarget {
                 && (draggedObject instanceof FXOMInstance)) {
             
             // We add a job which sets BorderPane.alignment=CENTER on draggedObject
-            final FXOMInstance draggedInstance
+            final var draggedInstance
                     = (FXOMInstance) draggedObject;
-            final PropertyName alignmentName
+            final var alignmentName
                     = new PropertyName("alignment", BorderPane.class); //NOI18N
-            final EnumerationPropertyMetadata alignmentMeta
+            final var alignmentMeta
                     = new EnumerationPropertyMetadata(alignmentName, Pos.class,
                     "UNUSED", true /* readWrite */, InspectorPath.UNUSED); //NOI18N
             final Job alignmentJob
@@ -148,21 +148,21 @@ public class AccessoryDropTarget extends AbstractDropTarget {
      */
     @Override
     public int hashCode() {
-        int hash = 3;
+        var hash = 3;
         hash = 97 * hash + Objects.hashCode(this.targetContainer);
         hash = 97 * hash + (this.accessory != null ? this.accessory.hashCode() : 0);
         return hash;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         }
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final AccessoryDropTarget other = (AccessoryDropTarget) obj;
+        final var other = (AccessoryDropTarget) obj;
         if (!Objects.equals(this.targetContainer, other.targetContainer)) {
             return false;
         }

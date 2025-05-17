@@ -55,18 +55,18 @@ class JavaTokenizer {
 
     private static final String unicodeHash = "\\u" + String.format("%04x", (int) '#');//NOI18N
 
-    public static String tokenize(String text) throws ParseException {
+    public static String tokenize(final String text) throws ParseException {
         if (text.contains(unicodeHash)) {
             throw new ParseException("Source file contains the sequence '" + unicodeHash + "'");//NOI18N
             // Why would we bother writing unicode when we can write #?
         }
 
-        final String noHashText = text.replace("#", unicodeHash);//NOI18N
-        final int len = noHashText.length();
-        final StringBuilder tokens = new StringBuilder();
+        final var noHashText = text.replace("#", unicodeHash);//NOI18N
+        final var len = noHashText.length();
+        final var tokens = new StringBuilder();
         int nexti;
-        for (int i = 0; i < len; i = nexti) {
-            char c = noHashText.charAt(i);
+        for (var i = 0; i < len; i = nexti) {
+            final var c = noHashText.charAt(i);
             switch (c) {
                 case '/'://NOI18N
                     nexti = scanSlash(noHashText, i);
@@ -75,7 +75,7 @@ class JavaTokenizer {
                 case '\''://NOI18N
                     try {
                         nexti = scanQuote(noHashText, i, c);
-                    } catch (Error e) {
+                    } catch (final Error e) {
                         System.err.println(tokens.toString());
                         throw e;
                     }
@@ -109,18 +109,18 @@ class JavaTokenizer {
         return tokens.toString();
     }
 
-    private static int scanSpace(String s, int i) {
-        int len = s.length();
+    private static int scanSpace(final String s, int i) {
+        final var len = s.length();
         while (i < len && Character.isWhitespace(s.charAt(i))) {
             i++;
         }
         return i;
     }
 
-    private static int scanNumber(String s, int i) {
-        int len = s.length();
+    private static int scanNumber(final String s, int i) {
+        final var len = s.length();
         while (i < len) {
-            char c = s.charAt(i);
+            final var c = s.charAt(i);
             if (c == 'e' || c == 'E') {//NOI18N
                 i++;  // skip possible sign
             }
@@ -133,28 +133,28 @@ class JavaTokenizer {
         return i;
     }
 
-    private static int scanIdentifier(String s, int i) {
-        int len = s.length();
+    private static int scanIdentifier(final String s, int i) {
+        final var len = s.length();
         while (i < len && Character.isJavaIdentifierPart(s.charAt(i))) {
             i++;
         }
         return i;
     }
 
-    private static int scanSlash(String s, int i) throws ParseException {
-        int len = s.length();
+    private static int scanSlash(final String s, final int i) throws ParseException {
+        final var len = s.length();
         if (i + 1 >= len) {
             return i + 1;
         }
         switch (s.charAt(i + 1)) {
             case '/'://NOI18N
-                int newline = s.indexOf('\n', i);//NOI18N
+                final var newline = s.indexOf('\n', i);//NOI18N
                 if (newline < 0) {
                     throw new ParseException("Unterminated // comment");//NOI18N
                 }
                 return newline + 1;
             case '*'://NOI18N
-                int starSlash = s.indexOf("*/", i + 2);//NOI18N
+                final var starSlash = s.indexOf("*/", i + 2);//NOI18N
                 if (starSlash < 0) {
                     throw new ParseException("Unterminated /* comment");//NOI18N
                 }
@@ -164,9 +164,9 @@ class JavaTokenizer {
         }
     }
 
-    private static int scanQuote(String s, int i, char quote) throws ParseException {
+    private static int scanQuote(final String s, int i, final char quote) throws ParseException {
         assert s.charAt(i) == quote;
-        int len = s.length();
+        final var len = s.length();
         while (++i < len && s.charAt(i) != quote) {
             if (s.charAt(i) == '\\') {//NOI18N
                 i++;
@@ -181,7 +181,7 @@ class JavaTokenizer {
 
     @SuppressWarnings("serial")//NOI18N
     public static class ParseException extends Exception {
-        public ParseException(String msg) {
+        public ParseException(final String msg) {
             super(msg);
         }
     }

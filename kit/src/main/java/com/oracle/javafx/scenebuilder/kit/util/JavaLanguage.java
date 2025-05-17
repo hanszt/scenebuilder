@@ -52,7 +52,7 @@ public class JavaLanguage {
      * @param value string to test (can be null or empty)
      * @return true if value is a valid java identifier.
      */
-    public static boolean isIdentifier(String value) {
+    public static boolean isIdentifier(final String value) {
         /*
          * See Java JavaLanguage Specification, section 3.8: Identifiers
          * https://docs.oracle.com/javase/specs/jls/se7/html/jls-3.html#jls-3.8
@@ -70,15 +70,15 @@ public class JavaLanguage {
      * @param value string to test (can be null or empty)
      * @return  true if value is a valid class name
      */
-    public static boolean isClassName(String value) {
+    public static boolean isClassName(final String value) {
         boolean result;
         
         if (value == null) {
             result = false;
         } else {
             result = true;
-            for (String item : value.split("\\.")) { //NOI18N
-                if (isIdentifier(item) == false) {
+            for (final var item : value.split("\\.")) { //NOI18N
+                if (!isIdentifier(item)) {
                     result = false;
                     break;
                 }
@@ -92,13 +92,13 @@ public class JavaLanguage {
      * Private
      */
     
-    private static boolean isIdentifierChars(String value) {
+    private static boolean isIdentifierChars(final String value) {
         if (value == null || value.isEmpty()
                 || !Character.isJavaIdentifierStart(value.codePointAt(0))) {
             return false;
         }
-        for (int i = 0; i < value.length();) {
-            int codePoint = value.codePointAt(i);
+        for (var i = 0; i < value.length();) {
+            final var codePoint = value.codePointAt(i);
             if (!Character.isJavaIdentifierPart(codePoint)) {
                 return false;
             }
@@ -108,7 +108,7 @@ public class JavaLanguage {
     }
     
     private static Set<String> keywords;
-    private static synchronized boolean isKeyword(String value) {
+    private static synchronized boolean isKeyword(final String value) {
         if (keywords == null) {
             keywords = new HashSet<>();
             Collections.addAll(
@@ -127,11 +127,11 @@ public class JavaLanguage {
         return keywords.contains(value);
     }
     
-    private static boolean isBooleanLiteral(String value) {
+    private static boolean isBooleanLiteral(final String value) {
         return value.equals("true") || value.equals("false"); //NOI18N
     }
     
-    private static boolean isNullLiteral(String value) {
+    private static boolean isNullLiteral(final String value) {
         return value.equals("null"); //NOI18N
     }
 }

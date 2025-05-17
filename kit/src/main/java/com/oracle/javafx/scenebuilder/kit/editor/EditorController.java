@@ -69,7 +69,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.messagelog.MessageLog;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.util.dialog.ErrorDialog;
 import com.oracle.javafx.scenebuilder.kit.editor.util.InlineEditController;
 import com.oracle.javafx.scenebuilder.kit.editor.report.ErrorReport;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.AbstractSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.GridSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
@@ -85,7 +84,6 @@ import com.oracle.javafx.scenebuilder.kit.library.BuiltinLibrary;
 import com.oracle.javafx.scenebuilder.kit.library.Library;
 import com.oracle.javafx.scenebuilder.kit.library.LibraryItem;
 import com.oracle.javafx.scenebuilder.kit.metadata.Metadata;
-import com.oracle.javafx.scenebuilder.kit.metadata.property.PropertyMetadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.property.ValuePropertyMetadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.ClipboardEncoder;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
@@ -98,7 +96,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -119,7 +116,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableListValue;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
-import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.Control;
 import javafx.scene.effect.Effect;
@@ -306,7 +302,7 @@ public class EditorController {
      *
      * @param defaultRootContainerWidth the new root container's default width.
      */
-    public void setDefaultRootContainerWidth(double defaultRootContainerWidth) {
+    public void setDefaultRootContainerWidth(final double defaultRootContainerWidth) {
         this.defaultRootContainerWidth = defaultRootContainerWidth;
     }
 
@@ -324,7 +320,7 @@ public class EditorController {
      * 
      * @param defaultRootContainerHeight the new root container's default height.
      */
-    public void setDefaultRootContainerHeight(double defaultRootContainerHeight) {
+    public void setDefaultRootContainerHeight(final double defaultRootContainerHeight) {
         this.defaultRootContainerHeight = defaultRootContainerHeight;
     }
 
@@ -335,7 +331,7 @@ public class EditorController {
      * @param fxmlText null or the fxml text to be edited
      * @throws IOException if fxml text cannot be parsed and loaded correctly.
      */
-    public void setFxmlText(String fxmlText, boolean checkGluonControls) throws IOException {
+    public void setFxmlText(final String fxmlText, final boolean checkGluonControls) throws IOException {
         setFxmlTextAndLocation(fxmlText, getFxmlLocation(), checkGluonControls);
     }
     
@@ -345,14 +341,14 @@ public class EditorController {
      * @return null or the fxml content being edited by this editor.
      * @param wildcardImports If the FXML should have wildcards in its imports.
      */
-    public String getFxmlText(boolean wildcardImports) {
+    public String getFxmlText(final boolean wildcardImports) {
         final String result;
         
-        final FXOMDocument fxomDocument = getFxomDocument();
+        final var fxomDocument = getFxomDocument();
         if (fxomDocument == null) {
             result = null;
         } else {
-            final boolean sampleDataEnabled = fxomDocument.isSampleDataEnabled();
+            final var sampleDataEnabled = fxomDocument.isSampleDataEnabled();
             if (sampleDataEnabled) {
                 fxomDocument.setSampleDataEnabled(false);
             }
@@ -381,7 +377,7 @@ public class EditorController {
             // If the callback returns true, then it should have call
             // textEditingSessionDidEnd() 
             // => requestTextEditingSessionEnd should be null
-            assert (requestTextEditingSessionEnd == null) || (result == false);
+            assert (requestTextEditingSessionEnd == null) || (!result);
         }
         
         return result;
@@ -397,7 +393,7 @@ public class EditorController {
      * 
      * @param requestSessionEnd Callback that should end the text editing session or return false  
      */
-    public void textEditingSessionDidBegin(Callback<Void, Boolean> requestSessionEnd) {
+    public void textEditingSessionDidBegin(final Callback<Void, Boolean> requestSessionEnd) {
         assert requestTextEditingSessionEnd == null;
         requestTextEditingSessionEnd = requestSessionEnd;
     }
@@ -433,14 +429,14 @@ public class EditorController {
      * 
      * @param fxmlLocation null or the location of the fxml being edited.
      */
-    public void setFxmlLocation(URL fxmlLocation) {
+    public void setFxmlLocation(final URL fxmlLocation) {
         fxmlLocationProperty.setValue(fxmlLocation);
         if (getFxomDocument() != null) {
             getFxomDocument().setLocation(fxmlLocation);
             clearUndoRedo(); // Because FXOMDocument.setLocation() mutates the document
         }
         if (fxmlLocation != null) {
-            final File newInitialDirectory = new File(fxmlLocation.getPath());
+            final var newInitialDirectory = new File(fxmlLocation.getPath());
             EditorController.updateNextInitialDirectory(newInitialDirectory);
         }
     }
@@ -461,7 +457,7 @@ public class EditorController {
      * 
      * @param library the library to be used by this editor (never null).
      */
-    public void setLibrary(Library library) {
+    public void setLibrary(final Library library) {
         assert library != null;
         libraryProperty.getValue().classLoaderProperty().removeListener(libraryClassLoaderListener);
         libraryProperty.setValue(library);
@@ -494,7 +490,7 @@ public class EditorController {
      * 
      * @param glossary the glossary to be used by this editor (never null).
      */
-    public void setLibrary(Glossary glossary) {
+    public void setLibrary(final Glossary glossary) {
         assert glossary != null;
         glossaryProperty.setValue(glossary);
     }
@@ -524,7 +520,7 @@ public class EditorController {
      * 
      * @param resources null of the resource bundle to be used by this editor.
      */
-    public void setResources(ResourceBundle resources) {
+    public void setResources(final ResourceBundle resources) {
         resourcesProperty.setValue(resources);
         resourcesDidChange();
     }
@@ -544,7 +540,7 @@ public class EditorController {
 
         @Override
         protected void invalidated() {
-            FXOMDocument fxomDocument = getFxomDocument();
+            final var fxomDocument = getFxomDocument();
             if (fxomDocument != null) {
                 fxomDocument.refreshSceneGraph();
             }
@@ -567,7 +563,7 @@ public class EditorController {
      * 
      * @param theme the theme to be used by this editor
      */
-    public void setTheme(Theme theme) {
+    public void setTheme(final Theme theme) {
         themeProperty.setValue(theme);
     }
     
@@ -585,7 +581,7 @@ public class EditorController {
      * places (content, preview, ...)
      */
     public void refreshTheme() {
-        EditorPlatform.Theme currentTheme = getTheme();
+        final var currentTheme = getTheme();
         setTheme(null);
         setTheme(currentTheme);
     }
@@ -602,7 +598,7 @@ public class EditorController {
      * 
      * @param styleSheets the list of scene style sheet to be used by this editor
      */
-    public void setSceneStyleSheets(ObservableList<File> styleSheets) {
+    public void setSceneStyleSheets(final ObservableList<File> styleSheets) {
         sceneStyleSheetProperty.setValue(styleSheets);
     }
     
@@ -629,7 +625,7 @@ public class EditorController {
      * 
      * @param pickModeEnabled true if 'pick mode' should be enabled.
      */
-    public void setPickModeEnabled(boolean pickModeEnabled) {
+    public void setPickModeEnabled(final boolean pickModeEnabled) {
         pickModeEnabledProperty.setValue(pickModeEnabled);
     }
     
@@ -658,7 +654,7 @@ public class EditorController {
      * 
      * @param sampleDataEnabled true if sample data should be displayed
      */
-    public void setSampleDataEnabled(boolean sampleDataEnabled) {
+    public void setSampleDataEnabled(final boolean sampleDataEnabled) {
         setPickModeEnabled(false);
         sampleDataEnabledProperty.setValue(sampleDataEnabled);
         if (getFxomDocument() != null) {
@@ -694,7 +690,7 @@ public class EditorController {
      * @param fxmlLocation null or the location of the fxml text being edited
      * @throws IOException if fxml text cannot be parsed and loaded correctly.
      */
-    public void setFxmlTextAndLocation(String fxmlText, URL fxmlLocation) throws IOException {
+    public void setFxmlTextAndLocation(final String fxmlText, final URL fxmlLocation) throws IOException {
         setFxmlTextAndLocation(fxmlText, fxmlLocation, false);
     }
 
@@ -709,7 +705,7 @@ public class EditorController {
      *                           Gluon controls and if so, the correct theme is set
      * @throws IOException if fxml text cannot be parsed and loaded correctly.
      */
-    public void setFxmlTextAndLocation(String fxmlText, URL fxmlLocation, boolean checkTheme) throws IOException {
+    public void setFxmlTextAndLocation(final String fxmlText, final URL fxmlLocation, final boolean checkTheme) throws IOException {
         updateFxomDocument(fxmlText, fxmlLocation, getResources(), checkTheme);
         this.fxmlLocationProperty.setValue(fxmlLocation);
     }
@@ -725,8 +721,8 @@ public class EditorController {
      *
      * @throws IOException if fxml text cannot be parsed and loaded correctly.
      */
-    public void setFxmlTextLocationAndResources(String fxmlText, URL fxmlLocation,
-                                                ResourceBundle resources) throws IOException {
+    public void setFxmlTextLocationAndResources(final String fxmlText, final URL fxmlLocation,
+                                                final ResourceBundle resources) throws IOException {
         setFxmlTextLocationAndResources(fxmlText, fxmlLocation, resources, false);
     }
 
@@ -742,8 +738,8 @@ public class EditorController {
      *                           Gluon controls and if so, the correct theme is set
      * @throws IOException if fxml text cannot be parsed and loaded correctly.
      */
-    public void setFxmlTextLocationAndResources(String fxmlText, URL fxmlLocation,
-            ResourceBundle resources, boolean checkTheme) throws IOException {
+    public void setFxmlTextLocationAndResources(final String fxmlText, final URL fxmlLocation,
+                                                final ResourceBundle resources, final boolean checkTheme) throws IOException {
         updateFxomDocument(fxmlText, fxmlLocation, resources, checkTheme);
         this.fxmlLocationProperty.setValue(fxmlLocation);
     }
@@ -789,7 +785,7 @@ public class EditorController {
      * 
      * @param stylesheet the tool stylesheet associated to this editor controller (never null)
      */
-    public void setToolStylesheet(String stylesheet) {
+    public void setToolStylesheet(final String stylesheet) {
         assert stylesheet != null;
         toolStylesheetProperty.setValue(stylesheet);
     }
@@ -858,12 +854,12 @@ public class EditorController {
     public List<FXOMObject> getSelectedObjects() {
         // Collects all the selected objects
         final List<FXOMObject> selectedObjects = new ArrayList<>();
-        final Selection selection = getSelection();
+        final var selection = getSelection();
         if (selection.getGroup() instanceof ObjectSelectionGroup) {
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) selection.getGroup();
+            final var osg = (ObjectSelectionGroup) selection.getGroup();
             selectedObjects.addAll(osg.getItems());
         } else if (selection.getGroup() instanceof GridSelectionGroup) {
-            final GridSelectionGroup gsg = (GridSelectionGroup) selection.getGroup();
+            final var gsg = (GridSelectionGroup) selection.getGroup();
             selectedObjects.addAll(gsg.collectSelectedObjects());
         } else {
             assert false;
@@ -950,7 +946,7 @@ public class EditorController {
      */
     public void undo() {
         jobManager.undo();
-        assert getFxomDocument().isUpdateOnGoing() == false;
+        assert !getFxomDocument().isUpdateOnGoing();
     }
     
     /**
@@ -977,7 +973,7 @@ public class EditorController {
      */
     public void redo() {
         jobManager.redo();
-        assert getFxomDocument().isUpdateOnGoing() == false;
+        assert !getFxomDocument().isUpdateOnGoing();
     }
     
     /**
@@ -992,7 +988,7 @@ public class EditorController {
      * 
      * @param editAction the edit action to be performed.
      */
-    public void performEditAction(EditAction editAction) {
+    public void performEditAction(final EditAction editAction) {
         switch(editAction) {
             case ADD_CONTEXT_MENU: {
                 performAddContextMenu();
@@ -1003,158 +999,158 @@ public class EditorController {
                 break;
             }
             case ADD_COLUMN_BEFORE: {
-                final AddColumnJob job = new AddColumnJob(this, Position.BEFORE);
+                final var job = new AddColumnJob(this, Position.BEFORE);
                 jobManager.push(job);
                 break;
             }
             case ADD_COLUMN_AFTER: {
-                final AddColumnJob job = new AddColumnJob(this, Position.AFTER);
+                final var job = new AddColumnJob(this, Position.AFTER);
                 jobManager.push(job);
                 break;
             }
             case ADD_ROW_ABOVE: {
-                final AddRowJob job = new AddRowJob(this, Position.ABOVE);
+                final var job = new AddRowJob(this, Position.ABOVE);
                 jobManager.push(job);
                 break;
             }
             case ADD_ROW_BELOW: {
-                final AddRowJob job = new AddRowJob(this, Position.BELOW);
+                final var job = new AddRowJob(this, Position.BELOW);
                 jobManager.push(job);
                 break;
             }
             case BRING_FORWARD: {
-                final BringForwardJob job = new BringForwardJob(this);
+                final var job = new BringForwardJob(this);
                 jobManager.push(job);
                 break;
             }
             case BRING_TO_FRONT: {
-                final BringToFrontJob job = new BringToFrontJob(this);
+                final var job = new BringToFrontJob(this);
                 jobManager.push(job);
                 break;
             }
             case CUT: {
-                final CutSelectionJob job = new CutSelectionJob(this);
+                final var job = new CutSelectionJob(this);
                 jobManager.push(job);
                 break;
             }
             case DECREASE_COLUMN_SPAN: {
-                final SpanJob job = new SpanJob(this, EditAction.DECREASE_COLUMN_SPAN);
+                final var job = new SpanJob(this, EditAction.DECREASE_COLUMN_SPAN);
                 jobManager.push(job);
                 break;
             }
             case DECREASE_ROW_SPAN: {
-                final SpanJob job = new SpanJob(this, EditAction.DECREASE_ROW_SPAN);
+                final var job = new SpanJob(this, EditAction.DECREASE_ROW_SPAN);
                 jobManager.push(job);
                 break;
             }
             case DELETE: {
-                final DeleteSelectionJob job = new DeleteSelectionJob(this);
+                final var job = new DeleteSelectionJob(this);
                 jobManager.push(job);
                 break;
             }
             case DUPLICATE: {
-                final DuplicateSelectionJob job = new DuplicateSelectionJob(this);
+                final var job = new DuplicateSelectionJob(this);
                 jobManager.push(job);
                 break;
             }
             case FIT_TO_PARENT: {
-                final FitToParentSelectionJob job
+                final var job
                         = new FitToParentSelectionJob(this);
                 jobManager.push(job);
                 break;
             }
             case INCREASE_COLUMN_SPAN: {
-                final SpanJob job = new SpanJob(this, EditAction.INCREASE_COLUMN_SPAN);
+                final var job = new SpanJob(this, EditAction.INCREASE_COLUMN_SPAN);
                 jobManager.push(job);
                 break;
             }
             case INCREASE_ROW_SPAN: {
-                final SpanJob job = new SpanJob(this, EditAction.INCREASE_ROW_SPAN);
+                final var job = new SpanJob(this, EditAction.INCREASE_ROW_SPAN);
                 jobManager.push(job);
                 break;
             }
             case MOVE_COLUMN_BEFORE: {
-                final MoveColumnJob job = new MoveColumnJob(this, Position.BEFORE);
+                final var job = new MoveColumnJob(this, Position.BEFORE);
                 jobManager.push(job);
                 break;
             }
             case MOVE_COLUMN_AFTER: {
-                final MoveColumnJob job = new MoveColumnJob(this, Position.AFTER);
+                final var job = new MoveColumnJob(this, Position.AFTER);
                 jobManager.push(job);
                 break;
             }
             case MOVE_ROW_ABOVE: {
-                final MoveRowJob job = new MoveRowJob(this, Position.ABOVE);
+                final var job = new MoveRowJob(this, Position.ABOVE);
                 jobManager.push(job);
                 break;
             }
             case MOVE_ROW_BELOW: {
-                final MoveRowJob job = new MoveRowJob(this, Position.BELOW);
+                final var job = new MoveRowJob(this, Position.BELOW);
                 jobManager.push(job);
                 break;
             }
             case PASTE: {
-                final PasteJob job = new PasteJob(this);
+                final var job = new PasteJob(this);
                 jobManager.push(job);
                 break;
             }
             case PASTE_INTO: {
-                final PasteIntoJob job = new PasteIntoJob(this);
+                final var job = new PasteIntoJob(this);
                 jobManager.push(job);
                 break;
             }
             case SEND_BACKWARD: {
-                final SendBackwardJob job = new SendBackwardJob(this);
+                final var job = new SendBackwardJob(this);
                 jobManager.push(job);
                 break;
             }
             case SEND_TO_BACK: {
-                final SendToBackJob job = new SendToBackJob(this);
+                final var job = new SendToBackJob(this);
                 jobManager.push(job);
                 break;
             }
             case SET_SIZE_335x600: {
-                final UsePredefinedSizeJob job = new UsePredefinedSizeJob(this, Size.SIZE_335x600);
+                final var job = new UsePredefinedSizeJob(this, Size.SIZE_335x600);
                 jobManager.push(job);
                 break;
             }
             case SET_SIZE_900x600: {
-                final UsePredefinedSizeJob job = new UsePredefinedSizeJob(this, Size.SIZE_900x600);
+                final var job = new UsePredefinedSizeJob(this, Size.SIZE_900x600);
                 jobManager.push(job);
                 break;
             }
             case SET_SIZE_320x240: {
-                final UsePredefinedSizeJob job = new UsePredefinedSizeJob(this, Size.SIZE_320x240);
+                final var job = new UsePredefinedSizeJob(this, Size.SIZE_320x240);
                 jobManager.push(job);
                 break;
             }
             case SET_SIZE_640x480: {
-                final UsePredefinedSizeJob job = new UsePredefinedSizeJob(this, Size.SIZE_640x480);
+                final var job = new UsePredefinedSizeJob(this, Size.SIZE_640x480);
                 jobManager.push(job);
                 break;
             }
             case SET_SIZE_1280x800: {
-                final UsePredefinedSizeJob job = new UsePredefinedSizeJob(this, Size.SIZE_1280x800);
+                final var job = new UsePredefinedSizeJob(this, Size.SIZE_1280x800);
                 jobManager.push(job);
                 break;
             }
             case SET_SIZE_1920x1080: {
-                final UsePredefinedSizeJob job = new UsePredefinedSizeJob(this, Size.SIZE_1920x1080);
+                final var job = new UsePredefinedSizeJob(this, Size.SIZE_1920x1080);
                 jobManager.push(job);
                 break;
             }
             case TRIM: {
-                final TrimSelectionJob job = new TrimSelectionJob(this);
+                final var job = new TrimSelectionJob(this);
                 jobManager.push(job);
                 break;
             }
             case UNWRAP: {
-                final UnwrapJob job = new UnwrapJob(this);
+                final var job = new UnwrapJob(this);
                 jobManager.push(job);
                 break;
             }
             case USE_COMPUTED_SIZES: {
-                final UseComputedSizesSelectionJob job
+                final var job
                         = new UseComputedSizesSelectionJob(this);
                 jobManager.push(job);
                 break;
@@ -1242,7 +1238,7 @@ public class EditorController {
             default:
                 throw new UnsupportedOperationException("Not yet implemented"); //NOI18N
         }
-        assert getFxomDocument().isUpdateOnGoing() == false;
+        assert !getFxomDocument().isUpdateOnGoing();
     }
     
     /**
@@ -1251,7 +1247,7 @@ public class EditorController {
      * @param editAction the edit action to be tested.
      * @return true if the specified edit action is permitted.
      */
-    public boolean canPerformEditAction(EditAction editAction) {
+    public boolean canPerformEditAction(final EditAction editAction) {
         final boolean result;
         switch(editAction) {
             case ADD_CONTEXT_MENU: {
@@ -1263,158 +1259,158 @@ public class EditorController {
                 break;
             }
             case ADD_COLUMN_BEFORE: {
-                final AddColumnJob job = new AddColumnJob(this, Position.BEFORE);
+                final var job = new AddColumnJob(this, Position.BEFORE);
                 result = job.isExecutable();
                 break;
             }
             case ADD_COLUMN_AFTER: {
-                final AddColumnJob job = new AddColumnJob(this, Position.AFTER);
+                final var job = new AddColumnJob(this, Position.AFTER);
                 result = job.isExecutable();
                 break;
             }
             case ADD_ROW_ABOVE: {
-                final AddRowJob job = new AddRowJob(this, Position.ABOVE);
+                final var job = new AddRowJob(this, Position.ABOVE);
                 result = job.isExecutable();
                 break;
             }
             case ADD_ROW_BELOW: {
-                final AddRowJob job = new AddRowJob(this, Position.BELOW);
+                final var job = new AddRowJob(this, Position.BELOW);
                 result = job.isExecutable();
                 break;
             }
             case BRING_FORWARD: {
-                final BringForwardJob job = new BringForwardJob(this);
+                final var job = new BringForwardJob(this);
                 result = job.isExecutable();
                 break;
             }
             case BRING_TO_FRONT: {
-                final BringToFrontJob job = new BringToFrontJob(this);
+                final var job = new BringToFrontJob(this);
                 result = job.isExecutable();
                 break;
             }
             case CUT: {
-                final CutSelectionJob job = new CutSelectionJob(this);
+                final var job = new CutSelectionJob(this);
                 result = job.isExecutable();
                 break;
             }
             case DECREASE_COLUMN_SPAN: {
-                final SpanJob job = new SpanJob(this, EditAction.DECREASE_COLUMN_SPAN);
+                final var job = new SpanJob(this, EditAction.DECREASE_COLUMN_SPAN);
                 result = job.isExecutable();
                 break;
             }
             case DECREASE_ROW_SPAN: {
-                final SpanJob job = new SpanJob(this, EditAction.DECREASE_ROW_SPAN);
+                final var job = new SpanJob(this, EditAction.DECREASE_ROW_SPAN);
                 result = job.isExecutable();
                 break;
             }
             case DELETE: {
-                final DeleteSelectionJob job = new DeleteSelectionJob(this);
+                final var job = new DeleteSelectionJob(this);
                 result = job.isExecutable();
                 break;
             }
             case DUPLICATE: {
-                final DuplicateSelectionJob job = new DuplicateSelectionJob(this);
+                final var job = new DuplicateSelectionJob(this);
                 result = job.isExecutable();
                 break;
             }
             case FIT_TO_PARENT: {
-                final FitToParentSelectionJob job
+                final var job
                         = new FitToParentSelectionJob(this);
                 result = job.isExecutable();
                 break;
             }
             case INCREASE_COLUMN_SPAN: {
-                final SpanJob job = new SpanJob(this, EditAction.INCREASE_COLUMN_SPAN);
+                final var job = new SpanJob(this, EditAction.INCREASE_COLUMN_SPAN);
                 result = job.isExecutable();
                 break;
             }
             case INCREASE_ROW_SPAN: {
-                final SpanJob job = new SpanJob(this, EditAction.INCREASE_ROW_SPAN);
+                final var job = new SpanJob(this, EditAction.INCREASE_ROW_SPAN);
                 result = job.isExecutable();
                 break;
             }
             case MOVE_COLUMN_BEFORE: {
-                final MoveColumnJob job = new MoveColumnJob(this, Position.BEFORE);
+                final var job = new MoveColumnJob(this, Position.BEFORE);
                 result = job.isExecutable();
                 break;
             }
             case MOVE_COLUMN_AFTER: {
-                final MoveColumnJob job = new MoveColumnJob(this, Position.AFTER);
+                final var job = new MoveColumnJob(this, Position.AFTER);
                 result = job.isExecutable();
                 break;
             }
             case MOVE_ROW_ABOVE: {
-                final MoveRowJob job = new MoveRowJob(this, Position.ABOVE);
+                final var job = new MoveRowJob(this, Position.ABOVE);
                 result = job.isExecutable();
                 break;
             }
             case MOVE_ROW_BELOW: {
-                final MoveRowJob job = new MoveRowJob(this, Position.BELOW);
+                final var job = new MoveRowJob(this, Position.BELOW);
                 result = job.isExecutable();
                 break;
             }
             case PASTE: {
-                final PasteJob job = new PasteJob(this);
+                final var job = new PasteJob(this);
                 result = job.isExecutable();
                 break;
             }
             case PASTE_INTO: {
-                final PasteIntoJob job = new PasteIntoJob(this);
+                final var job = new PasteIntoJob(this);
                 result = job.isExecutable();
                 break;
             }
             case SEND_BACKWARD: {
-                final SendBackwardJob job = new SendBackwardJob(this);
+                final var job = new SendBackwardJob(this);
                 result = job.isExecutable();
                 break;
             }
             case SEND_TO_BACK: {
-                final SendToBackJob job = new SendToBackJob(this);
+                final var job = new SendToBackJob(this);
                 result = job.isExecutable();
                 break;
             }
             case SET_SIZE_335x600: {
-                final UsePredefinedSizeJob job = new UsePredefinedSizeJob(this, Size.SIZE_335x600);
+                final var job = new UsePredefinedSizeJob(this, Size.SIZE_335x600);
                 result = job.isExecutable();
                 break;
             }
             case SET_SIZE_900x600: {
-                final UsePredefinedSizeJob job = new UsePredefinedSizeJob(this, Size.SIZE_900x600);
+                final var job = new UsePredefinedSizeJob(this, Size.SIZE_900x600);
                 result = job.isExecutable();
                 break;
             }
             case SET_SIZE_320x240: {
-                final UsePredefinedSizeJob job = new UsePredefinedSizeJob(this, Size.SIZE_320x240);
+                final var job = new UsePredefinedSizeJob(this, Size.SIZE_320x240);
                 result = job.isExecutable();
                 break;
             }
             case SET_SIZE_640x480: {
-                final UsePredefinedSizeJob job = new UsePredefinedSizeJob(this, Size.SIZE_640x480);
+                final var job = new UsePredefinedSizeJob(this, Size.SIZE_640x480);
                 result = job.isExecutable();
                 break;
             }
             case SET_SIZE_1280x800: {
-                final UsePredefinedSizeJob job = new UsePredefinedSizeJob(this, Size.SIZE_1280x800);
+                final var job = new UsePredefinedSizeJob(this, Size.SIZE_1280x800);
                 result = job.isExecutable();
                 break;
             }
             case SET_SIZE_1920x1080: {
-                final UsePredefinedSizeJob job = new UsePredefinedSizeJob(this, Size.SIZE_1920x1080);
+                final var job = new UsePredefinedSizeJob(this, Size.SIZE_1920x1080);
                 result = job.isExecutable();
                 break;
             }
             case TRIM: {
-                final TrimSelectionJob job = new TrimSelectionJob(this);
+                final var job = new TrimSelectionJob(this);
                 result = job.isExecutable();
                 break;
             }
             case UNWRAP: {
-                final UnwrapJob job = new UnwrapJob(this);
+                final var job = new UnwrapJob(this);
                 result = job.isExecutable();
                 break;
             }
             case USE_COMPUTED_SIZES: {
-                final UseComputedSizesSelectionJob job 
+                final var job
                         = new UseComputedSizesSelectionJob(this);
                 result = job.isExecutable();
                 break;
@@ -1512,7 +1508,7 @@ public class EditorController {
      * 
      * @param controlAction the control action to be performed.
      */
-    public void performControlAction(ControlAction controlAction) {
+    public void performControlAction(final ControlAction controlAction) {
         switch(controlAction) {
             case COPY: {
                 performCopy();
@@ -1561,7 +1557,7 @@ public class EditorController {
      * @param controlAction the control action to be tested.
      * @return true if the specified control action is permitted.
      */
-    public boolean canPerformControlAction(ControlAction controlAction) {
+    public boolean canPerformControlAction(final ControlAction controlAction) {
         final boolean result;
 
         // If there is no document loaded, we cannot perform control actions
@@ -1618,7 +1614,7 @@ public class EditorController {
      * 
      * @param fxmlFile the FXML file to be imported
      */
-    public void performImportFxml(File fxmlFile) {
+    public void performImportFxml(final File fxmlFile) {
         performImport(fxmlFile);
     }
 
@@ -1631,12 +1627,12 @@ public class EditorController {
      * 
      * @param mediaFile the media file to be imported
      */
-    public void performImportMedia(File mediaFile) {
+    public void performImportMedia(final File mediaFile) {
         performImport(mediaFile);
     }
     
-    private void performImport(File file) {
-        final ImportFileJob job = new ImportFileJob(file, this);
+    private void performImport(final File file) {
+        final var job = new ImportFileJob(file, this);
         if (job.isExecutable()) {
             jobManager.push(job);
         } else {
@@ -1644,7 +1640,7 @@ public class EditorController {
             if (job.getTargetObject() == null) {
                 target = null;
             } else {
-                final Object sceneGraphTarget
+                final var sceneGraphTarget
                         = job.getTargetObject().getSceneGraphObject();
                 if (sceneGraphTarget == null) {
                     target = null;
@@ -1671,8 +1667,8 @@ public class EditorController {
      *
      * @param fxmlFile the FXML file to be included
      */
-    public void performIncludeFxml(File fxmlFile) {
-        final IncludeFileJob job = new IncludeFileJob(fxmlFile, this);
+    public void performIncludeFxml(final File fxmlFile) {
+        final var job = new IncludeFileJob(fxmlFile, this);
         if (job.isExecutable()) {
             jobManager.push(job);
         } else {
@@ -1680,7 +1676,7 @@ public class EditorController {
             if (job.getTargetObject() == null) {
                 target = null;
             } else {
-                final Object sceneGraphTarget
+                final var sceneGraphTarget
                         = job.getTargetObject().getSceneGraphObject();
                 if (sceneGraphTarget == null) {
                     target = null;
@@ -1707,20 +1703,20 @@ public class EditorController {
      * 
      * @param libraryItem the library item describing the object to be inserted.
      */
-    public void performInsert(LibraryItem libraryItem) {
+    public void performInsert(final LibraryItem libraryItem) {
         final Job job;
         final FXOMObject target;
 
         assert canPerformInsert(libraryItem); // (1)
 
-        final FXOMDocument newItemDocument = libraryItem.instantiate();
+        final var newItemDocument = libraryItem.instantiate();
         assert newItemDocument != null; // Because (1)
-        final FXOMObject newObject = newItemDocument.getFxomRoot();
+        final var newObject = newItemDocument.getFxomRoot();
         assert newObject != null;
         newObject.moveToFxomDocument(getFxomDocument());
-        final FXOMObject rootObject = getFxomDocument().getFxomRoot();
+        final var rootObject = getFxomDocument().getFxomRoot();
         if (rootObject == null) { // Empty document
-            final String description
+            final var description
                     = I18N.getString("drop.job.insert.library.item", libraryItem.getName());
             job = new SetDocumentRootJob(newObject, true /* usePredefinedSize */, description, this);
 
@@ -1750,7 +1746,7 @@ public class EditorController {
      * @param libraryItem the library item describing the object to be inserted.
      * @return true if the 'insert' action is permitted.
      */
-    public boolean canPerformInsert(LibraryItem libraryItem) {
+    public boolean canPerformInsert(final LibraryItem libraryItem) {
         final FXOMObject targetCandidate;
         final boolean result;
 
@@ -1759,17 +1755,17 @@ public class EditorController {
         } else {
             assert (libraryItem.getLibrary().getClassLoader() == null)
                     || (libraryItem.getLibrary().getClassLoader() == getFxomDocument().getClassLoader());
-            final FXOMDocument newItemDocument = libraryItem.instantiate();
+            final var newItemDocument = libraryItem.instantiate();
             if (newItemDocument == null) {
                 // For some reason, library is unable to instantiate this item
                 result = false;
             } else {
-                final FXOMObject newItemRoot = newItemDocument.getFxomRoot();
+                final var newItemRoot = newItemDocument.getFxomRoot();
                 newItemRoot.moveToFxomDocument(getFxomDocument());
                 assert newItemDocument.getFxomRoot() == null;
-                final FXOMObject rootObject = getFxomDocument().getFxomRoot();
+                final var rootObject = getFxomDocument().getFxomRoot();
                 if (rootObject == null) { // Empty document
-                    final SetDocumentRootJob job = new SetDocumentRootJob(
+                    final var job = new SetDocumentRootJob(
                             newItemRoot, true /* usePredefinedSize */, "unused", this); //NOI18N
                     result = job.isExecutable();
                 } else {
@@ -1781,7 +1777,7 @@ public class EditorController {
                         // It might be null if selection holds some non FXOMObject entries
                         targetCandidate = selection.getAncestor();
                     }
-                    final InsertAsSubComponentJob job = new InsertAsSubComponentJob(
+                    final var job = new InsertAsSubComponentJob(
                             newItemRoot, targetCandidate, -1, this);
                     result = job.isExecutable();
                 }
@@ -1798,9 +1794,9 @@ public class EditorController {
      * 
      * @param wrappingClass the wrapping class
      */
-    public void performWrap(Class<?> wrappingClass) {
+    public void performWrap(final Class<?> wrappingClass) {
         assert canPerformWrap(wrappingClass);
-        final AbstractWrapInJob job = AbstractWrapInJob.getWrapInJob(this, wrappingClass);
+        final var job = AbstractWrapInJob.getWrapInJob(this, wrappingClass);
         jobManager.push(job);
     }
     
@@ -1810,11 +1806,11 @@ public class EditorController {
      * @param wrappingClass the wrapping class.
      * @return true if the 'wrap' action is permitted.
      */
-    public boolean canPerformWrap(Class<?> wrappingClass) {
-        if (getClassesSupportingWrapping().contains(wrappingClass) == false) {
+    public boolean canPerformWrap(final Class<?> wrappingClass) {
+        if (!getClassesSupportingWrapping().contains(wrappingClass)) {
             return false;
         }
-        final AbstractWrapInJob job = AbstractWrapInJob.getWrapInJob(this, wrappingClass);
+        final var job = AbstractWrapInJob.getWrapInJob(this, wrappingClass);
         return job.isExecutable();
     }
 
@@ -1861,9 +1857,9 @@ public class EditorController {
     private void performCopy() {
         assert canPerformCopy(); // (1)
         assert selection.getGroup() instanceof ObjectSelectionGroup; // Because of (1)
-        final ObjectSelectionGroup osg = (ObjectSelectionGroup) selection.getGroup();
+        final var osg = (ObjectSelectionGroup) selection.getGroup();
         
-        final ClipboardEncoder encoder = new ClipboardEncoder(osg.getSortedItems());
+        final var encoder = new ClipboardEncoder(osg.getSortedItems());
         assert encoder.isEncodable();
         Clipboard.getSystemClipboard().setContent(encoder.makeEncoding());
     }
@@ -1883,24 +1879,24 @@ public class EditorController {
      */
     private void performSelectAll() {
         assert canPerformSelectAll(); // (1)
-        final FXOMObject rootObject = getFxomDocument().getFxomRoot();
+        final var rootObject = getFxomDocument().getFxomRoot();
         if (selection.isEmpty()) { // (1)
             // If the current selection is empty, we select the root object
             selection.select(rootObject);
         } else if (selection.getGroup() instanceof ObjectSelectionGroup) {
             // Otherwise, select all sub components of the common ancestor ??
-            final FXOMObject ancestor = selection.getAncestor();
+            final var ancestor = selection.getAncestor();
             assert ancestor != null; // Because of (1)
-            final DesignHierarchyMask mask = new DesignHierarchyMask(ancestor);
+            final var mask = new DesignHierarchyMask(ancestor);
             final Set<FXOMObject> selectableObjects = new HashSet<>();
             // BorderPane special case : use accessories
             if (mask.getFxomObject().getSceneGraphObject() instanceof BorderPane) {
-                final FXOMObject top = mask.getAccessory(Accessory.TOP);
-                final FXOMObject left = mask.getAccessory(Accessory.LEFT);
-                final FXOMObject center = mask.getAccessory(Accessory.CENTER);
-                final FXOMObject right = mask.getAccessory(Accessory.RIGHT);
-                final FXOMObject bottom = mask.getAccessory(Accessory.BOTTOM);
-                for (FXOMObject accessoryObject : new FXOMObject[]{
+                final var top = mask.getAccessory(Accessory.TOP);
+                final var left = mask.getAccessory(Accessory.LEFT);
+                final var center = mask.getAccessory(Accessory.CENTER);
+                final var right = mask.getAccessory(Accessory.RIGHT);
+                final var bottom = mask.getAccessory(Accessory.BOTTOM);
+                for (final var accessoryObject : new FXOMObject[]{
                     top, left, center, right, bottom}) {
                     if (accessoryObject != null) {
                         selectableObjects.add(accessoryObject);
@@ -1913,11 +1909,11 @@ public class EditorController {
             selection.select(selectableObjects);
         } else if (selection.getGroup() instanceof GridSelectionGroup) {
             // Select ALL rows / columns
-            final GridSelectionGroup gsg = (GridSelectionGroup) selection.getGroup();
-            final FXOMObject gridPane = gsg.getParentObject();
+            final var gsg = (GridSelectionGroup) selection.getGroup();
+            final var gridPane = gsg.getParentObject();
             assert gridPane instanceof FXOMInstance;
-            final DesignHierarchyMask gridPaneMask = new DesignHierarchyMask(gridPane);
-            int size = 0;
+            final var gridPaneMask = new DesignHierarchyMask(gridPane);
+            var size = 0;
             switch (gsg.getType()) {
                 case ROW:
                     size = gridPaneMask.getRowsSize();
@@ -1931,7 +1927,7 @@ public class EditorController {
             }
             // Select first index
             selection.select((FXOMInstance) gridPane, gsg.getType(), 0);
-            for (int index = 1; index < size; index++) {
+            for (var index = 1; index < size; index++) {
                 selection.toggleSelection((FXOMInstance) gridPane, gsg.getType(), index);
             }
         } else {
@@ -1953,41 +1949,41 @@ public class EditorController {
         if (selection.isEmpty()) { // (1)
             return true;
         } else if (selection.getGroup() instanceof ObjectSelectionGroup) {
-            final FXOMObject rootObject = getFxomDocument().getFxomRoot();
+            final var rootObject = getFxomDocument().getFxomRoot();
             // Cannot select all if root is selected
             if (selection.isSelected(rootObject)) { // (1)
                 return false;
             } else {
                 // Cannot select all if all sub components are already selected
-                final FXOMObject ancestor = selection.getAncestor();
+                final var ancestor = selection.getAncestor();
                 assert ancestor != null; // Because of (1)
-                final DesignHierarchyMask mask = new DesignHierarchyMask(ancestor);
+                final var mask = new DesignHierarchyMask(ancestor);
                 // BorderPane special case : use accessories
                 if (mask.getFxomObject().getSceneGraphObject() instanceof BorderPane) {
-                    final FXOMObject top = mask.getAccessory(Accessory.TOP);
-                    final FXOMObject left = mask.getAccessory(Accessory.LEFT);
-                    final FXOMObject center = mask.getAccessory(Accessory.CENTER);
-                    final FXOMObject right = mask.getAccessory(Accessory.RIGHT);
-                    final FXOMObject bottom = mask.getAccessory(Accessory.BOTTOM);
-                    for (FXOMObject bpAccessoryObject : new FXOMObject[] {
+                    final var top = mask.getAccessory(Accessory.TOP);
+                    final var left = mask.getAccessory(Accessory.LEFT);
+                    final var center = mask.getAccessory(Accessory.CENTER);
+                    final var right = mask.getAccessory(Accessory.RIGHT);
+                    final var bottom = mask.getAccessory(Accessory.BOTTOM);
+                    for (final var bpAccessoryObject : new FXOMObject[] {
                         top, left, center, right, bottom}) {
-                        if (bpAccessoryObject != null 
-                                && selection.isSelected(bpAccessoryObject) == false) {
+                        if (bpAccessoryObject != null
+                            && !selection.isSelected(bpAccessoryObject)) {
                             return true;
                         }
                     }
                 } else if (mask.isAcceptingSubComponent()) {
-                    for (FXOMObject subComponentObject : mask.getSubComponents()) {
-                        if (selection.isSelected(subComponentObject) == false) {
+                    for (final var subComponentObject : mask.getSubComponents()) {
+                        if (!selection.isSelected(subComponentObject)) {
                             return true;
                         }
                     }
                 }
             }
         } else if (selection.getGroup() instanceof GridSelectionGroup) {
-            final GridSelectionGroup gsg = (GridSelectionGroup) selection.getGroup();
+            final var gsg = (GridSelectionGroup) selection.getGroup();
             // GridSelectionGroup => at least 1 row/column is selected
-            assert gsg.getIndexes().isEmpty() == false;
+            assert !gsg.getIndexes().isEmpty();
             return true;
         } else {
             assert selection.getGroup() == null :
@@ -2002,7 +1998,7 @@ public class EditorController {
      */
     private void performSelectParent() {
         assert canPerformSelectParent(); // (1)
-        final FXOMObject ancestor = selection.getAncestor();
+        final var ancestor = selection.getAncestor();
         assert ancestor != null; // Because of (1)
         selection.select(ancestor);
     }
@@ -2016,7 +2012,7 @@ public class EditorController {
      */
     private boolean canPerformSelectParent() {
         assert getFxomDocument() != null && getFxomDocument().getFxomRoot() != null;
-        final FXOMObject rootObject = getFxomDocument().getFxomRoot();
+        final var rootObject = getFxomDocument().getFxomRoot();
         return !selection.isEmpty() && !selection.isSelected(rootObject);
     }
     
@@ -2026,26 +2022,26 @@ public class EditorController {
     private void performSelectNext() {
         assert canPerformSelectNext(); // (1)
         
-        final AbstractSelectionGroup asg = selection.getGroup();
+        final var asg = selection.getGroup();
         if (asg instanceof ObjectSelectionGroup) {
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) asg;
-            final Set<FXOMObject> items = osg.getItems();
+            final var osg = (ObjectSelectionGroup) asg;
+            final var items = osg.getItems();
             assert items.size() == 1; // Because of (1)
-            final FXOMObject selectedObject = items.iterator().next();
-            final FXOMObject nextSibling = selectedObject.getNextSlibing();
+            final var selectedObject = items.iterator().next();
+            final var nextSibling = selectedObject.getNextSlibing();
             assert nextSibling != null; // Because of (1)
             selection.select(nextSibling);
         } else {
             assert asg instanceof GridSelectionGroup; // Because of (1)
-            final GridSelectionGroup gsg = (GridSelectionGroup) asg;
-            final FXOMObject gridPane = gsg.getParentObject();
-            final DesignHierarchyMask mask = new DesignHierarchyMask(gridPane);
+            final var gsg = (GridSelectionGroup) asg;
+            final var gridPane = gsg.getParentObject();
+            final var mask = new DesignHierarchyMask(gridPane);
             assert gridPane instanceof FXOMInstance;
-            final Set<Integer> indexes = gsg.getIndexes();
+            final var indexes = gsg.getIndexes();
             assert indexes.size() == 1; // Because of (1)
-            int selectedIndex = indexes.iterator().next();
-            int nextIndex = selectedIndex + 1;
-            int size = 0;
+            final int selectedIndex = indexes.iterator().next();
+            final var nextIndex = selectedIndex + 1;
+            var size = 0;
             switch (gsg.getType()) {
                 case ROW:
                     size = mask.getRowsSize();
@@ -2074,24 +2070,24 @@ public class EditorController {
         if (selection.isEmpty()) {
             return false;
         }
-        final AbstractSelectionGroup asg = selection.getGroup();
+        final var asg = selection.getGroup();
         if (asg instanceof ObjectSelectionGroup) {
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) asg;
-            final Set<FXOMObject> items = osg.getItems();
+            final var osg = (ObjectSelectionGroup) asg;
+            final var items = osg.getItems();
             if (items.size() != 1) {
                 return false;
             }
-            final FXOMObject selectedObject = items.iterator().next();
+            final var selectedObject = items.iterator().next();
             return selectedObject.getNextSlibing() != null;
         } else if (asg instanceof GridSelectionGroup) {
-            final GridSelectionGroup gsg = (GridSelectionGroup) asg;
-            final Set<Integer> indexes = gsg.getIndexes();
+            final var gsg = (GridSelectionGroup) asg;
+            final var indexes = gsg.getIndexes();
             if (indexes.size() != 1) {
                 return false;
             }
-            final FXOMObject gridPane = gsg.getParentObject();
-            final DesignHierarchyMask mask = new DesignHierarchyMask(gridPane);
-            int size = 0;
+            final var gridPane = gsg.getParentObject();
+            final var mask = new DesignHierarchyMask(gridPane);
+            var size = 0;
             switch (gsg.getType()) {
                 case ROW:
                     size = mask.getRowsSize();
@@ -2118,24 +2114,24 @@ public class EditorController {
     private void performSelectPrevious() {
         assert canPerformSelectPrevious(); // (1)
         
-        final AbstractSelectionGroup asg = selection.getGroup();
+        final var asg = selection.getGroup();
         if (asg instanceof ObjectSelectionGroup) {
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) asg;
-            final Set<FXOMObject> items = osg.getItems();
+            final var osg = (ObjectSelectionGroup) asg;
+            final var items = osg.getItems();
             assert items.size() == 1; // Because of (1)
-            final FXOMObject selectedObject = items.iterator().next();
-            final FXOMObject previousSibling = selectedObject.getPreviousSlibing();
+            final var selectedObject = items.iterator().next();
+            final var previousSibling = selectedObject.getPreviousSlibing();
             assert previousSibling != null; // Because of (1)
             selection.select(previousSibling);
         } else {
             assert asg instanceof GridSelectionGroup; // Because of (1)
-            final GridSelectionGroup gsg = (GridSelectionGroup) asg;
-            final FXOMObject gridPane = gsg.getParentObject();
+            final var gsg = (GridSelectionGroup) asg;
+            final var gridPane = gsg.getParentObject();
             assert gridPane instanceof FXOMInstance;
-            final Set<Integer> indexes = gsg.getIndexes();
+            final var indexes = gsg.getIndexes();
             assert indexes.size() == 1; // Because of (1)
-            int selectedIndex = indexes.iterator().next();
-            int previousIndex = selectedIndex - 1;
+            final int selectedIndex = indexes.iterator().next();
+            final var previousIndex = selectedIndex - 1;
             assert previousIndex >= 0; // Because of (1)
             selection.select((FXOMInstance) gridPane, gsg.getType(), previousIndex);
         }
@@ -2153,18 +2149,18 @@ public class EditorController {
         if (selection.isEmpty()) {
             return false;
         }
-        final AbstractSelectionGroup asg = selection.getGroup();
+        final var asg = selection.getGroup();
         if (asg instanceof ObjectSelectionGroup) {
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) asg;
-            final Set<FXOMObject> items = osg.getItems();
+            final var osg = (ObjectSelectionGroup) asg;
+            final var items = osg.getItems();
             if (items.size() != 1) {
                 return false;
             }
-            final FXOMObject selectedObject = items.iterator().next();
+            final var selectedObject = items.iterator().next();
             return selectedObject.getPreviousSlibing() != null;
         } else if (asg instanceof GridSelectionGroup) {
-            final GridSelectionGroup gsg = (GridSelectionGroup) asg;
-            final Set<Integer> indexes = gsg.getIndexes();
+            final var gsg = (GridSelectionGroup) asg;
+            final var indexes = gsg.getIndexes();
             if (indexes.size() != 1) {
                 return false;
             }
@@ -2191,7 +2187,7 @@ public class EditorController {
      * @return if the selection is not empty.
      */
     private boolean canPerformSelectNone() {
-        return getSelection().isEmpty() == false;
+        return !getSelection().isEmpty();
     }
         
     /**
@@ -2212,52 +2208,52 @@ public class EditorController {
      * @return the included file associated to the selected object or null.
      */
     public File getIncludedFile() {
-        final AbstractSelectionGroup asg = getSelection().getGroup();
-        if (asg instanceof ObjectSelectionGroup == false) {
+        final var asg = getSelection().getGroup();
+        if (!(asg instanceof ObjectSelectionGroup)) {
             return null;
         }
-        final ObjectSelectionGroup osg = (ObjectSelectionGroup) asg;
+        final var osg = (ObjectSelectionGroup) asg;
         if (osg.getItems().size() != 1) {
             return null;
         }
-        final FXOMObject fxomObject = osg.getItems().iterator().next();
-        if (fxomObject instanceof FXOMIntrinsic == false) {
+        final var fxomObject = osg.getItems().iterator().next();
+        if (!(fxomObject instanceof FXOMIntrinsic)) {
             return null;
         }
-        final FXOMIntrinsic fxomIntrinsic = (FXOMIntrinsic) fxomObject;
+        final var fxomIntrinsic = (FXOMIntrinsic) fxomObject;
         if (fxomIntrinsic.getType() != FXOMIntrinsic.Type.FX_INCLUDE) {
             return null;
         }
-        final String source = fxomIntrinsic.getSource();
+        final var source = fxomIntrinsic.getSource();
         if (source == null) {
             return null; // Can this happen ?
         }
         if (source.startsWith("/")) { //NOI18N
             // Source relative to FXOM document class loader
-            final ClassLoader classLoader = getFxomDocument().getClassLoader();
+            final var classLoader = getFxomDocument().getClassLoader();
             if (classLoader != null) {
-                final PrefixedValue pv = new PrefixedValue(
+                final var pv = new PrefixedValue(
                         PrefixedValue.Type.CLASSLOADER_RELATIVE_PATH, source);
-                final URL url = pv.resolveClassLoaderRelativePath(classLoader);
+                final var url = pv.resolveClassLoaderRelativePath(classLoader);
                 final File file;
                 try {
                     file = new File(url.toURI());
-                } catch (URISyntaxException ex) {
+                } catch (final URISyntaxException ex) {
                     throw new IllegalArgumentException(ex);
                 }
                 return file;
             }
         } else {
             // Source relative to FXOM document location
-            final URL location = getFxmlLocation();
+            final var location = getFxmlLocation();
             if (location != null) {
-                final PrefixedValue pv = new PrefixedValue(
+                final var pv = new PrefixedValue(
                         PrefixedValue.Type.DOCUMENT_RELATIVE_PATH, source);
-                final URL url = pv.resolveDocumentRelativePath(location);
+                final var url = pv.resolveDocumentRelativePath(location);
                 final File file;
                 try {
                     file = new File(url.toURI());
-                } catch (URISyntaxException ex) {
+                } catch (final URISyntaxException ex) {
                     throw new IllegalArgumentException(ex);
                 }
                 return file;
@@ -2277,12 +2273,12 @@ public class EditorController {
     
     private void performEditIncludedFile() {
         assert canPerformIncludedFileAction(); // (1)
-        final File includedFile = getIncludedFile();
+        final var includedFile = getIncludedFile();
         assert includedFile != null; // Because of (1)
         try {
             EditorPlatform.open(includedFile.getAbsolutePath());
-        } catch (IOException re) {
-            final ErrorDialog errorDialog = new ErrorDialog(this.ownerWindow);
+        } catch (final IOException re) {
+            final var errorDialog = new ErrorDialog(this.ownerWindow);
             errorDialog.setTitle(I18N.getString("alert.error.file.open.title"));
             errorDialog.setMessage(I18N.getString("alert.error.file.open.edit.message"));
             errorDialog.setDetails(I18N.getString("alert.error.file.reveal.details", includedFile.getAbsolutePath()));
@@ -2294,12 +2290,12 @@ public class EditorController {
 
     private void performRevealIncludedFile() {
         assert canPerformIncludedFileAction(); // (1)
-        final File includedFile = getIncludedFile();
+        final var includedFile = getIncludedFile();
         assert includedFile != null; // Because of (1)
         try {
             EditorPlatform.revealInFileBrowser(includedFile);
-        } catch (IOException ioe) {
-            final ErrorDialog errorDialog = new ErrorDialog(this.ownerWindow);
+        } catch (final IOException ioe) {
+            final var errorDialog = new ErrorDialog(this.ownerWindow);
             errorDialog.setTitle(I18N.getString("alert.error.file.reveal.title"));
             errorDialog.setMessage(I18N.getString("alert.error.file.reveal.message"));
             errorDialog.setDetails(I18N.getString("alert.error.file.reveal.details", includedFile.getAbsolutePath()));
@@ -2327,17 +2323,17 @@ public class EditorController {
      *
      * @param effectClass class of the effect to be added (never null)
      */
-    public void performSetEffect(Class<? extends Effect> effectClass) {
+    public void performSetEffect(final Class<? extends Effect> effectClass) {
         assert canPerformSetEffect(); // (1)
 
-        final Effect effect = Utils.newInstance(effectClass);
-        final PropertyName pn = new PropertyName("effect"); //NOI18N
+        final var effect = Utils.newInstance(effectClass);
+        final var pn = new PropertyName("effect"); //NOI18N
 
-        final PropertyMetadata pm
+        final var pm
                 = Metadata.getMetadata().queryProperty(Node.class, pn);
         assert pm instanceof ValuePropertyMetadata;
-        final ValuePropertyMetadata vpm = (ValuePropertyMetadata) pm;
-        final ModifySelectionJob job = new ModifySelectionJob(vpm, effect, this);
+        final var vpm = (ValuePropertyMetadata) pm;
+        final var job = new ModifySelectionJob(vpm, effect, this);
         getJobManager().push(job);
     }
 
@@ -2418,10 +2414,10 @@ public class EditorController {
      * 
      * @param chosenFile the selected file from which the initial directory is set.
      */
-    public static void updateNextInitialDirectory(File chosenFile) {
+    public static void updateNextInitialDirectory(final File chosenFile) {
         assert chosenFile != null;
 
-        final Path chosenFolder = chosenFile.toPath().getParent();
+        final var chosenFolder = chosenFile.toPath().getParent();
         if (chosenFolder != null) {
             nextInitialDirectory = chosenFolder.toFile();
         }
@@ -2434,14 +2430,14 @@ public class EditorController {
      *         otherwise.
      */
     public boolean is3D() {
-        boolean res = false;
-        FXOMDocument doc = getFxomDocument();
+        var res = false;
+        final var doc = getFxomDocument();
         
         if (doc != null) {
-            Object sgroot = doc.getSceneGraphRoot();
+            final var sgroot = doc.getSceneGraphRoot();
             
             if (sgroot instanceof Node) {
-                final Bounds rootBounds = ((Node)sgroot).getLayoutBounds();
+                final var rootBounds = ((Node)sgroot).getLayoutBounds();
                 res = (rootBounds.getDepth() > 0);
             }
         }
@@ -2457,11 +2453,11 @@ public class EditorController {
      * otherwise.
      */
     public boolean isNode() {
-        boolean res = false;
-        FXOMDocument doc = getFxomDocument();
+        var res = false;
+        final var doc = getFxomDocument();
         
         if (doc != null) {
-            Object sgroot = doc.getSceneGraphRoot();
+            final var sgroot = doc.getSceneGraphRoot();
             
             if (sgroot instanceof Node) {
                 res = true;
@@ -2478,12 +2474,12 @@ public class EditorController {
      * false otherwise.
      */
     public boolean isSelectionNode() {
-        final AbstractSelectionGroup asg = selection.getGroup();
+        final var asg = selection.getGroup();
         if (asg instanceof ObjectSelectionGroup) {
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) asg;
-            for (FXOMObject fxomObject : osg.getItems()) {
-                final boolean isNode = fxomObject.getSceneGraphObject() instanceof Node;
-                if (isNode == false) {
+            final var osg = (ObjectSelectionGroup) asg;
+            for (final var fxomObject : osg.getItems()) {
+                final var isNode = fxomObject.getSceneGraphObject() instanceof Node;
+                if (!isNode) {
                     return false;
                 }
             }
@@ -2498,11 +2494,11 @@ public class EditorController {
      */
     
     private boolean isSelectionControl() {
-        final AbstractSelectionGroup asg = selection.getGroup();
+        final var asg = selection.getGroup();
         if (asg instanceof ObjectSelectionGroup) {
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) asg;
-            for (FXOMObject fxomObject : osg.getItems()) {
-                final boolean isControl = fxomObject.getSceneGraphObject() instanceof Control;
+            final var osg = (ObjectSelectionGroup) asg;
+            for (final var fxomObject : osg.getItems()) {
+                final var isControl = fxomObject.getSceneGraphObject() instanceof Control;
                 if (!isControl) {
                     return false;
                 }
@@ -2513,7 +2509,7 @@ public class EditorController {
         return true;
     }
 
-    private void updateFxomDocument(String fxmlText, URL fxmlLocation, ResourceBundle resources, boolean checkTheme) throws IOException {
+    private void updateFxomDocument(final String fxmlText, final URL fxmlLocation, final ResourceBundle resources, final boolean checkTheme) throws IOException {
         final FXOMDocument newFxomDocument;
         
         if (fxmlText != null) {
@@ -2557,7 +2553,7 @@ public class EditorController {
 //        setPickModeEnabled(false);
     }
 
-    public void setOwnerWindow(Stage ownerWindow) {
+    public void setOwnerWindow(final Stage ownerWindow) {
         this.ownerWindow = ownerWindow;
     }
 

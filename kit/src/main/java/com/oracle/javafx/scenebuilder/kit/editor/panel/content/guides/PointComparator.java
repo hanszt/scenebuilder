@@ -40,7 +40,7 @@ import java.util.Comparator;
 class PointComparator implements Comparator<Point2D> {
     
     @Override
-    public int compare(Point2D o1, Point2D o2) {
+    public int compare(final Point2D o1, final Point2D o2) {
         assert o1 != null;
         assert o2 != null;
 
@@ -51,8 +51,8 @@ class PointComparator implements Comparator<Point2D> {
         } else if (MathUtils.equals(o1.getX(), o2.getX()) && MathUtils.equals(o1.getY(), o2.getY())) {
             result = 0;
         } else {
-            double r1 = Math.sqrt(o1.getX() * o1.getX() + o1.getY() * o1.getY());
-            double r2 = Math.sqrt(o2.getX() * o2.getX() + o2.getY() * o2.getY());
+            final var r1 = Math.sqrt(o1.getX() * o1.getX() + o1.getY() * o1.getY());
+            final var r2 = Math.sqrt(o2.getX() * o2.getX() + o2.getY() * o2.getY());
             result = Double.compare(r1, r2);
         }
 

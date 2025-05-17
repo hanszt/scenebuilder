@@ -52,7 +52,7 @@ public class CircleResizer extends AbstractResizer<Circle> {
     private final PropertyName radiusName = new PropertyName("radius"); //NOI18N
     private final List<PropertyName> propertyNames = new ArrayList<>();
     
-    public CircleResizer(Circle sceneGraphObject) {
+    public CircleResizer(final Circle sceneGraphObject) {
         super(sceneGraphObject);
         originalRadius = sceneGraphObject.getRadius();
         propertyNames.add(radiusName);
@@ -63,10 +63,10 @@ public class CircleResizer extends AbstractResizer<Circle> {
      */
     
     @Override
-    public final Bounds computeBounds(double width, double height) {
+    public final Bounds computeBounds(final double width, final double height) {
         final double radius = Math.round(Math.min(width, height) / 2.0);
-        final double minX = sceneGraphObject.getCenterX() - radius;
-        final double minY = sceneGraphObject.getCenterY() - radius;
+        final var minX = sceneGraphObject.getCenterX() - radius;
+        final var minY = sceneGraphObject.getCenterY() - radius;
         return new BoundingBox(minX, minY, 2 * radius, 2 * radius);
     }
  
@@ -76,12 +76,12 @@ public class CircleResizer extends AbstractResizer<Circle> {
     }
 
     @Override
-    public void changeWidth(double width) {
+    public void changeWidth(final double width) {
         sceneGraphObject.setRadius(Math.round(width / 2));
     }
 
     @Override
-    public void changeHeight(double height) {
+    public void changeHeight(final double height) {
         sceneGraphObject.setRadius(Math.round(height / 2));
     }
 
@@ -96,7 +96,7 @@ public class CircleResizer extends AbstractResizer<Circle> {
     }
 
     @Override
-    public Object getValue(PropertyName propertyName) {
+    public Object getValue(final PropertyName propertyName) {
         assert propertyName != null;
         assert propertyNames.contains(propertyName);
         
@@ -114,7 +114,7 @@ public class CircleResizer extends AbstractResizer<Circle> {
     @Override
     public Map<PropertyName, Object> getChangeMap() {
         final Map<PropertyName, Object> result = new HashMap<>();
-        if (MathUtils.equals(sceneGraphObject.getRadius(), originalRadius) == false) {
+        if (!MathUtils.equals(sceneGraphObject.getRadius(), originalRadius)) {
             result.put(radiusName, sceneGraphObject.getRadius());
         }
         return result;

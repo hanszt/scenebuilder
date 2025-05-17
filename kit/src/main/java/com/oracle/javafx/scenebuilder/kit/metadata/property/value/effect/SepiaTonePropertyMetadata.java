@@ -52,8 +52,8 @@ public class SepiaTonePropertyMetadata extends ComplexPropertyMetadata<SepiaTone
             = new DoublePropertyMetadata(new PropertyName("level"), //NOI18N
             DoublePropertyMetadata.DoubleKind.EFFECT_SIZE, true /* readWrite */, 1.0, InspectorPath.UNUSED);
 
-    public SepiaTonePropertyMetadata(PropertyName name, boolean readWrite, 
-            SepiaTone defaultValue, InspectorPath inspectorPath) {
+    public SepiaTonePropertyMetadata(final PropertyName name, final boolean readWrite,
+                                     final SepiaTone defaultValue, final InspectorPath inspectorPath) {
         super(name, SepiaTone.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -62,8 +62,8 @@ public class SepiaTonePropertyMetadata extends ComplexPropertyMetadata<SepiaTone
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(SepiaTone value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, getValueClass());
+    public FXOMInstance makeFxomInstanceFromValue(final SepiaTone value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, getValueClass());
         
         inputMetadata.setValue(result, value.getInput());
         levelMetadata.setValue(result, value.getLevel());

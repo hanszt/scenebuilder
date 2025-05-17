@@ -52,7 +52,7 @@ public class TextResizer extends AbstractResizer<Text> {
     private final PropertyName wrappingWidthName = new PropertyName("wrappingWidth"); //NOI18N
     private final List<PropertyName> propertyNames = new ArrayList<>();
     
-    public TextResizer(Text sceneGraphObject) {
+    public TextResizer(final Text sceneGraphObject) {
         super(sceneGraphObject);
         originalWrappingWidth = sceneGraphObject.getWrappingWidth();
         propertyNames.add(wrappingWidthName);
@@ -63,9 +63,9 @@ public class TextResizer extends AbstractResizer<Text> {
      */
     
     @Override
-    public final Bounds computeBounds(double width, double height) {
-        final double minX = sceneGraphObject.getX();
-        final double minY = sceneGraphObject.getY();
+    public final Bounds computeBounds(final double width, final double height) {
+        final var minX = sceneGraphObject.getX();
+        final var minY = sceneGraphObject.getY();
         return new BoundingBox(minX, minY, width, height);
     }
  
@@ -75,7 +75,7 @@ public class TextResizer extends AbstractResizer<Text> {
     }
 
     @Override
-    public void changeWidth(double width) {
+    public void changeWidth(final double width) {
         // When wrappingWidth is set to 0, text will 
         // jump from a nearer zero column to a single line.
         // Not nice : so we set a min of 1 to avoid this effect.
@@ -83,7 +83,7 @@ public class TextResizer extends AbstractResizer<Text> {
     }
 
     @Override
-    public void changeHeight(double height) {
+    public void changeHeight(final double height) {
     }
 
     @Override
@@ -97,7 +97,7 @@ public class TextResizer extends AbstractResizer<Text> {
     }
 
     @Override
-    public Object getValue(PropertyName propertyName) {
+    public Object getValue(final PropertyName propertyName) {
         assert propertyName != null;
         assert propertyNames.contains(propertyName);
         
@@ -115,7 +115,7 @@ public class TextResizer extends AbstractResizer<Text> {
     @Override
     public Map<PropertyName, Object> getChangeMap() {
         final Map<PropertyName, Object> result = new HashMap<>();
-        if (MathUtils.equals(sceneGraphObject.getWrappingWidth(), originalWrappingWidth) == false) {
+        if (!MathUtils.equals(sceneGraphObject.getWrappingWidth(), originalWrappingWidth)) {
             result.put(wrappingWidthName, sceneGraphObject.getWrappingWidth());
         }
         return result;

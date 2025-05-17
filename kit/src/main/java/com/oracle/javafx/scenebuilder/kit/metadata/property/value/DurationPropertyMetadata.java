@@ -38,14 +38,14 @@ import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
 
 public class DurationPropertyMetadata extends TextEncodablePropertyMetadata<SBDuration> {
 
-    public DurationPropertyMetadata(PropertyName name,
-                                    boolean readWrite, SBDuration defaultValue, InspectorPath inspectorPath) {
+    public DurationPropertyMetadata(final PropertyName name,
+                                    final boolean readWrite, final SBDuration defaultValue, final InspectorPath inspectorPath) {
         super(name, SBDuration.class, readWrite, defaultValue, inspectorPath);
     }
 
 
     @Override
-    public SBDuration makeValueFromString(String string) {
+    public SBDuration makeValueFromString(final String string) {
         return SBDuration.valueOf(string);
     }
 }

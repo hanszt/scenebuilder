@@ -38,14 +38,13 @@ import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument.FXOMDocumentSwitch;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMNodes;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
-import java.io.File;
+
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.ResourceBundle;
+
 import javafx.scene.input.Clipboard;
 
 /**
@@ -55,23 +54,23 @@ public class ClipboardDecoder {
     
     final Clipboard clipboard;
 
-    public ClipboardDecoder(Clipboard clipboard) {
+    public ClipboardDecoder(final Clipboard clipboard) {
         this.clipboard = clipboard;
     }
     
-    public List<FXOMObject> decode(FXOMDocument targetDocument) {
+    public List<FXOMObject> decode(final FXOMDocument targetDocument) {
         assert targetDocument != null;
         
         List<FXOMObject> result = null;
         
         // SB_DATA_FORMAT
         if (clipboard.hasContent(ClipboardEncoder.SB_DATA_FORMAT)) {
-            final Object content = clipboard.getContent(ClipboardEncoder.SB_DATA_FORMAT);
+            final var content = clipboard.getContent(ClipboardEncoder.SB_DATA_FORMAT);
             if (content instanceof FXOMArchive) {
-                final FXOMArchive archive = (FXOMArchive) content;
+                final var archive = (FXOMArchive) content;
                 try {
                     result = archive.decode(targetDocument);
-                } catch(IOException x) {
+                } catch(final IOException x) {
                     result = null;
                 }
             }
@@ -80,17 +79,17 @@ public class ClipboardDecoder {
         // FXML_DATA_FORMAT
         if ((result == null) 
                 && clipboard.hasContent(ClipboardEncoder.FXML_DATA_FORMAT)) {
-            final Object content = clipboard.getContent(ClipboardEncoder.FXML_DATA_FORMAT);
+            final var content = clipboard.getContent(ClipboardEncoder.FXML_DATA_FORMAT);
             if (content instanceof String) {
-                final String fxmlText = (String) content;
+                final var fxmlText = (String) content;
                 try {
-                    final URL location = targetDocument.getLocation();
-                    final ClassLoader classLoader = targetDocument.getClassLoader();
-                    final ResourceBundle resources = targetDocument.getResources();
-                    final FXOMDocument transientDoc
+                    final var location = targetDocument.getLocation();
+                    final var classLoader = targetDocument.getClassLoader();
+                    final var resources = targetDocument.getResources();
+                    final var transientDoc
                             = new FXOMDocument(fxmlText, location, classLoader, resources, FXOMDocumentSwitch.NORMALIZED);
                     result = Arrays.asList(transientDoc.getFxomRoot());
-                } catch(IOException x) {
+                } catch(final IOException x) {
                     result = null;
                 }
             }
@@ -99,15 +98,15 @@ public class ClipboardDecoder {
         // DataFormat.FILES
         if ((result == null) && clipboard.hasFiles()) {
             result = new ArrayList<>();
-            for (File file : clipboard.getFiles()) {
+            for (final var file : clipboard.getFiles()) {
                 try {
-                    final FXOMObject newObject
+                    final var newObject
                             = FXOMNodes.newObject(targetDocument, file);
                     // newObject is null when file is empty
                     if (newObject != null) {
                         result.add(newObject);
                     }
-                } catch (IOException x) {
+                } catch (final IOException x) {
                     // Then we silently ignore this file
                 }
             }

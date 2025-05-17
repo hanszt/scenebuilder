@@ -37,23 +37,18 @@ import com.oracle.javafx.scenebuilder.kit.editor.panel.hierarchy.HierarchyItem;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.hierarchy.AbstractHierarchyPanelController;
 
 import java.util.List;
-import java.util.Set;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.geometry.Bounds;
+
 import static javafx.geometry.Orientation.HORIZONTAL;
-import javafx.geometry.Point2D;
-import javafx.scene.Node;
+
 import javafx.scene.control.Cell;
 import javafx.scene.control.Control;
-import javafx.scene.control.MultipleSelectionModel;
-import javafx.scene.control.ScrollBar;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
-import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.input.KeyCode;
 
 /**
@@ -64,7 +59,7 @@ public class HierarchyTreeViewController extends AbstractHierarchyPanelControlle
     @FXML
     protected TreeView<HierarchyItem> treeView;
 
-    public HierarchyTreeViewController(EditorController editorController) {
+    public HierarchyTreeViewController(final EditorController editorController) {
         super(HierarchyTreeViewController.class.getResource("HierarchyTreeView.fxml"), editorController); //NOI18N
     }
 
@@ -94,10 +89,10 @@ public class HierarchyTreeViewController extends AbstractHierarchyPanelControlle
             
             if (event.getCode() == KeyCode.ESCAPE) {
             	// on ESC we select the parent of current selected item
-                MultipleSelectionModel<TreeItem<HierarchyItem>> selectionModel = treeView.getSelectionModel();
-                TreeItem<HierarchyItem> item = selectionModel.getSelectedItem();
+                final var selectionModel = treeView.getSelectionModel();
+                final var item = selectionModel.getSelectedItem();
                 if (item != null) {
-                    TreeItem<HierarchyItem> parent = item.getParent();
+                    final var parent = item.getParent();
                     if (parent != null) {
                         selectionModel.clearSelection();
                         selectionModel.select(parent);
@@ -130,7 +125,7 @@ public class HierarchyTreeViewController extends AbstractHierarchyPanelControlle
         assert treeView != null;
         // The select method of TreeView selection model will expand the selected TreeItem.
         // Keep the current expanded value to set it back after selection.
-        boolean isExpanded = treeItem.isExpanded();
+        final var isExpanded = treeItem.isExpanded();
         treeView.getSelectionModel().select(treeItem);
         treeItem.setExpanded(isExpanded);
     }
@@ -144,7 +139,7 @@ public class HierarchyTreeViewController extends AbstractHierarchyPanelControlle
     @Override
     public Cell<?> getCell(final TreeItem<?> treeItem) {
         assert treeView != null;
-        final TreeCell<?> treeCell
+        final var treeCell
                 = HierarchyTreeViewUtils.getTreeCell(treeView, treeItem);
         return treeCell;
     }
@@ -157,8 +152,8 @@ public class HierarchyTreeViewController extends AbstractHierarchyPanelControlle
      */
     @Override
     public double getContentTopY() {
-        final Bounds bounds = treeView.getLayoutBounds();
-        final Point2D point = treeView.localToParent(bounds.getMinX(), bounds.getMinY());
+        final var bounds = treeView.getLayoutBounds();
+        final var point = treeView.localToParent(bounds.getMinX(), bounds.getMinY());
         return point.getY();
     }
 
@@ -170,11 +165,11 @@ public class HierarchyTreeViewController extends AbstractHierarchyPanelControlle
      */
     @Override
     public double getContentBottomY() {
-        final Bounds bounds = treeView.getLayoutBounds();
-        final Point2D point = treeView.localToParent(bounds.getMinX(), bounds.getMinY());
-        final double topY = point.getY();
-        final double height = bounds.getHeight();
-        final ScrollBar horizontalScrollBar = getScrollBar(HORIZONTAL);
+        final var bounds = treeView.getLayoutBounds();
+        final var point = treeView.localToParent(bounds.getMinX(), bounds.getMinY());
+        final var topY = point.getY();
+        final var height = bounds.getHeight();
+        final var horizontalScrollBar = getScrollBar(HORIZONTAL);
         final double bottomY;
         if (horizontalScrollBar != null && horizontalScrollBar.isVisible()) {
             bottomY = topY + height - horizontalScrollBar.getLayoutBounds().getHeight();
@@ -200,15 +195,15 @@ public class HierarchyTreeViewController extends AbstractHierarchyPanelControlle
         final List<TreeItem<HierarchyItem>> selectedTreeItems
                 = treeView.getSelectionModel().getSelectedItems();
         if (selectedTreeItems.size() == 1) {
-            final TreeItem<HierarchyItem> selectedTreeItem = selectedTreeItems.get(0);
-            final HierarchyItem item = selectedTreeItem.getValue();
-            final DisplayOption option = getDisplayOption();
-            if (item != null 
-                    && item.isResourceKey(option) == false // Do not allow inline editing of the I18N value
-                    && item.hasDisplayInfo(option)) {
-                final TreeCell<?> tc = HierarchyTreeViewUtils.getTreeCell(treeView, selectedTreeItem);
+            final var selectedTreeItem = selectedTreeItems.getFirst();
+            final var item = selectedTreeItem.getValue();
+            final var option = getDisplayOption();
+            if (item != null
+                && !item.isResourceKey(option) // Do not allow inline editing of the I18N value
+                && item.hasDisplayInfo(option)) {
+                final var tc = HierarchyTreeViewUtils.getTreeCell(treeView, selectedTreeItem);
                 assert tc instanceof HierarchyTreeCell;
-                final HierarchyTreeCell<?> htc = (HierarchyTreeCell<?>) tc;
+                final var htc = (HierarchyTreeCell<?>) tc;
                 htc.startEditingDisplayInfo();
             }
         }
@@ -222,9 +217,9 @@ public class HierarchyTreeViewController extends AbstractHierarchyPanelControlle
     @Override
     public void clearBorderColor() {
         assert treeView != null;
-        final Set<Node> cells = HierarchyTreeViewUtils.getTreeCells(treeView);
+        final var cells = HierarchyTreeViewUtils.getTreeCells(treeView);
         assert cells != null;
-        for (Node node : cells) {
+        for (final var node : cells) {
             assert node instanceof Cell;
             clearBorderColor((Cell<?>) node);
         }
@@ -236,18 +231,18 @@ public class HierarchyTreeViewController extends AbstractHierarchyPanelControlle
         
         // Do not update parent ring while performing some operations 
         // like DND within the hierarchy panel
-        if (isParentRingEnabled() == false) {
+        if (!isParentRingEnabled()) {
             return;
         }
 
-        final Set<Node> treeCells = HierarchyTreeViewUtils.getTreeCells(treeView);
+        final var treeCells = HierarchyTreeViewUtils.getTreeCells(treeView);
         final List<TreeItem<HierarchyItem>> selectedTreeItems = treeView.getSelectionModel().getSelectedItems();
 
         // First clear previous parent ring if any
         clearBorderColor();
 
         // Dirty selection
-        for (TreeItem<HierarchyItem> selectedTreeItem : selectedTreeItems) {
+        for (final var selectedTreeItem : selectedTreeItems) {
             if (selectedTreeItem == null) {
                 return;
             }
@@ -257,17 +252,18 @@ public class HierarchyTreeViewController extends AbstractHierarchyPanelControlle
         if (!selectedTreeItems.isEmpty()) {
 
             // Single selection is ROOT TreeItem => no parent ring
-            final TreeItem<HierarchyItem> treeItemRoot = treeView.getRoot();
-            if (selectedTreeItems.size() == 1 && selectedTreeItems.get(0) == treeItemRoot) {
+            final var treeItemRoot = treeView.getRoot();
+            if (selectedTreeItems.size() == 1 && selectedTreeItems.getFirst() == treeItemRoot) {
                 return;
             }
 
-            int treeCellTopIndex, treeCellBottomIndex;
+            final int treeCellTopIndex;
+            final int treeCellBottomIndex;
 
             // TOP TreeItem is the common parent TreeItem
-            final TreeItem<HierarchyItem> treeItemTop
+            final var treeItemTop
                     = HierarchyTreeViewUtils.getCommonParentTreeItem(selectedTreeItems);
-            final TreeCell<?> treeCellTop
+            final var treeCellTop
                     = HierarchyTreeViewUtils.getTreeCell(treeCells, treeItemTop);
             if (treeCellTop != null) {
                 setBorder(treeCellTop, BorderSide.TOP_RIGHT_LEFT);
@@ -277,10 +273,10 @@ public class HierarchyTreeViewController extends AbstractHierarchyPanelControlle
             }
 
             // BOTTOM TreeItem is the last child of the common parent TreeItem
-            final int size = treeItemTop.getChildren().size();
+            final var size = treeItemTop.getChildren().size();
             assert size >= 1;
-            final TreeItem<HierarchyItem> treeItemBottom = treeItemTop.getChildren().get(size - 1);
-            final TreeCell<?> treeCellBottom = HierarchyTreeViewUtils.getTreeCell(treeCells, treeItemBottom);
+            final var treeItemBottom = treeItemTop.getChildren().get(size - 1);
+            final var treeCellBottom = HierarchyTreeViewUtils.getTreeCell(treeCells, treeItemBottom);
             if (treeCellBottom != null) {
                 setBorder(treeCellBottom, BorderSide.RIGHT_BOTTOM_LEFT);
                 treeCellBottomIndex = treeCellBottom.getIndex();
@@ -289,10 +285,10 @@ public class HierarchyTreeViewController extends AbstractHierarchyPanelControlle
             }
 
             // MIDDLE TreeItems
-            for (Node node : treeCells) {
+            for (final var node : treeCells) {
                 assert node instanceof TreeCell;
-                final TreeCell<?> treeCell = (TreeCell<?>) node;
-                final int index = treeCell.getIndex();
+                final var treeCell = (TreeCell<?>) node;
+                final var index = treeCell.getIndex();
                 if (index > treeCellTopIndex && index < treeCellBottomIndex) {
                     setBorder(treeCell, BorderSide.RIGHT_LEFT);
                 }
@@ -303,11 +299,11 @@ public class HierarchyTreeViewController extends AbstractHierarchyPanelControlle
     @Override
     public void updatePlaceHolder() {
         assert treeView != null;
-        final Set<Node> cells = HierarchyTreeViewUtils.getTreeCells(treeView);
+        final var cells = HierarchyTreeViewUtils.getTreeCells(treeView);
         assert cells != null;
-        for (Node node : cells) {
+        for (final var node : cells) {
             assert node instanceof HierarchyTreeCell;
-            final HierarchyTreeCell<?> cell = (HierarchyTreeCell<?>) node;
+            final var cell = (HierarchyTreeCell<?>) node;
             cell.updatePlaceHolder();
         }
     }

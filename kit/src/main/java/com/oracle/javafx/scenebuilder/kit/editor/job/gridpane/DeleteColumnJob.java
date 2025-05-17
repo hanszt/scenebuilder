@@ -36,11 +36,9 @@ import com.oracle.javafx.scenebuilder.kit.editor.job.BatchSelectionJob;
 import com.oracle.javafx.scenebuilder.kit.editor.job.Job;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.AbstractSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.GridSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -51,7 +49,7 @@ public class DeleteColumnJob extends BatchSelectionJob {
     private FXOMObject targetGridPane;
     private final List<Integer> targetIndexes = new ArrayList<>();
 
-    public DeleteColumnJob(EditorController editorController) {
+    public DeleteColumnJob(final EditorController editorController) {
         super(editorController);
     }
 
@@ -63,10 +61,10 @@ public class DeleteColumnJob extends BatchSelectionJob {
         if (GridPaneJobUtils.canPerformRemove(getEditorController())) { // (1)
 
             // Retrieve the target GridPane
-            final Selection selection = getEditorController().getSelection();
-            final AbstractSelectionGroup asg = selection.getGroup();
+            final var selection = getEditorController().getSelection();
+            final var asg = selection.getGroup();
             assert asg instanceof GridSelectionGroup; // Because of (1)
-            final GridSelectionGroup gsg = (GridSelectionGroup) asg;
+            final var gsg = (GridSelectionGroup) asg;
 
             targetGridPane = gsg.getParentObject();
             targetIndexes.addAll(gsg.getIndexes());
@@ -88,7 +86,7 @@ public class DeleteColumnJob extends BatchSelectionJob {
 
     @Override
     protected String makeDescription() {
-        String result;
+        final String result;
         switch (targetIndexes.size()) {
             case 0:
                 result = "Unexecutable Delete"; //NO18N
@@ -113,19 +111,20 @@ public class DeleteColumnJob extends BatchSelectionJob {
 
         final List<Job> result = new ArrayList<>();
 
-        final DesignHierarchyMask targetGridPaneMask
+        final var targetGridPaneMask
                 = new DesignHierarchyMask(targetGridPane);
-        final int columnsSize = targetGridPaneMask.getColumnsSize();
-        final Iterator<Integer> iterator = targetIndexes.iterator();
+        final var columnsSize = targetGridPaneMask.getColumnsSize();
+        final var iterator = targetIndexes.iterator();
 
-        int shiftIndex = 0;
+        var shiftIndex = 0;
         int targetIndex, nextTargetIndex;
         targetIndex = iterator.next();
         while (targetIndex != -1) {
             // Move the columns content :
             // - from the target index 
             // - to the next target index if any or the last column index otherwise
-            int fromIndex, toIndex;
+            final int fromIndex;
+            final int toIndex;
 
             // fromIndex excluded
             // toIndex excluded
@@ -144,10 +143,10 @@ public class DeleteColumnJob extends BatchSelectionJob {
             // => no column content to move after the last column
             if (nextTargetIndex != (targetIndex + 1)
                     && fromIndex < columnsSize) {
-                final int offset = -1 + shiftIndex;
-                final List<Integer> indexes
+                final var offset = -1 + shiftIndex;
+                final var indexes
                         = GridPaneJobUtils.getIndexes(fromIndex, toIndex);
-                final ReIndexColumnContentJob reIndexJob = new ReIndexColumnContentJob(
+                final var reIndexJob = new ReIndexColumnContentJob(
                         getEditorController(), offset, targetGridPane, indexes);
                 result.add(reIndexJob);
             }
@@ -159,7 +158,7 @@ public class DeleteColumnJob extends BatchSelectionJob {
     }
 
     private String makeMultipleSelectionDescription() {
-        final StringBuilder result = new StringBuilder();
+        final var result = new StringBuilder();
 
         result.append("Delete ");
         result.append(targetIndexes.size());

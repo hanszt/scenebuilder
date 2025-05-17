@@ -40,7 +40,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 import java.util.ServiceLoader;
 
 import javafx.scene.layout.Region;
@@ -105,8 +104,8 @@ public class BuiltinLibrary extends Library {
      * @param componentClass the class
      * @return a String with the FXML content
      */
-    public static String makeFxmlText(Class<?> componentClass) {
-        final StringBuilder sb = new StringBuilder();
+    public static String makeFxmlText(final Class<?> componentClass) {
+        final var sb = new StringBuilder();
 
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"); //NOI18N
         sb.append("<?import "); //NOI18N
@@ -132,7 +131,7 @@ public class BuiltinLibrary extends Library {
      * Debug
      */
     
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         getLibrary();
     }
     
@@ -284,32 +283,32 @@ public class BuiltinLibrary extends Library {
     }
     
     
-    private void addDefaultItem(Class<?> componentClass, String section, String... qualifiers) {
-        final String name = componentClass.getSimpleName();
-        StringBuilder nameWithQualifier = new StringBuilder(name);
-        for (String qualifier : qualifiers) {
+    private void addDefaultItem(final Class<?> componentClass, final String section, final String... qualifiers) {
+        final var name = componentClass.getSimpleName();
+        final var nameWithQualifier = new StringBuilder(name);
+        for (final var qualifier : qualifiers) {
             nameWithQualifier.append(qualifier);
         }
-        final String fxmlText = makeFxmlText(componentClass);
+        final var fxmlText = makeFxmlText(componentClass);
         addItem(nameWithQualifier.toString(), fxmlText, section, name);
     }
 
-    private void addRegionItem200x200(Class<? extends Region> componentClass, String section) {
+    private void addRegionItem200x200(final Class<? extends Region> componentClass, final String section) {
         addRegionItem200x200(componentClass, section, null);
     }
     
-    private void addRegionItem200x200(Class<? extends Region> componentClass, String section, String qualifier) {
+    private void addRegionItem200x200(final Class<? extends Region> componentClass, final String section, final String qualifier) {
         addRegionItem200x200(componentClass, section, qualifier, null);
     }
     
-    private void addRegionItem200x200(Class<? extends Region> componentClass, String section, String qualifier, String iconName) {
-        final String name = componentClass.getSimpleName();
-        StringBuilder nameWithQualifier = new StringBuilder(name);
+    private void addRegionItem200x200(final Class<? extends Region> componentClass, final String section, final String qualifier, final String iconName) {
+        final var name = componentClass.getSimpleName();
+        final var nameWithQualifier = new StringBuilder(name);
         if (qualifier != null) {
             nameWithQualifier.append(qualifier);
         }
-        final String fxmlText = makeRegionFxmlText(componentClass, 200.0, 200.0);
-        String theIconName = name;
+        final var fxmlText = makeRegionFxmlText(componentClass, 200.0, 200.0);
+        var theIconName = name;
         if (iconName != null) {
             theIconName = iconName;
         }
@@ -317,70 +316,70 @@ public class BuiltinLibrary extends Library {
     }
     
     
-    private void addRegionItem200x100(Class<? extends Region> componentClass, String section) {
-        final String name = componentClass.getSimpleName();
-        final String fxmlText = makeRegionFxmlText(componentClass, 200.0, 100.0);
+    private void addRegionItem200x100(final Class<? extends Region> componentClass, final String section) {
+        final var name = componentClass.getSimpleName();
+        final var fxmlText = makeRegionFxmlText(componentClass, 200.0, 100.0);
         addItem(name, fxmlText, section, name);
     }
     
     
-    private void addRegionItem200x150(Class<? extends Region> componentClass, String section) {
-        final String name = componentClass.getSimpleName();
-        final String fxmlText = makeRegionFxmlText(componentClass, 200.0, 150.0);
+    private void addRegionItem200x150(final Class<? extends Region> componentClass, final String section) {
+        final var name = componentClass.getSimpleName();
+        final var fxmlText = makeRegionFxmlText(componentClass, 200.0, 150.0);
         addItem(name, fxmlText, section, name);
     }
     
     
-    private void addRegionItem100x200(Class<? extends Region> componentClass, String section) {
-        final String name = componentClass.getSimpleName();
-        final String fxmlText = makeRegionFxmlText(componentClass, 100.0, 200.0);
+    private void addRegionItem100x200(final Class<? extends Region> componentClass, final String section) {
+        final var name = componentClass.getSimpleName();
+        final var fxmlText = makeRegionFxmlText(componentClass, 100.0, 200.0);
         addItem(name, fxmlText, section, name);
     }
     
     
-    private void addCustomizedItem(Class<?> componentClass, String section) {
+    private void addCustomizedItem(final Class<?> componentClass, final String section) {
         addCustomizedItem(componentClass, section, null);
     }
     
-    private void addCustomizedItem(Class<?> componentClass, String section, String qualifier) {
-        final String name = componentClass.getSimpleName();
+    private void addCustomizedItem(final Class<?> componentClass, final String section, final String qualifier) {
+        final var name = componentClass.getSimpleName();
         addCustomizedItem(componentClass, section, name, name, qualifier);
     }
     
-    private void addCustomizedItem(Class<?> componentClass, String section, 
-            String fxmlBaseName, String iconName, String qualifier) {
-        String nameWithQualifier = componentClass.getSimpleName();
+    private void addCustomizedItem(final Class<?> componentClass, final String section,
+                                   final String fxmlBaseName, final String iconName, final String qualifier) {
+        var nameWithQualifier = componentClass.getSimpleName();
         if (qualifier != null) {
             nameWithQualifier += qualifier;
         }
-        final String fxmlText = readCustomizedFxmlText(fxmlBaseName, componentClass);
+        final var fxmlText = readCustomizedFxmlText(fxmlBaseName, componentClass);
         assert fxmlText != null;
         addItem(nameWithQualifier, fxmlText, section, iconName);
     }
     
     
-    private void addItem(String name, String fxmlText, String section, String iconName) {
-        final URL iconURL = ImageUtils.getNodeIconURL(iconName + ".png"); //NOI18N
-        final LibraryItem item = new LibraryItem(name, section, fxmlText, iconURL, this);
+    private void addItem(final String name, final String fxmlText, final String section, final String iconName) {
+        final var iconURL = ImageUtils.getNodeIconURL(iconName + ".png"); //NOI18N
+        final var item = new LibraryItem(name, section, fxmlText, iconURL, this);
         getItems().add(item);
     }
 
     private void addExternalItems() {
-        Collection<ExternalSectionProvider> providers = getExternalItemProviders();
-        List<String> orderedSections = BuiltinSectionComparator.getOrderedSections();
-        for (ExternalSectionProvider provider : providers) {
-            for (Class<?> item : provider.getExternalSectionItems()) {
-                String nameWithQualifier = item.getSimpleName();
-                URL resourceUrl = provider.getClass().getResource(provider.getItemsFXMLPath() + "/" + nameWithQualifier + ".fxml");
+        final var providers = getExternalItemProviders();
+        final var orderedSections = BuiltinSectionComparator.getOrderedSections();
+        for (final var provider : providers) {
+            for (final var item : provider.getExternalSectionItems()) {
+                final var nameWithQualifier = item.getSimpleName();
+                final var resourceUrl = provider.getClass().getResource(provider.getItemsFXMLPath() + "/" + nameWithQualifier + ".fxml");
                 assert resourceUrl != null;
-                final String fxmlText = readFxmlURL(resourceUrl);
+                final var fxmlText = readFxmlURL(resourceUrl);
                 assert fxmlText != null;
-                URL iconURL = provider.getClass().getResource(provider.getItemsIconPath() + "/" + nameWithQualifier + ".png");
+                final var iconURL = provider.getClass().getResource(provider.getItemsIconPath() + "/" + nameWithQualifier + ".png");
                 assert iconURL != null;
-                final LibraryItem libraryItem = new LibraryItem(nameWithQualifier, provider.getExternalSectionName(), fxmlText, iconURL, this);
+                final var libraryItem = new LibraryItem(nameWithQualifier, provider.getExternalSectionName(), fxmlText, iconURL, this);
                 getItems().add(libraryItem);
             }
-            int position = provider.getExternalSectionPosition();
+            final var position = provider.getExternalSectionPosition();
             if (position < 0 || position >= orderedSections.size()) {
                 orderedSections.add(provider.getExternalSectionName());
             } else {
@@ -390,15 +389,15 @@ public class BuiltinLibrary extends Library {
     }
 
     private Collection<ExternalSectionProvider> getExternalItemProviders() {
-        ServiceLoader<ExternalSectionProvider> loader = ServiceLoader.load(ExternalSectionProvider.class);
-        Collection<ExternalSectionProvider> providers = new ArrayList<>();
+        final var loader = ServiceLoader.load(ExternalSectionProvider.class);
+        final Collection<ExternalSectionProvider> providers = new ArrayList<>();
         loader.iterator().forEachRemaining(providers::add);
         return providers;
     }
 
-    private static String makeRegionFxmlText(Class<? extends Region> componentClass,
-            double pw, double ph) {
-        final StringBuilder sb = new StringBuilder();
+    private static String makeRegionFxmlText(final Class<? extends Region> componentClass,
+                                             final double pw, final double ph) {
+        final var sb = new StringBuilder();
         
         /*
          * <?xml version="1.0" encoding="UTF-8"?> //NOI18N
@@ -430,21 +429,21 @@ public class BuiltinLibrary extends Library {
         return sb.toString();
     }
 
-    private String readCustomizedFxmlText(String fxmlBaseName, Class<?> componentClass) {
-        String fxmlPath = "builtin/" + fxmlBaseName + ".fxml"; //NOI18N
-        final URL fxmlURL = BuiltinLibrary.class.getResource(fxmlPath);
+    private String readCustomizedFxmlText(final String fxmlBaseName, final Class<?> componentClass) {
+        final var fxmlPath = "builtin/" + fxmlBaseName + ".fxml"; //NOI18N
+        final var fxmlURL = BuiltinLibrary.class.getResource(fxmlPath);
         assert fxmlURL != null : "fxmlBaseName=" + fxmlBaseName; //NOI18N
         return readFxmlURL(fxmlURL);
     }
 
-    private String readFxmlURL(URL fxmlURL) {
+    private String readFxmlURL(final URL fxmlURL) {
         final String result;
 
         try {
             result = FXOMDocument.readContentFromURL(fxmlURL);
-        } catch (IOException x) {
+        } catch (final IOException x) {
             throw new IllegalStateException("Bug in " + getClass().getSimpleName(), x); //NOI18N
-        } catch (NullPointerException ex) {
+        } catch (final NullPointerException ex) {
             System.out.println("fxmlURL =  " + fxmlURL);
             throw ex;
         }

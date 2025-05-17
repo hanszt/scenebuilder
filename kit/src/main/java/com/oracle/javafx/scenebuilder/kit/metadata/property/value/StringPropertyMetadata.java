@@ -33,7 +33,6 @@ package com.oracle.javafx.scenebuilder.kit.metadata.property.value;
 
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMProperty;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyT;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.InspectorPath;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PrefixedValue;
@@ -51,14 +50,14 @@ public class StringPropertyMetadata extends TextEncodablePropertyMetadata<String
 
     private final boolean detectFileURL;
     
-    public StringPropertyMetadata(PropertyName name, boolean readWrite, 
-            String defaultValue, InspectorPath inspectorPath, boolean detectFileURL) {
+    public StringPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                  final String defaultValue, final InspectorPath inspectorPath, final boolean detectFileURL) {
         super(name, String.class, readWrite, defaultValue, inspectorPath);
         this.detectFileURL = detectFileURL;
     }
 
-    public StringPropertyMetadata(PropertyName name, boolean readWrite, 
-            String defaultValue, InspectorPath inspectorPath) {
+    public StringPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                  final String defaultValue, final InspectorPath inspectorPath) {
         this(name, readWrite, defaultValue, inspectorPath, false);
     }
 
@@ -83,12 +82,12 @@ public class StringPropertyMetadata extends TextEncodablePropertyMetadata<String
      */
     
     @Override
-    public String makeValueFromFxomInstance(FXOMInstance valueFxomInstance) {
+    public String makeValueFromFxomInstance(final FXOMInstance valueFxomInstance) {
         final String result;
         
-        final Class<?> valueClass = valueFxomInstance.getDeclaredClass();
+        final var valueClass = valueFxomInstance.getDeclaredClass();
         if (valueClass == URL.class) {
-            final FXOMProperty p = valueFxomInstance.getProperties().get(valueName);
+            final var p = valueFxomInstance.getProperties().get(valueName);
             if (p instanceof FXOMPropertyT) {
                 result = ((FXOMPropertyT) p).getValue();
             } else {
@@ -103,27 +102,27 @@ public class StringPropertyMetadata extends TextEncodablePropertyMetadata<String
     }
 
     @Override
-    public boolean canMakeStringFromValue(String value) {
+    public boolean canMakeStringFromValue(final String value) {
         return true;
     }
 
     @Override
-    public String makeValueFromString(String string) {
+    public String makeValueFromString(final String string) {
         return string;
     }
 
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(String value, FXOMDocument fxomDocument) {
+    public FXOMInstance makeFxomInstanceFromValue(final String value, final FXOMDocument fxomDocument) {
         final FXOMInstance result;
         
         boolean shouldEncodeAsURL;
-        final PrefixedValue pv = new PrefixedValue(value);
+        final var pv = new PrefixedValue(value);
         if (pv.isClassLoaderRelativePath() || pv.isDocumentRelativePath()) {
             shouldEncodeAsURL = true;
         } else if (pv.isPlainString() && detectFileURL) {
             try {
                 shouldEncodeAsURL = URLUtils.getFile(value) != null;
-            } catch(URISyntaxException x) {
+            } catch(final URISyntaxException x) {
                 shouldEncodeAsURL = false;
             }
         } else {
@@ -133,7 +132,7 @@ public class StringPropertyMetadata extends TextEncodablePropertyMetadata<String
         if (shouldEncodeAsURL) {
             // String value must be expressed using a URL element
             // <URL value="@Desktop/IssueTracking.css" />
-            final FXOMPropertyT newProperty = new FXOMPropertyT(fxomDocument, valueName, value);
+            final var newProperty = new FXOMPropertyT(fxomDocument, valueName, value);
             result = new FXOMInstance(fxomDocument, URL.class);
             newProperty.addToParentInstance(-1, result);
         } else {

@@ -45,7 +45,7 @@ public abstract class AbstractDragSource {
     
     private final Window ownerWindow;
     
-    public AbstractDragSource(Window ownerWindow) {
+    public AbstractDragSource(final Window ownerWindow) {
         this.ownerWindow = ownerWindow;
     }
     

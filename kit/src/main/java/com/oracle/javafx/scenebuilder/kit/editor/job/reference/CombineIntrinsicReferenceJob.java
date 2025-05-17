@@ -37,10 +37,9 @@ import com.oracle.javafx.scenebuilder.kit.editor.job.InlineDocumentJob;
 import com.oracle.javafx.scenebuilder.kit.editor.job.Job;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.RemoveObjectJob;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.ReplaceObjectJob;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMIntrinsic;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMNodes;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -52,8 +51,8 @@ public class CombineIntrinsicReferenceJob extends InlineDocumentJob {
     private final FXOMIntrinsic reference;
 
     public CombineIntrinsicReferenceJob(
-            FXOMIntrinsic reference, 
-            EditorController editorController) {
+            final FXOMIntrinsic reference,
+            final EditorController editorController) {
         super(editorController);
         
         assert reference != null;
@@ -70,9 +69,9 @@ public class CombineIntrinsicReferenceJob extends InlineDocumentJob {
         final List<Job> result = new LinkedList<>();
         
         // 1) Locate the referee
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
-        final String fxId = FXOMNodes.extractReferenceSource(reference);
-        final FXOMObject referee = fxomDocument.searchWithFxId(fxId);
+        final var fxomDocument = getEditorController().getFxomDocument();
+        final var fxId = FXOMNodes.extractReferenceSource(reference);
+        final var referee = fxomDocument.searchWithFxId(fxId);
         
         // 2) Remove the referee
         final Job removeJob = new RemoveObjectJob(referee, getEditorController());

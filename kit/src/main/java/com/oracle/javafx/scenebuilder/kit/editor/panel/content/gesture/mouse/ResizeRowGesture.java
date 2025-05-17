@@ -32,7 +32,6 @@
 
 package com.oracle.javafx.scenebuilder.kit.editor.panel.content.gesture.mouse;
 
-import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.ModifyObjectJob;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.gridpane.GridPaneHandles;
@@ -48,7 +47,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javafx.geometry.Point2D;
+
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
@@ -74,7 +73,7 @@ public class ResizeRowGesture extends AbstractMouseGesture {
     private GridPaneRowResizer resizer;
 
 
-    public ResizeRowGesture(GridPaneHandles gridPaneHandles, int rowIndex) {
+    public ResizeRowGesture(final GridPaneHandles gridPaneHandles, final int rowIndex) {
         super(gridPaneHandles.getContentPanelController());
         
         assert rowIndex >= 0;
@@ -110,13 +109,13 @@ public class ResizeRowGesture extends AbstractMouseGesture {
     protected void mouseDragged() {
         assert resizer != null;
         
-        final double startSceneX = getMousePressedEvent().getSceneX();
-        final double startSceneY = getMousePressedEvent().getSceneY();
-        final double currentSceneX = getLastMouseEvent().getSceneX();
-        final double currentSceneY = getLastMouseEvent().getSceneY();
-        final Point2D start = gridPane.sceneToLocal(startSceneX, startSceneY, true /* rootScene */);
-        final Point2D current = gridPane.sceneToLocal(currentSceneX, currentSceneY, true /* rootScene */);
-        final double dy = current.getY() - start.getY();
+        final var startSceneX = getMousePressedEvent().getSceneX();
+        final var startSceneY = getMousePressedEvent().getSceneY();
+        final var currentSceneX = getLastMouseEvent().getSceneX();
+        final var currentSceneY = getLastMouseEvent().getSceneY();
+        final var start = gridPane.sceneToLocal(startSceneX, startSceneY, true /* rootScene */);
+        final var current = gridPane.sceneToLocal(currentSceneX, currentSceneY, true /* rootScene */);
+        final var dy = current.getY() - start.getY();
         
         resizer.updateHeight(dy);
         gridPane.layout();
@@ -137,7 +136,7 @@ public class ResizeRowGesture extends AbstractMouseGesture {
          */
         
         // Step #1
-        final List<RowConstraints> newConstraints 
+        final var newConstraints
                 = cloneRowConstraintsList(gridPane);
 
         // Step #2
@@ -147,9 +146,9 @@ public class ResizeRowGesture extends AbstractMouseGesture {
         final Map<ValuePropertyMetadata, Object> metaValueMap = new HashMap<>();
         metaValueMap.put(rowConstraintsMeta, newConstraints);
         
-        final EditorController editorController 
+        final var editorController
                 = contentPanelController.getEditorController();
-        final ModifyObjectJob j = new ModifyObjectJob(
+        final var j = new ModifyObjectJob(
                 fxomInstance,
                 rowConstraintsMeta,
                 newConstraints,
@@ -167,7 +166,7 @@ public class ResizeRowGesture extends AbstractMouseGesture {
     }
 
     @Override
-    protected void keyEvent(KeyEvent e) {
+    protected void keyEvent(final KeyEvent e) {
         // Nothing special here
     }
 
@@ -183,10 +182,10 @@ public class ResizeRowGesture extends AbstractMouseGesture {
      * Private
      */
     
-    private List<RowConstraints> cloneRowConstraintsList(GridPane gridPane) {
+    private List<RowConstraints> cloneRowConstraintsList(final GridPane gridPane) {
         final List<RowConstraints> result = new ArrayList<>();
         
-        for (RowConstraints rc : gridPane.getRowConstraints()) {
+        for (final var rc : gridPane.getRowConstraints()) {
             result.add(cloneRowConstraints(rc));
         }
         
@@ -194,8 +193,8 @@ public class ResizeRowGesture extends AbstractMouseGesture {
     }
     
     
-    private RowConstraints cloneRowConstraints(RowConstraints cc) {
-        final RowConstraints result = new RowConstraints();
+    private RowConstraints cloneRowConstraints(final RowConstraints cc) {
+        final var result = new RowConstraints();
         
         result.setFillHeight(cc.isFillHeight());
         result.setValignment(cc.getValignment());

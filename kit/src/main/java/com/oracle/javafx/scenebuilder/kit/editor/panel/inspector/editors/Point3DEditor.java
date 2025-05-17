@@ -58,7 +58,7 @@ public class Point3DEditor extends PropertyEditor {
     private DoubleField zDf;
     DoubleField[] doubleFields = new DoubleField[3];
 
-    public Point3DEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public Point3DEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super(propMeta, selectedClasses);
         initialize();
     }
@@ -70,8 +70,8 @@ public class Point3DEditor extends PropertyEditor {
         doubleFields[0] = xDf;
         doubleFields[1] = yDf;
         doubleFields[2] = zDf;
-        for (DoubleField doubleField : doubleFields) {
-            EventHandler<ActionEvent> valueListener = event -> userUpdateValueProperty(getValue());
+        for (final var doubleField : doubleFields) {
+            final EventHandler<ActionEvent> valueListener = event -> userUpdateValueProperty(getValue());
             setNumericEditorBehavior(this, doubleField, valueListener, false);
         }
         setLayoutFormat(PropertyEditor.LayoutFormat.SIMPLE_LINE_BOTTOM);
@@ -84,17 +84,17 @@ public class Point3DEditor extends PropertyEditor {
 
     @Override
     public Object getValue() {
-        Double[] values = new Double[3];
-        int index = 0;
-        for (DoubleField doubleField : doubleFields) {
-            String val = doubleField.getText();
+        final var values = new Double[3];
+        var index = 0;
+        for (final var doubleField : doubleFields) {
+            var val = doubleField.getText();
             if (val.isEmpty()) {
                 val = "0"; //NOI18N
                 doubleField.setText(val);
             } else {
                 try {
                     Double.parseDouble(val);
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                     // should not happen, DoubleField should prevent any error
                     return null;
                 }
@@ -106,7 +106,7 @@ public class Point3DEditor extends PropertyEditor {
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(final Object value) {
         assert value != null;
         assert value instanceof Point3D;
 
@@ -115,21 +115,21 @@ public class Point3DEditor extends PropertyEditor {
             return;
         }
 
-        Point3D point3D = (Point3D) value;
+        final var point3D = (Point3D) value;
         xDf.setText(EditorUtils.valAsStr(point3D.getX()));
         yDf.setText(EditorUtils.valAsStr(point3D.getY()));
         zDf.setText(EditorUtils.valAsStr(point3D.getZ()));
     }
 
     @Override
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super.reset(propMeta, selectedClasses);
         setLayoutFormat(PropertyEditor.LayoutFormat.SIMPLE_LINE_BOTTOM);
     }
 
     @Override
     protected void valueIsIndeterminate() {
-        for (DoubleField doubleField : doubleFields) {
+        for (final var doubleField : doubleFields) {
             handleIndeterminate(doubleField);
         }
     }

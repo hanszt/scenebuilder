@@ -32,7 +32,6 @@
 package com.oracle.javafx.scenebuilder.kit.editor.drag.source;
 
 import com.oracle.javafx.scenebuilder.kit.util.MathUtils;
-import javafx.geometry.Bounds;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -40,7 +39,6 @@ import javafx.scene.SnapshotParameters;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.scene.transform.NonInvertibleTransformException;
-import javafx.scene.transform.Transform;
 
 /**
  * A shadow is the following construct:
@@ -69,20 +67,20 @@ class DragSourceShadow extends Group {
         this.glass.getStyleClass().add("drag-shadow-glass"); //NOI18N
     }
     
-    public void setupForNode(Node node) {
+    public void setupForNode(final Node node) {
         assert node != null;
         assert node.getScene() != null;
         
         // Snapshot node
         // Note : we setup snapshot view port with layout bounds.
-        final SnapshotParameters sp = new SnapshotParameters();
-        final Transform l2p = node.getLocalToParentTransform();
+        final var sp = new SnapshotParameters();
+        final var l2p = node.getLocalToParentTransform();
         try {
             sp.setTransform(l2p.createInverse());
-        } catch(NonInvertibleTransformException x) {
+        } catch(final NonInvertibleTransformException x) {
             throw new RuntimeException(x);
         }
-        final Bounds vp = node.getLayoutBounds();
+        final var vp = node.getLayoutBounds();
         if ((vp.getWidth() >= 0) && (vp.getHeight() >= 0)) {
             sp.setViewport(new Rectangle2D(vp.getMinX(), vp.getMinY(), 
                     vp.getWidth(), vp.getHeight()));
@@ -90,7 +88,7 @@ class DragSourceShadow extends Group {
         imageView.setImage(node.snapshot(sp, null));
         
         // Setup layoutX/layoutY on the image view and the region (1)
-        final Bounds inputBounds = vp;
+        final var inputBounds = vp;
         imageView.setLayoutX(inputBounds.getMinX());
         imageView.setLayoutY(inputBounds.getMinY());
         glass.setLayoutX(inputBounds.getMinX());
@@ -98,7 +96,7 @@ class DragSourceShadow extends Group {
         glass.setPrefWidth(inputBounds.getWidth());
         glass.setPrefHeight(inputBounds.getHeight());
 
-        final Bounds outputBounds = this.getLayoutBounds();
+        final var outputBounds = this.getLayoutBounds();
         assert MathUtils.equals(inputBounds.getMinX(), outputBounds.getMinX())
                 : "inputBounds=" + inputBounds + ", outputBounds=" + outputBounds; //NOI18N
         assert MathUtils.equals(inputBounds.getMinY(), outputBounds.getMinY())

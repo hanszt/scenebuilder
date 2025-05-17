@@ -61,8 +61,8 @@ public class InsertColumnConstraintsJob extends Job {
     private final int columnIndex;
     private final int insertCount;
 
-    public InsertColumnConstraintsJob(FXOMObject gridPaneObject, 
-            int columnIndex, int insertCount, EditorController editorController) {
+    public InsertColumnConstraintsJob(final FXOMObject gridPaneObject,
+                                      final int columnIndex, final int insertCount, final EditorController editorController) {
         super(editorController);
         
         assert gridPaneObject instanceof FXOMInstance;
@@ -95,7 +95,7 @@ public class InsertColumnConstraintsJob extends Job {
         final List<ColumnConstraints> constraintsList 
                 = new ArrayList<>(columnContraintsMeta.getValue(gridPaneObject));
         assert columnIndex < constraintsList.size();
-        for (int i = 0; i < insertCount; i++) {
+        for (var i = 0; i < insertCount; i++) {
             constraintsList.remove(columnIndex);
         }
         columnContraintsMeta.setValue(gridPaneObject, constraintsList);
@@ -111,7 +111,7 @@ public class InsertColumnConstraintsJob extends Job {
         } else {
             template = null;
         }
-        for (int i = 0; i < insertCount; i++) {
+        for (var i = 0; i < insertCount; i++) {
             constraintsList.add(columnIndex, makeColumnConstraints(template));
         }
         columnContraintsMeta.setValue(gridPaneObject, constraintsList);
@@ -127,8 +127,8 @@ public class InsertColumnConstraintsJob extends Job {
      * Private
      */
     
-    private ColumnConstraints makeColumnConstraints(ColumnConstraints template) {
-        final ColumnConstraints result = new ColumnConstraints();
+    private ColumnConstraints makeColumnConstraints(final ColumnConstraints template) {
+        final var result = new ColumnConstraints();
         if (columnIndex >= 1) {
             result.setFillWidth(template.isFillWidth());
             result.setHalignment(template.getHalignment());

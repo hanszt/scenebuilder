@@ -36,7 +36,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.editor.job.Job;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.AbstractSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,12 +49,12 @@ public class UpdateSelectionJob extends Job {
     private AbstractSelectionGroup oldSelectionGroup;
     private final AbstractSelectionGroup newSelectionGroup;
 
-    public UpdateSelectionJob(AbstractSelectionGroup group, EditorController editorController) {
+    public UpdateSelectionJob(final AbstractSelectionGroup group, final EditorController editorController) {
         super(editorController);
         newSelectionGroup = group;
     }
 
-    public UpdateSelectionJob(FXOMObject newSelectedObject, EditorController editorController) {
+    public UpdateSelectionJob(final FXOMObject newSelectedObject, final EditorController editorController) {
         super(editorController);
 
         assert newSelectedObject != null;
@@ -64,7 +63,7 @@ public class UpdateSelectionJob extends Job {
         newSelectionGroup = new ObjectSelectionGroup(newSelectedObjects, newSelectedObject, null);
     }
 
-    public UpdateSelectionJob(Collection<FXOMObject> newSelectedObjects, EditorController editorController) {
+    public UpdateSelectionJob(final Collection<FXOMObject> newSelectedObjects, final EditorController editorController) {
         super(editorController);
 
         assert newSelectedObjects != null; // But possibly empty
@@ -86,7 +85,7 @@ public class UpdateSelectionJob extends Job {
 
     @Override
     public void execute() {
-        final Selection selection = getEditorController().getSelection();
+        final var selection = getEditorController().getSelection();
         
         // Saves the current selection
         try {
@@ -95,7 +94,7 @@ public class UpdateSelectionJob extends Job {
             } else {
                 this.oldSelectionGroup = selection.getGroup().clone();
             }
-        } catch(CloneNotSupportedException x) {
+        } catch(final CloneNotSupportedException x) {
             throw new RuntimeException("Bug", x);
         }
         
@@ -105,14 +104,14 @@ public class UpdateSelectionJob extends Job {
 
     @Override
     public void undo() {
-        final Selection selection = getEditorController().getSelection();
+        final var selection = getEditorController().getSelection();
         selection.select(oldSelectionGroup);
         assert selection.isValid(getEditorController().getFxomDocument());
     }
 
     @Override
     public void redo() {
-        final Selection selection = getEditorController().getSelection();
+        final var selection = getEditorController().getSelection();
         selection.select(newSelectionGroup);
         assert selection.isValid(getEditorController().getFxomDocument());
     }

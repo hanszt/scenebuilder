@@ -37,12 +37,9 @@ import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
 import com.oracle.javafx.scenebuilder.kit.editor.job.BatchDocumentJob;
 import com.oracle.javafx.scenebuilder.kit.editor.job.Job;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.ModifyObjectJob;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.AbstractSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.Metadata;
-import com.oracle.javafx.scenebuilder.kit.metadata.property.ValuePropertyMetadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
 import java.util.ArrayList;
@@ -57,7 +54,7 @@ import javafx.scene.layout.GridPane;
 public class SpanJob extends BatchDocumentJob {
     private final EditAction editAction;
 
-    public SpanJob(EditorController editorController, EditAction editAction) {
+    public SpanJob(final EditorController editorController, final EditAction editAction) {
         super(editorController);
         this.editAction = editAction;
     }
@@ -65,24 +62,24 @@ public class SpanJob extends BatchDocumentJob {
     @Override
     protected List<Job> makeSubJobs() {
         final List<Job> jobList = new ArrayList<>();
-        final AbstractSelectionGroup selectionGroup = getEditorController().getSelection().getGroup();
+        final var selectionGroup = getEditorController().getSelection().getGroup();
         
         // Do we have an asset selected which is a standard one (not a grid) ?
         if (selectionGroup instanceof ObjectSelectionGroup) {
             // Is that asset enclosed in a grid ?
             if (selectionGroup.getAncestor() != null
                     && selectionGroup.getAncestor().getSceneGraphObject() instanceof GridPane) {
-                DesignHierarchyMask gridDHM = new DesignHierarchyMask(selectionGroup.getAncestor());
-                int columnCount = gridDHM.getColumnsSize();
-                int rowCount = gridDHM.getRowsSize();
-                List<FXOMObject> items = ((ObjectSelectionGroup)selectionGroup).getSortedItems();
+                final var gridDHM = new DesignHierarchyMask(selectionGroup.getAncestor());
+                final var columnCount = gridDHM.getColumnsSize();
+                final var rowCount = gridDHM.getRowsSize();
+                final var items = ((ObjectSelectionGroup)selectionGroup).getSortedItems();
                 
                 // Create a job for all items then check each is executable.
                 // As soon as one is not executable the job list is made empty
                 // so that no change will be performed by the job, eventually.
-                for (FXOMObject fxomObject : items) {
+                for (final var fxomObject : items) {
                     if (fxomObject instanceof FXOMInstance) {
-                        Job job = createJob((FXOMInstance)fxomObject, columnCount, rowCount);
+                        final var job = createJob((FXOMInstance)fxomObject, columnCount, rowCount);
 
                         if (job.isExecutable()) {
                             jobList.add(job);
@@ -100,7 +97,7 @@ public class SpanJob extends BatchDocumentJob {
 
     @Override
     protected String makeDescription() {
-        String description = ""; //NOI18N
+        var description = ""; //NOI18N
         
         switch (editAction) {
             default:
@@ -122,9 +119,9 @@ public class SpanJob extends BatchDocumentJob {
         return description;
     }
     
-    private Job createJob(FXOMInstance candidate, int columnCount, int rowCount) {
+    private Job createJob(final FXOMInstance candidate, final int columnCount, final int rowCount) {
         PropertyName propName = null;
-        int newSpan = 1;
+        var newSpan = 1;
         
         switch (editAction) {
             default:
@@ -154,17 +151,17 @@ public class SpanJob extends BatchDocumentJob {
                 break;
         }
 
-        final ValuePropertyMetadata vpm
+        final var vpm
                 = Metadata.getMetadata().queryValueProperty(candidate, propName);
-        final ModifyObjectJob columnSpanJob = new ModifyObjectJob(
+        final var columnSpanJob = new ModifyObjectJob(
                 candidate, vpm, newSpan, getEditorController());
 
         return columnSpanJob;
     }
     
     // May return a value identical to given span one.
-    private int getNewSpan(TREND trend, int index, int span, int count) {
-        int newSpan = span;
+    private int getNewSpan(final TREND trend, final int index, final int span, final int count) {
+        var newSpan = span;
         switch(trend) {
             case DECREASE:
                 if (span > 1) {
@@ -184,12 +181,12 @@ public class SpanJob extends BatchDocumentJob {
     private enum TREND {DECREASE, INCREASE};
     private enum PROPERTY {COLUMN_INDEX, COLUMN_SPAN, ROW_INDEX, ROW_SPAN};
     
-    private int getValue(PROPERTY property, FXOMInstance candidate) {
-        String propertyName = getName(property);
-        final PropertyName propName = new PropertyName(propertyName, GridPane.class);
-        final ValuePropertyMetadata vpm
+    private int getValue(final PROPERTY property, final FXOMInstance candidate) {
+        final var propertyName = getName(property);
+        final var propName = new PropertyName(propertyName, GridPane.class);
+        final var vpm
                 = Metadata.getMetadata().queryValueProperty(candidate, propName);
-        Object value = vpm.getValueObject(candidate);
+        var value = vpm.getValueObject(candidate);
         
         // Span value can be null
         if (value == null && (property == PROPERTY.COLUMN_SPAN || property == PROPERTY.ROW_SPAN)) {
@@ -200,8 +197,8 @@ public class SpanJob extends BatchDocumentJob {
         return (Integer)value;
     }
     
-    private String getName(PROPERTY property) {
-        String propertyName = ""; //NOI18N
+    private String getName(final PROPERTY property) {
+        var propertyName = ""; //NOI18N
         
         switch (property) {
             case COLUMN_INDEX:

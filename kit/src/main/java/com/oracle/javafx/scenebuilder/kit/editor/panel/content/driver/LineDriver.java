@@ -46,7 +46,7 @@ import javafx.scene.shape.Line;
  */
 public class LineDriver extends AbstractNodeDriver {
 
-    public LineDriver(ContentPanelController contentPanelController) {
+    public LineDriver(final ContentPanelController contentPanelController) {
         super(contentPanelController);
     }
 
@@ -55,18 +55,18 @@ public class LineDriver extends AbstractNodeDriver {
      */
     
     @Override
-    public AbstractHandles<?> makeHandles(FXOMObject fxomObject) {
+    public AbstractHandles<?> makeHandles(final FXOMObject fxomObject) {
         assert fxomObject.getSceneGraphObject() instanceof Line;
         assert fxomObject instanceof FXOMInstance;
         return new LineHandles(contentPanelController, (FXOMInstance)fxomObject);
     }
     
     @Override
-    public AbstractCurveEditor<?> makeCurveEditor(FXOMObject fxomObject) {
+    public AbstractCurveEditor<?> makeCurveEditor(final FXOMObject fxomObject) {
         assert fxomObject.getSceneGraphObject() instanceof Line;
         assert fxomObject instanceof FXOMInstance;
 
-        final Line line = (Line) fxomObject.getSceneGraphObject();
+        final var line = (Line) fxomObject.getSceneGraphObject();
         return new LineEditor(line);
     }
     

@@ -34,20 +34,18 @@ package com.oracle.javafx.scenebuilder.kit.editor.panel.css;
 
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.util.CssInternal;
-import java.util.Set;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javafx.css.CssMetaData;
 import javafx.css.Styleable;
-import javafx.css.StyleableProperty;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.PopupControl;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 import javafx.scene.layout.Pane;
 
 /**
@@ -151,14 +149,13 @@ public class CssUtils {
 //            }
 //        }
 //    }
-    static String getBeanPropertyName(Node node, CssMetaData<?, ?> sp) {
+    static String getBeanPropertyName(final Node node, final CssMetaData<?, ?> sp) {
         String property = null;
         try {
-            @SuppressWarnings("unchecked")
-            CssMetaData<Node, Object> raw = (CssMetaData<Node, Object>) sp;
-            final StyleableProperty<Object> val = raw.getStyleableProperty(node);
+            @SuppressWarnings("unchecked") final var raw = (CssMetaData<Node, Object>) sp;
+            final var val = raw.getStyleableProperty(node);
             property = CssInternal.getBeanPropertyName(val);
-        } catch (RuntimeException e) {
+        } catch (final RuntimeException e) {
             Logger.getLogger(CssUtils.class.getName()).log(Level.WARNING, "Failed to retrieve property: ", e);
         }
         return property;
@@ -693,8 +690,8 @@ public class CssUtils {
 //        }
 //    }
 //    
-    public static Node getFirstAncestorWithNonNullScene(Node node) {
-        Node ancestor = node;
+    public static Node getFirstAncestorWithNonNullScene(final Node node) {
+        var ancestor = node;
         while ((ancestor != null) && (ancestor.getScene() == null)) {
             ancestor = ancestor.getParent();
         }
@@ -749,18 +746,18 @@ public class CssUtils {
 //        return false;
 //    }
     // Workaround null node for MenuItem and Tab.
-    public static Node getNode(Object target) {
+    public static Node getNode(final Object target) {
         if (target instanceof Node) {
             return (Node) target;
         }
-        Styleable styleable = (target instanceof Styleable) ? (Styleable) target : null;
+        final var styleable = (target instanceof Styleable) ? (Styleable) target : null;
         Node node = null;
         if (styleable != null) {
             node = styleable.getStyleableNode();
             if (node == null) {
                 if (target instanceof MenuItem) {
-                    final MenuItem mi = (MenuItem) target;
-                    PopupControl pc = mi.getParentPopup();
+                    final var mi = (MenuItem) target;
+                    final PopupControl pc = mi.getParentPopup();
 
                     if (pc != null) { // can be null for Menu.
                         node = pc.getStyleableNode();
@@ -768,11 +765,11 @@ public class CssUtils {
                 } else {
                     if (target instanceof Tab) {
                         // Access the Skin Node
-                        Tab tab = (Tab) target;
-                        TabPane tp = tab.getTabPane();
-                        Set<Node> tabs = tp.lookupAll(".tab"); //NOI18N
-                        for (Node n : tabs) {
-                            Tab result = (Tab) n.getProperties().get(Tab.class);
+                        final var tab = (Tab) target;
+                        final var tp = tab.getTabPane();
+                        final var tabs = tp.lookupAll(".tab"); //NOI18N
+                        for (final var n : tabs) {
+                            final var result = (Tab) n.getProperties().get(Tab.class);
                             assert result != null;
                             if (result == tab) {
                                 node = n;
@@ -818,7 +815,7 @@ public class CssUtils {
 //            node.setOpacity(current);
 //        }
 //    }
-    static void addToParent(Parent p, Node node) {
+    static void addToParent(final Parent p, final Node node) {
         if (p instanceof Group) {
             ((Group) p).getChildren().add(node);
         } else {
@@ -828,7 +825,7 @@ public class CssUtils {
         }
     }
 
-    static void removeFromParent(Parent p, Node node) {
+    static void removeFromParent(final Parent p, final Node node) {
         if (p instanceof Group) {
             ((Group) p).getChildren().remove(node);
         } else {
@@ -1360,7 +1357,7 @@ public class CssUtils {
 //        return result;
 //    }
     
-    public static Object getSceneGraphObject(Object selectedObject) {
+    public static Object getSceneGraphObject(final Object selectedObject) {
         if (selectedObject instanceof FXOMObject) {
             return ((FXOMObject) selectedObject).getSceneGraphObject();
         } else {
@@ -1368,7 +1365,7 @@ public class CssUtils {
         }
     }
     
-    public static Node getSelectedNode(Object selectedObject) {
+    public static Node getSelectedNode(final Object selectedObject) {
         return CssUtils.getNode(CssUtils.getSceneGraphObject(selectedObject));
     }
 

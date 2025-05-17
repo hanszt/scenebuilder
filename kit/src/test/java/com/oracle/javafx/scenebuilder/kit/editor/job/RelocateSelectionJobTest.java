@@ -54,7 +54,7 @@ public class RelocateSelectionJobTest {
 
     @Test
     public void executing_job_relocates_fxom_object() throws Exception {
-        var editor = new EditorController();
+        final var editor = new EditorController();
         editor.setFxmlText(
                 Files.readString(Paths.get(getClass().getResource("basic.fxml").toURI())),
                 false
@@ -66,7 +66,7 @@ public class RelocateSelectionJobTest {
         assertThat(node.getLayoutX()).isEqualTo(233.0);
         assertThat(node.getLayoutY()).isEqualTo(152.0);
 
-        var job = new RelocateSelectionJob(Map.of(fxomObject, new Point2D(111, 222)), editor);
+        final var job = new RelocateSelectionJob(Map.of(fxomObject, new Point2D(111, 222)), editor);
 
         editor.getJobManager().push(job);
 

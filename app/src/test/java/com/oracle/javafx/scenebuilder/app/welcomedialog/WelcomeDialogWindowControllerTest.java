@@ -59,16 +59,16 @@ class WelcomeDialogWindowControllerTest {
     
     @Test
     void that_missing_files_are_detected_and_handled_and_existing_files_are_loaded() throws Exception {
-        String expectedExistingFile = getResource("WelcomeWindow.fxml").toString();
-        List<String> filesToLoad = List.of(
+        final var expectedExistingFile = getResource("WelcomeWindow.fxml").toString();
+        final var filesToLoad = List.of(
                     "k:/folder/test/notExisting.fxml",
                     expectedExistingFile);
         
-        List<String> filesMissing = new ArrayList<>();
-        List<String> filesLoaded = new ArrayList<>();
+        final List<String> filesMissing = new ArrayList<>();
+        final List<String> filesLoaded = new ArrayList<>();
         
-        Consumer<List<String>> missingFilesHandler = missing -> filesMissing.addAll(missing);
-        Consumer<List<String>> existingFilesHandler = existing -> filesLoaded.addAll(existing);
+        final Consumer<List<String>> missingFilesHandler = missing -> filesMissing.addAll(missing);
+        final Consumer<List<String>> existingFilesHandler = existing -> filesLoaded.addAll(existing);
         
         assertDoesNotThrow(() -> classUnderTest.handleOpen(filesToLoad, 
                                                          missingFilesHandler, 
@@ -81,10 +81,10 @@ class WelcomeDialogWindowControllerTest {
     
     @Test
     void that_no_actions_are_performed_on_empty_list() {
-        List<String> filesToLoad = Collections.emptyList();
+        final List<String> filesToLoad = Collections.emptyList();
         
-        Set<String> actionsPerformed = new HashSet<>();
-        Consumer<List<String>> filesHandler = listOffiles -> actionsPerformed.add("some action performed");
+        final Set<String> actionsPerformed = new HashSet<>();
+        final Consumer<List<String>> filesHandler = listOffiles -> actionsPerformed.add("some action performed");
         classUnderTest.handleOpen(filesToLoad, filesHandler, filesHandler);
         
         assertTrue(actionsPerformed.isEmpty());
@@ -92,22 +92,22 @@ class WelcomeDialogWindowControllerTest {
     
     @Test
     void that_file_loader_is_not_called_when_all_files_are_missing() {
-        List<String> filesToLoad = List.of(
+        final var filesToLoad = List.of(
                 "k:/folder/test/notExisting.fxml",
                 "o:\\otherLocation\\another_missing.fxml");
         
-        List<String> filesMissing = new ArrayList<>();
-        List<String> filesLoaded = new ArrayList<>();
+        final List<String> filesMissing = new ArrayList<>();
+        final List<String> filesLoaded = new ArrayList<>();
         
-        Consumer<List<String>> missingFilesHandler = missing -> filesMissing.addAll(missing);
-        Consumer<List<String>> existingFilesHandler = existing -> filesLoaded.addAll(existing);
+        final Consumer<List<String>> missingFilesHandler = missing -> filesMissing.addAll(missing);
+        final Consumer<List<String>> existingFilesHandler = existing -> filesLoaded.addAll(existing);
         classUnderTest.handleOpen(filesToLoad, missingFilesHandler, existingFilesHandler);
         
         assertTrue(filesLoaded.isEmpty());
         assertEquals(2, filesMissing.size());
     }
     
-    private Path getResource(String resourceName) throws Exception {
+    private Path getResource(final String resourceName) throws Exception {
         return Path.of(getClass().getResource(resourceName).toURI());
     }
 }

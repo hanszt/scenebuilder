@@ -36,7 +36,6 @@ import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMProperty;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMNodes;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyC;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyT;
 import com.oracle.javafx.scenebuilder.kit.metadata.property.ValuePropertyMetadata;
@@ -53,8 +52,8 @@ public abstract class SingleValuePropertyMetadata<T> extends ValuePropertyMetada
     private final Class<T> valueClass;
     private final T defaultValue;
 
-    public SingleValuePropertyMetadata(PropertyName name, Class<T> valueClass, 
-            boolean readWrite, T defaultValue, InspectorPath inspectorPath) {
+    public SingleValuePropertyMetadata(final PropertyName name, final Class<T> valueClass,
+                                       final boolean readWrite, final T defaultValue, final InspectorPath inspectorPath) {
         super(name, readWrite, inspectorPath);
         this.defaultValue = defaultValue;
         this.valueClass = valueClass;
@@ -64,28 +63,28 @@ public abstract class SingleValuePropertyMetadata<T> extends ValuePropertyMetada
         return defaultValue;
     }
     
-    public T getValue(FXOMInstance fxomInstance) {
+    public T getValue(final FXOMInstance fxomInstance) {
         final T result;
         
         if (isReadWrite()) {
-            final FXOMProperty fxomProperty = fxomInstance.getProperties().get(getName());
+            final var fxomProperty = fxomInstance.getProperties().get(getName());
             if (fxomProperty == null) {
                 // propertyName is not specified in the fxom instance.
                 // We return the default value specified in the metadata of the
                 // property
                 result = defaultValue;
             } else if (fxomProperty instanceof FXOMPropertyT) {
-                final FXOMPropertyT fxomPropertyT = (FXOMPropertyT) fxomProperty;
-                final PrefixedValue pv = new PrefixedValue(fxomPropertyT.getValue());
+                final var fxomPropertyT = (FXOMPropertyT) fxomProperty;
+                final var pv = new PrefixedValue(fxomPropertyT.getValue());
                 if (pv.isBindingExpression()) {
                     result = getDefaultValue();
                 } else {
                     result = makeValueFromProperty(fxomPropertyT);
                 }
             } else if (fxomProperty instanceof FXOMPropertyC) {
-                final FXOMPropertyC fxomPropertyC = (FXOMPropertyC) fxomProperty;
-                assert fxomPropertyC.getValues().isEmpty() == false;
-                final FXOMObject firstValue = fxomPropertyC.getValues().get(0);
+                final var fxomPropertyC = (FXOMPropertyC) fxomProperty;
+                assert !fxomPropertyC.getValues().isEmpty();
+                final var firstValue = fxomPropertyC.getValues().getFirst();
                 if (firstValue instanceof FXOMInstance) {
                     result = makeValueFromFxomInstance((FXOMInstance) firstValue);
                 } else {
@@ -102,10 +101,10 @@ public abstract class SingleValuePropertyMetadata<T> extends ValuePropertyMetada
         return result;
     }
 
-    public void setValue(FXOMInstance fxomInstance, T value) {
+    public void setValue(final FXOMInstance fxomInstance, final T value) {
         assert isReadWrite();
         
-        final FXOMProperty fxomProperty = fxomInstance.getProperties().get(getName());
+        final var fxomProperty = fxomInstance.getProperties().get(getName());
 
         if (Objects.equals(value, getDefaultValueObject())) {
             // We must remove the fxom property if any
@@ -113,13 +112,13 @@ public abstract class SingleValuePropertyMetadata<T> extends ValuePropertyMetada
                 fxomProperty.removeFromParentInstance();
             }
         } else {
-            final FXOMDocument fxomDocument = fxomInstance.getFxomDocument();
+            final var fxomDocument = fxomInstance.getFxomDocument();
             final FXOMProperty newProperty;
             if (canMakeStringFromValue(value)) {
-                final String valueString = makeStringFromValue(value);
+                final var valueString = makeStringFromValue(value);
                 newProperty = new FXOMPropertyT(fxomDocument, getName(), valueString);
             } else {
-                final FXOMInstance valueInstance = makeFxomInstanceFromValue(value, fxomDocument);
+                final var valueInstance = makeFxomInstanceFromValue(value, fxomDocument);
                 newProperty = new FXOMPropertyC(fxomDocument, getName(), valueInstance);
             }
             FXOMNodes.updateProperty(fxomInstance, newProperty);
@@ -133,7 +132,7 @@ public abstract class SingleValuePropertyMetadata<T> extends ValuePropertyMetada
     public abstract FXOMInstance makeFxomInstanceFromValue(T value, FXOMDocument fxomDocument);
     
     /* This routine should become abstract and replace makeValueFromString(). */
-    public T makeValueFromProperty(FXOMPropertyT fxomProperty) {
+    public T makeValueFromProperty(final FXOMPropertyT fxomProperty) {
         return makeValueFromString(fxomProperty.getValue());
     }
     
@@ -151,12 +150,12 @@ public abstract class SingleValuePropertyMetadata<T> extends ValuePropertyMetada
     }
 
     @Override
-    public Object getValueObject(FXOMInstance fxomInstance) {
+    public Object getValueObject(final FXOMInstance fxomInstance) {
         return getValue(fxomInstance);
     }
 
     @Override
-    public void setValueObject(FXOMInstance fxomInstance, Object valueObject) {
+    public void setValueObject(final FXOMInstance fxomInstance, final Object valueObject) {
         setValue(fxomInstance, valueClass.cast(valueObject));
     }
 }

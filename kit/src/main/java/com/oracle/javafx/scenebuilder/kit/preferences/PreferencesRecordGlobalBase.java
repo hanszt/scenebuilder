@@ -116,7 +116,7 @@ public abstract class PreferencesRecordGlobalBase {
      *                                                                         *
      **************************************************************************/
 
-    public void setApplicationRootPreferences(Preferences applicationRootPreferences) {
+    public void setApplicationRootPreferences(final Preferences applicationRootPreferences) {
         this.applicationRootPreferences = applicationRootPreferences;
     }
 
@@ -124,7 +124,7 @@ public abstract class PreferencesRecordGlobalBase {
         return rootContainerHeight;
     }
 
-    public void setRootContainerHeight(double value) {
+    public void setRootContainerHeight(final double value) {
         rootContainerHeight = value;
     }
 
@@ -132,7 +132,7 @@ public abstract class PreferencesRecordGlobalBase {
         return rootContainerWidth;
     }
 
-    public void setRootContainerWidth(double value) {
+    public void setRootContainerWidth(final double value) {
         rootContainerWidth = value;
     }
 
@@ -142,7 +142,7 @@ public abstract class PreferencesRecordGlobalBase {
 
     public Image getBackgroundImageImage() { return getImage(backgroundImage); }
 
-    public void setBackgroundImage(BackgroundImage value) {
+    public void setBackgroundImage(final BackgroundImage value) {
         backgroundImage = value;
     }
 
@@ -150,7 +150,7 @@ public abstract class PreferencesRecordGlobalBase {
         return alignmentGuidesColor;
     }
 
-    public void setAlignmentGuidesColor(Color value) {
+    public void setAlignmentGuidesColor(final Color value) {
         alignmentGuidesColor = value;
     }
 
@@ -158,13 +158,13 @@ public abstract class PreferencesRecordGlobalBase {
         return parentRingColor;
     }
 
-    public void setParentRingColor(Color value) {
+    public void setParentRingColor(final Color value) {
         parentRingColor = value;
     }
 
     public EditorPlatform.Theme getTheme() { return theme; }
 
-    public void setTheme(EditorPlatform.Theme theme) { this.theme = theme; }
+    public void setTheme(final EditorPlatform.Theme theme) { this.theme = theme; }
 
     /**
      * Read data from the java preferences DB and initialize properties.
@@ -174,34 +174,34 @@ public abstract class PreferencesRecordGlobalBase {
         assert applicationRootPreferences != null;
 
         // Document size
-        final double height = applicationRootPreferences.getDouble(PreferencesControllerBase.ROOT_CONTAINER_HEIGHT,
+        final var height = applicationRootPreferences.getDouble(PreferencesControllerBase.ROOT_CONTAINER_HEIGHT,
                 -1);
         setRootContainerHeight(height);
-        final double width = applicationRootPreferences.getDouble(PreferencesControllerBase.ROOT_CONTAINER_WIDTH,
+        final var width = applicationRootPreferences.getDouble(PreferencesControllerBase.ROOT_CONTAINER_WIDTH,
                 -1);
         setRootContainerWidth(width);
 
         // Background image
-        final String image = applicationRootPreferences.get(PreferencesControllerBase.BACKGROUND_IMAGE,
+        final var image = applicationRootPreferences.get(PreferencesControllerBase.BACKGROUND_IMAGE,
                 DEFAULT_BACKGROUND_IMAGE.name());
         setBackgroundImage(BackgroundImage.valueOf(image));
 
         // Alignment guides color
-        final String agColor = applicationRootPreferences.get(PreferencesControllerBase.ALIGNMENT_GUIDES_COLOR,
+        final var agColor = applicationRootPreferences.get(PreferencesControllerBase.ALIGNMENT_GUIDES_COLOR,
                 DEFAULT_ALIGNMENT_GUIDES_COLOR.toString());
         setAlignmentGuidesColor(Color.valueOf(agColor));
 
         // Parent ring color
-        final String prColor = applicationRootPreferences.get(PreferencesControllerBase.PARENT_RING_COLOR,
+        final var prColor = applicationRootPreferences.get(PreferencesControllerBase.PARENT_RING_COLOR,
                 DEFAULT_PARENT_RING_COLOR.toString());
         setParentRingColor(Color.valueOf(prColor));
 
         // Document theme
-        String themeName = applicationRootPreferences.get(PreferencesControllerBase.THEME, DEFAULT_THEME.name());
+        final var themeName = applicationRootPreferences.get(PreferencesControllerBase.THEME, DEFAULT_THEME.name());
         theme = EditorPlatform.Theme.valueOf(themeName);
     }
 
-    public void writeToJavaPreferences(String key) {
+    public void writeToJavaPreferences(final String key) {
         assert applicationRootPreferences != null;
         assert key != null;
         switch (key) {
@@ -229,7 +229,7 @@ public abstract class PreferencesRecordGlobalBase {
         }
     }
 
-    private static Image getImage(BackgroundImage bgi) {
+    private static Image getImage(final BackgroundImage bgi) {
         final URL url;
         switch (bgi) {
             case BACKGROUND_01:

@@ -9,7 +9,7 @@ import javafx.stage.Stage;
  */
 public class WrapInStageJob extends AbstractWrapInWindowJob {
 
-    public WrapInStageJob(EditorController editorController) {
+    public WrapInStageJob(final EditorController editorController) {
         super(editorController);
         newContainerClass = Stage.class;
     }

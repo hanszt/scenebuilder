@@ -31,7 +31,6 @@
  */
 package com.oracle.javafx.scenebuilder.kit.editor.panel.inspector.editors;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
@@ -78,22 +77,22 @@ public class ImageEditor extends PropertyEditor {
     private PrefixedValue.Type type = PrefixedValue.Type.PLAIN_STRING;
     private URL fxmlFileLocation;
 
-    public ImageEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses, URL fxmlFileLocation) {
+    public ImageEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses, final URL fxmlFileLocation) {
         super(propMeta, selectedClasses);
         initialize(fxmlFileLocation);
     }
     
     // Separate method to please FindBugs
-    private void initialize(URL fxmlFileLocation) {
+    private void initialize(final URL fxmlFileLocation) {
         this.fxmlFileLocation = fxmlFileLocation;
         root = EditorUtils.loadFxml("ImageEditor.fxml", this); //NOI18N
 
-        EventHandler<ActionEvent> valueListener = event -> {
+        final EventHandler<ActionEvent> valueListener = event -> {
             Image imageObj;
             String prefixedValue = null;
-            URL url;
+            final URL url;
             try {
-                String suffix = imagePathTf.getText();
+                final var suffix = imagePathTf.getText();
                 if (suffix == null || suffix.isEmpty()) {
                     image = null;
                     switchType(PrefixedValue.Type.PLAIN_STRING);
@@ -103,7 +102,7 @@ public class ImageEditor extends PropertyEditor {
                 prefixedValue = new PrefixedValue(type, suffix).toString();
                 url = EditorUtils.getUrl(suffix, type, ImageEditor.this.fxmlFileLocation);
                 imageObj = new Image(url != null ? url.toExternalForm() : null);
-            } catch (NullPointerException | IllegalArgumentException ex) {
+            } catch (final NullPointerException | IllegalArgumentException ex) {
                 // Always happen for classpath relative, or if the url cannot be resolved.
                 // In this case we cannot resolve the reference, so we use a dummy image.
                 imageObj = new Image(DesignImage.getVoidImageUrl().toExternalForm());
@@ -121,8 +120,8 @@ public class ImageEditor extends PropertyEditor {
         updateMenuItems();
     }
 
-    private void switchType(PrefixedValue.Type newType) {
-        String suffix = imagePathTf.getText();
+    private void switchType(final PrefixedValue.Type newType) {
+        final var suffix = imagePathTf.getText();
         if (suffix == null || suffix.isEmpty()) {
             type = newType;
             updateMenuItems();
@@ -130,7 +129,7 @@ public class ImageEditor extends PropertyEditor {
             return;
         }
         // Get the current url
-        URL url = EditorUtils.getUrl(suffix, type, fxmlFileLocation);
+        final var url = EditorUtils.getUrl(suffix, type, fxmlFileLocation);
         // Switch to the new type now
         String newSuffix = null;
         if ((url == null) || (newType == PrefixedValue.Type.CLASSLOADER_RELATIVE_PATH)) {
@@ -179,7 +178,7 @@ public class ImageEditor extends PropertyEditor {
         }
     }
 
-    private void setPrefix(String str) {
+    private void setPrefix(final String str) {
         if (!prefixLb.isVisible()) {
             prefixLb.setVisible(true);
             prefixLb.setManaged(true);
@@ -203,7 +202,7 @@ public class ImageEditor extends PropertyEditor {
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(final Object value) {
         setValueGeneric(value);
         if (isSetValueDone()) {
             return;
@@ -215,7 +214,7 @@ public class ImageEditor extends PropertyEditor {
         } else {
             assert value instanceof DesignImage;
             image = (DesignImage) value;
-            PrefixedValue prefixedValue = new PrefixedValue(image.getLocation());
+            final var prefixedValue = new PrefixedValue(image.getLocation());
             imagePathTf.setText(prefixedValue.getSuffix());
             type = prefixedValue.getType();
             handlePrefix();
@@ -223,7 +222,7 @@ public class ImageEditor extends PropertyEditor {
         }
     }
 
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses, URL fxmlFileLocation) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses, final URL fxmlFileLocation) {
         super.reset(propMeta, selectedClasses);
         this.fxmlFileLocation = fxmlFileLocation;
         imagePathTf.setPromptText(null);
@@ -238,30 +237,30 @@ public class ImageEditor extends PropertyEditor {
     // FXML methods
     //
     @FXML
-    void chooseImage(ActionEvent event) {
-        String[] extensions = {"*.jpg", "*.jpeg", "*.png", "*.gif"}; //NOI18N
-        FileChooser fileChooser = new FileChooser();
+    void chooseImage(final ActionEvent event) {
+        final var extensions = new String[]{"*.jpg", "*.jpeg", "*.png", "*.gif"}; //NOI18N
+        final var fileChooser = new FileChooser();
         fileChooser.setTitle(I18N.getString("inspector.select.image"));
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter(
                         I18N.getString("inspector.select.image"),
                         Arrays.asList(extensions)));
         fileChooser.setInitialDirectory(EditorController.getNextInitialDirectory());
-        File file = fileChooser.showOpenDialog(imagePathTf.getScene().getWindow());
+        final var file = fileChooser.showOpenDialog(imagePathTf.getScene().getWindow());
         if ((file == null)) {
             return;
         }
         // Keep track of the user choice for next time
         EditorController.updateNextInitialDirectory(file);
-        URL url;
+        final URL url;
         try {
             url = file.toURI().toURL();
-        } catch (MalformedURLException ex) {
+        } catch (final MalformedURLException ex) {
             throw new RuntimeException("Invalid URL", ex); //NOI18N
         }
 
         // If the document exists, make the type as document relative by default.
-        String urlStr;
+        final String urlStr;
         if (fxmlFileLocation != null) {
             urlStr = PrefixedValue.makePrefixedValue(url, fxmlFileLocation).toString();
             switchType(PrefixedValue.Type.DOCUMENT_RELATIVE_PATH);
@@ -269,9 +268,9 @@ public class ImageEditor extends PropertyEditor {
             urlStr = url.toExternalForm();
             switchType(PrefixedValue.Type.PLAIN_STRING);
         }
-        PrefixedValue prefixedValue = new PrefixedValue(urlStr);
+        final var prefixedValue = new PrefixedValue(urlStr);
         type = prefixedValue.getType();
-        String suffix = prefixedValue.getSuffix();
+        final var suffix = prefixedValue.getSuffix();
         imagePathTf.setText(suffix);
         image = new DesignImage(new Image(EditorUtils.getUrl(suffix, type, fxmlFileLocation).toExternalForm()), prefixedValue.toString());
         userUpdateValueProperty(getValue());

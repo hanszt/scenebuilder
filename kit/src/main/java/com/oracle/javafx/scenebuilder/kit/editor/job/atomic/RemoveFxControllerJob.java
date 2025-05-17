@@ -44,7 +44,7 @@ public class RemoveFxControllerJob extends Job {
     private final FXOMObject fxomObject;
     private String oldFxController;
 
-    public RemoveFxControllerJob(FXOMObject fxomObject, EditorController editorController) {
+    public RemoveFxControllerJob(final FXOMObject fxomObject, final EditorController editorController) {
         super(editorController);
         assert fxomObject != null;
         this.fxomObject = fxomObject;

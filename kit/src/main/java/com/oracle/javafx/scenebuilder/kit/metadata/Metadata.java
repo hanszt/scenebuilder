@@ -65,7 +65,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -97,18 +96,18 @@ public class Metadata {
         return metadata;
     }
     
-    public ComponentClassMetadata queryComponentMetadata(Class<?> componentClass) {
+    public ComponentClassMetadata queryComponentMetadata(final Class<?> componentClass) {
         final ComponentClassMetadata result;
         
         
-        final ComponentClassMetadata componentMetadata
+        final var componentMetadata
                 = componentClassMap.get(componentClass);
         if (componentMetadata != null) {
             // componentClass is a certified component
             result = componentMetadata;
         } else {
             // componentClass is a custom component
-            final ComponentClassMetadata customMetadata
+            final var customMetadata
                     = customComponentClassMap.get(componentClass);
             if (customMetadata != null) {
                 // componentClass has already been introspected
@@ -116,13 +115,13 @@ public class Metadata {
             } else {
                 // componentClass must be introspected
                 // Let's find the first certified ancestor
-                Class<?> ancestorClass = componentClass.getSuperclass();
+                var ancestorClass = componentClass.getSuperclass();
                 ComponentClassMetadata ancestorMetadata = null;
                 while ((ancestorClass != null) && (ancestorMetadata == null)) {
                     ancestorMetadata = componentClassMap.get(ancestorClass);
                     ancestorClass = ancestorClass.getSuperclass();
                 }
-                final MetadataIntrospector introspector
+                final var introspector
                         = new MetadataIntrospector(componentClass, ancestorMetadata);
                 result = introspector.introspect();
                 customComponentClassMap.put(componentClass, result);
@@ -132,13 +131,13 @@ public class Metadata {
         return result;
     }
     
-    public Set<PropertyMetadata> queryProperties(Class<?> componentClass) {
+    public Set<PropertyMetadata> queryProperties(final Class<?> componentClass) {
         final Map<PropertyName, PropertyMetadata> result = new HashMap<>();
-        ComponentClassMetadata classMetadata = queryComponentMetadata(componentClass);
+        var classMetadata = queryComponentMetadata(componentClass);
         
         while (classMetadata != null) {
-            for (PropertyMetadata pm : classMetadata.getProperties()) {
-                if (result.containsKey(pm.getName()) == false) {
+            for (final var pm : classMetadata.getProperties()) {
+                if (!result.containsKey(pm.getName())) {
                     result.put(pm.getName(), pm);
                 }
             }
@@ -148,12 +147,12 @@ public class Metadata {
         return new HashSet<>(result.values());
     }
     
-    public Set<PropertyMetadata> queryProperties(Collection<Class<?>> componentClasses) {
+    public Set<PropertyMetadata> queryProperties(final Collection<Class<?>> componentClasses) {
         final Set<PropertyMetadata> result = new HashSet<>();
-        
-        int count = 0;
-        for (Class<?> componentClass : componentClasses) {
-            final Set<PropertyMetadata> propertyMetadata = queryProperties(componentClass);
+
+        var count = 0;
+        for (final var componentClass : componentClasses) {
+            final var propertyMetadata = queryProperties(componentClass);
             if (count == 0) {
                 result.addAll(propertyMetadata);
             } else {
@@ -165,10 +164,10 @@ public class Metadata {
         return result;
     }
     
-    public Set<ComponentPropertyMetadata> queryComponentProperties(Class<?> componentClass) {
+    public Set<ComponentPropertyMetadata> queryComponentProperties(final Class<?> componentClass) {
         final Set<ComponentPropertyMetadata> result = new HashSet<>();
         
-        for (PropertyMetadata propertyMetadata : queryProperties(Arrays.asList(componentClass))) {
+        for (final var propertyMetadata : queryProperties(Arrays.asList(componentClass))) {
             if (propertyMetadata instanceof ComponentPropertyMetadata) {
                 result.add((ComponentPropertyMetadata) propertyMetadata);
             }
@@ -176,9 +175,9 @@ public class Metadata {
         return result;
     }
     
-    public Set<ValuePropertyMetadata> queryValueProperties(Set<Class<?>> componentClasses) {
+    public Set<ValuePropertyMetadata> queryValueProperties(final Set<Class<?>> componentClasses) {
         final Set<ValuePropertyMetadata> result = new HashSet<>();
-        for (PropertyMetadata propertyMetadata : queryProperties(componentClasses)) {
+        for (final var propertyMetadata : queryProperties(componentClasses)) {
             if (propertyMetadata instanceof ValuePropertyMetadata) {
                 result.add((ValuePropertyMetadata) propertyMetadata);
             }
@@ -186,13 +185,13 @@ public class Metadata {
         return result;
     }
     
-    public PropertyMetadata queryProperty(Class<?> componentClass, PropertyName targetName) {
-        final Set<PropertyMetadata> propertyMetadataSet = queryProperties(componentClass);
-        final Iterator<PropertyMetadata> iterator = propertyMetadataSet.iterator();
+    public PropertyMetadata queryProperty(final Class<?> componentClass, final PropertyName targetName) {
+        final var propertyMetadataSet = queryProperties(componentClass);
+        final var iterator = propertyMetadataSet.iterator();
         PropertyMetadata result = null;
                 
         while ((result == null) && iterator.hasNext()) {
-            final PropertyMetadata propertyMetadata = iterator.next();
+            final var propertyMetadata = iterator.next();
             if (propertyMetadata.getName().equals(targetName)) {
                 result = propertyMetadata;
             }
@@ -201,7 +200,7 @@ public class Metadata {
         return result;
     }
 
-    public ValuePropertyMetadata queryValueProperty(FXOMInstance fxomInstance, PropertyName targetName) {
+    public ValuePropertyMetadata queryValueProperty(final FXOMInstance fxomInstance, final PropertyName targetName) {
         final ValuePropertyMetadata result;
         assert fxomInstance != null;
         assert targetName != null;
@@ -217,7 +216,7 @@ public class Metadata {
                 componentClass = fxomInstance.getSceneGraphObject().getClass();
             }
 
-            final PropertyMetadata m = Metadata.getMetadata().queryProperty(componentClass, targetName);
+            final var m = Metadata.getMetadata().queryProperty(componentClass, targetName);
             if (m instanceof ValuePropertyMetadata) {
                 result = (ValuePropertyMetadata) m;
             } else {
@@ -237,7 +236,7 @@ public class Metadata {
         return hiddenProperties;
     }
 
-    public boolean isPropertyTrimmingNeeded(PropertyName name) {
+    public boolean isPropertyTrimmingNeeded(final PropertyName name) {
         final boolean result;
         
         if (name.getResidenceClass() != null) {
@@ -6206,16 +6205,16 @@ public class Metadata {
     private final Collection<ExternalMetadataProvider> externalMetadataProviders = getExternalMetadataProviders();
 
     private void addExternalMetadata() {
-        for (ExternalMetadataProvider provider : externalMetadataProviders) {
-            for (ComponentClassMetadata item : provider.getExternalItems()) {
+        for (final var provider : externalMetadataProviders) {
+            for (final var item : provider.getExternalItems()) {
                 componentClassMap.put(item.getKlass(), item);
             }
         }
     }
 
     private Collection<ExternalMetadataProvider> getExternalMetadataProviders() {
-        ServiceLoader<ExternalMetadataProvider> loader = ServiceLoader.load(ExternalMetadataProvider.class);
-        Collection<ExternalMetadataProvider> providers = new ArrayList<>();
+        final var loader = ServiceLoader.load(ExternalMetadataProvider.class);
+        final Collection<ExternalMetadataProvider> providers = new ArrayList<>();
         loader.iterator().forEachRemaining(providers::add);
         return providers;
     }

@@ -51,7 +51,7 @@ class VerticalLineIndex {
     private boolean sorted;
     
 
-    public void addLine(VerticalSegment s) {
+    public void addLine(final VerticalSegment s) {
         lines.add(s);
         sorted = false;
     }
@@ -64,24 +64,24 @@ class VerticalLineIndex {
         return lines.isEmpty();
     }
     
-    public List<VerticalSegment> matchWest(Bounds boundsInScene, double threshold) {
-        assert boundsInScene.isEmpty() == false;
+    public List<VerticalSegment> matchWest(final Bounds boundsInScene, final double threshold) {
+        assert !boundsInScene.isEmpty();
         return matchX(boundsInScene.getMinX(), threshold);
     }
     
-    public List<VerticalSegment> matchEast(Bounds boundsInScene, double threshold) {
-        assert boundsInScene.isEmpty() == false;
+    public List<VerticalSegment> matchEast(final Bounds boundsInScene, final double threshold) {
+        assert !boundsInScene.isEmpty();
         return matchX(boundsInScene.getMaxX(), threshold);
     }
     
-    public List<VerticalSegment> matchCenter(Bounds boundsInScene, double threshold) {
-        assert boundsInScene.isEmpty() == false;
-        final double minX = boundsInScene.getMinX();
-        final double maxX = boundsInScene.getMaxX();
+    public List<VerticalSegment> matchCenter(final Bounds boundsInScene, final double threshold) {
+        assert !boundsInScene.isEmpty();
+        final var minX = boundsInScene.getMinX();
+        final var maxX = boundsInScene.getMaxX();
         return matchX((minX + maxX) / 2.0, threshold);
     }
 
-    public List<VerticalSegment> matchPoint(Point2D point, double threshold) {
+    public List<VerticalSegment> matchPoint(final Point2D point, final double threshold) {
         assert point != null;
         return matchXY(point.getX(), point.getY(), threshold);
     }
@@ -90,16 +90,16 @@ class VerticalLineIndex {
      * Private
      */
 
-    private List<VerticalSegment> matchX(double targetX, double threshold) {
+    private List<VerticalSegment> matchX(final double targetX, final double threshold) {
         assert threshold >= 0;
 
-        if (sorted == false) {
+        if (!sorted) {
             Collections.sort(lines, comparator);
         }
-        double bestDelta = Double.MAX_VALUE;
+        var bestDelta = Double.MAX_VALUE;
         final List<VerticalSegment> result = new ArrayList<>();
-        for (VerticalSegment l : lines) {
-            final double delta = Math.abs(l.getX1() - targetX);
+        for (final var l : lines) {
+            final var delta = Math.abs(l.getX1() - targetX);
             if (delta < threshold) {
                 if (MathUtils.equals(delta, bestDelta)) {
                     result.add(l);
@@ -114,16 +114,16 @@ class VerticalLineIndex {
         return result;
     }
 
-    private List<VerticalSegment> matchXY(double targetX, double targetY, double threshold) {
+    private List<VerticalSegment> matchXY(final double targetX, final double targetY, final double threshold) {
         assert threshold >= 0;
 
-        if (sorted == false) {
+        if (!sorted) {
             Collections.sort(lines, comparator);
         }
-        double bestDelta = Double.MAX_VALUE;
+        var bestDelta = Double.MAX_VALUE;
         final List<VerticalSegment> result = new ArrayList<>();
-        for (VerticalSegment l : lines) {
-            final double delta = Math.abs(l.getX1() - targetX);
+        for (final var l : lines) {
+            final var delta = Math.abs(l.getX1() - targetX);
             if (delta < threshold && targetY >= l.getY1() && targetY <= l.getY2()) {
                 if (MathUtils.equals(delta, bestDelta)) {
                     result.add(l);

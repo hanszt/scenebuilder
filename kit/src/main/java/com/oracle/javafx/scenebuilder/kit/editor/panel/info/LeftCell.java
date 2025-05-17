@@ -48,7 +48,7 @@ class LeftCell extends TableCell<IndexEntry, String> {
      */
 
     @Override
-    protected void updateItem(String leftValue, boolean empty) {
+    protected void updateItem(final String leftValue, final boolean empty) {
         super.updateItem(leftValue, empty);
         setText(empty ? "" : leftValue); //NOI18N
     }
@@ -64,7 +64,7 @@ class LeftCell extends TableCell<IndexEntry, String> {
          */
 
         @Override
-        public TableCell<IndexEntry, String> call(TableColumn<IndexEntry, String> tc) {
+        public TableCell<IndexEntry, String> call(final TableColumn<IndexEntry, String> tc) {
             return new LeftCell();
         }
     }

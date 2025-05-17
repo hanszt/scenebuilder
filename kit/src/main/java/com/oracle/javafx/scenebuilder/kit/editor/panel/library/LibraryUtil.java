@@ -54,7 +54,7 @@ public class LibraryUtil {
         // no-op
     }
 
-    public static Optional<ModuleReference> getModuleReference(Path path) {
+    public static Optional<ModuleReference> getModuleReference(final Path path) {
         if (path == null) {
             return Optional.empty();
         }
@@ -67,25 +67,25 @@ public class LibraryUtil {
             .findFirst();
     }
 
-    public static boolean isJarPath(Path path) {
-        final String pathString = path.toString().toLowerCase(Locale.ROOT);
+    public static boolean isJarPath(final Path path) {
+        final var pathString = path.toString().toLowerCase(Locale.ROOT);
         return pathString.endsWith(".jar"); //NOI18N
     }
 
-    public static boolean isFxmlPath(Path path) {
-        final String pathString = path.toString().toLowerCase(Locale.ROOT);
+    public static boolean isFxmlPath(final Path path) {
+        final var pathString = path.toString().toLowerCase(Locale.ROOT);
         return pathString.endsWith(".fxml"); //NOI18N
     }
 
-    public static boolean isFolderMarkerPath(Path path) {
-        final String pathString = path.toString().toLowerCase(Locale.ROOT);
+    public static boolean isFolderMarkerPath(final Path path) {
+        final var pathString = path.toString().toLowerCase(Locale.ROOT);
         return pathString.endsWith(".folders"); //NOI18N
     }
 
-    public static List<Path> getFolderPaths(Path libraryFile) throws FileNotFoundException, IOException {
+    public static List<Path> getFolderPaths(final Path libraryFile) throws FileNotFoundException, IOException {
         return Files.readAllLines(libraryFile).stream()
                 .map(line -> {
-                    File f = new File(line);
+                    final var f = new File(line);
                     if (f.exists() && f.isDirectory())
                         return f.toPath();
                     else

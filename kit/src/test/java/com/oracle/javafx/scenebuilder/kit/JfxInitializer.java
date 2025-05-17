@@ -42,7 +42,7 @@ public class JfxInitializer {
 
     public static void initialize() {
         if (initialized.compareAndSet(false, true)) {
-            Thread t = new Thread("JavaFX Init Thread") {
+            final var t = new Thread("JavaFX Init Thread") {
 
                 @Override
                 public void run() {
@@ -57,7 +57,7 @@ public class JfxInitializer {
     public static class DummyApp extends Application {
 
         @Override
-        public void start(Stage primaryStage) {
+        public void start(final Stage primaryStage) {
             // noop
         }
     }

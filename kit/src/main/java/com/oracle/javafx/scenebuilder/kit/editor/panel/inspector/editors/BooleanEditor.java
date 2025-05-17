@@ -52,11 +52,11 @@ public class BooleanEditor extends PropertyEditor {
     private final CheckBox checkBox;
     private final HBox activeZone;
 
-    public BooleanEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public BooleanEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super(propMeta, selectedClasses);
         checkBox = new CheckBox();
         checkBox.disableProperty().bind(disableProperty());
-        EventHandler<ActionEvent> onActionListener = event -> userUpdateValueProperty(getValue());
+        final EventHandler<ActionEvent> onActionListener = event -> userUpdateValueProperty(getValue());
         checkBox.setOnAction(onActionListener);
         setCommitListener(onActionListener);
         activeZone = new HBox();
@@ -76,7 +76,7 @@ public class BooleanEditor extends PropertyEditor {
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(final Object value) {
         setValueGeneric(value);
         if (isSetValueDone()) {
             return;
@@ -86,7 +86,7 @@ public class BooleanEditor extends PropertyEditor {
     }
 
     @Override
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super.reset(propMeta, selectedClasses);
         checkBox.setIndeterminate(false);
     }

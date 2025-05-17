@@ -41,7 +41,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import javafx.geometry.Bounds;
+
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.SplitPane;
@@ -51,7 +51,7 @@ import javafx.scene.control.SplitPane;
  */
 public class WrapInSplitPaneJob extends AbstractWrapInSubComponentJob {
 
-    public WrapInSplitPaneJob(EditorController editorController) {
+    public WrapInSplitPaneJob(final EditorController editorController) {
         super(editorController);
         newContainerClass = SplitPane.class;
     }
@@ -61,28 +61,28 @@ public class WrapInSplitPaneJob extends AbstractWrapInSubComponentJob {
         super.modifyNewContainer(children);
 
         // Update the SplitPane orientation depending on its children positionning
-        final Orientation orientation = getOrientation(children);
+        final var orientation = getOrientation(children);
         JobUtils.setOrientation(newContainer, SplitPane.class, orientation.name());
     }
     
     @Override
-    protected Collection<FXOMObject> sortChildren(List<FXOMObject> children) {
+    protected Collection<FXOMObject> sortChildren(final List<FXOMObject> children) {
         final List<FXOMObject> sorted = new ArrayList<>(children);
-        final Orientation orientation = getOrientation(children);
+        final var orientation = getOrientation(children);
         Collections.sort(sorted, UnidimensionalComparator.of(orientation));
         return sorted;
     }
 
     private Orientation getOrientation(final List<FXOMObject> fxomObjects) {
-        int cols = computeSizeByCourse(fxomObjects, GridCourse.COL_BY_COL);
+        final var cols = computeSizeByCourse(fxomObjects, GridCourse.COL_BY_COL);
         if (cols == fxomObjects.size()) {
             return Orientation.HORIZONTAL;
         }
-        int rows = computeSizeByCourse(fxomObjects, GridCourse.ROW_BY_ROW);
+        final var rows = computeSizeByCourse(fxomObjects, GridCourse.ROW_BY_ROW);
         if (rows == fxomObjects.size()) {
             return Orientation.VERTICAL;
         }
-        final Orientation orientation = cols >= rows
+        final var orientation = cols >= rows
                 ? Orientation.HORIZONTAL : Orientation.VERTICAL;
         return orientation;
     }
@@ -91,17 +91,17 @@ public class WrapInSplitPaneJob extends AbstractWrapInSubComponentJob {
             final List<FXOMObject> fxomObjects,
             final GridCourse course) {
 
-        final BidimensionalComparator comparator = new BidimensionalComparator(course);
+        final var comparator = new BidimensionalComparator(course);
         FXOMObject lastObject = null;
-        int rc = 0;
-        int max = -1;
-        for (FXOMObject currentObject : fxomObjects) {
+        var rc = 0;
+        var max = -1;
+        for (final var currentObject : fxomObjects) {
             if (lastObject != null) {
                 if (comparator.compare(lastObject, currentObject) != 0) {
-                    final Node lastNode = (Node) lastObject.getSceneGraphObject();
-                    final Node currentNode = (Node) currentObject.getSceneGraphObject();
-                    final Bounds lastBounds = lastNode.getBoundsInParent();
-                    final Bounds currentBounds = currentNode.getBoundsInParent();
+                    final var lastNode = (Node) lastObject.getSceneGraphObject();
+                    final var currentNode = (Node) currentObject.getSceneGraphObject();
+                    final var lastBounds = lastNode.getBoundsInParent();
+                    final var currentBounds = currentNode.getBoundsInParent();
                     if (course.getMinY(currentBounds) >= course.getMaxY(lastBounds)) {
                         rc++;
                     }

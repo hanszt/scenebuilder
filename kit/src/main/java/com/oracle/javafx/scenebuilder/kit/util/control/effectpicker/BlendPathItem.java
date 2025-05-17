@@ -49,7 +49,7 @@ public class BlendPathItem extends EffectPathItem {
     private EffectPathItem topInputPathItem;
     private EffectPathItem bottomInputPathItem;
 
-    public BlendPathItem(EffectPickerController epc, Effect effect, EffectPathItem hostPathItem) {
+    public BlendPathItem(final EffectPickerController epc, final Effect effect, final EffectPathItem hostPathItem) {
         super(epc, effect, hostPathItem);
         assert effect instanceof javafx.scene.effect.Blend;
         initialize();
@@ -60,26 +60,26 @@ public class BlendPathItem extends EffectPathItem {
         if (topMenuItem.isSelected()) {
             return topInputPathItem;
         } else {
-            assert bottomMenuItem.isSelected() == true;
+            assert bottomMenuItem.isSelected();
             return bottomInputPathItem;
         }
     }
 
     @Override
-    void setSelectedInputEffect(Effect input) {
+    void setSelectedInputEffect(final Effect input) {
         if (topMenuItem.isSelected()) {
             setTopInput(input);
         } else {
-            assert bottomMenuItem.isSelected() == true;
+            assert bottomMenuItem.isSelected();
             setBottomInput(input);
         }
     }
 
-    void setTopInputPathItem(EffectPathItem epi) {
+    void setTopInputPathItem(final EffectPathItem epi) {
         topInputPathItem = epi;
     }
 
-    void setBottomInputPathItem(EffectPathItem epi) {
+    void setBottomInputPathItem(final EffectPathItem epi) {
         bottomInputPathItem = epi;
     }
 
@@ -87,7 +87,7 @@ public class BlendPathItem extends EffectPathItem {
         return ((Blend) effect).getTopInput();
     }
 
-    void setTopInput(Effect input) {
+    void setTopInput(final Effect input) {
         ((Blend) effect).setTopInput(input);
     }
 
@@ -95,13 +95,13 @@ public class BlendPathItem extends EffectPathItem {
         return ((Blend) effect).getBottomInput();
     }
 
-    void setBottomInput(Effect input) {
+    void setBottomInput(final Effect input) {
         ((Blend) effect).setBottomInput(input);
     }
 
     private void initialize() {
         // Add Select Input Menu
-        final Menu inputMenu = new Menu("Select Input"); //NOI18N
+        final var inputMenu = new Menu("Select Input"); //NOI18N
         topMenuItem.setToggleGroup(inputToggleGroup);
         topMenuItem.setOnAction(event -> {
             toggle_button.setText(getSimpleName() + " (TopInput)"); //NOI18N

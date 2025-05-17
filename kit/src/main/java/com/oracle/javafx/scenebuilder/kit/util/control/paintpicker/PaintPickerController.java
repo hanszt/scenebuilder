@@ -51,7 +51,6 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Paint;
 import javafx.scene.paint.RadialGradient;
-import javafx.stage.Window;
 
 /**
  * Controller class for the paint editor.
@@ -92,7 +91,7 @@ public class PaintPickerController {
         return paint.get();
     }
 
-    public final void setPaintProperty(Paint value) {
+    public final void setPaintProperty(final Paint value) {
         paint.setValue(value);
     }
 
@@ -104,7 +103,7 @@ public class PaintPickerController {
         return liveUpdate.get();
     }
     
-    public void setLiveUpdate(boolean value) {
+    public void setLiveUpdate(final boolean value) {
         liveUpdate.setValue(value);
     }
     
@@ -133,19 +132,19 @@ public class PaintPickerController {
      * @return 
      * @treatAsPrivate
      */
-    public static double clamp(double min, double value, double max) {
+    public static double clamp(final double min, final double value, final double max) {
         if (value < min) return min;
         if (value > max) return max;
         return value;
     }
 
-    void setDelegate(PaintPicker.Delegate delegate) {
+    void setDelegate(final PaintPicker.Delegate delegate) {
         this.delegate = delegate;
     }
     
     public Mode getMode() {
         final Mode mode;
-        final Paint value = getPaintProperty();
+        final var value = getPaintProperty();
         if (value instanceof Color) {
             mode = Mode.COLOR;
         } else if (value instanceof LinearGradient) {
@@ -157,7 +156,7 @@ public class PaintPickerController {
         return mode;
     }
 
-    public void updateUI(Paint value) {
+    public void updateUI(final Paint value) {
         if (value != null) {
             setMode(value);
             if (value instanceof Color) {
@@ -188,13 +187,13 @@ public class PaintPickerController {
 
         // Resize the window so it matches the selected editor size
         root_vbox.heightProperty().addListener((ChangeListener<Number>) (ov, t, t1) -> {
-            final Window window = root_vbox.getScene().getWindow();
+            final var window = root_vbox.getScene().getWindow();
             window.sizeToScene();
         });
         root_vbox.getChildren().add(colorPicker);
     }
 
-    void setSingleMode(Mode mode) {
+    void setSingleMode(final Mode mode) {
         // First disable toggle buttons so we cannot switch from 1 mode to another
         colorToggleButton.setManaged(false);
         linearToggleButton.setManaged(false);
@@ -222,16 +221,16 @@ public class PaintPickerController {
         updateUI(value);
     }
 
-    private void setMode(Paint value) {
+    private void setMode(final Paint value) {
         if (value instanceof Color) {
             // make sure that a second click doesn't deselect the button
-            if (colorToggleButton.isSelected() == false) {
+            if (!colorToggleButton.isSelected()) {
                 colorToggleButton.setSelected(true);
             }
             root_vbox.getChildren().remove(gradientPicker);
         } else if (value instanceof LinearGradient) {
             // make sure that a second click doesn't deselect the button
-            if (linearToggleButton.isSelected() == false) {
+            if (!linearToggleButton.isSelected()) {
                 linearToggleButton.setSelected(true);
             }
             if (!root_vbox.getChildren().contains(gradientPicker)) {
@@ -239,7 +238,7 @@ public class PaintPickerController {
             }
         } else if (value instanceof RadialGradient) {
             // make sure that a second click doesn't deselect the button
-            if (radialToggleButton.isSelected() == false) {
+            if (!radialToggleButton.isSelected()) {
                 radialToggleButton.setSelected(true);
             }
             if (!root_vbox.getChildren().contains(gradientPicker)) {
@@ -252,10 +251,10 @@ public class PaintPickerController {
     }
 
     @FXML
-    void onColorButtonAction(ActionEvent event) {
-        final ToggleButton tb = (ToggleButton) event.getTarget();
+    void onColorButtonAction(final ActionEvent event) {
+        final var tb = (ToggleButton) event.getTarget();
         assert tb == colorToggleButton;
-        final Color value = colorPicker.getValue();
+        final var value = colorPicker.getValue();
         // Update UI
         setMode(value);
         // Update model
@@ -264,10 +263,10 @@ public class PaintPickerController {
     }
 
     @FXML
-    void onLinearButtonAction(ActionEvent event) {
-        final ToggleButton tb = (ToggleButton) event.getTarget();
+    void onLinearButtonAction(final ActionEvent event) {
+        final var tb = (ToggleButton) event.getTarget();
         assert tb == linearToggleButton;
-        final Paint value = gradientPicker.getValue(Mode.LINEAR);
+        final var value = gradientPicker.getValue(Mode.LINEAR);
         assert value instanceof LinearGradient;
         // Update UI
         setMode(value);
@@ -279,10 +278,10 @@ public class PaintPickerController {
     }
 
     @FXML
-    void onRadialButtonAction(ActionEvent event) {
-        final ToggleButton tb = (ToggleButton) event.getTarget();
+    void onRadialButtonAction(final ActionEvent event) {
+        final var tb = (ToggleButton) event.getTarget();
         assert tb == radialToggleButton;
-        final Paint value = gradientPicker.getValue(Mode.RADIAL);
+        final var value = gradientPicker.getValue(Mode.RADIAL);
         assert value instanceof RadialGradient;
         // Update UI
         setMode(value);

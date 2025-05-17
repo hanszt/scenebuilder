@@ -43,7 +43,7 @@ class SkeletonSettings {
         private final String name;
         private final String ext;
 
-        LANGUAGE(String name, String fileNameExt) {
+        LANGUAGE(final String name, final String fileNameExt) {
             this.name = name;
             this.ext = fileNameExt;
         }
@@ -66,7 +66,7 @@ class SkeletonSettings {
         COMPACT, FULL
     }
 
-    void setLanguage(LANGUAGE language) {
+    void setLanguage(final LANGUAGE language) {
         this.language = language;
     }
 
@@ -74,20 +74,20 @@ class SkeletonSettings {
         return language;
     }
 
-    void setTextType(TEXT_TYPE type) {
+    void setTextType(final TEXT_TYPE type) {
         this.textType = type;
     }
 
-    SkeletonSettings withTextType(TEXT_TYPE type) {
+    SkeletonSettings withTextType(final TEXT_TYPE type) {
         this.textType = type;
         return this;
     }
 
-    void setFormat(FORMAT_TYPE format) {
+    void setFormat(final FORMAT_TYPE format) {
         this.textFormat = format;
     }
 
-    SkeletonSettings withFormat(FORMAT_TYPE format) {
+    SkeletonSettings withFormat(final FORMAT_TYPE format) {
         this.textFormat = format;
         return this;
     }

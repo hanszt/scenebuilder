@@ -35,7 +35,6 @@ import java.util.List;
 
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -50,7 +49,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.TreeTableV
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.gesture.AbstractGesture;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.gesture.mouse.ResizeTreeTableColumnGesture;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
 
 /**
@@ -78,8 +76,8 @@ public class TreeTableColumnHandles extends AbstractResilientHandles<Object> {
     private TreeTableView<?> treeTableView;
     private Node columnHeaderNode;
     
-    public TreeTableColumnHandles(ContentPanelController contentPanelController,
-            FXOMInstance fxomInstance) {
+    public TreeTableColumnHandles(final ContentPanelController contentPanelController,
+                                  final FXOMInstance fxomInstance) {
         super(contentPanelController, fxomInstance, Object.class);
         assert fxomInstance.getSceneGraphObject() instanceof TreeTableColumn;
         
@@ -154,14 +152,14 @@ public class TreeTableColumnHandles extends AbstractResilientHandles<Object> {
     }
 
     @Override
-    public AbstractGesture findGesture(Node node) {
+    public AbstractGesture findGesture(final Node node) {
         final AbstractGesture result;
         
-        final int gripIndex = grips.getChildren().indexOf(node);
+        final var gripIndex = grips.getChildren().indexOf(node);
         if (gripIndex != -1) {
-            final FXOMObject parentObject = getFxomInstance().getParentObject();
-            final DesignHierarchyMask m = new DesignHierarchyMask(parentObject);
-            final FXOMObject columnObject = m.getSubComponentAtIndex(gripIndex);
+            final var parentObject = getFxomInstance().getParentObject();
+            final var m = new DesignHierarchyMask(parentObject);
+            final var columnObject = m.getSubComponentAtIndex(gripIndex);
             assert columnObject instanceof FXOMInstance;
             result = new ResizeTreeTableColumnGesture(getContentPanelController(), 
                     (FXOMInstance)columnObject);
@@ -190,7 +188,7 @@ public class TreeTableColumnHandles extends AbstractResilientHandles<Object> {
     private List<?> getTreeTableColumns() {
         final List<?> result;
 
-        final TreeTableColumn<?,?> treeTableColumn = getTreeTableColumn();
+        final var treeTableColumn = getTreeTableColumn();
         if (treeTableColumn.getParentColumn() == null) {
             result = treeTableView.getColumns();
         } else {
@@ -209,19 +207,19 @@ public class TreeTableColumnHandles extends AbstractResilientHandles<Object> {
     private void adjustGripCount() {
         assert treeTableView != null;
         
-        final int columnCount = getTreeTableColumns().size();
+        final var columnCount = getTreeTableColumns().size();
         final List<Node> gripChildren = grips.getChildren();
         
         while (gripChildren.size() < columnCount) {
             gripChildren.add(makeGripLine());
         }
         while (gripChildren.size() > columnCount) {
-            gripChildren.remove(gripChildren.size()-1);
+            gripChildren.removeLast();
         }
     }
     
     private Line makeGripLine() {
-        final Line result = new Line();
+        final var result = new Line();
         result.setStrokeWidth(SELECTION_HANDLES_SIZE);
         result.setStroke(Color.TRANSPARENT);
         result.setCursor(Cursor.H_RESIZE);
@@ -229,24 +227,24 @@ public class TreeTableColumnHandles extends AbstractResilientHandles<Object> {
         return result;
     }
     
-    private void layoutGrip(int gripIndex) {
+    private void layoutGrip(final int gripIndex) {
         assert grips.getChildren().get(gripIndex) instanceof Line;
         assert getTreeTableColumns().get(gripIndex) instanceof TreeTableColumn<?,?>;
         
-        final List<?> columns = getTreeTableColumns();
-        final TreeTableColumn<?,?> ttc = (TreeTableColumn<?,?>)columns.get(gripIndex);
+        final var columns = getTreeTableColumns();
+        final var ttc = (TreeTableColumn<?,?>)columns.get(gripIndex);
         if (ttc.isVisible()) {
-            final TreeTableViewDesignInfoX di = new TreeTableViewDesignInfoX();
-            final Bounds b = di.getColumnHeaderBounds(ttc);
-            final double startX = b.getMaxX();
-            final double startY = b.getMinY();
-            final double endY = b.getMaxY();
+            final var di = new TreeTableViewDesignInfoX();
+            final var b = di.getColumnHeaderBounds(ttc);
+            final var startX = b.getMaxX();
+            final var startY = b.getMinY();
+            final var endY = b.getMaxY();
 
-            final boolean snapToPixel = true;
-            final Point2D startPoint = sceneGraphObjectToDecoration(startX, startY, snapToPixel);
-            final Point2D endPoint = sceneGraphObjectToDecoration(startX, endY, snapToPixel);
+            final var snapToPixel = true;
+            final var startPoint = sceneGraphObjectToDecoration(startX, startY, snapToPixel);
+            final var endPoint = sceneGraphObjectToDecoration(startX, endY, snapToPixel);
 
-            final Line gripLine = (Line) grips.getChildren().get(gripIndex);
+            final var gripLine = (Line) grips.getChildren().get(gripIndex);
             gripLine.setVisible(true);
             gripLine.setManaged(true);
             gripLine.setStartX(startPoint.getX());
@@ -254,7 +252,7 @@ public class TreeTableColumnHandles extends AbstractResilientHandles<Object> {
             gripLine.setEndX(endPoint.getX());
             gripLine.setEndY(endPoint.getY());
         } else {
-            final Line gripLine = (Line) grips.getChildren().get(gripIndex);
+            final var gripLine = (Line) grips.getChildren().get(gripIndex);
             gripLine.setVisible(false);
             gripLine.setManaged(false);
         }
@@ -264,7 +262,7 @@ public class TreeTableColumnHandles extends AbstractResilientHandles<Object> {
     /* 
      * Wrapper to avoid the 'leaking this in constructor' warning emitted by NB.
      */
-    private void attachHandles(Node node) {
+    private void attachHandles(final Node node) {
         attachHandles(node, this);
     }
 }

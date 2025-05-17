@@ -35,7 +35,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -92,12 +91,12 @@ public class SkeletonFileWriterTest {
          *   passed to the error handler
          * 
          */
-        String controllerName = "MyCustomControllerName";
-        SkeletonSettings.LANGUAGE language = SkeletonSettings.LANGUAGE.JAVA;
-        File fileAtIllegalLocation = new File("//notExisting/share/test.java");
+        final var controllerName = "MyCustomControllerName";
+        final var language = SkeletonSettings.LANGUAGE.JAVA;
+        final var fileAtIllegalLocation = new File("//notExisting/share/test.java");
 
-        Map<File, Exception> raisedErrors = new HashMap<>();
-        Function<Supplier<Stage>, BiConsumer<File, Exception>> errorHandler = stage -> (file, error) -> {
+        final Map<File, Exception> raisedErrors = new HashMap<>();
+        final Function<Supplier<Stage>, BiConsumer<File, Exception>> errorHandler = stage -> (file, error) -> {
             raisedErrors.put(file, error);
         };
 
@@ -125,19 +124,19 @@ public class SkeletonFileWriterTest {
          * - Test is repeated for JAVA and KOTLIN
          *    
          */
-        String fxmlName = "MyCustomView.fxml";
-        File fxml = temporaryDirectory.resolve(fxmlName).toFile();
-        URL url = fxml.toURI().toURL();
+        final var fxmlName = "MyCustomView.fxml";
+        final var fxml = temporaryDirectory.resolve(fxmlName).toFile();
+        final var url = fxml.toURI().toURL();
 
         // WHEN
         classUnderTest = new SkeletonFileWriter(stageSupplier, textProperty, 
                                                 rejectProposedFile(), onSuccess(), onError());
 
         // JAVA CASE
-        SkeletonSettings.LANGUAGE language = SkeletonSettings.LANGUAGE.JAVA;
+        var language = SkeletonSettings.LANGUAGE.JAVA;
         classUnderTest.run(url, null, language);
 
-        assertEquals("MyCustomViewController.java", filesProposed.get(0).getName());
+        assertEquals("MyCustomViewController.java", filesProposed.getFirst().getName());
 
         // KOTLIN CASE
         language = SkeletonSettings.LANGUAGE.KOTLIN;
@@ -157,8 +156,8 @@ public class SkeletonFileWriterTest {
          * - The user will cancel the file save dialog.
          *  
          */
-        String controllerName = "CustomizedController";
-        SkeletonSettings.LANGUAGE language = SkeletonSettings.LANGUAGE.JAVA;
+        final var controllerName = "CustomizedController";
+        final var language = SkeletonSettings.LANGUAGE.JAVA;
 
         // WHEN
         classUnderTest = new SkeletonFileWriter(stageSupplier, textProperty, 
@@ -167,12 +166,12 @@ public class SkeletonFileWriterTest {
         classUnderTest.run(null, controllerName, language);
 
         // THEN
-        File expectedProposedFile = new File(System.getProperty("user.home"), "CustomizedController.java");
+        final var expectedProposedFile = new File(System.getProperty("user.home"), "CustomizedController.java");
 
-        assertEquals(expectedProposedFile, filesProposed.get(0));
+        assertEquals(expectedProposedFile, filesProposed.getFirst());
         assertTrue(classUnderTest.getLastSavedFilesPerLanguage().isEmpty());
-        assertEquals("Java", fileExtensionFilters.get(0).getDescription());
-        assertEquals("*.java", fileExtensionFilters.get(0).getExtensions().get(0));
+        assertEquals("Java", fileExtensionFilters.getFirst().getDescription());
+        assertEquals("*.java", fileExtensionFilters.getFirst().getExtensions().getFirst());
     }
 
     @Test
@@ -184,7 +183,7 @@ public class SkeletonFileWriterTest {
          * - the same SkeletonFileWriter instance is called multiple times but
          *   with different language settings
          */
-        String controllerName = "MyVeryNewController";
+        final var controllerName = "MyVeryNewController";
         SkeletonSettings.LANGUAGE language = null;
 
         classUnderTest = new SkeletonFileWriter(stageSupplier, textProperty, 
@@ -203,15 +202,15 @@ public class SkeletonFileWriterTest {
         classUnderTest.run(null, controllerName, language);
 
         // THEN
-        File expectedFile = temporaryDirectory.resolve("MyVeryNewController.kt").toFile();
+        var expectedFile = temporaryDirectory.resolve("MyVeryNewController.kt").toFile();
 
         assertTrue(expectedFile.exists());
-        assertEquals(expectedFile, filesProposed.get(0));
+        assertEquals(expectedFile, filesProposed.getFirst());
         assertEquals("SomeKotlinCode", Files.readString(expectedFile.toPath()));
         assertEquals(1, classUnderTest.getLastSavedFilesPerLanguage().size());
         assertEquals(expectedFile, classUnderTest.getLastSavedFilesPerLanguage().get(language));
-        assertEquals("Kotlin", fileExtensionFilters.get(0).getDescription());
-        assertEquals("*.kt", fileExtensionFilters.get(0).getExtensions().get(0));
+        assertEquals("Kotlin", fileExtensionFilters.getFirst().getDescription());
+        assertEquals("*.kt", fileExtensionFilters.getFirst().getExtensions().getFirst());
 
         /*
          * - For the same setup, a new controller skeleton shall be saved but for JAVA
@@ -234,7 +233,7 @@ public class SkeletonFileWriterTest {
         assertEquals(2, classUnderTest.getLastSavedFilesPerLanguage().size());
         assertEquals(expectedFile, classUnderTest.getLastSavedFilesPerLanguage().get(language));
         assertEquals("Java", fileExtensionFilters.get(1).getDescription());
-        assertEquals("*.java", fileExtensionFilters.get(1).getExtensions().get(0));
+        assertEquals("*.java", fileExtensionFilters.get(1).getExtensions().getFirst());
 
         /*
          * Now, for JAVA and KOTLIN a file has been saved.
@@ -250,12 +249,12 @@ public class SkeletonFileWriterTest {
         expectedFile = temporaryDirectory.resolve("MyVeryNewController.kt").toFile();
 
         assertTrue(expectedFile.exists());
-        assertEquals(expectedFile, filesProposed.get(0));
+        assertEquals(expectedFile, filesProposed.getFirst());
         assertEquals("MyKotlinCode", Files.readString(expectedFile.toPath()));
         assertEquals(2, classUnderTest.getLastSavedFilesPerLanguage().size());
         assertEquals(expectedFile, classUnderTest.getLastSavedFilesPerLanguage().get(language));
         assertEquals("Kotlin", fileExtensionFilters.get(2).getDescription());
-        assertEquals("*.kt", fileExtensionFilters.get(2).getExtensions().get(0));
+        assertEquals("*.kt", fileExtensionFilters.get(2).getExtensions().getFirst());
     }
 
     /**
@@ -266,7 +265,7 @@ public class SkeletonFileWriterTest {
      *         dialog.
      */
     private BiFunction<FileChooser, Stage, File> rejectProposedFile() {
-        BiFunction<FileChooser, Stage, File> saveDialogIsCancelled = (fc, stage) -> {
+        final BiFunction<FileChooser, Stage, File> saveDialogIsCancelled = (fc, stage) -> {
             // save the proposed file name
             filesProposed.add(new File(fc.getInitialDirectory(), fc.getInitialFileName()));
 
@@ -289,9 +288,9 @@ public class SkeletonFileWriterTest {
      *         dialog with its defaults.
      */
     private BiFunction<FileChooser, Stage, File> acceptProposedFile() {
-        BiFunction<FileChooser, Stage, File> acceptingFileName = (fc, stage) -> {
+        final BiFunction<FileChooser, Stage, File> acceptingFileName = (fc, stage) -> {
             // save the proposed file name
-            File proposedFile = temporaryDirectory.resolve(fc.getInitialFileName()).toFile();
+            final var proposedFile = temporaryDirectory.resolve(fc.getInitialFileName()).toFile();
             filesProposed.add(proposedFile);
 
             // remember the extension filer which was selected

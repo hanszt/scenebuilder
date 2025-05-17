@@ -54,8 +54,6 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Bounds;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.PerspectiveCamera;
@@ -106,7 +104,7 @@ public final class PreviewWindowController extends AbstractWindowController {
         PARALLEL, PERSPECTIVE
     }
 
-    public PreviewWindowController(EditorController editorController, Stage owner) {
+    public PreviewWindowController(final EditorController editorController, final Stage owner) {
         super(owner);
         this.editorController = editorController;
         this.editorController.fxomDocumentProperty().addListener(
@@ -155,7 +153,7 @@ public final class PreviewWindowController extends AbstractWindowController {
     protected void makeRoot() {
         // Until the timer used in requestUpdate() expires, so that the root of
         // the scene is updated to the real content, we set a placeholder.
-        StackPane sp = new StackPane();
+        final var sp = new StackPane();
         sp.setPrefSize(WIDTH_WHEN_EMPTY, HEIGHT_WHEN_EMPTY);
         setRoot(sp);
 
@@ -163,7 +161,7 @@ public final class PreviewWindowController extends AbstractWindowController {
     }
 
     @Override
-    public void onCloseRequest(WindowEvent event) {
+    public void onCloseRequest(final WindowEvent event) {
         if (timer != null) {
             timer.cancel();
             timer = null;
@@ -187,10 +185,10 @@ public final class PreviewWindowController extends AbstractWindowController {
     }
 
     public void openDialog() {
-        final FXOMDocument fxomDocument = editorController.getFxomDocument();
+        final var fxomDocument = editorController.getFxomDocument();
         assert fxomDocument != null;
         // We clone the FXOMDocument
-        FXOMDocument clone;
+        final FXOMDocument clone;
         try {
             clone = new FXOMDocument(fxomDocument.getFxmlText(false),
                     fxomDocument.getLocation(),
@@ -198,13 +196,13 @@ public final class PreviewWindowController extends AbstractWindowController {
                     fxomDocument.getResources(),
                     FXOMDocumentSwitch.FOR_PREVIEW, FXOMDocumentSwitch.NORMALIZED);
             clone.setSampleDataEnabled(fxomDocument.isSampleDataEnabled());
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             throw new RuntimeException("Bug in PreviewWindowController::openDialog", ex); //NOI18N
         }
 
-        final Object sceneGraphRoot = clone.getSceneGraphRoot();
+        final var sceneGraphRoot = clone.getSceneGraphRoot();
         assert sceneGraphRoot instanceof DialogPane;
-        final DialogPane dialogPane = (DialogPane) sceneGraphRoot;
+        final var dialogPane = (DialogPane) sceneGraphRoot;
         final Dialog<? extends Object> dialog = new Dialog<>();
         dialog.setDialogPane(dialogPane);
         dialog.initModality(Modality.NONE);
@@ -221,7 +219,7 @@ public final class PreviewWindowController extends AbstractWindowController {
     }
 
     @Override
-    protected void toolStylesheetDidChange(String oldStylesheet) {
+    protected void toolStylesheetDidChange(final String oldStylesheet) {
         // Preview window ignores the tool style sheet.
         // Unlike other windows, its styling is driven by the user design.
     }
@@ -244,19 +242,19 @@ public final class PreviewWindowController extends AbstractWindowController {
      * The delay is expressed in milliseconds.
      * In some cases it is wise to used delay = 0, e.g. when opening the window.
      */
-    private void requestUpdate(long delay) {
-        TimerTask timerTask = new TimerTask() {
+    private void requestUpdate(final long delay) {
+        final var timerTask = new TimerTask() {
 
             @Override
             public void run() {
             // JavaFX data should only be accessed on the JavaFX thread.
             // => we must wrap the code into a Runnable object and call the Platform.runLater
             Platform.runLater(() -> {
-                final FXOMDocument fxomDocument = editorController.getFxomDocument();
+                final var fxomDocument = editorController.getFxomDocument();
                 List<String> themeStyleSheetsList = null;
                 if (fxomDocument != null) {
                     // We clone the FXOMDocument
-                    FXOMDocument clone;
+                    final FXOMDocument clone;
 
                     try {
                         clone = new FXOMDocument(fxomDocument.getFxmlText(false),
@@ -265,11 +263,11 @@ public final class PreviewWindowController extends AbstractWindowController {
                                 fxomDocument.getResources(),
                                 FXOMDocumentSwitch.FOR_PREVIEW);
                         clone.setSampleDataEnabled(fxomDocument.isSampleDataEnabled());
-                    } catch (IOException ex) {
+                    } catch (final IOException ex) {
                         throw new RuntimeException("Bug in PreviewWindowController::requestUpdate", ex); //NOI18N
                     }
 
-                    Object sceneGraphRoot = clone.getDisplayNodeOrSceneGraphRoot();
+                    final var sceneGraphRoot = clone.getDisplayNodeOrSceneGraphRoot();
                     themeStyleSheetsList = new ArrayList<>(EditorPlatform.getStylesheetsForTheme(editorController.getTheme()));
                     editorControllerTheme.getStylesheetURLs().stream()
                         .filter(s -> !EditorPlatform.isPlatformThemeStylesheetURL(s))
@@ -282,7 +280,7 @@ public final class PreviewWindowController extends AbstractWindowController {
                         setRoot((Parent) updateAutoResizeTransform((Parent) sceneGraphRoot));
 
                         // Compute the proper styling
-                        List<String> newStyleSheets1 = new ArrayList<>();
+                        final List<String> newStyleSheets1 = new ArrayList<>();
                         computeStyleSheets(newStyleSheets1, sceneGraphRoot, clone.getDisplayStylesheets());
 
                         // Clean all styling
@@ -291,11 +289,11 @@ public final class PreviewWindowController extends AbstractWindowController {
                         // Apply the new styling
                         ((Parent) sceneGraphRoot).getStylesheets().addAll(newStyleSheets1);
                     } else if (sceneGraphRoot instanceof Node) {
-                        StackPane sp1 = new StackPane();
+                        final var sp1 = new StackPane();
                         sp1.setId(NID_PREVIEW_ROOT);
 
                         // Compute the proper styling
-                        List<String> newStyleSheets2 = new ArrayList<>();
+                        final List<String> newStyleSheets2 = new ArrayList<>();
                         computeStyleSheets(newStyleSheets2, sceneGraphRoot, clone.getDisplayStylesheets());
 
                         // Apply the new styling as a whole
@@ -309,7 +307,7 @@ public final class PreviewWindowController extends AbstractWindowController {
                     } else {
                         setCameraType(CameraType.PARALLEL);
                         sizeChangedFromMenu = false;
-                        StackPane sp2 = new StackPane(new Label(I18N.getString("preview.not.node")));
+                        final var sp2 = new StackPane(new Label(I18N.getString("preview.not.node")));
                         sp2.setId(NID_PREVIEW_ROOT);
                         sp2.setPrefSize(WIDTH_WHEN_EMPTY, HEIGHT_WHEN_EMPTY);
                         setRoot(sp2);
@@ -317,7 +315,7 @@ public final class PreviewWindowController extends AbstractWindowController {
                 } else {
                     setCameraType(CameraType.PARALLEL);
                     sizeChangedFromMenu = false;
-                    StackPane sp3 = new StackPane(new Label(I18N.getString("preview.no.document")));
+                    final var sp3 = new StackPane(new Label(I18N.getString("preview.no.document")));
                     sp3.setId(NID_PREVIEW_ROOT);
                     sp3.setPrefSize(WIDTH_WHEN_EMPTY, HEIGHT_WHEN_EMPTY);
                     setRoot(sp3);
@@ -326,7 +324,7 @@ public final class PreviewWindowController extends AbstractWindowController {
                 getScene().setRoot(getRoot());
                 if (themeStyleSheetsList != null && !themeStyleSheetsList.isEmpty()) {
                     getScene().setUserAgentStylesheet(themeStyleSheetsList.getFirst());
-                    ObservableList<String> newStylesheets = FXCollections.observableArrayList(themeStyleSheetsList);
+                    final var newStylesheets = FXCollections.observableArrayList(themeStyleSheetsList);
                     getScene().getStylesheets().clear();
                     getScene().getStylesheets().addAll(newStylesheets);
                 }
@@ -345,13 +343,13 @@ public final class PreviewWindowController extends AbstractWindowController {
     }
 
     public boolean userResizedPreviewWindow() {
-        boolean res = false;
-        double sceneHeight = getScene().getHeight();
-        double sceneWidth = getScene().getWidth();
+        var res = false;
+        final var sceneHeight = getScene().getHeight();
+        final var sceneWidth = getScene().getWidth();
 
         if (sceneHeight > 0 && sceneWidth > 0) {
-            double prefHeight = getRoot().prefHeight(-1);
-            double prefWidth = getRoot().prefWidth(-1);
+            final var prefHeight = getRoot().prefHeight(-1);
+            final var prefWidth = getRoot().prefWidth(-1);
 
             if ((!MathUtils.equals(prefHeight, sceneHeight)
                     && !MathUtils.equals(sceneHeight, HEIGHT_WHEN_EMPTY)
@@ -374,7 +372,7 @@ public final class PreviewWindowController extends AbstractWindowController {
     // 1280x800 may exceed the capability of the user screen: should we greyed
     // relevant size values accordingly in Preview menu ?
     private void updateWindowSize() {
-        final FXOMDocument fxomDocument = editorController.getFxomDocument();
+        final var fxomDocument = editorController.getFxomDocument();
 
         if (fxomDocument != null) {
             // A size setup action taken from menu bar has priority over a resize
@@ -412,12 +410,12 @@ public final class PreviewWindowController extends AbstractWindowController {
     }
 
     private void updateWindowTitle() {
-        final FXOMDocument fxomDocument
+        final var fxomDocument
                 = editorController.getFxomDocument();
         getStage().setTitle(Utils.makeTitle(fxomDocument));
     }
 
-    public final void setCameraType(PreviewWindowController.CameraType ct) {
+    public final void setCameraType(final PreviewWindowController.CameraType ct) {
         cameraType = ct;
         updateCamera();
     }
@@ -449,28 +447,28 @@ public final class PreviewWindowController extends AbstractWindowController {
      * @param autoResize3DContent true if this preview panel should autoresize
      *                            3D content.
      */
-    public void setAutoResize3DContent(boolean autoResize3DContent) {
+    public void setAutoResize3DContent(final boolean autoResize3DContent) {
         this.autoResize3DContent = autoResize3DContent;
     }
 
     // If the given node is 3D stuff we add transforms and set perspective
     // camera to become able to display it.
-    Node updateAutoResizeTransform(Node whatever) {
-        Node res = whatever;
+    Node updateAutoResizeTransform(final Node whatever) {
+        final var res = whatever;
         assert editorController.getFxomDocument() != null;
 
         if (editorController.is3D() && autoResize3DContent) {
             res.getTransforms().clear();
-            final Bounds rootBounds = res.getLayoutBounds();
+            final var rootBounds = res.getLayoutBounds();
             // Content is 3D.
             // Zoom to get a TARGET_SIZE_3D size.
-            final double scaleX = TARGET_SIZE_3D / rootBounds.getWidth();
-            final double scaleY = TARGET_SIZE_3D / rootBounds.getHeight();
-            final double scaleZ = TARGET_SIZE_3D / rootBounds.getDepth();
-            final double scale = Math.min(scaleX, Math.min(scaleY, scaleZ));
-            final double tX = -rootBounds.getMinX();
-            final double tY = -rootBounds.getMinY();
-            final double tZ = -rootBounds.getMinZ();
+            final var scaleX = TARGET_SIZE_3D / rootBounds.getWidth();
+            final var scaleY = TARGET_SIZE_3D / rootBounds.getHeight();
+            final var scaleZ = TARGET_SIZE_3D / rootBounds.getDepth();
+            final var scale = Math.min(scaleX, Math.min(scaleY, scaleZ));
+            final var tX = -rootBounds.getMinX();
+            final var tY = -rootBounds.getMinY();
+            final var tZ = -rootBounds.getMinZ();
             res.getTransforms().add(new Scale(scale, scale, scale));
             res.getTransforms().add(new Translate(tX, tY, tZ));
 
@@ -483,7 +481,7 @@ public final class PreviewWindowController extends AbstractWindowController {
         return res;
     }
 
-    private double getWidthFromSize(Size size) {
+    private double getWidthFromSize(final Size size) {
         double res = WIDTH_WHEN_EMPTY;
 
         switch (size) {
@@ -515,7 +513,7 @@ public final class PreviewWindowController extends AbstractWindowController {
         return res;
     }
 
-    private double getHeightFromSize(Size size) {
+    private double getHeightFromSize(final Size size) {
         double res = HEIGHT_WHEN_EMPTY;
 
         switch (size) {
@@ -554,18 +552,18 @@ public final class PreviewWindowController extends AbstractWindowController {
         return currentSize;
     }
 
-    public void setSize(Size size) {
+    public void setSize(final Size size) {
         currentSize = size;
         sizeChangedFromMenu = true;
         requestUpdate(IMMEDIATE);
     }
 
-    private void computeStyleSheets(List<String> newStyleSheets, Object sceneGraphRoot, List<String> displayStylesheets) {
+    private void computeStyleSheets(final List<String> newStyleSheets, final Object sceneGraphRoot, final List<String> displayStylesheets) {
         if (sceneGraphRoot instanceof Parent) {
             // At that stage current style sheets are the one defined within the FXML
-            ObservableList<String> currentStyleSheets = ((Parent) sceneGraphRoot).getStylesheets();
+            final var currentStyleSheets = ((Parent) sceneGraphRoot).getStylesheets();
 
-            for (String stylesheet : currentStyleSheets) {
+            for (final var stylesheet : currentStyleSheets) {
                 newStyleSheets.add(stylesheet);
             }
         }
@@ -574,11 +572,11 @@ public final class PreviewWindowController extends AbstractWindowController {
 
         // Add style sheet set thanks Preview > Scene Style Sheets > Add a Style Sheet
         if (sceneStyleSheet != null) {
-            for (File f : sceneStyleSheet) {
-                String urlString = ""; //NOI18N
+            for (final var f : sceneStyleSheet) {
+                var urlString = ""; //NOI18N
                 try {
                     urlString = f.toURI().toURL().toString();
-                } catch (MalformedURLException ex) {
+                } catch (final MalformedURLException ex) {
                     throw new RuntimeException("Bug in PreviewWindowController", ex); //NOI18N
                 }
                 newStyleSheets.add(urlString);
@@ -586,11 +584,11 @@ public final class PreviewWindowController extends AbstractWindowController {
         }
     }
 
-    public boolean sizeDoesFit(Size size) {
-        boolean res = false;
+    public boolean sizeDoesFit(final Size size) {
+        var res = false;
 
         if (getStage() != null) {
-            Rectangle2D frame = getBiggestViewableRectangle();
+            final var frame = getBiggestViewableRectangle();
 
             if (getWidthFromSize(size) <= frame.getWidth() - decorationX
                     && getHeightFromSize(size) <= frame.getHeight() - decorationY) {

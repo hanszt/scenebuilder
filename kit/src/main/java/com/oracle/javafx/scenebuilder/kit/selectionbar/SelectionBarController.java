@@ -31,8 +31,6 @@
  */
 package com.oracle.javafx.scenebuilder.kit.selectionbar;
 
-import java.net.URL;
-
 import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -50,7 +48,6 @@ import javafx.scene.layout.StackPane;
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.util.AbstractFxmlPanelController;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
@@ -65,11 +62,11 @@ public class SelectionBarController extends AbstractFxmlPanelController {
 
     private final Image selectionChevronImage;
 
-    public SelectionBarController(EditorController editorController) {
+    public SelectionBarController(final EditorController editorController) {
         super(SelectionBarController.class.getResource("SelectionBar.fxml"), I18N.getBundle(), editorController); //NOI18N
 
         // Initialize selection chevron image
-        final URL selectionChevronURL = SelectionBarController.class.getResource("selection-chevron.png"); //NOI18N
+        final var selectionChevronURL = SelectionBarController.class.getResource("selection-chevron.png"); //NOI18N
         assert selectionChevronURL != null;
         selectionChevronImage = new Image(selectionChevronURL.toExternalForm());
     }
@@ -78,7 +75,7 @@ public class SelectionBarController extends AbstractFxmlPanelController {
      * AbstractPanelController
      */
     @Override
-    protected void fxomDocumentDidChange(FXOMDocument oldDocument) {
+    protected void fxomDocumentDidChange(final FXOMDocument oldDocument) {
         if (pathBox != null) {
             updateSelectionBar();
         }
@@ -125,7 +122,7 @@ public class SelectionBarController extends AbstractFxmlPanelController {
      * Private
      */
     private void updateSelectionBar() {
-        final Selection selection = getEditorController().getSelection();
+        final var selection = getEditorController().getSelection();
 
         pathBox.getChildren().clear();
 
@@ -133,16 +130,16 @@ public class SelectionBarController extends AbstractFxmlPanelController {
             pathBox.getChildren().add(new Label(I18N.getString("selectionbar.no.selected")));
         } else {
             if (selection.getGroup() instanceof ObjectSelectionGroup) {
-                final ObjectSelectionGroup osg = (ObjectSelectionGroup) selection.getGroup();
-                assert osg.getItems().isEmpty() == false;
+                final var osg = (ObjectSelectionGroup) selection.getGroup();
+                assert !osg.getItems().isEmpty();
 
-                FXOMObject fxomObject = osg.getItems().iterator().next();
+                var fxomObject = osg.getItems().iterator().next();
                 // Recursive error report for the leaf object only
 //                boolean recursive = true;
                 while (fxomObject != null) {
-                    final DesignHierarchyMask mask = new DesignHierarchyMask(fxomObject);
-                    final String entryText = makeEntryText(mask);
-                    final Hyperlink boxItem = new Hyperlink();
+                    final var mask = new DesignHierarchyMask(fxomObject);
+                    final var entryText = makeEntryText(mask);
+                    final var boxItem = new Hyperlink();
                     boxItem.setText(entryText);
                     final Node graphic;
                     // Do not display warning icon anymore :
@@ -171,7 +168,7 @@ public class SelectionBarController extends AbstractFxmlPanelController {
                     boxItem.setFocusTraversable(false);
                     boxItem.setUserData(fxomObject);
                     boxItem.setOnAction(hyperlinkHandler);
-                    pathBox.getChildren().add(0, boxItem);
+                    pathBox.getChildren().addFirst(boxItem);
 
                     // The last 2 box item should never show ellipsis
                     if (pathBox.getChildren().size() <= 3) {
@@ -186,11 +183,11 @@ public class SelectionBarController extends AbstractFxmlPanelController {
                     if (fxomObject != null) {
                         // We cannot share the image view to avoid 
                         // Children: duplicate children added
-                        ImageView img = new ImageView(selectionChevronImage);
-                        StackPane sp = new StackPane();
+                        final var img = new ImageView(selectionChevronImage);
+                        final var sp = new StackPane();
                         sp.getChildren().add(img);
                         sp.setMinWidth(selectionChevronImage.getWidth());
-                        pathBox.getChildren().add(0, sp);
+                        pathBox.getChildren().addFirst(sp);
                     }
                     // Non recursive error report for the parent
 //                    recursive = false;
@@ -202,11 +199,11 @@ public class SelectionBarController extends AbstractFxmlPanelController {
         }
     }
 
-    private String makeEntryText(DesignHierarchyMask mask) {
-        final StringBuilder result = new StringBuilder();
+    private String makeEntryText(final DesignHierarchyMask mask) {
+        final var result = new StringBuilder();
 
         result.append(mask.getClassNameInfo());
-        final String description = mask.getSingleLineDescription();
+        final var description = mask.getSingleLineDescription();
         if (description != null) {
             result.append(" : "); //NOI18N
             result.append(description);
@@ -216,14 +213,14 @@ public class SelectionBarController extends AbstractFxmlPanelController {
 
     private final EventHandler<ActionEvent> hyperlinkHandler = t -> {
         assert t.getSource() instanceof Hyperlink;
-        final Hyperlink hyperlink = (Hyperlink) t.getSource();
+        final var hyperlink = (Hyperlink) t.getSource();
         assert hyperlink.getUserData() instanceof FXOMObject;
         handleSelect((FXOMObject) hyperlink.getUserData());
         hyperlink.setVisited(false);
     };
 
-    private void handleSelect(FXOMObject fxomObject) {
-        final Selection selection = getEditorController().getSelection();
+    private void handleSelect(final FXOMObject fxomObject) {
+        final var selection = getEditorController().getSelection();
 
         assert fxomObject.getFxomDocument() == getEditorController().getFxomDocument();
 

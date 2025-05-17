@@ -52,7 +52,7 @@ public class Quad {
     private final LineTo lineTo2 = new LineTo();
     private final LineTo lineTo3 = new LineTo();
     
-    public Quad(boolean clockwise) {
+    public Quad(final boolean clockwise) {
         this.clockwise = clockwise;
     }
     
@@ -60,7 +60,7 @@ public class Quad {
         this(true /* clockwise */);
     }
 
-    public void addToPath(Path path) {
+    public void addToPath(final Path path) {
         assert path != null;
         
         final List<PathElement> ringElements = path.getElements();
@@ -78,7 +78,7 @@ public class Quad {
         ringElements.add(new ClosePath());
     }
     
-    public void removeFromPath(Path path) {
+    public void removeFromPath(final Path path) {
         assert path != null;
         assert path.getElements().contains(moveTo0);
         
@@ -93,7 +93,7 @@ public class Quad {
         return moveTo0.getX();
     }
     
-    public void setX0(double x) {
+    public void setX0(final double x) {
         moveTo0.setX(x);
     }
 
@@ -101,7 +101,7 @@ public class Quad {
         return moveTo0.getY();
     }
 
-    public void setY0(double y) {
+    public void setY0(final double y) {
         moveTo0.setY(y);
     }
 
@@ -109,7 +109,7 @@ public class Quad {
         return lineTo1.getX();
     }
 
-    public void setX1(double x) {
+    public void setX1(final double x) {
         lineTo1.setX(x);
     }
 
@@ -117,7 +117,7 @@ public class Quad {
         return lineTo1.getY();
     }
 
-    public void setY1(double y) {
+    public void setY1(final double y) {
         lineTo1.setY(y);
     }
 
@@ -125,7 +125,7 @@ public class Quad {
         return lineTo2.getX();
     }
 
-    public void setX2(double x) {
+    public void setX2(final double x) {
         lineTo2.setX(x);
     }
 
@@ -133,7 +133,7 @@ public class Quad {
         return lineTo2.getY();
     }
 
-    public void setY2(double y) {
+    public void setY2(final double y) {
         lineTo2.setY(y);
     }
 
@@ -141,7 +141,7 @@ public class Quad {
         return lineTo3.getX();
     }
 
-    public void setX3(double x) {
+    public void setX3(final double x) {
         lineTo3.setX(x);
     }
 
@@ -149,11 +149,11 @@ public class Quad {
         return lineTo3.getY();
     }
 
-    public void setY3(double y) {
+    public void setY3(final double y) {
         lineTo3.setY(y);
     }
 
-    public void setBounds(Bounds bounds) {
+    public void setBounds(final Bounds bounds) {
         moveTo0.setX(bounds.getMinX());
         moveTo0.setY(bounds.getMinY());
         lineTo1.setX(bounds.getMaxX());
@@ -164,7 +164,7 @@ public class Quad {
         lineTo3.setY(bounds.getMaxY());
     }
     
-    public void insets(Insets insets) {
+    public void insets(final Insets insets) {
         moveTo0.setX(moveTo0.getX() + insets.getLeft());
         moveTo0.setY(moveTo0.getY() + insets.getTop());
         lineTo1.setX(lineTo1.getX() - insets.getRight());
@@ -175,7 +175,7 @@ public class Quad {
         lineTo3.setY(lineTo3.getY() - insets.getBottom());
     }
     
-    public void insets(Insets insets, double minInset) {
+    public void insets(final Insets insets, final double minInset) {
         assert minInset >= 0.0;
         moveTo0.setX(moveTo0.getX() + Math.max(minInset, insets.getLeft()));
         moveTo0.setY(moveTo0.getY() + Math.max(minInset, insets.getTop()));

@@ -88,7 +88,7 @@ public abstract class AbstractPopupController {
     }
     
     
-    public void openWindow(Node anchor) {
+    public void openWindow(final Node anchor) {
         assert Platform.isFxApplicationThread();
         assert anchor != null;
         assert anchor.getScene() != null;
@@ -160,7 +160,7 @@ public abstract class AbstractPopupController {
      * 
      * @param panelRoot the root panel (non null).
      */
-    protected  final void setRoot(Parent panelRoot) {
+    protected  final void setRoot(final Parent panelRoot) {
         assert panelRoot != null;
         this.root = panelRoot;
     }

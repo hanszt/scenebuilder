@@ -45,12 +45,12 @@ public class LibraryListItem {
     private String sectionName = null;
     private LibraryItem libItem = null;
     
-    public LibraryListItem(LibraryItem libItem) {
+    public LibraryListItem(final LibraryItem libItem) {
         this.libItem = libItem;
         this.sectionName = null;
     }
     
-    public LibraryListItem(String sectionName) {
+    public LibraryListItem(final String sectionName) {
         this.sectionName = sectionName;
         this.libItem = null;
     }

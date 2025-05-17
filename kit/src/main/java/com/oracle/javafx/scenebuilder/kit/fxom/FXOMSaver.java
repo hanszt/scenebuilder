@@ -63,11 +63,11 @@ class FXOMSaver {
      * Creates a new instance of FXOMSaver
      * @param wildcardImports If set to true, uses wildcard imports while saving FXML
      */
-    FXOMSaver(boolean wildcardImports) {
+    FXOMSaver(final boolean wildcardImports) {
         this.wildcardImports = wildcardImports;
     }
     
-    public String save(FXOMDocument fxomDocument) {
+    public String save(final FXOMDocument fxomDocument) {
         
         assert fxomDocument != null;
         assert fxomDocument.getGlue() != null;
@@ -88,12 +88,12 @@ class FXOMSaver {
     private static final String NAME_SPACE_FX = "http://javafx.com/javafx/" + FXMLLoader.JAVAFX_VERSION;
     private static final String NAME_SPACE_FXML = "http://javafx.com/fxml/1";
     
-    private void updateNameSpace(FXOMDocument fxomDocument) {
+    private void updateNameSpace(final FXOMDocument fxomDocument) {
         assert fxomDocument.getFxomRoot() != null;
         
-        final FXOMObject fxomRoot = fxomDocument.getFxomRoot();
-        final String currentNameSpaceFX = fxomRoot.getNameSpaceFX();
-        final String currentNameSpaceFXML = fxomRoot.getNameSpaceFXML();
+        final var fxomRoot = fxomDocument.getFxomRoot();
+        final var currentNameSpaceFX = fxomRoot.getNameSpaceFX();
+        final var currentNameSpaceFXML = fxomRoot.getNameSpaceFXML();
         
         if ((currentNameSpaceFX == null) 
                 || (!currentNameSpaceFX.equals(NAME_SPACE_FX))) {
@@ -108,17 +108,17 @@ class FXOMSaver {
         
     }
         
-    private void updateImportInstructions(FXOMDocument fxomDocument) {
+    private void updateImportInstructions(final FXOMDocument fxomDocument) {
         assert fxomDocument.getFxomRoot() != null;
 
         // gets list of the imports to be added to the FXML document.
-        List<GlueInstruction> importList = getHeaderIncludes(fxomDocument);
+        final var importList = getHeaderIncludes(fxomDocument);
 
         // synchronizes the glue with the list of glue instructions
         synchronizeHeader(fxomDocument.getGlue(), importList);
     }
 
-    private List<GlueInstruction> getHeaderIncludes(FXOMDocument fxomDocument) {
+    private List<GlueInstruction> getHeaderIncludes(final FXOMDocument fxomDocument) {
         // TODO: When wildcardImport is true, add package name only when no of classes
         //  which belong to the same package exceed 3
 
@@ -129,7 +129,7 @@ class FXOMSaver {
         //Example: <Button/> ; classname = javafx.scene.control.Button
         fxomDocument.getFxomRoot().collectDeclaredClasses().forEach(dc -> imports.add(wildcardImports ? dc.getPackageName() + ".*" : dc.getCanonicalName()));
 
-        FXOMObject root = fxomDocument.getFxomRoot();
+        final var root = fxomDocument.getFxomRoot();
 
         imports.addAll(findPropertyClasses(root.getChildObjects().toArray(FXOMObject[]::new)));
         imports.addAll(findPropertyClasses(root));
@@ -137,7 +137,7 @@ class FXOMSaver {
         return createGlueInstructionsForImports(fxomDocument, imports);
     }
 
-    private Set<String> findPropertyClasses(FXOMObject... fxomObjects) {
+    private Set<String> findPropertyClasses(final FXOMObject... fxomObjects) {
         return Arrays.stream(fxomObjects)
             .map(FXOMObject::collectPropertiesT) //list of lists containing FXOMProperties
             .flatMap(List::stream) // add all to one list of FXOMProperties
@@ -148,24 +148,24 @@ class FXOMSaver {
     }
 
     // Creates a List of glue instruction for all imported classes.
-    private List<GlueInstruction> createGlueInstructionsForImports(FXOMDocument fxomDocument, Set<String> imports) {
-        List<GlueInstruction> importsList = new ArrayList<>();
+    private List<GlueInstruction> createGlueInstructionsForImports(final FXOMDocument fxomDocument, final Set<String> imports) {
+        final List<GlueInstruction> importsList = new ArrayList<>();
         imports.forEach(name -> {
-            final GlueInstruction instruction = new GlueInstruction(fxomDocument.getGlue(), "import", name);
+            final var instruction = new GlueInstruction(fxomDocument.getGlue(), "import", name);
             importsList.add(instruction);
         });
         return importsList;
     }
 
-    private void synchronizeHeader(GlueDocument glue, List<GlueInstruction> importList) {
+    private void synchronizeHeader(final GlueDocument glue, final List<GlueInstruction> importList) {
         synchronized (this) {
             // find out where the first import instruction is located
             final int firstImportIndex;
-            List<GlueInstruction> existingImports = glue.collectInstructions("import");
+            final var existingImports = glue.collectInstructions("import");
             if (existingImports.isEmpty()) {
                 firstImportIndex = 0;
             } else {
-                GlueInstruction firstImport = existingImports.get(0);
+                final var firstImport = existingImports.getFirst();
                 firstImportIndex = glue.getHeader().indexOf(firstImport);
             }
 

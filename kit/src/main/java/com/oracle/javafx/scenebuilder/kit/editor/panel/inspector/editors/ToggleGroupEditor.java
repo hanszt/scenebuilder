@@ -47,21 +47,21 @@ public class ToggleGroupEditor extends AutoSuggestEditor {
 
     List<String> suggestedTgs;
 
-    public ToggleGroupEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses, List<String> suggestedTgs) {
+    public ToggleGroupEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses, final List<String> suggestedTgs) {
         super(propMeta, selectedClasses, suggestedTgs);
         initialize(suggestedTgs);
     }
     
-    private void initialize(List<String> suggestedTgs) {
+    private void initialize(final List<String> suggestedTgs) {
         this.suggestedTgs = suggestedTgs;
 
         // text field events handling
-        EventHandler<ActionEvent> onActionListener = event -> {
+        final EventHandler<ActionEvent> onActionListener = event -> {
             if (isHandlingError()) {
                 // Event received because of focus lost due to error dialog
                 return;
             }
-            String value = textField.getText();
+            final var value = textField.getText();
             if (value != null && !value.isEmpty()) {
 
                 if (!JavaLanguage.isIdentifier(value)) {
@@ -77,7 +77,7 @@ public class ToggleGroupEditor extends AutoSuggestEditor {
     }
 
     @Override
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses, List<String> suggestedTgs) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses, final List<String> suggestedTgs) {
         super.reset(propMeta, selectedClasses, suggestedTgs);
     }
 }

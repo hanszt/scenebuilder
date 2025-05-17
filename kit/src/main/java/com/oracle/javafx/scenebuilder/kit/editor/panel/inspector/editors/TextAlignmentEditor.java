@@ -60,7 +60,7 @@ public class TextAlignmentEditor extends PropertyEditor {
 
     private final ToggleButton[] toggleButtons = new ToggleButton[4];
 
-    public TextAlignmentEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public TextAlignmentEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super(propMeta, selectedClasses);
         initialize();
     }
@@ -73,7 +73,7 @@ public class TextAlignmentEditor extends PropertyEditor {
         toggleButtons[1] = centerTb;
         toggleButtons[2] = rightTb;
         toggleButtons[3] = justifyTb;
-        for (ToggleButton tb : toggleButtons) {
+        for (final var tb : toggleButtons) {
             tb.setOnAction(t -> userUpdateValueProperty(getValue()));
             tb.disableProperty().bind(disableProperty());
         }
@@ -87,7 +87,7 @@ public class TextAlignmentEditor extends PropertyEditor {
 
     @Override
     public Object getValue() {
-        for (ToggleButton tb : toggleButtons) {
+        for (final var tb : toggleButtons) {
             if (tb.isSelected()) {
                 if (tb.equals(leftTb)) {
                     return TextAlignment.LEFT.toString();
@@ -126,14 +126,14 @@ public class TextAlignmentEditor extends PropertyEditor {
     }
 
     @Override
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super.reset(propMeta, selectedClasses);
         setLayoutFormat(LayoutFormat.SIMPLE_LINE_BOTTOM);
     }
 
     @Override
     protected void valueIsIndeterminate() {
-        for (ToggleButton tb : toggleButtons) {
+        for (final var tb : toggleButtons) {
             tb.setSelected(false);
         }
     }

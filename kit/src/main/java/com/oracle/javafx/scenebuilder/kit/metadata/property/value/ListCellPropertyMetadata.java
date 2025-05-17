@@ -41,13 +41,13 @@ import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
  */
 public class ListCellPropertyMetadata extends ComplexPropertyMetadata<Object> {
 
-    public ListCellPropertyMetadata(PropertyName name, boolean readWrite, 
-            Object defaultValue, InspectorPath inspectorPath) {
+    public ListCellPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                    final Object defaultValue, final InspectorPath inspectorPath) {
         super(name, Object.class, readWrite, defaultValue, inspectorPath);
     }
 
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(Object value, FXOMDocument fxomDocument) {
+    public FXOMInstance makeFxomInstanceFromValue(final Object value, final FXOMDocument fxomDocument) {
         throw new UnsupportedOperationException("Not supported yet."); //NOI18N
     }
     

@@ -70,8 +70,8 @@ public class DisplacementMapPropertyMetadata extends ComplexPropertyMetadata<Dis
             = new FloatMapPropertyMetadata(new PropertyName("mapData"), //NOI18N
             true /* readWrite */, DEFAULT.getMapData(), InspectorPath.UNUSED);
 
-    public DisplacementMapPropertyMetadata(PropertyName name, boolean readWrite, 
-            DisplacementMap defaultValue, InspectorPath inspectorPath) {
+    public DisplacementMapPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                           final DisplacementMap defaultValue, final InspectorPath inspectorPath) {
         super(name, DisplacementMap.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -80,8 +80,8 @@ public class DisplacementMapPropertyMetadata extends ComplexPropertyMetadata<Dis
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(DisplacementMap value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, value.getClass());
+    public FXOMInstance makeFxomInstanceFromValue(final DisplacementMap value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, value.getClass());
         
         inputMetadata.setValue(result, value.getInput());
         offsetXMetadata.setValue(result, value.getOffsetX());

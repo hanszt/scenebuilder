@@ -38,25 +38,24 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.stream.Stream;
 
 public class FolderExplorer extends ExplorerBase {
 
     private final Path rootFolderPath;
 
-    public FolderExplorer(Path folderPath) {
+    public FolderExplorer(final Path folderPath) {
         assert folderPath != null;
         assert folderPath.isAbsolute();
 
         this.rootFolderPath = folderPath;
     }
 
-    public JarReport explore(ClassLoader classLoader) throws IOException {
-        final JarReport result = new JarReport(rootFolderPath);
+    public JarReport explore(final ClassLoader classLoader) throws IOException {
+        final var result = new JarReport(rootFolderPath);
 
-        try (Stream<Path> stream = Files.walk(rootFolderPath).filter(p -> !p.toFile().isDirectory())) {
+        try (final var stream = Files.walk(rootFolderPath).filter(p -> !p.toFile().isDirectory())) {
             stream.forEach(p -> {
-                JarReportEntry explored = exploreEntry(rootFolderPath, p, classLoader);
+                final var explored = exploreEntry(rootFolderPath, p, classLoader);
                 if (explored.getStatus() != Status.IGNORED)
                     result.getEntries().add(explored);
             });
@@ -69,15 +68,15 @@ public class FolderExplorer extends ExplorerBase {
      * Private
      */
 
-    private JarReportEntry exploreEntry(Path rootpath, Path path, ClassLoader classLoader) {
-        File file = path.toFile();
+    private JarReportEntry exploreEntry(final Path rootpath, final Path path, final ClassLoader classLoader) {
+        final var file = path.toFile();
 
         if (file.isDirectory()) {
             return new JarReportEntry(file.getName(), Status.IGNORED, null, null, null);
         } else {
-            Path relativepath = rootpath.relativize(path);
+            final var relativepath = rootpath.relativize(path);
 
-            String className = makeClassName(relativepath.toString(), File.separator);
+            final var className = makeClassName(relativepath.toString(), File.separator);
             return super.exploreEntry(file.getName(), classLoader, className);
         }
     }

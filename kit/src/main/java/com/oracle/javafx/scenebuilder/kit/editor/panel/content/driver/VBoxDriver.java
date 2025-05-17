@@ -39,8 +39,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.tring.VBox
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
-import javafx.geometry.Bounds;
-import javafx.scene.Node;
 import javafx.scene.layout.VBox;
 
 /**
@@ -48,7 +46,7 @@ import javafx.scene.layout.VBox;
  */
 public class VBoxDriver extends AbstractNodeDriver {
 
-    public VBoxDriver(ContentPanelController contentPanelController) {
+    public VBoxDriver(final ContentPanelController contentPanelController) {
         super(contentPanelController);
     }
 
@@ -56,16 +54,16 @@ public class VBoxDriver extends AbstractNodeDriver {
      * AbstractDriver
      */
     @Override
-    public AbstractDropTarget makeDropTarget(FXOMObject fxomObject, double sceneX, double sceneY) {
+    public AbstractDropTarget makeDropTarget(final FXOMObject fxomObject, final double sceneX, final double sceneY) {
         
         assert fxomObject instanceof FXOMInstance;
         assert fxomObject.getSceneGraphObject() instanceof VBox;
         
-        final VBox hbox = (VBox) fxomObject.getSceneGraphObject();
+        final var hbox = (VBox) fxomObject.getSceneGraphObject();
         assert hbox.getScene() != null;
         
-        final double localY = hbox.sceneToLocal(sceneX, sceneY, true /* rootScene */).getY();
-        final int childCount = hbox.getChildrenUnmodifiable().size();
+        final var localY = hbox.sceneToLocal(sceneX, sceneY, true /* rootScene */).getY();
+        final var childCount = hbox.getChildrenUnmodifiable().size();
         
         final int targetIndex;
         if (childCount == 0) {
@@ -74,12 +72,12 @@ public class VBoxDriver extends AbstractNodeDriver {
             
         } else {
             assert childCount >= 1;
-            
-            int childIndex = 0;
+
+            var childIndex = 0;
             double midY;
             do {
-                Node child = hbox.getChildrenUnmodifiable().get(childIndex++);
-                Bounds childBounds = child.getBoundsInParent();
+                final var child = hbox.getChildrenUnmodifiable().get(childIndex++);
+                final var childBounds = child.getBoundsInParent();
                 midY = (childBounds.getMinY() + childBounds.getMaxY()) / 2.0;
             } while ((localY > midY) && (childIndex < childCount));
             
@@ -95,7 +93,7 @@ public class VBoxDriver extends AbstractNodeDriver {
         if (targetIndex == -1) {
             beforeChild = null;
         } else {
-            final DesignHierarchyMask m = new DesignHierarchyMask(fxomObject);
+            final var m = new DesignHierarchyMask(fxomObject);
             if (targetIndex < m.getSubComponentCount()) {
                 beforeChild = m.getSubComponentAtIndex(targetIndex);
             } else {
@@ -108,12 +106,12 @@ public class VBoxDriver extends AbstractNodeDriver {
     
     
     @Override
-    public AbstractTring<?> makeTring(AbstractDropTarget dropTarget) {
+    public AbstractTring<?> makeTring(final AbstractDropTarget dropTarget) {
         assert dropTarget instanceof ContainerZDropTarget; 
         assert dropTarget.getTargetObject() instanceof FXOMInstance;
         assert dropTarget.getTargetObject().getSceneGraphObject() instanceof VBox;
         
-        final ContainerZDropTarget zDropTarget = (ContainerZDropTarget) dropTarget;
+        final var zDropTarget = (ContainerZDropTarget) dropTarget;
         final int targetIndex;
         if (zDropTarget.getBeforeChild() == null) {
             targetIndex = -1;

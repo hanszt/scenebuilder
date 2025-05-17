@@ -59,8 +59,8 @@ public class BoxBlurPropertyMetadata extends ComplexPropertyMetadata<BoxBlur> {
             = new IntegerPropertyMetadata(new PropertyName("iterations"), //NOI18N
              true /* readWrite */, 1, InspectorPath.UNUSED);
 
-    public BoxBlurPropertyMetadata(PropertyName name, boolean readWrite, 
-            BoxBlur defaultValue, InspectorPath inspectorPath) {
+    public BoxBlurPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                   final BoxBlur defaultValue, final InspectorPath inspectorPath) {
         super(name, BoxBlur.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -69,8 +69,8 @@ public class BoxBlurPropertyMetadata extends ComplexPropertyMetadata<BoxBlur> {
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(BoxBlur value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, value.getClass());
+    public FXOMInstance makeFxomInstanceFromValue(final BoxBlur value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, value.getClass());
         
         inputMetadata.setValue(result, value.getInput());
         heightMetadata.setValue(result, value.getHeight());

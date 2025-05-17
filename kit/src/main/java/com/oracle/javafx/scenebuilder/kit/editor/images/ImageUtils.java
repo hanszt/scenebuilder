@@ -75,9 +75,9 @@ public abstract class ImageUtils {
         if (resource == null) {
             resource = ImageUtils.class.getResource(NODE_ICONS_DIR + "/" + MISSING_ICON); //NOI18N
         }
-        final String imageUrl = resource.toExternalForm();
-        final Reference<Image> ref = imageCache.get(imageUrl);
-        Image image = ref != null ? ref.get() : null;
+        final var imageUrl = resource.toExternalForm();
+        final var ref = imageCache.get(imageUrl);
+        var image = ref != null ? ref.get() : null;
         if (image == null) {
             image = new Image(imageUrl);
             imageCache.put(imageUrl, new SoftReference<>(image));
@@ -91,17 +91,17 @@ public abstract class ImageUtils {
      * @param name
      * @return 
      */
-    public static Image getNodeIcon(String name) {
-        final URL resource = getNodeIconURL(name);
+    public static Image getNodeIcon(final String name) {
+        final var resource = getNodeIconURL(name);
         return getImage(resource);
     }
 
-    public static Image getImageFromNode(Node visualNode) {
+    public static Image getImageFromNode(final Node visualNode) {
         visualNode.setOpacity(0.75);
-        final Group visualGroup = new Group();
+        final var visualGroup = new Group();
         visualGroup.getChildren().add(visualNode);
-        final Scene hiddenScene = new Scene(visualGroup);
-        Stage hiddenStage = new Stage();
+        final var hiddenScene = new Scene(visualGroup);
+        final var hiddenStage = new Stage();
         hiddenStage.setScene(hiddenScene);
         final Image contentImage = visualNode.snapshot(null, null);
         // Detach the scene !
@@ -112,7 +112,7 @@ public abstract class ImageUtils {
     
     public static synchronized Cursor getClosedHandCursor() {
         if (closed_hand_cursor == null) {
-            final URL url = ImageUtils.class.getResource(UI_DIR + "/" + CLOSED_HAND); //NOI18N
+            final var url = ImageUtils.class.getResource(UI_DIR + "/" + CLOSED_HAND); //NOI18N
             // The image is of size 32 x 32 and we set hotspot on the middle.
             closed_hand_cursor = new ImageCursor(new Image(url.toExternalForm()), 16, 10);
         }
@@ -121,7 +121,7 @@ public abstract class ImageUtils {
     
     public static synchronized Cursor getOpenHandCursor() {
         if (open_hand_cursor == null) {
-            final URL url = ImageUtils.class.getResource(UI_DIR + "/" + OPEN_HAND); //NOI18N
+            final var url = ImageUtils.class.getResource(UI_DIR + "/" + OPEN_HAND); //NOI18N
             // The image is of size 32 x 32 and we set hotspot on the middle.
             open_hand_cursor = new ImageCursor(new Image(url.toExternalForm()), 16, 10);
         }
@@ -130,7 +130,7 @@ public abstract class ImageUtils {
     
     public static synchronized Image getDeleteIconImage() {
         if (delete_icon_image == null) {
-            final URL url = ImageUtils.class.getResource(UI_DIR + "/" + DELETE_ICON); //NOI18N
+            final var url = ImageUtils.class.getResource(UI_DIR + "/" + DELETE_ICON); //NOI18N
             delete_icon_image = new Image(url.toExternalForm());
         }
         return delete_icon_image;
@@ -138,7 +138,7 @@ public abstract class ImageUtils {
     
     public static synchronized Image getEditIconImage() {
         if (edit_icon_image == null) {
-            final URL url = ImageUtils.class.getResource(UI_DIR + "/" + EDIT_ICON); //NOI18N
+            final var url = ImageUtils.class.getResource(UI_DIR + "/" + EDIT_ICON); //NOI18N
             edit_icon_image = new Image(url.toExternalForm());
         }
         return edit_icon_image;
@@ -146,7 +146,7 @@ public abstract class ImageUtils {
     
     public static synchronized Image getWarningBadgeImage() {
         if (warning_badge_image == null) {
-            final URL url = ImageUtils.class.getResource(UI_DIR + "/" + WARNING_BADGE); //NOI18N
+            final var url = ImageUtils.class.getResource(UI_DIR + "/" + WARNING_BADGE); //NOI18N
             warning_badge_image = new Image(url.toExternalForm());
         }
         return warning_badge_image;
@@ -154,7 +154,7 @@ public abstract class ImageUtils {
     
     public static synchronized Cursor getCSSCursor() {
         if (css_cursor == null) {
-            final URL url = ImageUtils.class.getResource(UI_DIR + "/" + CSS_CURSOR); //NOI18N
+            final var url = ImageUtils.class.getResource(UI_DIR + "/" + CSS_CURSOR); //NOI18N
             css_cursor = new ImageCursor(new Image(url.toExternalForm()));
         }
         return css_cursor;
@@ -166,7 +166,7 @@ public abstract class ImageUtils {
      * @param name
      * @return
      */
-    public static URL getNodeIconURL(String name) {
+    public static URL getNodeIconURL(final String name) {
         return ImageUtils.class.getResource(NODE_ICONS_DIR + "/" + name); //NOI18N
     }
     
@@ -176,7 +176,7 @@ public abstract class ImageUtils {
      * @param name
      * @return
      */
-    public static URL getUIURL(String name) {
+    public static URL getUIURL(final String name) {
         return ImageUtils.class.getResource(UI_DIR + "/" + name); //NOI18N
     }
 }

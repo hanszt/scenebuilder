@@ -53,7 +53,7 @@ public class SplitController {
     private final Node targetNode;
     private double dividerPosition = -1.0;
 
-    public SplitController(SplitPane splitPane, Target target) {
+    public SplitController(final SplitPane splitPane, final Target target) {
         assert splitPane != null;
         assert splitPane.getItems().size() >= 1;
 
@@ -61,22 +61,22 @@ public class SplitController {
         this.target = target;
 
         final List<Node> children = splitPane.getItems();
-        final int targetIndex = (target == Target.FIRST) ? 0 : children.size() - 1;
+        final var targetIndex = (target == Target.FIRST) ? 0 : children.size() - 1;
         this.targetNode = children.get(targetIndex);
     }
 
     public DoubleProperty position() {
-        final Divider divider = getTargetDivider();
+        final var divider = getTargetDivider();
         return divider == null ? null : divider.positionProperty();
     }
 
     public double getPosition() {
-        final Divider divider = getTargetDivider();
+        final var divider = getTargetDivider();
         return divider == null ? -1.0 : divider.getPosition();
     }
 
-    public void setPosition(double value) {
-        final Divider divider = getTargetDivider();
+    public void setPosition(final double value) {
+        final var divider = getTargetDivider();
         if (divider != null) {
             divider.setPosition(value);
         }
@@ -84,18 +84,18 @@ public class SplitController {
     }
 
     public void showTarget() {
-        if (isTargetVisible() == false) {
+        if (!isTargetVisible()) {
             // Put the target node back in the split pane items
             if (target == Target.FIRST) {
-                splitPane.getItems().add(0, targetNode);
+                splitPane.getItems().addFirst(targetNode);
             } else {
                 splitPane.getItems().add(targetNode);
             }
 
             // Restore the target divider position (if any)
             final List<Divider> dividers = splitPane.getDividers();
-            if ((dividers.isEmpty() == false) && (dividerPosition != -1)) { // (1)
-                final Divider divider = getTargetDivider();
+            if ((!dividers.isEmpty()) && (dividerPosition != -1)) { // (1)
+                final var divider = getTargetDivider();
                 assert divider != null; // Because of (1)
                 divider.setPosition(dividerPosition);
             }
@@ -107,14 +107,14 @@ public class SplitController {
         if (isTargetVisible()) {
 
             final List<Divider> dividers = splitPane.getDividers();
-            final List<Double> positionsList = asList(splitPane.getDividerPositions());
+            final var positionsList = asList(splitPane.getDividerPositions());
 
             // Backup the target divider positions (if any)
             // so we can restore it on showing
-            final Divider targetDivider = getTargetDivider();
+            final var targetDivider = getTargetDivider();
             if (targetDivider != null) {
                 dividerPosition = targetDivider.getPosition();
-                int targetDividerIndex = target == Target.FIRST ? 0 : dividers.size() - 1;
+                final var targetDividerIndex = target == Target.FIRST ? 0 : dividers.size() - 1;
                 positionsList.remove(targetDividerIndex);
             }
 
@@ -122,8 +122,8 @@ public class SplitController {
             splitPane.getItems().remove(targetNode);
 
             // Set back remaining dividers positions if any
-            if (positionsList.isEmpty() == false) {
-                double[] positionsArray = toArray(positionsList);
+            if (!positionsList.isEmpty()) {
+                final var positionsArray = toArray(positionsList);
                 splitPane.setDividerPositions(positionsArray);
             }
         }
@@ -137,7 +137,7 @@ public class SplitController {
         }
     }
 
-    public void setTargetVisible(boolean visible) {
+    public void setTargetVisible(final boolean visible) {
         if (visible) {
             showTarget();
         } else {
@@ -152,11 +152,11 @@ public class SplitController {
     private Divider getTargetDivider() {
         final Divider divider;
         final List<Divider> dividers = splitPane.getDividers();
-        if (dividers.isEmpty() == false) {
+        if (!dividers.isEmpty()) {
             if (target == Target.FIRST) {
-                divider = dividers.get(0);
+                divider = dividers.getFirst();
             } else {
-                divider = dividers.get(dividers.size() - 1);
+                divider = dividers.getLast();
             }
         } else {
             divider = null;
@@ -165,18 +165,18 @@ public class SplitController {
     }
 
     // Arrays.asList does not work with primitive types
-    private static List<Double> asList(double[] array) {
+    private static List<Double> asList(final double[] array) {
         final List<Double> list = new ArrayList<>(array.length);
-        for (double d : array) {
+        for (final var d : array) {
             list.add(d);
         }
         return list;
     }
 
     // List.toArray does not work with primitive types
-    private static double[] toArray(List<Double> list) {
-        final double[] array = new double[list.size()];
-        for (int i = 0; i < list.size(); i++) {
+    private static double[] toArray(final List<Double> list) {
+        final var array = new double[list.size()];
+        for (var i = 0; i < list.size(); i++) {
             array[i] = list.get(i);
         }
         return array;

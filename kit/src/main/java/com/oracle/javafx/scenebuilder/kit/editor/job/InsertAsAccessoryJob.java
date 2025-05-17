@@ -37,14 +37,13 @@ import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.AddPropertyValueJob;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.AbstractSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMCollection;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMProperty;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyC;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask.Accessory;
-import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -61,10 +60,10 @@ public class InsertAsAccessoryJob extends BatchSelectionJob {
     private final Accessory accessory;
 
     public InsertAsAccessoryJob(
-            FXOMObject newObject,
-            FXOMObject targetObject,
-            Accessory accessory,
-            EditorController editorController) {
+            final FXOMObject newObject,
+            final FXOMObject targetObject,
+            final Accessory accessory,
+            final EditorController editorController) {
         super(editorController);
 
         assert newObject != null;
@@ -83,17 +82,17 @@ public class InsertAsAccessoryJob extends BatchSelectionJob {
         final List<Job> result = new ArrayList<>();
         if (targetObject instanceof FXOMInstance) {
 
-            final DesignHierarchyMask mask = new DesignHierarchyMask(targetObject);
+            final var mask = new DesignHierarchyMask(targetObject);
             if (mask.isAcceptingAccessory(accessory, newObject)
                     && mask.getAccessory(accessory) == null) { // (1)
 
-                final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
-                final FXOMInstance targetInstance = (FXOMInstance) targetObject;
-                final PropertyName accessoryName = mask.getPropertyNameForAccessory(accessory);
+                final var fxomDocument = getEditorController().getFxomDocument();
+                final var targetInstance = (FXOMInstance) targetObject;
+                final var accessoryName = mask.getPropertyNameForAccessory(accessory);
                 assert accessoryName != null;
 
                 // Property has no value yet because of (1)
-                FXOMProperty targetProperty = new FXOMPropertyC(fxomDocument, accessoryName);
+                final FXOMProperty targetProperty = new FXOMPropertyC(fxomDocument, accessoryName);
 
                 final Job addValueJob
                         = new AddPropertyValueJob(newObject,
@@ -113,7 +112,7 @@ public class InsertAsAccessoryJob extends BatchSelectionJob {
                 final Job pruneJob = new PrunePropertiesJob(newObject, targetObject,
                         getEditorController());
                 if (pruneJob.isExecutable()) {
-                    result.add(0, pruneJob);
+                    result.addFirst(pruneJob);
                 }
             }
         }
@@ -123,12 +122,12 @@ public class InsertAsAccessoryJob extends BatchSelectionJob {
     @Override
     protected String makeDescription() {
         final String result;
-        final StringBuilder sb = new StringBuilder();
+        final var sb = new StringBuilder();
 
         sb.append("Insert ");
 
         if (newObject instanceof FXOMInstance) {
-            final Object sceneGraphObject = newObject.getSceneGraphObject();
+            final var sceneGraphObject = newObject.getSceneGraphObject();
             if (sceneGraphObject != null) {
                 sb.append(sceneGraphObject.getClass().getSimpleName());
             } else {

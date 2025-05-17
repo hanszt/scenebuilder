@@ -39,13 +39,11 @@ import com.oracle.javafx.scenebuilder.kit.editor.selection.AbstractSelectionGrou
 import com.oracle.javafx.scenebuilder.kit.editor.selection.GridSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.GridSelectionGroup.Type;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +67,7 @@ public class AddColumnJob extends BatchSelectionJob {
     private final Map<FXOMObject, Set<Integer>> targetGridPanes = new HashMap<>();
     private final Position position;
 
-    public AddColumnJob(EditorController editorController, Position position) {
+    public AddColumnJob(final EditorController editorController, final Position position) {
         super(editorController);
         assert position == Position.BEFORE || position == Position.AFTER;
         this.position = position;
@@ -82,11 +80,11 @@ public class AddColumnJob extends BatchSelectionJob {
         if (GridPaneJobUtils.canPerformAdd(getEditorController())) {
 
             // Populate the target GridPane map
-            assert targetGridPanes.isEmpty() == true;
-            final List<FXOMObject> objectList
+            assert targetGridPanes.isEmpty();
+            final var objectList
                     = GridPaneJobUtils.getTargetGridPanes(getEditorController());
-            for (FXOMObject object : objectList) {
-                final Set<Integer> indexList
+            for (final var object : objectList) {
+                final var indexList
                         = getTargetColumnIndexes(getEditorController(), object);
                 targetGridPanes.put(object, indexList);
             }
@@ -114,15 +112,15 @@ public class AddColumnJob extends BatchSelectionJob {
         // - if there is more than 1 GridPane, we select the GridPane instances
         // - if there is a single GridPane, we select the added columns
         if (targetGridPanes.size() > 1) {
-            Set<FXOMObject> objects = targetGridPanes.keySet();
+            final var objects = targetGridPanes.keySet();
             asg = new ObjectSelectionGroup(objects, objects.iterator().next(), null);
         } else {
             assert targetGridPanes.size() == 1;
-            final FXOMInstance targetGridPane
+            final var targetGridPane
                     = (FXOMInstance) targetGridPanes.keySet().iterator().next();
-            final Set<Integer> targetIndexes = targetGridPanes.get(targetGridPane);
+            final var targetIndexes = targetGridPanes.get(targetGridPane);
             assert targetIndexes.size() >= 1;
-            final Set<Integer> addedIndexes
+            final var addedIndexes
                     = GridPaneJobUtils.getAddedIndexes(targetIndexes, position);
             
             asg = new GridSelectionGroup(targetGridPane, Type.COLUMN, addedIndexes);
@@ -134,21 +132,22 @@ public class AddColumnJob extends BatchSelectionJob {
 
         final List<Job> result = new ArrayList<>();
 
-        for (FXOMObject targetGridPane : targetGridPanes.keySet()) {
+        for (final var targetGridPane : targetGridPanes.keySet()) {
 
-            final Set<Integer> targetIndexes = targetGridPanes.get(targetGridPane);
+            final var targetIndexes = targetGridPanes.get(targetGridPane);
 
-            final DesignHierarchyMask mask = new DesignHierarchyMask(targetGridPane);
-            final int columnsSize = mask.getColumnsSize();
-            final Iterator<Integer> iterator = targetIndexes.iterator();
+            final var mask = new DesignHierarchyMask(targetGridPane);
+            final var columnsSize = mask.getColumnsSize();
+            final var iterator = targetIndexes.iterator();
 
-            int shiftIndex = 0;
+            var shiftIndex = 0;
             int targetIndex = iterator.next();
             while (targetIndex != -1) {
                 // Move the columns content :
                 // - from the target index 
                 // - to the next target index if any or the last column index otherwise
-                int fromIndex, toIndex;
+                final int fromIndex;
+                final int toIndex;
 
                 switch (position) {
                     case BEFORE:
@@ -183,10 +182,10 @@ public class AddColumnJob extends BatchSelectionJob {
                 // If fromIndex >= columnsSize, we are below the last existing column 
                 // => no column content to move
                 if (fromIndex < columnsSize) {
-                    final int offset = 1 + shiftIndex;
-                    final List<Integer> indexes
+                    final var offset = 1 + shiftIndex;
+                    final var indexes
                             = GridPaneJobUtils.getIndexes(fromIndex, toIndex);
-                    final ReIndexColumnContentJob reIndexJob = new ReIndexColumnContentJob(
+                    final var reIndexJob = new ReIndexColumnContentJob(
                             getEditorController(), offset, targetGridPane, indexes);
                     result.add(reIndexJob);
                 }
@@ -207,8 +206,8 @@ public class AddColumnJob extends BatchSelectionJob {
             final EditorController editorController,
             final FXOMObject targetGridPane) {
 
-        final Selection selection = editorController.getSelection();
-        final AbstractSelectionGroup asg = selection.getGroup();
+        final var selection = editorController.getSelection();
+        final var asg = selection.getGroup();
 
         final Set<Integer> result = new LinkedHashSet<>();
 
@@ -216,7 +215,7 @@ public class AddColumnJob extends BatchSelectionJob {
         // => return the list of selected columns
         if (asg instanceof GridSelectionGroup
                 && ((GridSelectionGroup) asg).getType() == Type.COLUMN) {
-            final GridSelectionGroup gsg = (GridSelectionGroup) asg;
+            final var gsg = (GridSelectionGroup) asg;
             result.addAll(gsg.getIndexes());
         } //
         // Selection == GridPanes or Selection == GridPane rows
@@ -227,9 +226,9 @@ public class AddColumnJob extends BatchSelectionJob {
                     result.add(0);
                     break;
                 case AFTER:
-                    final DesignHierarchyMask mask
+                    final var mask
                             = new DesignHierarchyMask(targetGridPane);
-                    final int size = mask.getColumnsSize();
+                    final var size = mask.getColumnsSize();
                     result.add(size - 1);
                     break;
                 default:

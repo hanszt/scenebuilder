@@ -39,7 +39,7 @@ import javafx.scene.layout.TilePane;
  */
 public class WrapInTilePaneJob extends AbstractWrapInSubComponentJob {
 
-    public WrapInTilePaneJob(EditorController editorController) {
+    public WrapInTilePaneJob(final EditorController editorController) {
         super(editorController);
         newContainerClass = TilePane.class;
     }

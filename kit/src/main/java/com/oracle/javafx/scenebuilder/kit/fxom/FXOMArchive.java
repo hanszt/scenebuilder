@@ -50,12 +50,12 @@ public class FXOMArchive implements Serializable {
 
     private final List<Entry> entries = new ArrayList<>();
     
-    public FXOMArchive(List<FXOMObject> fxomObjects) {
+    public FXOMArchive(final List<FXOMObject> fxomObjects) {
         assert fxomObjects != null;
         
-        for (FXOMObject o : fxomObjects) {
-            final URL location = o.getFxomDocument().getLocation();
-            final String fxmlText = FXOMNodes.newDocument(o).getFxmlText(false);
+        for (final var o : fxomObjects) {
+            final var location = o.getFxomDocument().getLocation();
+            final var fxmlText = FXOMNodes.newDocument(o).getFxmlText(false);
             entries.add(new Entry(fxmlText, location));
         }
     }
@@ -64,19 +64,19 @@ public class FXOMArchive implements Serializable {
         return entries;
     }
     
-    public List<FXOMObject> decode(FXOMDocument targetDocument)
+    public List<FXOMObject> decode(final FXOMDocument targetDocument)
     throws IOException {
         final List<FXOMObject> result = new ArrayList<>();
         
         assert targetDocument != null;
         
-        for (Entry e : entries) {
-            final URL location = e.getLocation();
-            final String fxmlText = e.getFxmlText();
-            final FXOMDocument d = new FXOMDocument(fxmlText, location, 
+        for (final var e : entries) {
+            final var location = e.getLocation();
+            final var fxmlText = e.getFxmlText();
+            final var d = new FXOMDocument(fxmlText, location,
                     targetDocument.getClassLoader(), targetDocument.getResources(),
                     FXOMDocumentSwitch.NORMALIZED);
-            final FXOMObject fxomRoot = d.getFxomRoot();
+            final var fxomRoot = d.getFxomRoot();
             assert fxomRoot != null;
             fxomRoot.moveToFxomDocument(targetDocument);
             result.add(fxomRoot);
@@ -93,7 +93,7 @@ public class FXOMArchive implements Serializable {
         private final String fxmlText;
         private final URL location;
         
-        public Entry(String fxmlText, URL location) {
+        public Entry(final String fxmlText, final URL location) {
             this.fxmlText = fxmlText;
             this.location = location;
         }

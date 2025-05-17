@@ -40,7 +40,7 @@ public class DocumentationUrlsTest {
 
     @Test
     public void that_javafx_version_substitution_works_when_required() {
-        DocumentationUrls url = DocumentationUrls.OPENJFX_JAVADOC_HOME;
+        final var url = DocumentationUrls.OPENJFX_JAVADOC_HOME;
 
         // important is, that the configured value contains {javafx.version.major}
         assertEquals("https://openjfx.io/javadoc/{javafx.version.major}/", url.getConfiguredValue());
@@ -48,8 +48,8 @@ public class DocumentationUrlsTest {
         // this should be replaced at the end
         assertFalse(url.toString().contains("{javafx.version.major}"));
 
-        String fxVersion = DocumentationUrls.getMajorJavaFxVersion();
-        String expectedUrl = "https://openjfx.io/javadoc/{javafx.version.major}/"
+        final var fxVersion = DocumentationUrls.getMajorJavaFxVersion();
+        final var expectedUrl = "https://openjfx.io/javadoc/{javafx.version.major}/"
                              .replace("{javafx.version.major}", fxVersion);
         assertEquals(expectedUrl, url.toString());
     }
@@ -68,15 +68,15 @@ public class DocumentationUrlsTest {
 
     @Test
     public void that_major_version_is_properly_extracted() {
-        String javaFxVersion = "17.0.1.a";
-        String majorVersion = DocumentationUrls.getMajorJavaFxVersion(javaFxVersion);
+        final var javaFxVersion = "17.0.1.a";
+        final var majorVersion = DocumentationUrls.getMajorJavaFxVersion(javaFxVersion);
         assertEquals("17", majorVersion);
     }
 
     @Test
     public void that_unsupported_version_schema_yields_full_version_string() {
-        String javaFxVersion = "17-0-0-1";
-        String majorVersion = DocumentationUrls.getMajorJavaFxVersion(javaFxVersion);
+        final var javaFxVersion = "17-0-0-1";
+        final var majorVersion = DocumentationUrls.getMajorJavaFxVersion(javaFxVersion);
         assertEquals("17-0-0-1", majorVersion);
     }
 }

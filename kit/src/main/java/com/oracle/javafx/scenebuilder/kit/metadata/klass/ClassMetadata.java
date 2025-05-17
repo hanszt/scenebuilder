@@ -41,7 +41,7 @@ public class ClassMetadata implements Comparable<ClassMetadata> {
     
     private final Class<?> klass;
 
-    public ClassMetadata(Class<?> klass) {
+    public ClassMetadata(final Class<?> klass) {
         this.klass = klass;
     }
 
@@ -63,7 +63,7 @@ public class ClassMetadata implements Comparable<ClassMetadata> {
      * Comparable
      */
     @Override
-    public int compareTo(ClassMetadata o) {
+    public int compareTo(final ClassMetadata o) {
         return this.klass.getCanonicalName().compareTo(o.klass.getCanonicalName());
     }
 
@@ -72,20 +72,20 @@ public class ClassMetadata implements Comparable<ClassMetadata> {
      */
     @Override
     public int hashCode() {
-        int hash = 5;
+        var hash = 5;
         hash = 19 * hash + Objects.hashCode(this.klass);
         return hash;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         }
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final ClassMetadata other = (ClassMetadata) obj;
+        final var other = (ClassMetadata) obj;
         if (!Objects.equals(this.klass, other.klass)) {
             return false;
         }

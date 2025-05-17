@@ -49,7 +49,7 @@ public abstract class InlineListEditor extends PropertyEditor implements EditorI
     private final VBox vbox = new VBox(1);
     private final List<EditorItem> editorItems = new ArrayList<>();
 
-    public InlineListEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public InlineListEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super(propMeta, selectedClasses);
         setLayoutFormat(PropertyEditor.LayoutFormat.DOUBLE_LINE);
     }
@@ -60,11 +60,11 @@ public abstract class InlineListEditor extends PropertyEditor implements EditorI
     }
 
     @Override
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         reset(propMeta, selectedClasses, true);
     }
     
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses, boolean removeAll) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses, final boolean removeAll) {
         super.reset(propMeta, selectedClasses);
         setLayoutFormat(PropertyEditor.LayoutFormat.DOUBLE_LINE);
         reset(removeAll);
@@ -73,51 +73,51 @@ public abstract class InlineListEditor extends PropertyEditor implements EditorI
     @Override
     protected void valueIsIndeterminate() {
         // Set all the items as undeterminate, whathever is the value
-        for (EditorItem editorItem : editorItems) {
+        for (final var editorItem : editorItems) {
             editorItem.setValueAsIndeterminate();
         }
     }
 
     @Override
-    public void commit(EditorItem source) {
+    public void commit(final EditorItem source) {
 //        System.out.println("COMMIT");
         userUpdateValueProperty(getValue());
     }
 
     @Override
-    public void editing(boolean editing, EventHandler<?> editingHandler) {
+    public void editing(final boolean editing, final EventHandler<?> editingHandler) {
         editingProperty().setValue(editing);
         setCommitListener(editingHandler);
     }
 
     @Override
-    public void add(EditorItem previousItem, EditorItem newItem) {
+    public void add(final EditorItem previousItem, final EditorItem newItem) {
 //        System.out.println("ADD");
         addItem(previousItem, newItem);
         userUpdateValueProperty(getValue());
     }
 
     @Override
-    public void remove(EditorItem source) {
+    public void remove(final EditorItem source) {
         // By default, keep 1 item
         remove(source, false);
     }
     
-    public void remove(EditorItem source, boolean removeAll) {
+    public void remove(final EditorItem source, final boolean removeAll) {
 //        System.out.println("REMOVE");
         removeItem(source, removeAll);
         userUpdateValueProperty(getValue());
     }
 
     @Override
-    public void up(EditorItem source) {
+    public void up(final EditorItem source) {
 //        System.out.println("UP");
         upItem(source);
         userUpdateValueProperty(getValue());
     }
 
     @Override
-    public void down(EditorItem source) {
+    public void down(final EditorItem source) {
 //        System.out.println("DOWN");
         downItem(source);
         userUpdateValueProperty(getValue());
@@ -127,12 +127,12 @@ public abstract class InlineListEditor extends PropertyEditor implements EditorI
         return editorItems;
     }
     
-    final protected EditorItem addItem(EditorItem newItem) {
+    final protected EditorItem addItem(final EditorItem newItem) {
         return addItem(null, newItem);
     }
 
-    final protected EditorItem addItem(EditorItem previousItem, EditorItem newItem) {
-        int index = -1;
+    final protected EditorItem addItem(final EditorItem previousItem, final EditorItem newItem) {
+        var index = -1;
         if (previousItem != null) {
             // Add the new item under the source EditorItem
             index = editorItems.indexOf(previousItem) + 1;
@@ -148,12 +148,12 @@ public abstract class InlineListEditor extends PropertyEditor implements EditorI
         return newItem;
     }
 
-    protected void removeItem(EditorItem editorItem) {
+    protected void removeItem(final EditorItem editorItem) {
         // By default, keep 1 item
         removeItem(editorItem, false);
     }
     
-    protected void removeItem(EditorItem editorItem, boolean removeAll) {
+    protected void removeItem(final EditorItem editorItem, final boolean removeAll) {
         if (!removeAll && editorItems.size() == 1) {
             // Do not remove last item, but reset it
             editorItem.reset();
@@ -167,8 +167,8 @@ public abstract class InlineListEditor extends PropertyEditor implements EditorI
         updateMenuItems();
     }
 
-    protected void upItem(EditorItem editorItem) {
-        int indexItem = editorItems.indexOf(editorItem);
+    protected void upItem(final EditorItem editorItem) {
+        final var indexItem = editorItems.indexOf(editorItem);
         // item should be in the list, and not the 1st item
         assert (indexItem != -1) && (indexItem != 0);
         assert vbox.getChildren().indexOf(editorItem.getNode()) == indexItem;
@@ -178,8 +178,8 @@ public abstract class InlineListEditor extends PropertyEditor implements EditorI
         updateMenuItems();
     }
 
-    protected void downItem(EditorItem editorItem) {
-        int indexItem = editorItems.indexOf(editorItem);
+    protected void downItem(final EditorItem editorItem) {
+        final var indexItem = editorItems.indexOf(editorItem);
         // item should be in the list, and not the last item
         assert (indexItem != -1) && (indexItem != editorItems.size() - 1);
         assert vbox.getChildren().indexOf(editorItem.getNode()) == indexItem;
@@ -193,17 +193,17 @@ public abstract class InlineListEditor extends PropertyEditor implements EditorI
         reset(false);
     }
     
-    protected void reset(boolean removeAll) {
-        List<EditorItem> items = new ArrayList<>(editorItems);
-        for (EditorItem editorItem : items) {
+    protected void reset(final boolean removeAll) {
+        final List<EditorItem> items = new ArrayList<>(editorItems);
+        for (final var editorItem : items) {
             removeItem(editorItem, removeAll);
         }
         updateMenuItems();
     }
 
     private void updateMenuItems() {
-        for (int ii = 0; ii < editorItems.size(); ii++) {
-            EditorItem item = editorItems.get(ii);
+        for (var ii = 0; ii < editorItems.size(); ii++) {
+            final var item = editorItems.get(ii);
             if (item.getMoveUpMenuItem() == null || item.getMoveDownMenuItem() == null) {
                 continue;
             }

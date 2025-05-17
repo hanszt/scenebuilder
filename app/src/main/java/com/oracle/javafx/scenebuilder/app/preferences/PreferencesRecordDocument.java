@@ -35,7 +35,6 @@ package com.oracle.javafx.scenebuilder.app.preferences;
 import com.gluonhq.scenebuilder.plugins.editor.GluonEditorController;
 import com.gluonhq.scenebuilder.plugins.editor.GluonEditorPlatform;
 import com.oracle.javafx.scenebuilder.app.DocumentWindowController;
-import com.oracle.javafx.scenebuilder.app.SplitController;
 
 import static com.oracle.javafx.scenebuilder.app.preferences.PreferencesController.BOTTOM_DIVIDER_VPOS;
 import static com.oracle.javafx.scenebuilder.app.preferences.PreferencesController.BOTTOM_VISIBLE;
@@ -58,14 +57,11 @@ import static com.oracle.javafx.scenebuilder.kit.preferences.PreferencesControll
 import static com.oracle.javafx.scenebuilder.kit.preferences.PreferencesControllerBase.X_POS;
 import static com.oracle.javafx.scenebuilder.kit.preferences.PreferencesControllerBase.Y_POS;
 
-import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.editor.EditorPlatform;
-import com.oracle.javafx.scenebuilder.kit.editor.panel.inspector.InspectorPanelController;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.inspector.InspectorPanelController.SectionId;
 
 import java.io.File;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -77,8 +73,6 @@ import java.util.prefs.Preferences;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Accordion;
-import javafx.stage.Stage;
 
 /**
  * Defines preferences specific to a document.
@@ -134,12 +128,12 @@ public class PreferencesRecordDocument {
     private final ChangeListener<Number> leftDividerVListener = (ov, t, t1) -> setLeftDividerVPos(t1.doubleValue());
     private final ChangeListener<ObservableList<File>> sceneStyleSheetsListener = (ov, t, t1) -> setSceneStyleSheets(t1);
 
-    public PreferencesRecordDocument(Preferences documentsRootPreferences, DocumentWindowController dwc) {
+    public PreferencesRecordDocument(final Preferences documentsRootPreferences, final DocumentWindowController dwc) {
         this.documentWindowController = dwc;
         this.documentsRootPreferences = documentsRootPreferences;
 
         // Add stage X and Y listeners
-        final Stage stage = documentWindowController.getStage();
+        final var stage = documentWindowController.getStage();
         assert stage != null;
         stage.xProperty().addListener((ov, t, t1) -> setXPos(t1.doubleValue()));
         stage.yProperty().addListener((ov, t, t1) -> setYPos(t1.doubleValue()));
@@ -149,24 +143,24 @@ public class PreferencesRecordDocument {
         stage.widthProperty().addListener((ov, t, t1) -> setStageWidth(t1.doubleValue()));
 
         // Add inspector accordion expanded pane listener
-        final InspectorPanelController ipc = documentWindowController.getInspectorPanelController();
+        final var ipc = documentWindowController.getInspectorPanelController();
         assert ipc != null;
-        final Accordion accordion = ipc.getAccordion();
+        final var accordion = ipc.getAccordion();
         assert accordion != null;
         accordion.expandedPaneProperty().addListener((ov, t, t1) -> setInspectorSectionId(ipc.getExpandedSectionId()));
 
         // Add dividers position listeners
-        final SplitController lhsc = documentWindowController.getLeftSplitController();
+        final var lhsc = documentWindowController.getLeftSplitController();
         lhsc.position().addListener(leftDividerHListener);
-        final SplitController rhsc = documentWindowController.getRightSplitController();
+        final var rhsc = documentWindowController.getRightSplitController();
         rhsc.position().addListener(rightDividerHListener);
-        final SplitController bvsc = documentWindowController.getBottomSplitController();
+        final var bvsc = documentWindowController.getBottomSplitController();
         bvsc.position().addListener(bottomDividerVListener);
-        final SplitController lvsc = documentWindowController.getLibrarySplitController();
+        final var lvsc = documentWindowController.getLibrarySplitController();
         lvsc.position().addListener(leftDividerVListener);
 
         // Add scene style sheets listener
-        final EditorController ec = documentWindowController.getEditorController();
+        final var ec = documentWindowController.getEditorController();
         ec.sceneStyleSheetProperty().addListener(sceneStyleSheetsListener);
 
         // Add theme and Gluon theme listener
@@ -183,7 +177,7 @@ public class PreferencesRecordDocument {
         return xPos;
     }
 
-    public void setXPos(double value) {
+    public void setXPos(final double value) {
         xPos = value;
     }
 
@@ -191,7 +185,7 @@ public class PreferencesRecordDocument {
         return yPos;
     }
 
-    public void setYPos(double value) {
+    public void setYPos(final double value) {
         yPos = value;
     }
 
@@ -199,7 +193,7 @@ public class PreferencesRecordDocument {
         return stageHeight;
     }
 
-    public void setStageHeight(double value) {
+    public void setStageHeight(final double value) {
         stageHeight = value;
     }
 
@@ -207,7 +201,7 @@ public class PreferencesRecordDocument {
         return stageWidth;
     }
 
-    public void setStageWidth(double value) {
+    public void setStageWidth(final double value) {
         stageWidth = value;
     }
 
@@ -215,7 +209,7 @@ public class PreferencesRecordDocument {
         return bottomVisible;
     }
 
-    public void setBottomVisible(boolean value) {
+    public void setBottomVisible(final boolean value) {
         bottomVisible = value;
     }
 
@@ -223,7 +217,7 @@ public class PreferencesRecordDocument {
         return leftVisible;
     }
 
-    public void setLeftVisible(boolean value) {
+    public void setLeftVisible(final boolean value) {
         leftVisible = value;
     }
 
@@ -231,7 +225,7 @@ public class PreferencesRecordDocument {
         return rightVisible;
     }
 
-    public void setRightVisible(boolean value) {
+    public void setRightVisible(final boolean value) {
         rightVisible = value;
     }
 
@@ -239,7 +233,7 @@ public class PreferencesRecordDocument {
         return libraryVisible;
     }
 
-    public void setLibraryVisible(boolean value) {
+    public void setLibraryVisible(final boolean value) {
         libraryVisible = value;
     }
 
@@ -247,7 +241,7 @@ public class PreferencesRecordDocument {
         return documentVisible;
     }
 
-    public void setDocumentVisible(boolean value) {
+    public void setDocumentVisible(final boolean value) {
         documentVisible = value;
     }
 
@@ -255,7 +249,7 @@ public class PreferencesRecordDocument {
         return inspectorSectionId;
     }
 
-    public void setInspectorSectionId(SectionId value) {
+    public void setInspectorSectionId(final SectionId value) {
         inspectorSectionId = value;
     }
 
@@ -263,7 +257,7 @@ public class PreferencesRecordDocument {
         return leftDividerHPos;
     }
 
-    public void setLeftDividerHPos(double value) {
+    public void setLeftDividerHPos(final double value) {
         leftDividerHPos = value;
     }
 
@@ -271,7 +265,7 @@ public class PreferencesRecordDocument {
         return rightDividerHPos;
     }
 
-    public void setRightDividerHPos(double value) {
+    public void setRightDividerHPos(final double value) {
         rightDividerHPos = value;
     }
 
@@ -279,7 +273,7 @@ public class PreferencesRecordDocument {
         return bottomDividerVPos;
     }
 
-    public void setBottomDividerVPos(double value) {
+    public void setBottomDividerVPos(final double value) {
         bottomDividerVPos = value;
     }
 
@@ -287,7 +281,7 @@ public class PreferencesRecordDocument {
         return leftDividerVPos;
     }
 
-    public void setLeftDividerVPos(double value) {
+    public void setLeftDividerVPos(final double value) {
         leftDividerVPos = value;
     }
 
@@ -295,20 +289,20 @@ public class PreferencesRecordDocument {
         return sceneStyleSheets;
     }
 
-    public void setSceneStyleSheets(ObservableList<File> files) {
+    public void setSceneStyleSheets(final ObservableList<File> files) {
         sceneStyleSheets.clear();
-        for (File file : files) {
-            final String filePath = file.getPath();
+        for (final var file : files) {
+            final var filePath = file.getPath();
             sceneStyleSheets.add(filePath);
         }
     }
 
-    public void removeSceneStyleSheet(String filePath) {
+    public void removeSceneStyleSheet(final String filePath) {
         sceneStyleSheets.remove(filePath);
     }
 
-    public void removeSceneStyleSheet(List<String> filePaths) {
-        for (String filePath : filePaths) {
+    public void removeSceneStyleSheet(final List<String> filePaths) {
+        for (final var filePath : filePaths) {
             removeSceneStyleSheet(filePath);
         }
     }
@@ -317,17 +311,17 @@ public class PreferencesRecordDocument {
         return I18NResource;
     }
 
-    public void setI18NResource(String value) {
+    public void setI18NResource(final String value) {
         I18NResource = value;
     }
 
-    public void setI18NResourceFile(File file) {
+    public void setI18NResourceFile(final File file) {
         if (file != null) {
             I18NResource = file.getPath();
         }
     }
 
-    private void setTheme(EditorPlatform.Theme theme) {
+    private void setTheme(final EditorPlatform.Theme theme) {
         this.theme = theme;
     }
 
@@ -338,7 +332,7 @@ public class PreferencesRecordDocument {
         return theme;
     }
 
-    public void setGluonSwatch(EditorPlatform.Theme gluonSwatch) {
+    public void setGluonSwatch(final EditorPlatform.Theme gluonSwatch) {
         this.gluonSwatch = gluonSwatch;
     }
 
@@ -349,7 +343,7 @@ public class PreferencesRecordDocument {
         return gluonSwatch;
     }
 
-    public void setGluonTheme(EditorPlatform.Theme gluonTheme) {
+    public void setGluonTheme(final EditorPlatform.Theme gluonTheme) {
         this.gluonTheme = gluonTheme;
     }
 
@@ -381,12 +375,12 @@ public class PreferencesRecordDocument {
     }
 
     public void refreshInspectorSectionId() {
-        final InspectorPanelController ipc = documentWindowController.getInspectorPanelController();
+        final var ipc = documentWindowController.getInspectorPanelController();
         ipc.setExpandedSection(inspectorSectionId);
     }
 
     public void refreshBottomVisible() {
-        final SplitController sc = documentWindowController.getBottomSplitController();
+        final var sc = documentWindowController.getBottomSplitController();
         if (bottomVisible) {
             // CSS panel is built lazely : initialize the CSS panel first
             documentWindowController.initializeCssPanel();
@@ -395,59 +389,59 @@ public class PreferencesRecordDocument {
     }
 
     public void refreshLeftVisible() {
-        final SplitController sc = documentWindowController.getLeftSplitController();
+        final var sc = documentWindowController.getLeftSplitController();
         sc.setTargetVisible(leftVisible);
     }
 
     public void refreshRightVisible() {
-        final SplitController sc = documentWindowController.getRightSplitController();
+        final var sc = documentWindowController.getRightSplitController();
         sc.setTargetVisible(rightVisible);
     }
 
     public void refreshLibraryVisible() {
-        final SplitController sc = documentWindowController.getLibrarySplitController();
+        final var sc = documentWindowController.getLibrarySplitController();
         sc.setTargetVisible(libraryVisible);
     }
 
     public void refreshDocumentVisible() {
-        final SplitController sc = documentWindowController.getDocumentSplitController();
+        final var sc = documentWindowController.getDocumentSplitController();
         sc.setTargetVisible(documentVisible);
     }
 
     public void refreshLeftDividerHPos() {
-        final SplitController sc = documentWindowController.getLeftSplitController();
+        final var sc = documentWindowController.getLeftSplitController();
         if (leftDividerHPos != UNDEFINED_POS) {
             sc.setPosition(leftDividerHPos);
         }
     }
 
     public void refreshRightDividerHPos() {
-        final SplitController sc = documentWindowController.getRightSplitController();
+        final var sc = documentWindowController.getRightSplitController();
         if (rightDividerHPos != UNDEFINED_POS) {
             sc.setPosition(rightDividerHPos);
         }
     }
 
     public void refreshBottomDividerVPos() {
-        final SplitController sc = documentWindowController.getBottomSplitController();
+        final var sc = documentWindowController.getBottomSplitController();
         if (bottomDividerVPos != UNDEFINED_POS) {
             sc.setPosition(bottomDividerVPos);
         }
     }
 
     public void refreshLeftDividerVPos() {
-        final SplitController sc = documentWindowController.getLibrarySplitController();
+        final var sc = documentWindowController.getLibrarySplitController();
         if (leftDividerVPos != UNDEFINED_POS) {
             sc.setPosition(leftDividerVPos);
         }
     }
 
     public void refreshSceneStyleSheets() {
-        if (sceneStyleSheets.isEmpty() == false) {
+        if (!sceneStyleSheets.isEmpty()) {
             final ObservableList<File> files = FXCollections.observableArrayList();
             final List<String> filePathsToRemove = new ArrayList<>();
-            for (String sceneStyleSheet : sceneStyleSheets) {
-                final File file = new File(sceneStyleSheet);
+            for (final var sceneStyleSheet : sceneStyleSheets) {
+                final var file = new File(sceneStyleSheet);
                 if (file.exists()) {
                     files.add(file);
                 } else {
@@ -455,10 +449,10 @@ public class PreferencesRecordDocument {
                     filePathsToRemove.add(sceneStyleSheet);
                 }
             }
-            final EditorController ec = documentWindowController.getEditorController();
+            final var ec = documentWindowController.getEditorController();
             ec.setSceneStyleSheets(files);
             // Cleanup style sheets preferences if needed
-            if (filePathsToRemove.isEmpty() == false) {
+            if (!filePathsToRemove.isEmpty()) {
                 removeSceneStyleSheet(filePathsToRemove);
             }
         }
@@ -466,7 +460,7 @@ public class PreferencesRecordDocument {
 
     public void refreshI18NResource() {
         if (I18NResource != null) {
-            final File file = new File(I18NResource);
+            final var file = new File(I18NResource);
             if (file.exists()) {
                 documentWindowController.setResourceFile(file);
             } else {
@@ -481,7 +475,7 @@ public class PreferencesRecordDocument {
             return;
         }
 
-        EditorController editorController = documentWindowController.getEditorController();
+        final var editorController = documentWindowController.getEditorController();
         editorController.setTheme(theme);
     }
 
@@ -528,7 +522,7 @@ public class PreferencesRecordDocument {
 
         assert documentPreferences == null;
 
-        final URL fxmlLocation = documentWindowController.getEditorController().getFxmlLocation();
+        final var fxmlLocation = documentWindowController.getEditorController().getFxmlLocation();
         if (fxmlLocation == null) {
             // Document has not been saved yet => nothing to read
             return;
@@ -536,22 +530,22 @@ public class PreferencesRecordDocument {
 
         // Check if there is some preferences for this document
         try {
-            final File fxmlFile = new File(fxmlLocation.toURI());
-            final String filePath = fxmlFile.getPath();
-            final String[] childrenNames = documentsRootPreferences.childrenNames();
-            for (String child : childrenNames) {
-                final Preferences pref = documentsRootPreferences.node(child);
-                final String nodePath = pref.get(PATH, null);
+            final var fxmlFile = new File(fxmlLocation.toURI());
+            final var filePath = fxmlFile.getPath();
+            final var childrenNames = documentsRootPreferences.childrenNames();
+            for (final var child : childrenNames) {
+                final var pref = documentsRootPreferences.node(child);
+                final var nodePath = pref.get(PATH, null);
                 assert nodePath != null && !nodePath.isEmpty(); // Each document node defines a path
                 if (filePath.equals(nodePath)) {
                     documentPreferences = pref;
                     break;
                 }
             }
-        } catch (BackingStoreException ex) {
+        } catch (final BackingStoreException ex) {
             Logger.getLogger(PreferencesRecordDocument.class.getName()).log(Level.SEVERE, null, ex);
             return;
-        } catch (URISyntaxException ex) {
+        } catch (final URISyntaxException ex) {
             Logger.getLogger(PreferencesRecordDocument.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -562,40 +556,40 @@ public class PreferencesRecordDocument {
         }
 
         // Window position
-        double xpos = documentPreferences.getDouble(X_POS, DEFAULT_X_POS);
+        var xpos = documentPreferences.getDouble(X_POS, DEFAULT_X_POS);
         if (xpos < 0) {
             xpos = DEFAULT_X_POS;
         }
         setXPos(xpos);
-        double ypos = documentPreferences.getDouble(Y_POS, DEFAULT_Y_POS);
+        var ypos = documentPreferences.getDouble(Y_POS, DEFAULT_Y_POS);
         if (ypos < 0) {
             ypos = DEFAULT_Y_POS;
         }
         setYPos(ypos);
 
         // Window size
-        double h = documentPreferences.getDouble(STAGE_HEIGHT, DEFAULT_STAGE_HEIGHT);
+        var h = documentPreferences.getDouble(STAGE_HEIGHT, DEFAULT_STAGE_HEIGHT);
         if (h < 0) {
             h = DEFAULT_STAGE_HEIGHT;
         }
         setStageHeight(h);
-        double w = documentPreferences.getDouble(STAGE_WIDTH, DEFAULT_STAGE_WIDTH);
+        var w = documentPreferences.getDouble(STAGE_WIDTH, DEFAULT_STAGE_WIDTH);
         if (w < 0) {
             w = DEFAULT_STAGE_WIDTH;
         }
         setStageWidth(w);
 
         // Panel visibility
-        final boolean bv = documentPreferences.getBoolean(BOTTOM_VISIBLE,
+        final var bv = documentPreferences.getBoolean(BOTTOM_VISIBLE,
                 DEFAULT_BOTTOM_VISIBLE);
         setBottomVisible(bv);
-        final boolean lv = documentPreferences.getBoolean(LEFT_VISIBLE,
+        final var lv = documentPreferences.getBoolean(LEFT_VISIBLE,
                 DEFAULT_LEFT_VISIBLE);
         setLeftVisible(lv);
-        final boolean rv = documentPreferences.getBoolean(RIGHT_VISIBLE,
+        final var rv = documentPreferences.getBoolean(RIGHT_VISIBLE,
                 DEFAULT_RIGHT_VISIBLE);
         setRightVisible(rv);
-        final boolean libv = documentPreferences.getBoolean(LIBRARY_VISIBLE,
+        final var libv = documentPreferences.getBoolean(LIBRARY_VISIBLE,
                 DEFAULT_LIBRARY_VISIBLE);
         // Since SB 2.0 b11, the visibility of Library and Document was handled
         // independently from the Left visibility.
@@ -604,56 +598,56 @@ public class PreferencesRecordDocument {
         // We need to handle new preferences as well as old ones :
         // hence the value set for Library and Document visible property.
         setLibraryVisible(lv && libv);
-        final boolean docv = documentPreferences.getBoolean(DOCUMENT_VISIBLE,
+        final var docv = documentPreferences.getBoolean(DOCUMENT_VISIBLE,
                 DEFAULT_DOCUMENT_VISIBLE);
         setDocumentVisible(lv && docv);
 
         // Inspector expanded TitledPane
-        final String sectionId = documentPreferences.get(INSPECTOR_SECTION_ID,
+        final var sectionId = documentPreferences.get(INSPECTOR_SECTION_ID,
                 DEFAULT_INSPECTOR_SECTION_ID.name());
         setInspectorSectionId(SectionId.valueOf(sectionId));
 
         // Dividers position
-        final double ldhp = documentPreferences.getDouble(LEFT_DIVIDER_HPOS,
+        final var ldhp = documentPreferences.getDouble(LEFT_DIVIDER_HPOS,
                 DEFAULT_LEFT_DIVIDER_HPOS);
         setLeftDividerHPos(ldhp);
-        final double rdhp = documentPreferences.getDouble(RIGHT_DIVIDER_HPOS,
+        final var rdhp = documentPreferences.getDouble(RIGHT_DIVIDER_HPOS,
                 DEFAULT_RIGHT_DIVIDER_HPOS);
         setRightDividerHPos(rdhp);
-        final double bdvp = documentPreferences.getDouble(BOTTOM_DIVIDER_VPOS,
+        final var bdvp = documentPreferences.getDouble(BOTTOM_DIVIDER_VPOS,
                 DEFAULT_BOTTOM_DIVIDER_VPOS);
         setBottomDividerVPos(bdvp);
-        final double ldvp = documentPreferences.getDouble(LEFT_DIVIDER_VPOS,
+        final var ldvp = documentPreferences.getDouble(LEFT_DIVIDER_VPOS,
                 DEFAULT_LEFT_DIVIDER_VPOS);
         setLeftDividerVPos(ldvp);
 
         // Scene style sheets
-        final String items = documentPreferences.get(SCENE_STYLE_SHEETS, null);
+        final var items = documentPreferences.get(SCENE_STYLE_SHEETS, null);
         if (items != null) {
-            final String[] itemsArray = items.split(File.pathSeparator); //NOI18N
+            final var itemsArray = items.split(File.pathSeparator); //NOI18N
             sceneStyleSheets.addAll(Arrays.asList(itemsArray));
         }
 
         // I18NResource
-        final String resource = documentPreferences.get(I18N_RESOURCE, null); //NOI18N
+        final var resource = documentPreferences.get(I18N_RESOURCE, null); //NOI18N
         setI18NResource(resource);
 
         // Theme and Gluon Theme
-        final String theme = documentPreferences.get(THEME, null);
+        final var theme = documentPreferences.get(THEME, null);
         if (theme != null) {
             setTheme(EditorPlatform.Theme.valueOf(theme));
         } else {
             setTheme(documentWindowController.getEditorController().getTheme());
         }
         
-        final String gluonSwatch = documentPreferences.get(GLUON_SWATCH, null);
+        final var gluonSwatch = documentPreferences.get(GLUON_SWATCH, null);
         if (gluonSwatch != null) {
             setGluonSwatch(EditorPlatform.Theme.valueOf(gluonSwatch));
         } else {
             setGluonSwatch(GluonEditorController.getInstance().getGluonSwatch());
         }
 
-        final String gluonTheme = documentPreferences.get(GLUON_THEME, null);
+        final var gluonTheme = documentPreferences.get(GLUON_THEME, null);
         if (gluonTheme != null) {
             setGluonTheme(EditorPlatform.Theme.valueOf(gluonTheme));
         } else {
@@ -666,7 +660,7 @@ public class PreferencesRecordDocument {
      */
     public void writeToJavaPreferences() {
 
-        final URL fxmlLocation = documentWindowController.getEditorController().getFxmlLocation();
+        final var fxmlLocation = documentWindowController.getEditorController().getFxmlLocation();
         if (fxmlLocation == null) {
             // Document has not been saved => nothing to write
             // This is the case with initial empty document 
@@ -677,18 +671,18 @@ public class PreferencesRecordDocument {
         // => create a new preference node
         if (documentPreferences == null) {
             try {
-                final File fxmlFile = new File(fxmlLocation.toURI());
-                final String filePath = fxmlFile.getPath();
-                final String key = generateKey(fxmlFile.getName());
+                final var fxmlFile = new File(fxmlLocation.toURI());
+                final var filePath = fxmlFile.getPath();
+                final var key = generateKey(fxmlFile.getName());
                 assert !documentsRootPreferences.nodeExists(key);
                 // Create a new document preference node under the document root node
                 documentPreferences = documentsRootPreferences.node(key);
                 // Document path
                 documentPreferences.put(PATH, filePath);
-            } catch (BackingStoreException ex) {
+            } catch (final BackingStoreException ex) {
                 Logger.getLogger(PreferencesRecordDocument.class.getName()).log(Level.SEVERE, null, ex);
                 return;
-            } catch (URISyntaxException ex) {
+            } catch (final URISyntaxException ex) {
                 Logger.getLogger(PreferencesRecordDocument.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -722,15 +716,15 @@ public class PreferencesRecordDocument {
         documentPreferences.putDouble(LEFT_DIVIDER_VPOS, getLeftividerVPos());
 
         // Scene style sheets
-        final StringBuilder sb = new StringBuilder();
-        for (String sceneStyleSheet : getSceneStyleSheets()) {
+        final var sb = new StringBuilder();
+        for (final var sceneStyleSheet : getSceneStyleSheets()) {
             sb.append(sceneStyleSheet);
             sb.append(File.pathSeparator);
         }
         documentPreferences.put(SCENE_STYLE_SHEETS, sb.toString());
 
         // I18NResource
-        final String resource = getI18NResource();
+        final var resource = getI18NResource();
         if (resource != null) {
             documentPreferences.put(I18N_RESOURCE, resource);
         } else {
@@ -738,7 +732,7 @@ public class PreferencesRecordDocument {
         }
         
         // Theme and Gluon Theme
-        final EditorPlatform.Theme docTheme = getTheme();
+        final var docTheme = getTheme();
         documentPreferences.put(THEME, docTheme.name());
         if (GluonEditorPlatform.isGluonMobileLight(docTheme) || GluonEditorPlatform.isGluonMobileDark(docTheme)) {
             documentPreferences.put(GLUON_SWATCH, getGluonSwatch().name());
@@ -760,14 +754,15 @@ public class PreferencesRecordDocument {
      * @param name The document file name
      * @return
      */
-    private String generateKey(String name) throws BackingStoreException {
+    private String generateKey(final String name) throws BackingStoreException {
 
-        String key = name;
+        var key = name;
         if (key.length() > Preferences.MAX_KEY_LENGTH) {
             key = name.substring(0, Preferences.MAX_KEY_LENGTH);
         }
 
-        int prefix = 1, max = 20; // Allow up to 20 files with same name
+        int prefix = 1; // Allow up to 20 files with same name
+        final int max = 20;
         while (documentsRootPreferences.nodeExists(key) && prefix < max) {
             key = prefix++ + "_" + name; //NOI18N
             if (key.length() > Preferences.MAX_KEY_LENGTH) {

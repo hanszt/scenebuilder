@@ -57,8 +57,8 @@ public class BorderPaneTring extends AbstractNodeTring<BorderPane> {
     private final Label centerLabel = new Label();
     
 
-    public BorderPaneTring(ContentPanelController contentPanelController, 
-            FXOMInstance fxomInstance, DesignHierarchyMask.Accessory targetAccessory) {
+    public BorderPaneTring(final ContentPanelController contentPanelController,
+                           final FXOMInstance fxomInstance, final DesignHierarchyMask.Accessory targetAccessory) {
         super(contentPanelController, fxomInstance, BorderPane.class);
         assert (targetAccessory == Accessory.TOP)
                 || (targetAccessory == Accessory.BOTTOM)
@@ -96,7 +96,7 @@ public class BorderPaneTring extends AbstractNodeTring<BorderPane> {
         centerLabel.getStyleClass().add(TARGET_RING_CLASS);
         centerLabel.getStyleClass().add(BorderPane.class.getSimpleName());
         
-        final DesignHierarchyMask m = new DesignHierarchyMask(fxomInstance);
+        final var m = new DesignHierarchyMask(fxomInstance);
         topLabel.setVisible(m.getAccessory(DesignHierarchyMask.Accessory.TOP) == null);
         bottomLabel.setVisible(m.getAccessory(DesignHierarchyMask.Accessory.BOTTOM) == null);
         leftLabel.setVisible(m.getAccessory(DesignHierarchyMask.Accessory.LEFT) == null);
@@ -113,29 +113,29 @@ public class BorderPaneTring extends AbstractNodeTring<BorderPane> {
         borderPane.setMaxWidth(BorderPane.USE_PREF_SIZE);
         borderPane.setMaxHeight(BorderPane.USE_PREF_SIZE);
         
-        getRootNode().getChildren().add(0, borderPane);
+        getRootNode().getChildren().addFirst(borderPane);
     }
 
     
-    public static Bounds computeCenterBounds(BorderPane sceneGraphObject) {
-        final Bounds b = sceneGraphObject.getLayoutBounds();
+    public static Bounds computeCenterBounds(final BorderPane sceneGraphObject) {
+        final var b = sceneGraphObject.getLayoutBounds();
         
-        final double x0 = b.getMinX();
-        final double x3 = b.getMaxX();
-        final double x1 = x0 + (x3 - x0) * 0.25;
-        final double x2 = x0 + (x3 - x0) * 0.75;
+        final var x0 = b.getMinX();
+        final var x3 = b.getMaxX();
+        final var x1 = x0 + (x3 - x0) * 0.25;
+        final var x2 = x0 + (x3 - x0) * 0.75;
         
-        final double y0 = b.getMinY();
-        final double y3 = b.getMaxY();
-        final double y1 = y0 + (y3 - y0) * 0.25;
-        final double y2 = y0 + (y3 - y0) * 0.75;
+        final var y0 = b.getMinY();
+        final var y3 = b.getMaxY();
+        final var y1 = y0 + (y3 - y0) * 0.25;
+        final var y2 = y0 + (y3 - y0) * 0.75;
 
         return new BoundingBox(x1, y1, x2 - x1, y2 - y1);
     }
     
 
     
-    public static Bounds computeAreaBounds(Bounds lb, Bounds cb, Accessory area) {
+    public static Bounds computeAreaBounds(final Bounds lb, final Bounds cb, final Accessory area) {
         assert lb != null;
         assert cb != null;
         
@@ -215,24 +215,24 @@ public class BorderPaneTring extends AbstractNodeTring<BorderPane> {
         
         super.layoutDecoration();
         
-        final Bounds layoutBounds = getSceneGraphObject().getLayoutBounds();
+        final var layoutBounds = getSceneGraphObject().getLayoutBounds();
         borderPane.setPrefWidth(layoutBounds.getWidth());
         borderPane.setPrefHeight(layoutBounds.getHeight());
 
         
-        final Bounds centerBounds = computeCenterBounds(getSceneGraphObject());
+        final var centerBounds = computeCenterBounds(getSceneGraphObject());
         centerLabel.setPrefSize(centerBounds.getWidth(), centerBounds.getHeight());
         
-        final Bounds topBounds = computeAreaBounds(layoutBounds, centerBounds, Accessory.TOP);
+        final var topBounds = computeAreaBounds(layoutBounds, centerBounds, Accessory.TOP);
         topLabel.setPrefSize(topBounds.getWidth(), topBounds.getHeight());
         
-        final Bounds bottomBounds = computeAreaBounds(layoutBounds, centerBounds, Accessory.BOTTOM);
+        final var bottomBounds = computeAreaBounds(layoutBounds, centerBounds, Accessory.BOTTOM);
         bottomLabel.setPrefSize(bottomBounds.getWidth(), bottomBounds.getHeight());
         
-        final Bounds leftBounds = computeAreaBounds(layoutBounds, centerBounds, Accessory.LEFT);
+        final var leftBounds = computeAreaBounds(layoutBounds, centerBounds, Accessory.LEFT);
         leftLabel.setPrefSize(leftBounds.getWidth(), leftBounds.getHeight());
         
-        final Bounds rightBounds = computeAreaBounds(layoutBounds, centerBounds, Accessory.RIGHT);
+        final var rightBounds = computeAreaBounds(layoutBounds, centerBounds, Accessory.RIGHT);
         rightLabel.setPrefSize(rightBounds.getWidth(), rightBounds.getHeight());
         
         final Label targetLabel;
@@ -279,10 +279,10 @@ public class BorderPaneTring extends AbstractNodeTring<BorderPane> {
     
     private static final String SELECTED = "selected"; //NOI18N
     
-    private static void setupSelectedStyleClass(Label label, boolean selected) {
+    private static void setupSelectedStyleClass(final Label label, final boolean selected) {
             final List<String> styleClass = label.getStyleClass();
         if (selected) {
-            if (styleClass.contains(SELECTED) == false) {
+            if (!styleClass.contains(SELECTED)) {
                     styleClass.add(SELECTED);
             }
         } else {

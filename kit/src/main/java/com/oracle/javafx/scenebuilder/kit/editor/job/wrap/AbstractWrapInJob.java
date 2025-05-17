@@ -36,7 +36,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.job.BatchSelectionJob;
 import com.oracle.javafx.scenebuilder.kit.editor.job.Job;
 import com.oracle.javafx.scenebuilder.kit.editor.job.JobUtils;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.ModifyFxControllerJob;
-import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.ModifyObjectJob;
 import com.oracle.javafx.scenebuilder.kit.editor.job.SetDocumentRootJob;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.ToggleFxRootJob;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.AddPropertyValueJob;
@@ -44,22 +43,17 @@ import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.RemovePropertyJob;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.RemovePropertyValueJob;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.AbstractSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMProperty;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyC;
 import com.oracle.javafx.scenebuilder.kit.metadata.Metadata;
-import com.oracle.javafx.scenebuilder.kit.metadata.property.ValuePropertyMetadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
-import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
+
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
+
 import javafx.scene.Node;
 import javafx.scene.chart.Axis;
 import javafx.scene.control.Accordion;
@@ -75,13 +69,13 @@ public abstract class AbstractWrapInJob extends BatchSelectionJob {
     protected Class<?> newContainerClass;
     protected FXOMInstance oldContainer, newContainer;
 
-    public AbstractWrapInJob(EditorController editorController) {
+    public AbstractWrapInJob(final EditorController editorController) {
         super(editorController);
     }
 
     public static AbstractWrapInJob getWrapInJob(
-            EditorController editorController,
-            Class<?> wrappingClass) {
+        final EditorController editorController,
+        final Class<?> wrappingClass) {
 
         assert EditorController.getClassesSupportingWrapping().contains(wrappingClass);
         final AbstractWrapInJob job;
@@ -131,32 +125,32 @@ public abstract class AbstractWrapInJob extends BatchSelectionJob {
     }
 
     protected boolean canWrapIn() {
-        final Selection selection = getEditorController().getSelection();
+        final var selection = getEditorController().getSelection();
         if (selection.isEmpty()) {
             return false;
         }
-        final AbstractSelectionGroup asg = selection.getGroup();
-        if ((asg instanceof ObjectSelectionGroup) == false) {
+        final var asg = selection.getGroup();
+        if (!(asg instanceof ObjectSelectionGroup)) {
             return false;
         }
-        final ObjectSelectionGroup osg = (ObjectSelectionGroup) asg;
-        if (osg.hasSingleParent() == false) {
+        final var osg = (ObjectSelectionGroup) asg;
+        if (!osg.hasSingleParent()) {
             return false;
         }
-        if (getEditorController().isSelectionNode() == false) {
+        if (!getEditorController().isSelectionNode()) {
             return false;
         }
         // Cannot wrap in Axis nodes
-        for (FXOMObject fxomObject : osg.getItems()) {
+        for (final var fxomObject : osg.getItems()) {
             if (fxomObject.getSceneGraphObject() instanceof Axis) {
                 return false;
             }
         }
-        final FXOMObject parent = osg.getAncestor();
+        final var parent = osg.getAncestor();
         if (parent == null) { // selection == root object
             return true;
         }
-        final Object parentSceneGraphObject = parent.getSceneGraphObject();
+        final var parentSceneGraphObject = parent.getSceneGraphObject();
         if (parentSceneGraphObject instanceof BorderPane
                 || parentSceneGraphObject instanceof DialogPane) {
             return osg.getItems().size() == 1;
@@ -171,16 +165,16 @@ public abstract class AbstractWrapInJob extends BatchSelectionJob {
 
         if (canWrapIn()) { // (1)
 
-            final Selection selection = getEditorController().getSelection();
-            final AbstractSelectionGroup asg = selection.getGroup();
+            final var selection = getEditorController().getSelection();
+            final var asg = selection.getGroup();
             assert asg instanceof ObjectSelectionGroup; // Because of (1)
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) asg;
+            final var osg = (ObjectSelectionGroup) asg;
 
             // Retrieve the old container
             oldContainer = (FXOMInstance) osg.getAncestor();
 
             // Retrieve the children to be wrapped
-            final List<FXOMObject> children = osg.getSortedItems();
+            final var children = osg.getSortedItems();
 
             // Create the new container
             newContainer = makeNewContainerInstance();
@@ -197,16 +191,16 @@ public abstract class AbstractWrapInJob extends BatchSelectionJob {
             if (oldContainer != null) {
 
                 // Retrieve the old container property name in use
-                final PropertyName oldContainerPropertyName
+                final var oldContainerPropertyName
                         = WrapJobUtils.getContainerPropertyName(oldContainer, children);
                 // Retrieve the old container property (already defined and not null)
-                final FXOMPropertyC oldContainerProperty
+                final var oldContainerProperty
                         = (FXOMPropertyC) oldContainer.getProperties().get(oldContainerPropertyName);
                 assert oldContainerProperty != null
                         && oldContainerProperty.getParentInstance() != null;
 
                 // Add the new container to the old container
-                final int newContainerIndex = getIndex(oldContainer, children);
+                final var newContainerIndex = getIndex(oldContainer, children);
                 final Job newContainerAddValueJob = new AddPropertyValueJob(
                         newContainer,
                         oldContainerProperty,
@@ -214,7 +208,7 @@ public abstract class AbstractWrapInJob extends BatchSelectionJob {
                 result.add(newContainerAddValueJob);
 
                 // Remove children from the old container
-                final List<Job> removeChildrenJobs = removeChildrenJobs(oldContainerProperty, children);
+                final var removeChildrenJobs = removeChildrenJobs(oldContainerProperty, children);
                 result.addAll(removeChildrenJobs);
             } //
             //------------------------------------------------------------------
@@ -223,17 +217,17 @@ public abstract class AbstractWrapInJob extends BatchSelectionJob {
             //------------------------------------------------------------------
             else {
                 assert children.size() == 1; // Wrap the single root node
-                final FXOMObject rootObject = children.iterator().next();
+                final var rootObject = children.getFirst();
                 assert rootObject instanceof FXOMInstance;
-                boolean isFxRoot = ((FXOMInstance) rootObject).isFxRoot();
-                final String fxController = rootObject.getFxController();
+                final var isFxRoot = ((FXOMInstance) rootObject).isFxRoot();
+                final var fxController = rootObject.getFxController();
                 // First remove the fx:controller/fx:root from the old root object
                 if (isFxRoot) {
-                    final ToggleFxRootJob fxRootJob = new ToggleFxRootJob(getEditorController());
+                    final var fxRootJob = new ToggleFxRootJob(getEditorController());
                     result.add(fxRootJob);
                 }
                 if (fxController != null) {
-                    final ModifyFxControllerJob fxControllerJob
+                    final var fxControllerJob
                             = new ModifyFxControllerJob(rootObject, null, getEditorController());
                     result.add(fxControllerJob);
                 }
@@ -243,11 +237,11 @@ public abstract class AbstractWrapInJob extends BatchSelectionJob {
                 result.add(setDocumentRoot);
                 // Finally add the fx:controller/fx:root to the new root object
                 if (isFxRoot) {
-                    final ToggleFxRootJob fxRootJob = new ToggleFxRootJob(getEditorController());
+                    final var fxRootJob = new ToggleFxRootJob(getEditorController());
                     result.add(fxRootJob);
                 }
                 if (fxController != null) {
-                    final ModifyFxControllerJob fxControllerJob
+                    final var fxControllerJob
                             = new ModifyFxControllerJob(newContainer, fxController, getEditorController());
                     result.add(fxControllerJob);
                 }
@@ -272,9 +266,9 @@ public abstract class AbstractWrapInJob extends BatchSelectionJob {
 
     @Override
     protected AbstractSelectionGroup getNewSelectionGroup() {
-        List<FXOMObject> newObjects = new ArrayList<>();
+        final List<FXOMObject> newObjects = new ArrayList<>();
         newObjects.add(newContainer);
-        return new ObjectSelectionGroup(newObjects, newObjects.iterator().next(), null);
+        return new ObjectSelectionGroup(newObjects, newObjects.getFirst(), null);
     }
 
     /**
@@ -291,8 +285,8 @@ public abstract class AbstractWrapInJob extends BatchSelectionJob {
             final Collection<FXOMObject> children) {
 
         final List<Job> jobs = new ArrayList<>();
-        int index = 0;
-        for (FXOMObject child : children) {
+        var index = 0;
+        for (final var child : children) {
             assert child instanceof FXOMInstance;
             final Job addValueJob = new AddPropertyValueJob(
                     child,
@@ -309,7 +303,7 @@ public abstract class AbstractWrapInJob extends BatchSelectionJob {
             final List<FXOMObject> children) {
 
         final List<Job> jobs = new ArrayList<>();
-        for (FXOMObject child : children) {
+        for (final var child : children) {
             assert child instanceof FXOMInstance;
             final Job removeValueJob = new RemovePropertyValueJob(
                     child,
@@ -328,43 +322,43 @@ public abstract class AbstractWrapInJob extends BatchSelectionJob {
     protected List<Job> modifyChildrenJobs(final List<FXOMObject> children) {
 
         final List<Job> jobs = new ArrayList<>();
-        final DesignHierarchyMask newContainerMask = new DesignHierarchyMask(newContainer);
-        final Bounds unionOfBounds = WrapJobUtils.getUnionOfBounds(children);
+        final var newContainerMask = new DesignHierarchyMask(newContainer);
+        final var unionOfBounds = WrapJobUtils.getUnionOfBounds(children);
 
-        for (FXOMObject child : children) {
+        for (final var child : children) {
 
             // Modify child LAYOUT bounds
             if (newContainerMask.isFreeChildPositioning()) {
                 assert child.getSceneGraphObject() instanceof Node;
-                final Node childNode = (Node) child.getSceneGraphObject();
-                final Bounds childBounds = childNode.getLayoutBounds();
+                final var childNode = (Node) child.getSceneGraphObject();
+                final var childBounds = childNode.getLayoutBounds();
 
-                final Point2D point = childNode.localToParent(
+                final var point = childNode.localToParent(
                         childBounds.getMinX(), childBounds.getMinY());
-                double layoutX = point.getX() - unionOfBounds.getMinX();
-                double layoutY = point.getY() - unionOfBounds.getMinY();
-                final ModifyObjectJob modifyLayoutX = WrapJobUtils.modifyObjectJob(
+                final var layoutX = point.getX() - unionOfBounds.getMinX();
+                final var layoutY = point.getY() - unionOfBounds.getMinY();
+                final var modifyLayoutX = WrapJobUtils.modifyObjectJob(
                         (FXOMInstance) child, "layoutX", layoutX, getEditorController());
                 jobs.add(modifyLayoutX);
-                final ModifyObjectJob modifyLayoutY = WrapJobUtils.modifyObjectJob(
+                final var modifyLayoutY = WrapJobUtils.modifyObjectJob(
                         (FXOMInstance) child, "layoutY", layoutY, getEditorController());
                 jobs.add(modifyLayoutY);
             } else {
                 assert child.getSceneGraphObject() instanceof Node;
 
-                final ModifyObjectJob modifyLayoutX = WrapJobUtils.modifyObjectJob(
+                final var modifyLayoutX = WrapJobUtils.modifyObjectJob(
                         (FXOMInstance) child, "layoutX", 0.0, getEditorController());
                 jobs.add(modifyLayoutX);
-                final ModifyObjectJob modifyLayoutY = WrapJobUtils.modifyObjectJob(
+                final var modifyLayoutY = WrapJobUtils.modifyObjectJob(
                         (FXOMInstance) child, "layoutY", 0.0, getEditorController());
                 jobs.add(modifyLayoutY);
             }
 
             // Remove static properties from child
             if (child instanceof FXOMInstance) {
-                final FXOMInstance fxomInstance = (FXOMInstance) child;
-                for (FXOMProperty p : fxomInstance.getProperties().values()) {
-                    final Class<?> residentClass = p.getName().getResidenceClass();
+                final var fxomInstance = (FXOMInstance) child;
+                for (final var p : fxomInstance.getProperties().values()) {
+                    final var residentClass = p.getName().getResidenceClass();
                     if (residentClass != null) {
                         jobs.add(new RemovePropertyJob(p, getEditorController()));
                     }
@@ -385,9 +379,9 @@ public abstract class AbstractWrapInJob extends BatchSelectionJob {
      */
     protected void modifyNewContainer(final List<FXOMObject> children) {
         if (oldContainer != null) {
-            final DesignHierarchyMask oldContainerMask = new DesignHierarchyMask(oldContainer);
+            final var oldContainerMask = new DesignHierarchyMask(oldContainer);
             if (oldContainerMask.isFreeChildPositioning()) {
-                final Bounds unionOfBounds = WrapJobUtils.getUnionOfBounds(children);
+                final var unionOfBounds = WrapJobUtils.getUnionOfBounds(children);
                 JobUtils.setLayoutX(newContainer, Node.class, unionOfBounds.getMinX());
                 JobUtils.setLayoutY(newContainer, Node.class, unionOfBounds.getMinY());
 //            JobUtils.setMinHeight(newContainer, Region.class, unionOfBounds.getHeight());
@@ -398,15 +392,15 @@ public abstract class AbstractWrapInJob extends BatchSelectionJob {
         // Add static properties to the new container
         // (meaningfull for single selection only)
         if (children.size() == 1) {
-            final Metadata metadata = Metadata.getMetadata();
-            final FXOMObject child = children.get(0);
+            final var metadata = Metadata.getMetadata();
+            final var child = children.getFirst();
             if (child instanceof FXOMInstance) {
-                final FXOMInstance fxomInstance = (FXOMInstance) child;
-                for (FXOMProperty p : fxomInstance.getProperties().values()) {
-                    final Class<?> residentClass = p.getName().getResidenceClass();
+                final var fxomInstance = (FXOMInstance) child;
+                for (final var p : fxomInstance.getProperties().values()) {
+                    final var residentClass = p.getName().getResidenceClass();
                     if (residentClass != null) {
-                        final ValuePropertyMetadata vpm = metadata.queryValueProperty(fxomInstance, p.getName());
-                        final Object value = vpm.getValueObject(fxomInstance);
+                        final var vpm = metadata.queryValueProperty(fxomInstance, p.getName());
+                        final var value = vpm.getValueObject(fxomInstance);
                         vpm.setValueObject(newContainer, value);
                     }
                 }
@@ -416,8 +410,8 @@ public abstract class AbstractWrapInJob extends BatchSelectionJob {
 
     protected FXOMInstance makeNewContainerInstance(final Class<?> containerClass) {
         // Create new container instance
-        final FXOMDocument newDocument = new FXOMDocument();
-        final FXOMInstance result = new FXOMInstance(newDocument, containerClass);
+        final var newDocument = new FXOMDocument();
+        final var result = new FXOMInstance(newDocument, containerClass);
         newDocument.setFxomRoot(result);
         result.moveToFxomDocument(getEditorController().getFxomDocument());
 
@@ -437,16 +431,16 @@ public abstract class AbstractWrapInJob extends BatchSelectionJob {
      * @return
      */
     private int getIndex(final FXOMInstance container, final List<FXOMObject> fxomObjects) {
-        final DesignHierarchyMask mask = new DesignHierarchyMask(container);
-        if (mask.isAcceptingSubComponent() == false) {
+        final var mask = new DesignHierarchyMask(container);
+        if (!mask.isAcceptingSubComponent()) {
             return -1;
         }
         // Use the smaller index of the specified FXOM objects
-        final Iterator<FXOMObject> iterator = fxomObjects.iterator();
+        final var iterator = fxomObjects.iterator();
         assert iterator.hasNext();
-        int result = iterator.next().getIndexInParentProperty();
+        var result = iterator.next().getIndexInParentProperty();
         while (iterator.hasNext()) {
-            int index = iterator.next().getIndexInParentProperty();
+            final var index = iterator.next().getIndexInParentProperty();
             if (index < result) {
                 result = index;
             }

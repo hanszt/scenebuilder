@@ -40,30 +40,30 @@ import javafx.scene.Node;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 abstract class ExplorerBase {
 
-    static Object instantiateWithFXMLLoader(Class<?> klass, ClassLoader classLoader) throws IOException {
-        Object result;
+    static Object instantiateWithFXMLLoader(final Class<?> klass, final ClassLoader classLoader) throws IOException {
+        final Object result;
 
-        final String fxmlText = BuiltinLibrary.makeFxmlText(klass);
-        final byte[] fxmlBytes = fxmlText.getBytes(Charset.forName("UTF-8")); //NOI18N
+        final var fxmlText = BuiltinLibrary.makeFxmlText(klass);
+        final var fxmlBytes = fxmlText.getBytes(StandardCharsets.UTF_8); //NOI18N
 
-        final FXMLLoader fxmlLoader = new FXMLLoader();
+        final var fxmlLoader = new FXMLLoader();
         try {
             fxmlLoader.setClassLoader(classLoader);
             result = fxmlLoader.load(new ByteArrayInputStream(fxmlBytes));
-        } catch(IOException x) {
+        } catch(final IOException x) {
             throw x;
-        } catch(RuntimeException|Error x) {
+        } catch(final RuntimeException | Error x) {
             throw new IOException(x);
         }
 
         return result;
     }
 
-    String makeClassName(String entryName, String separator) {
+    String makeClassName(final String entryName, final String separator) {
         final String result;
 
         if (! entryName.endsWith(".class")) { //NOI18N
@@ -72,14 +72,14 @@ abstract class ExplorerBase {
             // We skip inner classes for now
             result = null;
         } else {
-            final int endIndex = entryName.length()-6; // ".class" -> 6 //NOI18N
+            final var endIndex = entryName.length() - 6; // ".class" -> 6 //NOI18N
             result = entryName.substring(0, endIndex).replace(separator, "."); //NOI18N
         }
 
         return result;
     }
 
-    JarReportEntry exploreEntry(String entryName, ClassLoader classLoader, String className) {
+    JarReportEntry exploreEntry(final String entryName, final ClassLoader classLoader, final String className) {
         JarReportEntry.Status status;
         Throwable entryException;
         Class<?> entryClass = null;
@@ -102,7 +102,7 @@ abstract class ExplorerBase {
                 // http://stackoverflow.com/questions/8100376/class-forname-vs-classloader-loadclass-which-to-use-for-dynamic-loading
                 entryClass = classLoader.loadClass(className); // Note: static intializers of entryClass are not run, this doesn't seem to be an issue
 
-                final int modifiers = entryClass.getModifiers();
+                final var modifiers = entryClass.getModifiers();
                 if (Modifier.isAbstract(modifiers)
                         || !Node.class.isAssignableFrom(entryClass)
                         || !(Modifier.isPublic(modifiers) || Modifier.isProtected(modifiers))) {
@@ -114,10 +114,10 @@ abstract class ExplorerBase {
                     status = JarReportEntry.Status.OK;
                     entryException = null;
                 }
-            } catch (RuntimeException | IOException x) {
+            } catch (final RuntimeException | IOException x) {
                 status = JarReportEntry.Status.CANNOT_INSTANTIATE;
                 entryException = x;
-            } catch (Error | ClassNotFoundException x) {
+            } catch (final Error | ClassNotFoundException x) {
                 status = JarReportEntry.Status.CANNOT_LOAD;
                 entryClass = null;
                 entryException = x;

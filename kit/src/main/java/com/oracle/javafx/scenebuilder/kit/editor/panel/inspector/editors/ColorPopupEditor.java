@@ -46,7 +46,7 @@ public class ColorPopupEditor extends PaintPopupEditor {
 
     private EditorController editorController;
 
-    public ColorPopupEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses, EditorController editorController) {
+    public ColorPopupEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses, final EditorController editorController) {
         super(propMeta, selectedClasses, editorController);
         this.editorController = editorController;
     }

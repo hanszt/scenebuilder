@@ -56,9 +56,9 @@ public class CmdTest {
 
     @Test
     void that_exception_is_created_with_not_existing_command() {
-        var cmdLine = List.of("this", "command", "should", "not", "exist");
+        final var cmdLine = List.of("this", "command", "should", "not", "exist");
 
-        Throwable t = assertThrows(IOException.class, 
+        final Throwable t = assertThrows(IOException.class,
                                    () -> classUnderTest.exec(cmdLine, workingDir.toFile(), timeoutSeconds));
 
         assertTrue(t.getMessage().startsWith("Cannot run program \"this\""));
@@ -67,9 +67,9 @@ public class CmdTest {
     @EnabledOnOs(value = {OS.WINDOWS})
     @Test
     void that_exit_code_from_program_is_collected_on_Windows() {
-        var cmdLine = List.of(workingDir.resolve("exit-error.cmd").toString());
+        final var cmdLine = List.of(workingDir.resolve("exit-error.cmd").toString());
 
-        Integer result = assertDoesNotThrow(() -> classUnderTest.exec(cmdLine, workingDir.toFile(), timeoutSeconds));
+        final var result = assertDoesNotThrow(() -> classUnderTest.exec(cmdLine, workingDir.toFile(), timeoutSeconds));
 
         assertEquals(1, result, "Exit code must be 1");
     }
@@ -77,9 +77,9 @@ public class CmdTest {
     @EnabledOnOs(value = {OS.LINUX, OS.MAC})
     @Test
     void that_exit_code_is_collected_on_Linux_and_Mac() {
-        var cmdLine = List.of("/bin/sh", workingDir.resolve("exit-error.sh").toString());
+        final var cmdLine = List.of("/bin/sh", workingDir.resolve("exit-error.sh").toString());
 
-        Integer result = assertDoesNotThrow(() -> classUnderTest.exec(cmdLine, workingDir.toFile(), timeoutSeconds));
+        final var result = assertDoesNotThrow(() -> classUnderTest.exec(cmdLine, workingDir.toFile(), timeoutSeconds));
 
         assertEquals(1, result, "Exit code must be 1");
     }
@@ -87,9 +87,9 @@ public class CmdTest {
     @EnabledOnOs(value = {OS.WINDOWS})
     @Test
     void that_process_does_not_run_indefinitevely_on_Windows() {
-        var cmdLine = List.of(workingDir.resolve("timeout.cmd").toString());
+        final var cmdLine = List.of(workingDir.resolve("timeout.cmd").toString());
 
-        Throwable t = assertThrows(IOException.class, 
+        final Throwable t = assertThrows(IOException.class,
                                    () -> classUnderTest.exec(cmdLine, workingDir.toFile(), timeoutSeconds));
 
         assertEquals(t.getMessage(), "Process timed out after 2 seconds!");
@@ -98,9 +98,9 @@ public class CmdTest {
     @EnabledOnOs(value = {OS.LINUX, OS.MAC})
     @Test
     void that_process_does_not_run_indefinitevely_on_Linux_and_Mac() {
-        var cmdLine = List.of("/bin/sh", workingDir.resolve("timeout.sh").toString());
+        final var cmdLine = List.of("/bin/sh", workingDir.resolve("timeout.sh").toString());
 
-        Throwable t = assertThrows(IOException.class, 
+        final Throwable t = assertThrows(IOException.class,
                                    () -> classUnderTest.exec(cmdLine, workingDir.toFile(), timeoutSeconds));
 
         assertEquals(t.getMessage(), "Process timed out after 2 seconds!");

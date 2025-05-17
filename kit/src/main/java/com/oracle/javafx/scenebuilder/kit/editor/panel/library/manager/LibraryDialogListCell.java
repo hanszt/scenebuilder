@@ -34,9 +34,6 @@ package com.oracle.javafx.scenebuilder.kit.editor.panel.library.manager;
 
 import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-
 import com.oracle.javafx.scenebuilder.kit.editor.images.ImageUtils;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -59,7 +56,7 @@ public class LibraryDialogListCell extends ListCell<DialogListItem> {
     }
 
     @Override
-    public void updateItem(DialogListItem item, boolean empty) {
+    public void updateItem(final DialogListItem item, final boolean empty) {
         this.dialogListItem = item;
 
         super.updateItem(item, empty);
@@ -72,31 +69,31 @@ public class LibraryDialogListCell extends ListCell<DialogListItem> {
     }
 
     private HBox createCellContent() {
-        HBox cellContent = new HBox();
+        final var cellContent = new HBox();
         cellContent.setAlignment(Pos.CENTER_LEFT);
-        String name;
+        final String name;
         if (dialogListItem instanceof LibraryDialogListItem) {
             name = ((LibraryDialogListItem) dialogListItem).toString();
         } else {
             name = ((ArtifactDialogListItem) dialogListItem).getCoordinates();
         }
-        Label fileName = new Label(name);
+        final var fileName = new Label(name);
         HBox.setHgrow(fileName, Priority.ALWAYS);
-        HBox buttonContent = createButtonCellContent();
+        final var buttonContent = createButtonCellContent();
         HBox.setHgrow(buttonContent, Priority.ALWAYS);
         cellContent.getChildren().addAll(fileName, buttonContent);
         return cellContent;
     }
 
     private HBox createButtonCellContent() {
-        HBox buttonContent = new HBox();
+        final var buttonContent = new HBox();
         buttonContent.setAlignment(Pos.CENTER_RIGHT);
         buttonContent.setSpacing(5);
-        Button editButton = new Button("", new ImageView(ImageUtils.getEditIconImage()));
+        final var editButton = new Button("", new ImageView(ImageUtils.getEditIconImage()));
         editButton.getStyleClass().add("image-view-button");
         editButton.setOnMouseClicked(event -> dialogListItem.getLibraryDialogController().processJarFXMLFolderEdit(dialogListItem));
         editButton.setTooltip(new Tooltip(I18N.getString("library.dialog.button.edit.tooltip")));
-        Button deleteButton = new Button("", new ImageView(ImageUtils.getDeleteIconImage()));
+        final var deleteButton = new Button("", new ImageView(ImageUtils.getDeleteIconImage()));
         deleteButton.setOnMouseClicked(event -> dialogListItem.getLibraryDialogController().processJarFXMLFolderDelete(dialogListItem));
         deleteButton.getStyleClass().add("image-view-button");
         deleteButton.setTooltip(new Tooltip(I18N.getString("library.dialog.button.delete.tooltip")));

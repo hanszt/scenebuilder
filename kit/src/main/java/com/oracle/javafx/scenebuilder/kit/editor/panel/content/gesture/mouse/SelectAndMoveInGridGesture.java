@@ -35,7 +35,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.EditorPlatform;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.ContentPanelController;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.GridSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import javafx.scene.input.MouseEvent;
 
@@ -50,9 +49,9 @@ public class SelectAndMoveInGridGesture extends AbstractMouseDragGesture {
     private final int featureIndex;
     
     
-    public SelectAndMoveInGridGesture(ContentPanelController contentPanelController,
-            FXOMInstance gridPaneInstance, GridSelectionGroup.Type feature, 
-            int featureIndex) {
+    public SelectAndMoveInGridGesture(final ContentPanelController contentPanelController,
+                                      final FXOMInstance gridPaneInstance, final GridSelectionGroup.Type feature,
+                                      final int featureIndex) {
         super(contentPanelController);
         
         this.gridPaneInstance = gridPaneInstance;
@@ -79,7 +78,7 @@ public class SelectAndMoveInGridGesture extends AbstractMouseDragGesture {
      */
 
     @Override
-    protected void mousePressed(MouseEvent e) {
+    protected void mousePressed(final MouseEvent e) {
         
         /*
          *             |        Object      |                      GridSelectionGroup                      |
@@ -105,9 +104,9 @@ public class SelectAndMoveInGridGesture extends AbstractMouseDragGesture {
          * ------------+--------------------+--------------------+--------------------+--------------------+
          */
         
-        final Selection selection 
+        final var selection
                 = contentPanelController.getEditorController().getSelection();
-        final boolean extendKeyDown
+        final var extendKeyDown
                 = EditorPlatform.isContinuousSelectKeyDown(e) 
                 || EditorPlatform.isNonContinousSelectKeyDown(e);
         
@@ -124,8 +123,8 @@ public class SelectAndMoveInGridGesture extends AbstractMouseDragGesture {
     }
 
     @Override
-    protected void mouseDragDetected(MouseEvent e) {
-        final Selection selection 
+    protected void mouseDragDetected(final MouseEvent e) {
+        final var selection
                 = contentPanelController.getEditorController().getSelection();
         
         /*
@@ -176,12 +175,12 @@ public class SelectAndMoveInGridGesture extends AbstractMouseDragGesture {
     }
 
     @Override
-    protected void mouseReleased(MouseEvent e) {
+    protected void mouseReleased(final MouseEvent e) {
         // Nothing to do
     }
 
     @Override
-    protected void mouseExited(MouseEvent e) {
+    protected void mouseExited(final MouseEvent e) {
         // Should be not called because mouse should exit glass layer
         // during this gesture
 //        assert false;

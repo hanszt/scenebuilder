@@ -75,7 +75,7 @@ public abstract class AbstractPanelController {
      * 
      * @param c the editor controller (should not be null).
      */
-    protected AbstractPanelController(EditorController c) {
+    protected AbstractPanelController(final EditorController c) {
         assert c != null;
         this.editorController = c;
         startListeningToEditorSelection();
@@ -88,7 +88,7 @@ public abstract class AbstractPanelController {
             }
             try {
                 fxomDocumentDidChange(od);
-            } catch(RuntimeException x) {
+            } catch(final RuntimeException x) {
                 LOG.log(Level.SEVERE, "Bug", x); //NOI18N
             }
             if (nd != null) {
@@ -194,7 +194,7 @@ public abstract class AbstractPanelController {
      * 
      * @param panelRoot the root panel (non null).
      */
-    protected  final void setPanelRoot(Parent panelRoot) {
+    protected  final void setPanelRoot(final Parent panelRoot) {
         assert panelRoot != null;
         this.panelRoot = panelRoot;
     }
@@ -290,7 +290,7 @@ public abstract class AbstractPanelController {
      * 
      * @param oldStylesheet null or the style sheet to be replaced
      */
-    protected void toolStylesheetDidChange(String oldStylesheet) {
+    protected void toolStylesheetDidChange(final String oldStylesheet) {
         /*
          * Tool style sheet has changed in editor controller.
          * If the panel has been loaded, then we replace the old sheet

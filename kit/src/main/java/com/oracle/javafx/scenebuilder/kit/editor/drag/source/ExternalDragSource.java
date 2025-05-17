@@ -33,12 +33,10 @@ package com.oracle.javafx.scenebuilder.kit.editor.drag.source;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -57,8 +55,6 @@ import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMNodes;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.Metadata;
-import com.oracle.javafx.scenebuilder.kit.metadata.klass.ComponentClassMetadata;
-import com.oracle.javafx.scenebuilder.kit.metadata.property.PropertyMetadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.property.value.DoublePropertyMetadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.property.value.ImagePropertyMetadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignImage;
@@ -80,7 +76,7 @@ public class ExternalDragSource extends AbstractDragSource {
     private int errorCount;
     private Exception lastException;
 
-    public ExternalDragSource(Dragboard clipboardContent, FXOMDocument targetDocument, Window ownerWindow) {
+    public ExternalDragSource(final Dragboard clipboardContent, final FXOMDocument targetDocument, final Window ownerWindow) {
         super(ownerWindow);
         
         assert clipboardContent != null;
@@ -116,16 +112,16 @@ public class ExternalDragSource extends AbstractDragSource {
             draggedObjects = new ArrayList<>();
             inputFiles = new ArrayList<>();
 
-            for (File file : dragboard.getFiles()) {
+            for (final var file : dragboard.getFiles()) {
                 try {
-                    final FXOMObject newObject
+                    final var newObject
                             = FXOMNodes.newObject(targetDocument, file);
                     // newObject is null when file is empty
                     if (newObject != null) {
                         draggedObjects.add(newObject);
                         inputFiles.add(file);
                     }
-                } catch (IOException x) {
+                } catch (final IOException x) {
                     errorCount++;
                     lastException = x;
                 }
@@ -134,11 +130,11 @@ public class ExternalDragSource extends AbstractDragSource {
             // We put all the Node dragged objects in a Scene and layout them
             // so that ContainerXYDropTarget can measure them.
             // We stack and shift them a little so that they are all visible.
-            final Group group = new Group();
-            double dxy = 0.0;
-            for (FXOMObject o : draggedObjects) {
+            final var group = new Group();
+            var dxy = 0.0;
+            for (final var o : draggedObjects) {
                 if (o.getSceneGraphObject() instanceof Node) {
-                    final Node sceneGraphNode = (Node) o.getSceneGraphObject();
+                    final var sceneGraphNode = (Node) o.getSceneGraphObject();
                     sceneGraphNode.setLayoutX(dxy);
                     sceneGraphNode.setLayoutY(dxy);
                     dxy += 20.0;
@@ -146,7 +142,7 @@ public class ExternalDragSource extends AbstractDragSource {
                     group.getChildren().add(sceneGraphNode);
                 }
             }
-            final Scene scene = new Scene(group); // Unused but required
+            final var scene = new Scene(group); // Unused but required
             scene.getClass(); // used to dummy thing to silence FindBugs
             group.applyCss();
             group.layout();
@@ -157,9 +153,9 @@ public class ExternalDragSource extends AbstractDragSource {
                 singleTooltipOnly = false;
                 singleContextMenuOnly = false;
             } else {
-                final FXOMObject draggedObject = getDraggedObjects().get(0);
+                final var draggedObject = getDraggedObjects().getFirst();
                 if (draggedObject instanceof FXOMInstance) {
-                    final Object sceneGraphObject = draggedObject.getSceneGraphObject();
+                    final var sceneGraphObject = draggedObject.getSceneGraphObject();
                     singleImageViewOnly = sceneGraphObject instanceof ImageView;
                     singleTooltipOnly = sceneGraphObject instanceof Tooltip;
                     singleContextMenuOnly = sceneGraphObject instanceof ContextMenu;
@@ -181,7 +177,7 @@ public class ExternalDragSource extends AbstractDragSource {
         if (getDraggedObjects().isEmpty()) {
             result = null;
         } else {
-            result = getDraggedObjects().get(0);
+            result = getDraggedObjects().getFirst();
         }
         
         return result;
@@ -191,12 +187,12 @@ public class ExternalDragSource extends AbstractDragSource {
     public double getHitX() {
         final double result;
         
-        final FXOMObject hitObject = getHitObject();
+        final var hitObject = getHitObject();
         if (hitObject == null) {
             result = Double.NaN;
         } else if (hitObject.isNode()) {
-            final Node hitNode = (Node) hitObject.getSceneGraphObject();
-            final Bounds b = hitNode.getLayoutBounds();
+            final var hitNode = (Node) hitObject.getSceneGraphObject();
+            final var b = hitNode.getLayoutBounds();
             result = (b.getMinX() + b.getMaxX()) / 2.0;
         } else {
             result = 0.0;
@@ -209,12 +205,12 @@ public class ExternalDragSource extends AbstractDragSource {
     public double getHitY() {
         final double result;
         
-        final FXOMObject hitObject = getHitObject();
+        final var hitObject = getHitObject();
         if (hitObject == null) {
             result = Double.NaN;
         } else if (hitObject.isNode()) {
-            final Node hitNode = (Node) hitObject.getSceneGraphObject();
-            final Bounds b = hitNode.getLayoutBounds();
+            final var hitNode = (Node) hitObject.getSceneGraphObject();
+            final var b = hitNode.getLayoutBounds();
             result = (b.getMinY() + b.getMaxY()) / 2.0;
         } else {
             result = 0.0;
@@ -235,14 +231,14 @@ public class ExternalDragSource extends AbstractDragSource {
 
     @Override
     public Node makeShadow() {
-        final Group result = new Group();
+        final var result = new Group();
 
         result.getStylesheets().add(EditorController.getStylesheet().toString());
 
-        for (FXOMObject draggedObject : getDraggedObjects()) {
+        for (final var draggedObject : getDraggedObjects()) {
             if (draggedObject.getSceneGraphObject() instanceof Node) {
-                final Node sceneGraphNode = (Node) draggedObject.getSceneGraphObject();
-                final DragSourceShadow shadowNode = new DragSourceShadow();
+                final var sceneGraphNode = (Node) draggedObject.getSceneGraphObject();
+                final var shadowNode = new DragSourceShadow();
                 shadowNode.setupForNode(sceneGraphNode);
                 shadowNode.getTransforms().add(sceneGraphNode.getLocalToSceneTransform());
                 result.getChildren().add(shadowNode);
@@ -250,9 +246,9 @@ public class ExternalDragSource extends AbstractDragSource {
         }
         
         // Translate the group so that it is centered above (layoutX, layoutY)
-        final Bounds b = result.getBoundsInParent();
-        final double centerX = (b.getMinX() + b.getMaxX()) / 2.0;
-        final double centerY = (b.getMinY() + b.getMaxY()) / 2.0;
+        final var b = result.getBoundsInParent();
+        final var centerX = (b.getMinX() + b.getMaxX()) / 2.0;
+        final var centerY = (b.getMinY() + b.getMaxY()) / 2.0;
         result.setTranslateX(-centerX);
         result.setTranslateY(-centerY);
         
@@ -264,7 +260,7 @@ public class ExternalDragSource extends AbstractDragSource {
         final String result;
         
         if (inputFiles.size() == 1) {
-            final Path inputPath = Paths.get(inputFiles.get(0).toURI());
+            final var inputPath = Paths.get(inputFiles.getFirst().toURI());
             result = I18N.getString("drop.job.insert.from.single.file",
                     inputPath.getFileName());
         } else {
@@ -278,9 +274,9 @@ public class ExternalDragSource extends AbstractDragSource {
     @Override
     public boolean isNodeOnly() {
         if (draggedObjects == null) {
-            int nonNodeCount = 0;
-            for (FXOMObject draggedObject : getDraggedObjects()) {
-                if (draggedObject.isNode() == false) {
+            var nonNodeCount = 0;
+            for (final var draggedObject : getDraggedObjects()) {
+                if (!draggedObject.isNode()) {
                     nonNodeCount++;
                 }
             }
@@ -329,24 +325,24 @@ public class ExternalDragSource extends AbstractDragSource {
      * Utilities that should probably go somewhere else.
      */
     
-    static FXOMDocument makeFxomDocumentFromImageURL(Image image, 
-            double fitSize) throws IOException {
+    static FXOMDocument makeFxomDocumentFromImageURL(final Image image,
+                                                     final double fitSize) throws IOException {
 
         assert image != null;
         assert fitSize > 0.0;
         
-        final double imageWidth = image.getWidth();
-        final double imageHeight = image.getHeight();
+        final var imageWidth = image.getWidth();
+        final var imageHeight = image.getHeight();
         
         final double fitWidth, fitHeight;
-        final double imageSize = Math.max(imageWidth, imageHeight);
+        final var imageSize = Math.max(imageWidth, imageHeight);
         if (imageSize < fitSize) {
             fitWidth = 0;
             fitHeight = 0;
         } else {
-            final double widthScale  = fitSize / imageSize;
-            final double heightScale = fitSize / imageHeight;
-            final double scale = Math.min(widthScale, heightScale);
+            final var widthScale  = fitSize / imageSize;
+            final var heightScale = fitSize / imageHeight;
+            final var scale = Math.min(widthScale, heightScale);
             fitWidth = Math.floor(imageWidth * scale);
             fitHeight = Math.floor(imageHeight * scale);
         }
@@ -358,28 +354,28 @@ public class ExternalDragSource extends AbstractDragSource {
     static final PropertyName fitWidthName = new PropertyName("fitWidth"); //NOI18N
     static final PropertyName fitHeightName = new PropertyName("fitHeight"); //NOI18N
     
-    static FXOMDocument makeFxomDocumentFromImageURL(Image image, double fitWidth, double fitHeight) {
-        final FXOMDocument result = new FXOMDocument();
-        final FXOMInstance imageView = new FXOMInstance(result, ImageView.class);
+    static FXOMDocument makeFxomDocumentFromImageURL(final Image image, final double fitWidth, final double fitHeight) {
+        final var result = new FXOMDocument();
+        final var imageView = new FXOMInstance(result, ImageView.class);
         
-        final ComponentClassMetadata imageViewMeta 
+        final var imageViewMeta
                 = Metadata.getMetadata().queryComponentMetadata(ImageView.class);
-        final PropertyMetadata imagePropMeta
+        final var imagePropMeta
                 = imageViewMeta.lookupProperty(imageName);
-        final PropertyMetadata fitWidthPropMeta
+        final var fitWidthPropMeta
                 = imageViewMeta.lookupProperty(fitWidthName);
-        final PropertyMetadata fitHeightPropMeta
+        final var fitHeightPropMeta
                 = imageViewMeta.lookupProperty(fitHeightName);
         
         assert imagePropMeta instanceof ImagePropertyMetadata;
         assert fitWidthPropMeta instanceof DoublePropertyMetadata;
         assert fitHeightPropMeta instanceof DoublePropertyMetadata;
         
-        final ImagePropertyMetadata imageMeta
+        final var imageMeta
                 = (ImagePropertyMetadata) imagePropMeta;
-        final DoublePropertyMetadata fitWidthMeta
+        final var fitWidthMeta
                 = (DoublePropertyMetadata) fitWidthPropMeta;
-        final DoublePropertyMetadata fitHeightMeta
+        final var fitHeightMeta
                 = (DoublePropertyMetadata) fitHeightPropMeta;
 
         imageMeta.setValue(imageView, new DesignImage(image));

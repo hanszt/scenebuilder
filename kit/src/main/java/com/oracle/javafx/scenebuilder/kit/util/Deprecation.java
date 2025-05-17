@@ -78,50 +78,50 @@ public class Deprecation {
     }
 
 //    // RT-21096 : Promote impl_getStyleMap / impl_setStyleMap to public API
-    public static void setStyleMap(Node node, ObservableMap<StyleableProperty<?>, List<javafx.css.Style>> map) {
+    public static void setStyleMap(final Node node, final ObservableMap<StyleableProperty<?>, List<javafx.css.Style>> map) {
         // node.impl_setStyleMap(map);
 //        System.err.println("Error: impl_setStyleMap is no longer publicly accessible");
     }
 
 //    // RT-21096 : Promote impl_getStyleMap / impl_setStyleMap to public API
-    public static Map<StyleableProperty<?>, List<Style>> getStyleMap(Node node) {
+    public static Map<StyleableProperty<?>, List<Style>> getStyleMap(final Node node) {
 //        return node.impl_findStyles(null);
 //        System.err.println("Error: findStyles is no longer publicly accessible");
         return null;
     }
 
-    public static void reapplyCSS(Parent parent, URI stylesheetPath) {
+    public static void reapplyCSS(final Parent parent, final URI stylesheetPath) {
         try {
             reapplyCSS(parent, stylesheetPath.toURL());
-        } catch (MalformedURLException ex) {
+        } catch (final MalformedURLException ex) {
             Logger.getLogger(Deprecation.class.getName()).log(Level.SEVERE, "Error while retrieving the URL", ex);
         }
     }
 
-    private static void reapplyCSS(Parent parent, URL stylesheetPath) {
+    private static void reapplyCSS(final Parent parent, final URL stylesheetPath) {
         final List<String> stylesheets = parent.getStylesheets();
-        for (String s : new LinkedList<>(stylesheets)) {
+        for (final var s : new LinkedList<>(stylesheets)) {
             if (s.endsWith(stylesheetPath.getPath())) {
-                final int index = stylesheets.indexOf(s);
+                final var index = stylesheets.indexOf(s);
                 assert index != -1;
                 stylesheets.remove(index);
                 stylesheets.add(index, s);
                 break;
             }
         }
-        for (Node child : parent.getChildrenUnmodifiable()) {
+        for (final var child : parent.getChildrenUnmodifiable()) {
             if (child instanceof Parent) {
-                final Parent childParent = (Parent) child;
+                final var childParent = (Parent) child;
                 reapplyCSS(childParent, stylesheetPath);
             } else if (child instanceof SubScene) {
-                final SubScene childSubScene = (SubScene) child;
+                final var childSubScene = (SubScene) child;
                 reapplyCSS(childSubScene.getRoot(), stylesheetPath);
             }
         }
     }
 
     @SuppressWarnings("rawtypes")
-    public static List<Style> getMatchingStyles(CssMetaData cssMetaData, Styleable styleable) {
+    public static List<Style> getMatchingStyles(final CssMetaData cssMetaData, final Styleable styleable) {
 //        return Node.impl_getMatchingStyles(cssMetaData, styleable);
 //        System.err.println("Error: impl_getMatchingStyles is no longer publicly accessible");
         return null;
@@ -131,14 +131,14 @@ public class Deprecation {
 
     // Deprecated stuff in FXMLLoader
     // RT-21226 : Promote setStaticLoad to public API
-    public static void setStaticLoad(FXMLLoader loader, boolean staticLoad) {
+    public static void setStaticLoad(final FXMLLoader loader, final boolean staticLoad) {
         // See SB-266 and JDK-8186429
         ReflectionUtils.setStaticLoad(loader, staticLoad);
     }
 
     // RT-20184 : FX should provide a Parent.pick() routine
-    public static Node pick(Node node, double sceneX, double sceneY) {
-        Point2D p = node.sceneToLocal(sceneX, sceneY, true /* rootScene */);
+    public static Node pick(final Node node, final double sceneX, final double sceneY) {
+        var p = node.sceneToLocal(sceneX, sceneY, true /* rootScene */);
 
         // check if the given node has the point inside it, or else we drop out
         if (!node.contains(p)) return null;
@@ -152,7 +152,7 @@ public class Deprecation {
             // as we know that later nodes have a higher z-ordering, so they
             // should be picked before the earlier nodes.
             Node bestMatchingChild = null;
-            for (Node child : ((Parent)node).getChildrenUnmodifiable()) {
+            for (final var child : ((Parent)node).getChildrenUnmodifiable()) {
                 p = child.sceneToLocal(sceneX, sceneY, true /* rootScene */);
                 if (child.contains(p)) {
                     bestMatchingChild = child;
@@ -167,31 +167,31 @@ public class Deprecation {
         return node;
     }
 
-    public static int getGridPaneColumnCount(GridPane gridPane) {
+    public static int getGridPaneColumnCount(final GridPane gridPane) {
         return gridPane.getColumnCount();
     }
 
-    public static int getGridPaneRowCount(GridPane gridPane) {
+    public static int getGridPaneRowCount(final GridPane gridPane) {
         return gridPane.getRowCount();
     }
 
-    public static Bounds getGridPaneCellBounds(GridPane gridPane, int c, int r) {
+    public static Bounds getGridPaneCellBounds(final GridPane gridPane, final int c, final int r) {
         return gridPane.getCellBounds(c, r);
     }
 
     // Deprecated as of FX 8 u20, and replaced by new method getTreeItemLevel:
     // using it would break ability to compile over JDK 8 GA, not an option for now.
-    public static int getNodeLevel(TreeItem<?> item) {
+    public static int getNodeLevel(final TreeItem<?> item) {
         return TreeView.getNodeLevel(item);
     }
 
-    public static Point2D localToLocal(Node source, double sourceX, double sourceY, Node target) {
-        final Point2D sceneXY = source.localToScene(sourceX, sourceY, true /* rootScene */);
+    public static Point2D localToLocal(final Node source, final double sourceX, final double sourceY, final Node target) {
+        final var sceneXY = source.localToScene(sourceX, sourceY, true /* rootScene */);
         return target.sceneToLocal(sceneXY, true /* rootScene */);
     }
 
-    public static Bounds localToLocal(Node source, Bounds sourceBounds, Node target) {
-        final Bounds sceneBounds = source.localToScene(sourceBounds, true /* rootScene */);
+    public static Bounds localToLocal(final Node source, final Bounds sourceBounds, final Node target) {
+        final var sceneBounds = source.localToScene(sourceBounds, true /* rootScene */);
         return target.sceneToLocal(sceneBounds, true /* rootScene */);
     }
 }

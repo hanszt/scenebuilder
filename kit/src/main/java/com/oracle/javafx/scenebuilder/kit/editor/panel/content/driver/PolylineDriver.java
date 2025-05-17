@@ -45,7 +45,7 @@ import javafx.scene.shape.Polyline;
  */
 public class PolylineDriver extends AbstractNodeDriver {
 
-    public PolylineDriver(ContentPanelController contentPanelController) {
+    public PolylineDriver(final ContentPanelController contentPanelController) {
         super(contentPanelController);
     }
 
@@ -54,18 +54,18 @@ public class PolylineDriver extends AbstractNodeDriver {
      */
     
     @Override
-    public AbstractHandles<?> makeHandles(FXOMObject fxomObject) {
+    public AbstractHandles<?> makeHandles(final FXOMObject fxomObject) {
         assert fxomObject.getSceneGraphObject() instanceof Polyline;
         assert fxomObject instanceof FXOMInstance;
         return new PolylineHandles(contentPanelController, (FXOMInstance)fxomObject);
     }
 
     @Override
-    public AbstractCurveEditor<?> makeCurveEditor(FXOMObject fxomObject) {
+    public AbstractCurveEditor<?> makeCurveEditor(final FXOMObject fxomObject) {
         assert fxomObject.getSceneGraphObject() instanceof Polyline;
         assert fxomObject instanceof FXOMInstance;
 
-        final Polyline polygon = (Polyline) fxomObject.getSceneGraphObject();
+        final var polygon = (Polyline) fxomObject.getSceneGraphObject();
         return new PolylineEditor(polygon);
     }
     

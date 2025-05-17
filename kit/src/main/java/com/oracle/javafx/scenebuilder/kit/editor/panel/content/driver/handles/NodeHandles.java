@@ -41,8 +41,8 @@ import javafx.scene.Node;
  */
 public class NodeHandles extends AbstractNodeHandles<Node> {
     
-    public NodeHandles(ContentPanelController contentPanelController,
-            FXOMInstance fxomInstance) {
+    public NodeHandles(final ContentPanelController contentPanelController,
+                       final FXOMInstance fxomInstance) {
         super(contentPanelController, fxomInstance, Node.class);
     }
 }

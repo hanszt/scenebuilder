@@ -44,13 +44,13 @@ public class IntegerField extends NumberField {
     }
 
     @Override
-    public void replaceText(int start, int end, String text) {
-        String newText = getNewText(start, end, text);
+    public void replaceText(final int start, final int end, final String text) {
+        final var newText = getNewText(start, end, text);
         if (!text.isEmpty() && // Always allow text deletion
                 !partOfConstants(newText)) {
             try {
                 Integer.parseInt(newText);
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
                 return;
             }
         }
@@ -59,10 +59,10 @@ public class IntegerField extends NumberField {
 
     @Override
     public void paste() {
-        String strToPaste = Clipboard.getSystemClipboard().getString();
+        final var strToPaste = Clipboard.getSystemClipboard().getString();
         try {
             Integer.parseInt(strToPaste);
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             return;
         }
         super.paste();

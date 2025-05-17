@@ -76,8 +76,8 @@ public class LinearGradientPropertyMetadata extends ComplexPropertyMetadata<Line
             = new StopListPropertyMetadata(new PropertyName("stops"),
             true, DEFAULT_STOPS, InspectorPath.UNUSED);
 
-    public LinearGradientPropertyMetadata(PropertyName name, boolean readWrite, 
-            LinearGradient defaultValue, InspectorPath inspectorPath) {
+    public LinearGradientPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                          final LinearGradient defaultValue, final InspectorPath inspectorPath) {
         super(name, LinearGradient.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -86,8 +86,8 @@ public class LinearGradientPropertyMetadata extends ComplexPropertyMetadata<Line
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(LinearGradient value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, value.getClass());
+    public FXOMInstance makeFxomInstanceFromValue(final LinearGradient value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, value.getClass());
         
         startXMetadata.setValue(result, value.getStartX());
         startYMetadata.setValue(result, value.getStartY());

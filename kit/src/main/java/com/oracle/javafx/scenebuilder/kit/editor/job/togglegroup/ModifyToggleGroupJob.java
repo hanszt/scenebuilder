@@ -37,13 +37,10 @@ import com.oracle.javafx.scenebuilder.kit.editor.job.BatchDocumentJob;
 import com.oracle.javafx.scenebuilder.kit.editor.job.Job;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.AddPropertyJob;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.RemovePropertyJob;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMProperty;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyT;
 import com.oracle.javafx.scenebuilder.kit.metadata.Metadata;
-import com.oracle.javafx.scenebuilder.kit.metadata.property.ValuePropertyMetadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.property.value.ToggleGroupPropertyMetadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PrefixedValue;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
@@ -62,8 +59,8 @@ public class ModifyToggleGroupJob extends BatchDocumentJob {
     private final FXOMObject targetObject;
     private final String toggleGroupId;
 
-    public ModifyToggleGroupJob(FXOMObject fxomObject, String toggleGroupId, 
-            EditorController editorController) {
+    public ModifyToggleGroupJob(final FXOMObject fxomObject, final String toggleGroupId,
+                                final EditorController editorController) {
         super(editorController);
         
         assert fxomObject != null;
@@ -82,8 +79,8 @@ public class ModifyToggleGroupJob extends BatchDocumentJob {
         final List<Job> result = new ArrayList<>();
 
         if (targetObject instanceof FXOMInstance) {
-            final FXOMInstance targetInstance = (FXOMInstance) targetObject;
-            final ValuePropertyMetadata vpm
+            final var targetInstance = (FXOMInstance) targetObject;
+            final var vpm
                     = Metadata.getMetadata().queryValueProperty(targetInstance, toggleGroupName);
             if (vpm instanceof ToggleGroupPropertyMetadata) {
                 /*
@@ -102,9 +99,9 @@ public class ModifyToggleGroupJob extends BatchDocumentJob {
                  *      => adds FXOMPropertyT for toggleGroup="$toggleGroupId"      //NOI18N
                  */
                 
-                final FXOMDocument fxomDocument
+                final var fxomDocument
                         = targetInstance.getFxomDocument();
-                final FXOMProperty fxomProperty 
+                final var fxomProperty
                         = targetInstance.getProperties().get(toggleGroupName);
                 
                 if (fxomProperty != null) { // Case #0 #2 or #3
@@ -115,9 +112,9 @@ public class ModifyToggleGroupJob extends BatchDocumentJob {
                 
                 // Case #1, #2 and #3
                 if (toggleGroupId != null) {
-                    final PrefixedValue pv
+                    final var pv
                             = new PrefixedValue(PrefixedValue.Type.EXPRESSION, toggleGroupId);
-                    final FXOMPropertyT newProperty 
+                    final var newProperty
                             = new FXOMPropertyT(fxomDocument, toggleGroupName, pv.toString());
                     final Job addPropertyJob
                             = new AddPropertyJob(newProperty, targetInstance, -1, getEditorController());

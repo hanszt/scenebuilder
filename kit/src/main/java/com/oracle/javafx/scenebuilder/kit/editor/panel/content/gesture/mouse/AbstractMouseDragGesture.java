@@ -48,7 +48,7 @@ public abstract class AbstractMouseDragGesture extends AbstractGesture {
     private Observer observer;
     private Node eventTarget;
 
-    public AbstractMouseDragGesture(ContentPanelController contentPanelController) {
+    public AbstractMouseDragGesture(final ContentPanelController contentPanelController) {
         super(contentPanelController);
     }
     
@@ -63,7 +63,7 @@ public abstract class AbstractMouseDragGesture extends AbstractGesture {
      */
 
     @Override
-    public void start(InputEvent e, Observer observer) {
+    public void start(final InputEvent e, final Observer observer) {
         assert e != null;
         assert e instanceof MouseEvent;
         assert e.getEventType() == MouseEvent.MOUSE_PRESSED;
@@ -101,7 +101,7 @@ public abstract class AbstractMouseDragGesture extends AbstractGesture {
         
         try {
             mousePressed((MouseEvent) e);
-        } catch(RuntimeException x) {
+        } catch(final RuntimeException x) {
             performTermination();
             throw x;
         }

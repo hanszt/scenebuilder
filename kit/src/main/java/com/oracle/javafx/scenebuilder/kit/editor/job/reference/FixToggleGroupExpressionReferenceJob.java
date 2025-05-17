@@ -39,11 +39,7 @@ import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.AddPropertyJob;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.RemoveObjectJob;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.RemovePropertyJob;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.ReplacePropertyValueJobT;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMNodes;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyC;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyT;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PrefixedValue;
 import java.util.LinkedList;
@@ -57,8 +53,8 @@ public class FixToggleGroupExpressionReferenceJob extends InlineDocumentJob {
     private final FXOMPropertyT reference;
 
     public FixToggleGroupExpressionReferenceJob(
-            FXOMPropertyT reference, 
-            EditorController editorController) {
+            final FXOMPropertyT reference,
+            final EditorController editorController) {
         super(editorController);
         
         assert reference != null;
@@ -75,9 +71,9 @@ public class FixToggleGroupExpressionReferenceJob extends InlineDocumentJob {
         final List<Job> result = new LinkedList<>();
         
         // 1) Locates the referee
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
-        final String fxId = FXOMNodes.extractReferenceSource(reference);
-        final FXOMObject referee = fxomDocument.searchWithFxId(fxId);
+        final var fxomDocument = getEditorController().getFxomDocument();
+        final var fxId = FXOMNodes.extractReferenceSource(reference);
+        final var referee = fxomDocument.searchWithFxId(fxId);
         
         /*
          *    <RadioButton toggleGroup="$oxebo" />          // reference    //NOI18N
@@ -95,9 +91,9 @@ public class FixToggleGroupExpressionReferenceJob extends InlineDocumentJob {
             assert referee.getParentProperty().getParentInstance() != null;
             
             // 2a.1) Toggle group is available : disconnect it and re-use it
-            final FXOMInstance parentInstance 
+            final var parentInstance
                     = referee.getParentProperty().getParentInstance();
-            final RemoveObjectJob removeJob 
+            final var removeJob
                     = new RemoveObjectJob(referee, getEditorController());
             removeJob.execute();
             result.add(removeJob);
@@ -117,13 +113,13 @@ public class FixToggleGroupExpressionReferenceJob extends InlineDocumentJob {
         } else {
             
             // 2b.1) Removes the reference
-            final FXOMInstance targetInstance = reference.getParentInstance();
+            final var targetInstance = reference.getParentInstance();
             final Job removeJob = new RemovePropertyJob(reference, getEditorController());
             removeJob.execute();
             result.add(removeJob);
             
             // 2b.2) Creates and adds toggle group
-            final FXOMPropertyC newToggleGroup = FXOMNodes.makeToggleGroup(fxomDocument, fxId);
+            final var newToggleGroup = FXOMNodes.makeToggleGroup(fxomDocument, fxId);
             final Job addJob = new AddPropertyJob(newToggleGroup, 
                     targetInstance, -1, getEditorController());
             addJob.execute();
@@ -140,7 +136,7 @@ public class FixToggleGroupExpressionReferenceJob extends InlineDocumentJob {
 
     @Override
     public boolean isExecutable() {
-        final PrefixedValue pv = new PrefixedValue(reference.getValue());
+        final var pv = new PrefixedValue(reference.getValue());
         return pv.isExpression();
     }
 }

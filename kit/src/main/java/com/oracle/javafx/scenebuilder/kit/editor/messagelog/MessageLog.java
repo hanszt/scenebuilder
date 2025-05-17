@@ -63,19 +63,19 @@ public class MessageLog {
      * Public
      */
     
-    public void logInfoMessage(String infoKey, ResourceBundle bundle, Object... arguments) {
+    public void logInfoMessage(final String infoKey, final ResourceBundle bundle, final Object... arguments) {
         logMessage(MessageLogEntry.Type.INFO, bundle, infoKey, arguments);
     }
     
-    public void logWarningMessage(String warningKey, ResourceBundle bundle, Object... arguments) {
+    public void logWarningMessage(final String warningKey, final ResourceBundle bundle, final Object... arguments) {
         logMessage(MessageLogEntry.Type.WARNING, bundle, warningKey, arguments);
     }
     
-    public void logInfoMessage(String infoKey, Object... arguments) {
+    public void logInfoMessage(final String infoKey, final Object... arguments) {
         logInfoMessage(infoKey, I18N.getBundle(), arguments);
     }
     
-    public void logWarningMessage(String warningKey, Object... arguments) {
+    public void logWarningMessage(final String warningKey, final Object... arguments) {
         logWarningMessage(warningKey, I18N.getBundle(), arguments);
     }
     
@@ -92,7 +92,7 @@ public class MessageLog {
     }
     
     public MessageLogEntry getYoungestEntry() {
-        return entries.isEmpty() ? null : entries.get(0);
+        return entries.isEmpty() ? null : entries.getFirst();
     }
     
     public int getEntryCount() {
@@ -100,8 +100,8 @@ public class MessageLog {
     }
     
     public int getWarningEntryCount() {
-        int count = 0;
-        for (MessageLogEntry entry : entries) {
+        var count = 0;
+        for (final var entry : entries) {
             if (entry.getType() == MessageLogEntry.Type.WARNING) {
                 count++;
             }
@@ -110,14 +110,14 @@ public class MessageLog {
     }
     
     public void clear() {
-        if (entries.isEmpty() == false) {
+        if (!entries.isEmpty()) {
             entries.clear();
             incrementRevision();
             resetNumOfWarningMessages();
         }
     }
     
-    public void clearEntry(MessageLogEntry entry) {
+    public void clearEntry(final MessageLogEntry entry) {
         assert entry != null;
         assert entries.contains(entry);
         entries.remove(entry);
@@ -141,10 +141,10 @@ public class MessageLog {
         return TIMESTAMP_DATE_FORMAT.format(new Date());
     }
     
-    private void logMessage(MessageLogEntry.Type messageType, ResourceBundle bundle, String messageKey, Object... arguments) {
-        final String messageText = MessageFormat.format(bundle.getString(messageKey), arguments);
-        final MessageLogEntry entry = new MessageLogEntry(messageType, messageText, getTimeStamp());
-        entries.add(0, entry);
+    private void logMessage(final MessageLogEntry.Type messageType, final ResourceBundle bundle, final String messageKey, final Object... arguments) {
+        final var messageText = MessageFormat.format(bundle.getString(messageKey), arguments);
+        final var entry = new MessageLogEntry(messageType, messageText, getTimeStamp());
+        entries.addFirst(entry);
         incrementRevision();
         
         if (messageType.equals(MessageLogEntry.Type.WARNING)) {

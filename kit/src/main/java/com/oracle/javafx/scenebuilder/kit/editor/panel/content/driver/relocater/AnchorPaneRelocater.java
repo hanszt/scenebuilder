@@ -62,7 +62,7 @@ public class AnchorPaneRelocater extends AbstractRelocater<AnchorPane> {
     private final PropertyName bottomAnchorName = new PropertyName("bottomAnchor", AnchorPane.class);
     private final List<PropertyName> propertyNames = new ArrayList<>();
     
-    public AnchorPaneRelocater(Node sceneGraphObject) {
+    public AnchorPaneRelocater(final Node sceneGraphObject) {
         super(sceneGraphObject, AnchorPane.class);
         this.originalLayoutX = sceneGraphObject.getLayoutX();
         this.originalLayoutY = sceneGraphObject.getLayoutY();
@@ -100,34 +100,34 @@ public class AnchorPaneRelocater extends AbstractRelocater<AnchorPane> {
      * AbstractRelocater
      */
     @Override
-    public void moveToLayoutX(double newLayoutX, Bounds newLayoutBounds) {
+    public void moveToLayoutX(final double newLayoutX, final Bounds newLayoutBounds) {
         if ((originalLeftAnchor == null) && (originalRightAnchor == null)) {
             sceneGraphObject.setLayoutX(Math.round(newLayoutX));
         } else {
-            final Bounds parentLayoutBounds = sceneGraphObject.getParent().getLayoutBounds();
+            final var parentLayoutBounds = sceneGraphObject.getParent().getLayoutBounds();
             if (originalLeftAnchor != null) {
-                final double leftAnchor = computeLeftAnchor(parentLayoutBounds, newLayoutBounds, newLayoutX);
+                final var leftAnchor = computeLeftAnchor(parentLayoutBounds, newLayoutBounds, newLayoutX);
                 AnchorPane.setLeftAnchor(sceneGraphObject, (double)Math.round(leftAnchor));
             }
             if (originalRightAnchor != null) {
-                final double rightAnchor = computeRightAnchor(parentLayoutBounds, newLayoutBounds, newLayoutX);
+                final var rightAnchor = computeRightAnchor(parentLayoutBounds, newLayoutBounds, newLayoutX);
                 AnchorPane.setRightAnchor(sceneGraphObject, (double)Math.round(rightAnchor));
             }
         }
     }
 
     @Override
-    public void moveToLayoutY(double newLayoutY, Bounds newLayoutBounds) {
+    public void moveToLayoutY(final double newLayoutY, final Bounds newLayoutBounds) {
         if ((originalTopAnchor == null) && (originalBottomAnchor == null)) {
             sceneGraphObject.setLayoutY(Math.round(newLayoutY));
         } else {
-            final Bounds parentLayoutBounds = sceneGraphObject.getParent().getLayoutBounds();
+            final var parentLayoutBounds = sceneGraphObject.getParent().getLayoutBounds();
             if (originalTopAnchor != null) {
-                final double topAnchor = computeTopAnchor(parentLayoutBounds, newLayoutBounds, newLayoutY);
+                final var topAnchor = computeTopAnchor(parentLayoutBounds, newLayoutBounds, newLayoutY);
                 AnchorPane.setTopAnchor(sceneGraphObject, (double)Math.round(topAnchor));
             }
             if (originalBottomAnchor != null) {
-                final double bottomAnchor = computeBottomAnchor(parentLayoutBounds, newLayoutBounds, newLayoutY);
+                final var bottomAnchor = computeBottomAnchor(parentLayoutBounds, newLayoutBounds, newLayoutY);
                 AnchorPane.setBottomAnchor(sceneGraphObject, (double)Math.round(bottomAnchor));
             }
         }
@@ -149,7 +149,7 @@ public class AnchorPaneRelocater extends AbstractRelocater<AnchorPane> {
     }
 
     @Override
-    public Object getValue(PropertyName propertyName) {
+    public Object getValue(final PropertyName propertyName) {
         assert propertyName != null;
         assert propertyNames.contains(propertyName) : "propertyName=" + propertyName;
         
@@ -178,28 +178,28 @@ public class AnchorPaneRelocater extends AbstractRelocater<AnchorPane> {
     public Map<PropertyName, Object> getChangeMap() {
         final Map<PropertyName, Object> result = new HashMap<>();
         if ((originalLeftAnchor == null) && (originalRightAnchor == null)) {
-            if (MathUtils.equals(sceneGraphObject.getLayoutX(), originalLayoutX) == false) {
+            if (!MathUtils.equals(sceneGraphObject.getLayoutX(), originalLayoutX)) {
                 result.put(layoutXName, sceneGraphObject.getLayoutX());
             }
         } else {
-            if (Objects.equals(AnchorPane.getLeftAnchor(sceneGraphObject), originalLeftAnchor) == false) {
+            if (!Objects.equals(AnchorPane.getLeftAnchor(sceneGraphObject), originalLeftAnchor)) {
                 result.put(leftAnchorName, AnchorPane.getLeftAnchor(sceneGraphObject));
                 result.put(layoutXName, sceneGraphObject.getLayoutX());
             }
-            if (Objects.equals(AnchorPane.getRightAnchor(sceneGraphObject), originalRightAnchor) == false) {
+            if (!Objects.equals(AnchorPane.getRightAnchor(sceneGraphObject), originalRightAnchor)) {
                 result.put(rightAnchorName, AnchorPane.getRightAnchor(sceneGraphObject));
             }
         }
         if ((originalTopAnchor == null) && (originalBottomAnchor == null)) {
-            if (MathUtils.equals(sceneGraphObject.getLayoutY(), originalLayoutY) == false) {
+            if (!MathUtils.equals(sceneGraphObject.getLayoutY(), originalLayoutY)) {
                 result.put(layoutYName, sceneGraphObject.getLayoutY());
             }
         } else {
-            if (Objects.equals(AnchorPane.getTopAnchor(sceneGraphObject), originalTopAnchor) == false) {
+            if (!Objects.equals(AnchorPane.getTopAnchor(sceneGraphObject), originalTopAnchor)) {
                 result.put(topAnchorName, AnchorPane.getTopAnchor(sceneGraphObject));
                 result.put(layoutYName, sceneGraphObject.getLayoutY());
             }
-            if (Objects.equals(AnchorPane.getBottomAnchor(sceneGraphObject), originalBottomAnchor) == false) {
+            if (!Objects.equals(AnchorPane.getBottomAnchor(sceneGraphObject), originalBottomAnchor)) {
                 result.put(bottomAnchorName, AnchorPane.getBottomAnchor(sceneGraphObject));
             }
         }
@@ -212,7 +212,7 @@ public class AnchorPaneRelocater extends AbstractRelocater<AnchorPane> {
      * Public (static)
      */
     
-    public static double computeLeftAnchor(Bounds parentBounds, Bounds childBounds, double targetLayoutX) {
+    public static double computeLeftAnchor(final Bounds parentBounds, final Bounds childBounds, final double targetLayoutX) {
         /*
          *       o parent origin
          *                               
@@ -238,12 +238,12 @@ public class AnchorPaneRelocater extends AbstractRelocater<AnchorPane> {
          *  result = x1 - x0
          */
         
-        final double x0 = parentBounds.getMinX();
-        final double x1 = parentBounds.getMinX() + targetLayoutX + childBounds.getMinX();
+        final var x0 = parentBounds.getMinX();
+        final var x1 = parentBounds.getMinX() + targetLayoutX + childBounds.getMinX();
         return x1 - x0;
     }
     
-    public static double computeRightAnchor(Bounds parentBounds, Bounds childBounds, double targetLayoutX) {
+    public static double computeRightAnchor(final Bounds parentBounds, final Bounds childBounds, final double targetLayoutX) {
         /*
          *       o parent origin
          *                               
@@ -269,20 +269,20 @@ public class AnchorPaneRelocater extends AbstractRelocater<AnchorPane> {
          *  result = x1 - x0
          */
         
-        final double x0 = parentBounds.getMinX() + targetLayoutX + childBounds.getMaxX();
-        final double x1 = parentBounds.getMaxX();
+        final var x0 = parentBounds.getMinX() + targetLayoutX + childBounds.getMaxX();
+        final var x1 = parentBounds.getMaxX();
         return x1 - x0;
     }
     
-    public static double computeTopAnchor(Bounds parentBounds, Bounds childBounds, double targetLayoutY) {
-        final double y0 = parentBounds.getMinY();
-        final double y1 = parentBounds.getMinY() + targetLayoutY + childBounds.getMinY();
+    public static double computeTopAnchor(final Bounds parentBounds, final Bounds childBounds, final double targetLayoutY) {
+        final var y0 = parentBounds.getMinY();
+        final var y1 = parentBounds.getMinY() + targetLayoutY + childBounds.getMinY();
         return y1 - y0;
     }
     
-    public static double computeBottomAnchor(Bounds parentBounds, Bounds childBounds, double targetLayoutY) {
-        final double y0 = parentBounds.getMinY() + targetLayoutY + childBounds.getMaxY();
-        final double y1 = parentBounds.getMaxY();
+    public static double computeBottomAnchor(final Bounds parentBounds, final Bounds childBounds, final double targetLayoutY) {
+        final var y0 = parentBounds.getMinY() + targetLayoutY + childBounds.getMaxY();
+        final var y1 = parentBounds.getMaxY();
         return y1 - y0;
     }
 }

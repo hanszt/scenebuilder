@@ -49,9 +49,9 @@ class TransientProperty extends TransientNode {
     private final List<FXOMProperty> collectedProperties = new ArrayList<>();
 
     public TransientProperty(
-            TransientNode parentNode,
-            PropertyName name,
-            GlueElement propertyElement) {
+            final TransientNode parentNode,
+            final PropertyName name,
+            final GlueElement propertyElement) {
         super(parentNode);
         
         assert name != null;
@@ -70,7 +70,7 @@ class TransientProperty extends TransientNode {
         return collectedProperties;
     }
 
-    public FXOMProperty makeFxomProperty(FXOMDocument fxomDocument) {
+    public FXOMProperty makeFxomProperty(final FXOMDocument fxomDocument) {
         final FXOMProperty result;
         
         if (collectedProperties.isEmpty()) {
@@ -103,13 +103,13 @@ class TransientProperty extends TransientNode {
             if (values.isEmpty()) {
                 // Case #1
                 assert propertyElement.getChildren().isEmpty();
-                assert propertyElement.getContent().isEmpty() == false;
+                assert !propertyElement.getContent().isEmpty();
                 result = new FXOMPropertyT(fxomDocument, name,
                         propertyElement, null, propertyElement.getContentText());
             }
-            else if ((values.size() == 1) && (values.get(0) instanceof FXOMInstance)) {
-                final FXOMInstance value = (FXOMInstance) values.get(0);
-                final String fxValue = value.getFxValue();
+            else if ((values.size() == 1) && (values.getFirst() instanceof FXOMInstance)) {
+                final var value = (FXOMInstance) values.getFirst();
+                final var fxValue = value.getFxValue();
                 if (fxValue != null) {
                     // Case #2
                     result = new FXOMPropertyT(fxomDocument, name,

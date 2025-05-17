@@ -39,7 +39,6 @@ import com.oracle.javafx.scenebuilder.kit.util.CssInternal;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -76,12 +75,12 @@ public class StyleEditor extends InlineListEditor {
     private Set<Class<?>> selectedClasses;
     private EditorController editorController;
 
-    public StyleEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses, EditorController editorController) {
+    public StyleEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses, final EditorController editorController) {
         super(propMeta, selectedClasses);
         initialize(selectedClasses, editorController);
     }
     
-    private void initialize(Set<Class<?>> selectedClasses, EditorController editorController) {
+    private void initialize(final Set<Class<?>> selectedClasses, final EditorController editorController) {
         this.selectedClasses = selectedClasses;
         this.editorController = editorController;
         setLayoutFormat(LayoutFormat.DOUBLE_LINE);
@@ -96,10 +95,10 @@ public class StyleEditor extends InlineListEditor {
     }
 
     @Override
-    public void commit(EditorItem source) {
+    public void commit(final EditorItem source) {
         try {
             userUpdateValueProperty(getValue());
-        } catch (Exception ex) {
+        } catch (final Exception ex) {
             editorController.getMessageLog().logWarningMessage(
                     "inspector.style.valuetypeerror", ex.getMessage());
         }
@@ -109,8 +108,8 @@ public class StyleEditor extends InlineListEditor {
     public Object getValue() {
         // Concatenate all the item values
         String value = null;
-        for (EditorItem styleItem : getEditorItems()) {
-            String itemValue = EditorUtils.toString(styleItem.getValue());
+        for (final var styleItem : getEditorItems()) {
+            final var itemValue = EditorUtils.toString(styleItem.getValue());
             if (itemValue.isEmpty()) {
                 continue;
             }
@@ -136,7 +135,7 @@ public class StyleEditor extends InlineListEditor {
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(final Object value) {
         setValueGeneric(value);
         if (isSetValueDone()) {
             return;
@@ -146,14 +145,14 @@ public class StyleEditor extends InlineListEditor {
             return;
         }
         assert value instanceof String;
-        String[] itemArray = ((String) value).split(";");
-        Iterator<EditorItem> itemsIter = new ArrayList<>(getEditorItems()).iterator();
-        for (String item : itemArray) {
+        final var itemArray = ((String) value).split(";");
+        final var itemsIter = new ArrayList<>(getEditorItems()).iterator();
+        for (var item : itemArray) {
             item = item.trim();
             if (item.isEmpty()) {
                 continue;
             }
-            EditorItem editorItem;
+            final EditorItem editorItem;
             if (itemsIter.hasNext()) {
                 // re-use the current items first
                 editorItem = itemsIter.next();
@@ -165,13 +164,13 @@ public class StyleEditor extends InlineListEditor {
         }
         // Empty the remaining items, if needed
         while (itemsIter.hasNext()) {
-            EditorItem editorItem = itemsIter.next();
+            final var editorItem = itemsIter.next();
             removeItem(editorItem);
         }
     }
 
     @Override
-    boolean isValueChanged(Object value) {
+    boolean isValueChanged(final Object value) {
         if (((value == null) && (valueProperty().getValue() != null))
                 || ((value != null) && (valueProperty().getValue() == null))) {
             return true;
@@ -182,8 +181,8 @@ public class StyleEditor extends InlineListEditor {
             // a different formatting than the one we generate.
             assert value instanceof String;
             assert valueProperty().getValue() instanceof String;
-            String oldNoSpace = ((String) valueProperty().getValue()).replaceAll("\\s", "");
-            String newNoSpace = ((String) value).replaceAll("\\s", "");
+            final var oldNoSpace = ((String) valueProperty().getValue()).replaceAll("\\s", "");
+            final var newNoSpace = ((String) value).replaceAll("\\s", "");
             if (!oldNoSpace.equals(newNoSpace)) {
                 return true;
             }
@@ -191,7 +190,7 @@ public class StyleEditor extends InlineListEditor {
         return false;
     }
 
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses, EditorController editorController) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses, final EditorController editorController) {
         super.reset(propMeta, selectedClasses);
         this.selectedClasses = selectedClasses;
         this.editorController = editorController;
@@ -202,7 +201,7 @@ public class StyleEditor extends InlineListEditor {
 
     @Override
     public void requestFocus() {
-        EditorItem firstItem = getEditorItems().get(0);
+        final var firstItem = getEditorItems().getFirst();
         assert firstItem instanceof StyleItem;
         ((StyleItem) firstItem).requestFocus();
     }
@@ -236,7 +235,7 @@ public class StyleEditor extends InlineListEditor {
         private boolean parsingError = false;
         private ListChangeListener<CssParser.ParseError> errorListener;
 
-        public StyleItem(EditorItemDelegate editor, List<String> suggestedList) {
+        public StyleItem(final EditorItemDelegate editor, final List<String> suggestedList) {
 //            System.out.println("New StyleItem.");
             // It is an AutoSuggestEditor without MenuButton
             super("", "", suggestedList, false);
@@ -244,7 +243,7 @@ public class StyleEditor extends InlineListEditor {
         }
 
         // Method to please FindBugs
-        private void initialize(EditorItemDelegate editor) {
+        private void initialize(final EditorItemDelegate editor) {
             this.editor = editor;
             root = EditorUtils.loadFxml("StyleEditorItem.fxml", this);
 
@@ -252,7 +251,7 @@ public class StyleEditor extends InlineListEditor {
             propertySp.getChildren().add(super.getRoot());
 
             propertyTf = super.getTextField();
-            EventHandler<ActionEvent> onActionListener = event -> {
+            final EventHandler<ActionEvent> onActionListener = event -> {
 //                    System.out.println("StyleItem : onActionListener");
                 if (getValue().equals(currentValue)) {
                     // no change
@@ -273,7 +272,7 @@ public class StyleEditor extends InlineListEditor {
                 currentValue = EditorUtils.toString(getValue());
             };
 
-            ChangeListener<String> textPropertyChange = (ov, prevText, newText) -> {
+            final ChangeListener<String> textPropertyChange = (ov, prevText, newText) -> {
                 if (prevText.isEmpty() || newText.isEmpty()) {
                     // Text changed FROM empty value, or TO empty value: buttons status change
                     updateButtons();
@@ -288,7 +287,7 @@ public class StyleEditor extends InlineListEditor {
             // but implement a specific one.
             setTextEditorBehavior(propertyTf, onActionListener, false);
             setTextEditorBehavior(valueTf, onActionListener, false);
-            ChangeListener<Boolean> focusListener = (observable, oldValue, newValue) -> {
+            final ChangeListener<Boolean> focusListener = (observable, oldValue, newValue) -> {
                 if (!newValue) {
                     // focus lost: commit
                     editor.editing(false, onActionListener);
@@ -308,7 +307,7 @@ public class StyleEditor extends InlineListEditor {
             errorListener = change -> {
                 while (change.next()) {
                     if (change.wasAdded()) {
-                        for (CssParser.ParseError error : change.getAddedSubList()) {
+                        for (final var error : change.getAddedSubList()) {
                             if ("InlineStyleParsingError".equals(error.getClass().getSimpleName())) {
                                 parsingError = true;
                                 break;
@@ -336,12 +335,12 @@ public class StyleEditor extends InlineListEditor {
 
         @Override
         public Object getValue() {
-            String value;
+            final String value;
             if (propertyTf.getText().isEmpty() || valueTf.getText().isEmpty()) {
                 return ""; //NOI18N
             } else {
-                String propertyVal = EditorUtils.getPlainString(propertyTf.getText()).trim();
-                String valueVal = EditorUtils.getPlainString(valueTf.getText()).trim();
+                final var propertyVal = EditorUtils.getPlainString(propertyTf.getText()).trim();
+                final var valueVal = EditorUtils.getPlainString(valueTf.getText()).trim();
                 value = propertyVal + ": " + valueVal + ";"; //NOI18N
             }
 
@@ -359,16 +358,16 @@ public class StyleEditor extends InlineListEditor {
         }
 
         @Override
-        public void setValue(Object style) {
-            String styleStr = EditorUtils.toString(style);
+        public void setValue(final Object style) {
+            var styleStr = EditorUtils.toString(style);
             // remove last ';' if any
             if (styleStr.endsWith(";")) { //NOI18N
                 styleStr = styleStr.substring(0, styleStr.length() - 1);
             }
             // split in property and value
-            int dotIndex = styleStr.indexOf(':');
-            String propertyStr;
-            String valueStr = ""; //NOI18N
+            final var dotIndex = styleStr.indexOf(':');
+            final String propertyStr;
+            var valueStr = ""; //NOI18N
             if (dotIndex != -1) {
                 propertyStr = styleStr.substring(0, dotIndex);
                 valueStr = styleStr.substring(dotIndex + 1);
@@ -428,31 +427,31 @@ public class StyleEditor extends InlineListEditor {
         }
 
         @FXML
-        void add(ActionEvent event) {
-            StyleItem styleItem = getNewStyleItem();
+        void add(final ActionEvent event) {
+            final var styleItem = getNewStyleItem();
             editor.add(this, styleItem);
             styleItem.requestFocus();
         }
 
         @FXML
-        void remove(ActionEvent event) {
+        void remove(final ActionEvent event) {
             editor.remove(this);
         }
 
         @FXML
-        void up(ActionEvent event) {
+        void up(final ActionEvent event) {
             editor.up(this);
         }
 
         @FXML
-        void down(ActionEvent event) {
+        void down(final ActionEvent event) {
             editor.down(this);
         }
 
         @FXML
-        void plusBtTyped(KeyEvent event) {
+        void plusBtTyped(final KeyEvent event) {
             if (event.getCode() == KeyCode.ENTER) {
-                StyleItem styleItem = getNewStyleItem();
+                final var styleItem = getNewStyleItem();
                 editor.add(this, styleItem);
                 styleItem.requestFocus();
             }
@@ -475,12 +474,12 @@ public class StyleEditor extends InlineListEditor {
         }
 
         @SuppressWarnings("unused")
-        protected void disablePlusButton(boolean disable) {
+        protected void disablePlusButton(final boolean disable) {
             plusBt.setDisable(disable);
         }
 
         @SuppressWarnings("unused")
-        protected void disableRemove(boolean disable) {
+        protected void disableRemove(final boolean disable) {
             removeMi.setDisable(disable);
         }
     }
@@ -490,7 +489,7 @@ public class StyleEditor extends InlineListEditor {
 
         private final String style;
 
-        private StyleableStub(String style) {
+        private StyleableStub(final String style) {
             this.style = style;
         }
 

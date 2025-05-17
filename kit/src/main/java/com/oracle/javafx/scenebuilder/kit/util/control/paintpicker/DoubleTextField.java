@@ -44,8 +44,8 @@ public class DoubleTextField extends TextField {
     }
 
     @Override
-    public void replaceText(int start, int end, String text) {
-        String newText = getNewText(start, end, text);
+    public void replaceText(final int start, final int end, String text) {
+        var newText = getNewText(start, end, text);
         if (!text.isEmpty() // Always allow text deletion
                 && (!newText.equals("-") && !newText.equals(".") && !newText.equals("-."))) { //NOI18N
             try {
@@ -57,7 +57,7 @@ public class DoubleTextField extends TextField {
                 // Replace ',' by '.'
                 newText = newText.replace(',', '.'); //NOI18N
                 Double.parseDouble(newText);
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
                 return;
             }
         }
@@ -68,25 +68,25 @@ public class DoubleTextField extends TextField {
 
     @Override
     public void paste() {
-        String strToPaste = Clipboard.getSystemClipboard().getString();
+        final var strToPaste = Clipboard.getSystemClipboard().getString();
         try {
             Double.parseDouble(strToPaste);
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             return;
         }
         super.paste();
     }
 
-    private String getNewText(int start, int end, String text) {
-        String oldText = getText();
-        String toReplace = oldText.substring(start, end);
-        String newText;
+    private String getNewText(final int start, final int end, final String text) {
+        final var oldText = getText();
+        final var toReplace = oldText.substring(start, end);
+        final String newText;
         if (toReplace.isEmpty()) {
             // start/end is outside oldText ==> add
             newText = oldText + text;
         } else {
-            String headerStr = oldText.substring(0, start);
-            String trailerStr = ""; //NOI18N
+            final var headerStr = oldText.substring(0, start);
+            var trailerStr = ""; //NOI18N
             if (end < oldText.length()) {
                 trailerStr = oldText.substring(end, oldText.length());
             }

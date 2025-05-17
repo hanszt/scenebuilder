@@ -39,7 +39,7 @@ import javafx.scene.control.TitledPane;
  */
 public class WrapInTitledPaneJob extends AbstractWrapInContentJob {
 
-    public WrapInTitledPaneJob(EditorController editorController) {
+    public WrapInTitledPaneJob(final EditorController editorController) {
         super(editorController);
         newContainerClass = TitledPane.class;
     }

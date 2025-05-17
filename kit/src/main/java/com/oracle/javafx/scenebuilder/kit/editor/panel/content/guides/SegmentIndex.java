@@ -49,7 +49,7 @@ public class SegmentIndex {
         // no-op
     }
 
-    public void addSegment(AbstractSegment s) {
+    public void addSegment(final AbstractSegment s) {
         segments.add(s);
         sorted = false;
     }
@@ -58,17 +58,17 @@ public class SegmentIndex {
         segments.clear();
     }
     
-    public List<AbstractSegment> match(double targetLength, double threshold) {
+    public List<AbstractSegment> match(final double targetLength, final double threshold) {
         assert targetLength >= 0;
         assert threshold >= 0;
         
-        if (sorted == false) {
+        if (!sorted) {
             Collections.sort(segments);
         }
-        double bestDelta = Double.MAX_VALUE;
+        var bestDelta = Double.MAX_VALUE;
         final List<AbstractSegment> result = new ArrayList<>();
-        for (AbstractSegment s : segments) {
-            final double delta = Math.abs(s.getLength() - targetLength);
+        for (final var s : segments) {
+            final var delta = Math.abs(s.getLength() - targetLength);
             if (delta < threshold) {
                 if (MathUtils.equals(delta, bestDelta)) {
                     result.add(s);

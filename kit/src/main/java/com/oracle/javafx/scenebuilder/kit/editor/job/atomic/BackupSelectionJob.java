@@ -35,7 +35,6 @@ package com.oracle.javafx.scenebuilder.kit.editor.job.atomic;
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.editor.job.Job;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.AbstractSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
 
 /**
  *
@@ -44,18 +43,18 @@ public class BackupSelectionJob extends Job {
 
     private final AbstractSelectionGroup oldSelectionGroup;
 
-    public BackupSelectionJob(EditorController editorController) {
+    public BackupSelectionJob(final EditorController editorController) {
         super(editorController);
         
         // Saves the current selection
-        final Selection selection = getEditorController().getSelection();
+        final var selection = getEditorController().getSelection();
         try {
             if (selection.getGroup() == null) {
                 this.oldSelectionGroup = null;
             } else {
                 this.oldSelectionGroup = selection.getGroup().clone();
             }
-        } catch(CloneNotSupportedException x) {
+        } catch(final CloneNotSupportedException x) {
             throw new RuntimeException("Bug", x); //NOI18N
         }
     }
@@ -77,7 +76,7 @@ public class BackupSelectionJob extends Job {
 
     @Override
     public void undo() {
-        final Selection selection = getEditorController().getSelection();
+        final var selection = getEditorController().getSelection();
         selection.select(oldSelectionGroup);
         assert selection.isValid(getEditorController().getFxomDocument());
     }

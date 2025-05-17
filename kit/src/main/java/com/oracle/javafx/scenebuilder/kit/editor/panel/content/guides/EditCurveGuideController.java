@@ -52,26 +52,26 @@ public class EditCurveGuideController {
     public EditCurveGuideController() {
     }
 
-    public void addCurvePoint(Point2D pointInScene) {
+    public void addCurvePoint(final Point2D pointInScene) {
         assert pointInScene != null;
         curvePoints.add(pointInScene);
         pointIndex.addPoint(pointInScene);
     }
 
-    public void addSampleBounds(Node node) {
+    public void addSampleBounds(final Node node) {
         assert node != null;
         assert node.getScene() != null;
 
-        final Bounds layoutBounds = node.getLayoutBounds();
-        final Bounds boundsInScene = node.localToScene(layoutBounds, true /* rootScene */);
+        final var layoutBounds = node.getLayoutBounds();
+        final var boundsInScene = node.localToScene(layoutBounds, true /* rootScene */);
         addSampleBounds(boundsInScene, true);
     }
 
-    public void addSampleBounds(Bounds boundsInScene, boolean addMiddle) {
-        final double minX = boundsInScene.getMinX();
-        final double minY = boundsInScene.getMinY();
-        final double maxX = boundsInScene.getMaxX();
-        final double maxY = boundsInScene.getMaxY();
+    public void addSampleBounds(final Bounds boundsInScene, final boolean addMiddle) {
+        final var minX = boundsInScene.getMinX();
+        final var minY = boundsInScene.getMinY();
+        final var maxX = boundsInScene.getMaxX();
+        final var maxY = boundsInScene.getMaxY();
 
         pointIndex.addPoint(new Point2D(minX, minY));
         pointIndex.addPoint(new Point2D(minX, maxY));
@@ -79,8 +79,8 @@ public class EditCurveGuideController {
         pointIndex.addPoint(new Point2D(maxX, maxY));
         
         if (addMiddle) {
-            final double midX = (minX + maxX) / 2.0;
-            final double midY = (minY + maxY) / 2.0;
+            final var midX = (minX + maxX) / 2.0;
+            final var midY = (minY + maxY) / 2.0;
 
             pointIndex.addPoint(new Point2D(midX, midY));
             pointIndex.addPoint(new Point2D(midX, minY));
@@ -95,29 +95,29 @@ public class EditCurveGuideController {
         verticalLineIndex.addLine(new VerticalSegment(maxX, minY, maxY));
     }
 
-    public Point2D correct(Point2D point) {
+    public Point2D correct(final Point2D point) {
         assert point != null;
-        
-        double x = point.getX();
-        double y = point.getY();
 
-        final List<Point2D> matchedPoints = pointIndex.match(point, MATCH_DISTANCE);
-        final List<HorizontalSegment> horizontalMatchingLines = horizontalLineIndex.matchPoint(point, MATCH_DISTANCE);
-        final List<VerticalSegment> verticalMatchedLines = verticalLineIndex.matchPoint(point, MATCH_DISTANCE);
+        var x = point.getX();
+        var y = point.getY();
+
+        final var matchedPoints = pointIndex.match(point, MATCH_DISTANCE);
+        final var horizontalMatchingLines = horizontalLineIndex.matchPoint(point, MATCH_DISTANCE);
+        final var verticalMatchedLines = verticalLineIndex.matchPoint(point, MATCH_DISTANCE);
         
         if (!matchedPoints.isEmpty()) {
-            return matchedPoints.get(0);
+            return matchedPoints.getFirst();
         }
         if (!horizontalMatchingLines.isEmpty()) {
-            final HorizontalSegment line = horizontalMatchingLines.get(0);
+            final var line = horizontalMatchingLines.getFirst();
             y = line.getY1();
         }
         if (!verticalMatchedLines.isEmpty()) {
-            final VerticalSegment line = verticalMatchedLines.get(0);
+            final var line = verticalMatchedLines.getFirst();
             x = line.getX1();
         }
 
-        for (Point2D curvePoint : curvePoints) {
+        for (final var curvePoint : curvePoints) {
             if (Math.abs(point.getX() - curvePoint.getX()) < MATCH_DISTANCE) {
                 x = curvePoint.getX();
             }
@@ -128,13 +128,13 @@ public class EditCurveGuideController {
         return new Point2D(x, y);
     }
 
-    public Point2D makeStraightAngles(Point2D point) {
+    public Point2D makeStraightAngles(final Point2D point) {
         assert point != null;
 
-        double x = point.getX();
-        double y = point.getY();
+        var x = point.getX();
+        var y = point.getY();
 
-        for (Point2D curvePoint : curvePoints) {
+        for (final var curvePoint : curvePoints) {
             if (Math.abs(point.getX() - curvePoint.getX()) > Math.abs(point.getY() - curvePoint.getY())) {
                 y = curvePoint.getY();
             } else {

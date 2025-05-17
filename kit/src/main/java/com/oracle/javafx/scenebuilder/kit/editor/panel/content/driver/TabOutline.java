@@ -34,9 +34,7 @@ package com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.AbstractDecoration;
 import java.util.List;
 import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 import javafx.scene.shape.ClosePath;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
@@ -77,7 +75,7 @@ public class TabOutline {
     
     private final Tab tab;
     
-    public TabOutline(Tab tab) {
+    public TabOutline(final Tab tab) {
         assert tab != null;
         
         this.tab = tab;
@@ -99,10 +97,10 @@ public class TabOutline {
         return ringPath;
     }
     
-    public void layout(AbstractDecoration<?> hostDecoration) {
-        final TabPane tabPane = tab.getTabPane();
-        final Bounds headerBounds = tabPaneDesignInfo.computeTabBounds(tabPane, tab);
-        final Bounds contentBounds = tabPaneDesignInfo.computeContentAreaBounds(tabPane);
+    public void layout(final AbstractDecoration<?> hostDecoration) {
+        final var tabPane = tab.getTabPane();
+        final var headerBounds = tabPaneDesignInfo.computeTabBounds(tabPane, tab);
+        final var contentBounds = tabPaneDesignInfo.computeContentAreaBounds(tabPane);
 
         switch(tabPane.getSide()) {
             default:
@@ -126,8 +124,8 @@ public class TabOutline {
      * Private
      */
     
-    private void layoutForTopSide(Bounds headerBounds, Bounds contentBounds,
-            AbstractDecoration<?> hd) {
+    private void layoutForTopSide(final Bounds headerBounds, final Bounds contentBounds,
+                                  final AbstractDecoration<?> hd) {
         
         //
         //     x0    x1             x2                x3
@@ -143,23 +141,23 @@ public class TabOutline {
         // y2  +--------------------------------------+
         //
         
-        final double x0 = contentBounds.getMinX();
-        final double x1 = headerBounds.getMinX();
-        final double x2 = headerBounds.getMaxX();
-        final double x3 = contentBounds.getMaxX();
-        final double y0 = headerBounds.getMinY();
-        final double y1 = contentBounds.getMinY();
-        final double y2 = contentBounds.getMaxY();
+        final var x0 = contentBounds.getMinX();
+        final var x1 = headerBounds.getMinX();
+        final var x2 = headerBounds.getMaxX();
+        final var x3 = contentBounds.getMaxX();
+        final var y0 = headerBounds.getMinY();
+        final var y1 = contentBounds.getMinY();
+        final var y2 = contentBounds.getMaxY();
         
-        final boolean snapToPixel = true;
-        final Point2D p0 = hd.sceneGraphObjectToDecoration(x0, y1, snapToPixel);
-        final Point2D p1 = hd.sceneGraphObjectToDecoration(x1, y1, snapToPixel);
-        final Point2D p2 = hd.sceneGraphObjectToDecoration(x1, y0, snapToPixel);
-        final Point2D p3 = hd.sceneGraphObjectToDecoration(x2, y0, snapToPixel);
-        final Point2D p4 = hd.sceneGraphObjectToDecoration(x2, y1, snapToPixel);
-        final Point2D p5 = hd.sceneGraphObjectToDecoration(x3, y1, snapToPixel);
-        final Point2D p6 = hd.sceneGraphObjectToDecoration(x3, y2, snapToPixel);
-        final Point2D p7 = hd.sceneGraphObjectToDecoration(x0, y2, snapToPixel);
+        final var snapToPixel = true;
+        final var p0 = hd.sceneGraphObjectToDecoration(x0, y1, snapToPixel);
+        final var p1 = hd.sceneGraphObjectToDecoration(x1, y1, snapToPixel);
+        final var p2 = hd.sceneGraphObjectToDecoration(x1, y0, snapToPixel);
+        final var p3 = hd.sceneGraphObjectToDecoration(x2, y0, snapToPixel);
+        final var p4 = hd.sceneGraphObjectToDecoration(x2, y1, snapToPixel);
+        final var p5 = hd.sceneGraphObjectToDecoration(x3, y1, snapToPixel);
+        final var p6 = hd.sceneGraphObjectToDecoration(x3, y2, snapToPixel);
+        final var p7 = hd.sceneGraphObjectToDecoration(x0, y2, snapToPixel);
         
         moveTo0.setX(p0.getX());
         moveTo0.setY(p0.getY());
@@ -180,8 +178,8 @@ public class TabOutline {
     }
     
     
-    private void layoutForBottomSide(Bounds headerBounds, Bounds contentBounds,
-            AbstractDecoration<?> hd) {
+    private void layoutForBottomSide(final Bounds headerBounds, final Bounds contentBounds,
+                                     final AbstractDecoration<?> hd) {
         
         //
         //     x0    x1             x2                x3
@@ -197,23 +195,23 @@ public class TabOutline {
         // y2        +--------------+
         //
         
-        final double x0 = contentBounds.getMinX();
-        final double x1 = headerBounds.getMinX();
-        final double x2 = headerBounds.getMaxX();
-        final double x3 = contentBounds.getMaxX();
-        final double y0 = contentBounds.getMinY();
-        final double y1 = contentBounds.getMaxY();
-        final double y2 = headerBounds.getMaxY();
+        final var x0 = contentBounds.getMinX();
+        final var x1 = headerBounds.getMinX();
+        final var x2 = headerBounds.getMaxX();
+        final var x3 = contentBounds.getMaxX();
+        final var y0 = contentBounds.getMinY();
+        final var y1 = contentBounds.getMaxY();
+        final var y2 = headerBounds.getMaxY();
         
-        final boolean snapToPixel = true;
-        final Point2D p0 = hd.sceneGraphObjectToDecoration(x0, y0, snapToPixel);
-        final Point2D p1 = hd.sceneGraphObjectToDecoration(x3, y0, snapToPixel);
-        final Point2D p2 = hd.sceneGraphObjectToDecoration(x3, y1, snapToPixel);
-        final Point2D p3 = hd.sceneGraphObjectToDecoration(x2, y1, snapToPixel);
-        final Point2D p4 = hd.sceneGraphObjectToDecoration(x2, y2, snapToPixel);
-        final Point2D p5 = hd.sceneGraphObjectToDecoration(x1, y2, snapToPixel);
-        final Point2D p6 = hd.sceneGraphObjectToDecoration(x1, y1, snapToPixel);
-        final Point2D p7 = hd.sceneGraphObjectToDecoration(x0, y1, snapToPixel);
+        final var snapToPixel = true;
+        final var p0 = hd.sceneGraphObjectToDecoration(x0, y0, snapToPixel);
+        final var p1 = hd.sceneGraphObjectToDecoration(x3, y0, snapToPixel);
+        final var p2 = hd.sceneGraphObjectToDecoration(x3, y1, snapToPixel);
+        final var p3 = hd.sceneGraphObjectToDecoration(x2, y1, snapToPixel);
+        final var p4 = hd.sceneGraphObjectToDecoration(x2, y2, snapToPixel);
+        final var p5 = hd.sceneGraphObjectToDecoration(x1, y2, snapToPixel);
+        final var p6 = hd.sceneGraphObjectToDecoration(x1, y1, snapToPixel);
+        final var p7 = hd.sceneGraphObjectToDecoration(x0, y1, snapToPixel);
         
         moveTo0.setX(p0.getX());
         moveTo0.setY(p0.getY());
@@ -234,8 +232,8 @@ public class TabOutline {
     }
     
     
-    private void layoutForLeftSide(Bounds headerBounds, Bounds contentBounds,
-            AbstractDecoration<?> hd) {
+    private void layoutForLeftSide(final Bounds headerBounds, final Bounds contentBounds,
+                                   final AbstractDecoration<?> hd) {
         
         //
         //     x0   x1                          x2
@@ -256,23 +254,23 @@ public class TabOutline {
         //     
         //
         
-        final double x0 = headerBounds.getMinX();
-        final double x1 = contentBounds.getMinX();
-        final double x2 = contentBounds.getMaxX();
-        final double y0 = contentBounds.getMinY();
-        final double y1 = headerBounds.getMinY();
-        final double y2 = headerBounds.getMaxY();
-        final double y3 = contentBounds.getMaxY();
+        final var x0 = headerBounds.getMinX();
+        final var x1 = contentBounds.getMinX();
+        final var x2 = contentBounds.getMaxX();
+        final var y0 = contentBounds.getMinY();
+        final var y1 = headerBounds.getMinY();
+        final var y2 = headerBounds.getMaxY();
+        final var y3 = contentBounds.getMaxY();
         
-        final boolean snapToPixel = true;
-        final Point2D p0 = hd.sceneGraphObjectToDecoration(x0, y1, snapToPixel);
-        final Point2D p1 = hd.sceneGraphObjectToDecoration(x1, y1, snapToPixel);
-        final Point2D p2 = hd.sceneGraphObjectToDecoration(x1, y0, snapToPixel);
-        final Point2D p3 = hd.sceneGraphObjectToDecoration(x2, y0, snapToPixel);
-        final Point2D p4 = hd.sceneGraphObjectToDecoration(x2, y3, snapToPixel);
-        final Point2D p5 = hd.sceneGraphObjectToDecoration(x1, y3, snapToPixel);
-        final Point2D p6 = hd.sceneGraphObjectToDecoration(x1, y2, snapToPixel);
-        final Point2D p7 = hd.sceneGraphObjectToDecoration(x0, y2, snapToPixel);
+        final var snapToPixel = true;
+        final var p0 = hd.sceneGraphObjectToDecoration(x0, y1, snapToPixel);
+        final var p1 = hd.sceneGraphObjectToDecoration(x1, y1, snapToPixel);
+        final var p2 = hd.sceneGraphObjectToDecoration(x1, y0, snapToPixel);
+        final var p3 = hd.sceneGraphObjectToDecoration(x2, y0, snapToPixel);
+        final var p4 = hd.sceneGraphObjectToDecoration(x2, y3, snapToPixel);
+        final var p5 = hd.sceneGraphObjectToDecoration(x1, y3, snapToPixel);
+        final var p6 = hd.sceneGraphObjectToDecoration(x1, y2, snapToPixel);
+        final var p7 = hd.sceneGraphObjectToDecoration(x0, y2, snapToPixel);
         
         moveTo0.setX(p0.getX());
         moveTo0.setY(p0.getY());
@@ -293,8 +291,8 @@ public class TabOutline {
     }
     
     
-    private void layoutForRightSide(Bounds headerBounds, Bounds contentBounds,
-            AbstractDecoration<?> hd) {
+    private void layoutForRightSide(final Bounds headerBounds, final Bounds contentBounds,
+                                    final AbstractDecoration<?> hd) {
         
         //
         //        x0                          x1   x2
@@ -315,23 +313,23 @@ public class TabOutline {
         //     
         //
         
-        final double x0 = contentBounds.getMinX();
-        final double x1 = contentBounds.getMaxX();
-        final double x2 = headerBounds.getMaxX();
-        final double y0 = contentBounds.getMinY();
-        final double y1 = headerBounds.getMinY();
-        final double y2 = headerBounds.getMaxY();
-        final double y3 = contentBounds.getMaxY();
+        final var x0 = contentBounds.getMinX();
+        final var x1 = contentBounds.getMaxX();
+        final var x2 = headerBounds.getMaxX();
+        final var y0 = contentBounds.getMinY();
+        final var y1 = headerBounds.getMinY();
+        final var y2 = headerBounds.getMaxY();
+        final var y3 = contentBounds.getMaxY();
         
-        final boolean snapToPixel = true;
-        final Point2D p0 = hd.sceneGraphObjectToDecoration(x0, y0, snapToPixel);
-        final Point2D p1 = hd.sceneGraphObjectToDecoration(x1, y0, snapToPixel);
-        final Point2D p2 = hd.sceneGraphObjectToDecoration(x1, y1, snapToPixel);
-        final Point2D p3 = hd.sceneGraphObjectToDecoration(x2, y1, snapToPixel);
-        final Point2D p4 = hd.sceneGraphObjectToDecoration(x2, y2, snapToPixel);
-        final Point2D p5 = hd.sceneGraphObjectToDecoration(x1, y2, snapToPixel);
-        final Point2D p6 = hd.sceneGraphObjectToDecoration(x1, y3, snapToPixel);
-        final Point2D p7 = hd.sceneGraphObjectToDecoration(x0, y3, snapToPixel);
+        final var snapToPixel = true;
+        final var p0 = hd.sceneGraphObjectToDecoration(x0, y0, snapToPixel);
+        final var p1 = hd.sceneGraphObjectToDecoration(x1, y0, snapToPixel);
+        final var p2 = hd.sceneGraphObjectToDecoration(x1, y1, snapToPixel);
+        final var p3 = hd.sceneGraphObjectToDecoration(x2, y1, snapToPixel);
+        final var p4 = hd.sceneGraphObjectToDecoration(x2, y2, snapToPixel);
+        final var p5 = hd.sceneGraphObjectToDecoration(x1, y2, snapToPixel);
+        final var p6 = hd.sceneGraphObjectToDecoration(x1, y3, snapToPixel);
+        final var p7 = hd.sceneGraphObjectToDecoration(x0, y3, snapToPixel);
         
         moveTo0.setX(p0.getX());
         moveTo0.setY(p0.getY());

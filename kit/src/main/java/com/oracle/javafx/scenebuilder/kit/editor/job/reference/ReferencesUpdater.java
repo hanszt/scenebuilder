@@ -42,8 +42,6 @@ import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMIntrinsic;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMNode;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMNodes;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMProperty;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyC;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyT;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PrefixedValue;
@@ -52,7 +50,6 @@ import com.oracle.javafx.scenebuilder.kit.util.JavaLanguage;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -66,7 +63,7 @@ public class ReferencesUpdater {
     private final Set<String> declaredFxIds = new HashSet<>();
     private final FXOMCloner cloner;
     
-    public ReferencesUpdater(EditorController editorController) {
+    public ReferencesUpdater(final EditorController editorController) {
         assert editorController != null;
         assert editorController.getFxomDocument() != null;
         this.editorController = editorController;
@@ -90,7 +87,7 @@ public class ReferencesUpdater {
      * Private
      */
     
-    private void update(FXOMNode node) {
+    private void update(final FXOMNode node) {
         if (node instanceof FXOMCollection) {
             updateCollection((FXOMCollection) node);
         } else if (node instanceof FXOMInstance) {
@@ -107,30 +104,30 @@ public class ReferencesUpdater {
     }
     
     
-    private void updateCollection(FXOMCollection collection) {
+    private void updateCollection(final FXOMCollection collection) {
         if (collection.getFxId() != null) {
             declaredFxIds.add(collection.getFxId());
         }
-        final List<FXOMObject> items = collection.getItems();
+        final var items = collection.getItems();
         for (int i = 0, count = items.size(); i < count; i++) {
             update(items.get(i));
         }
     }
     
     
-    private void updateInstance(FXOMInstance instance) {
+    private void updateInstance(final FXOMInstance instance) {
         if (instance.getFxId() != null) {
             declaredFxIds.add(instance.getFxId());
         }
-        final Map<PropertyName, FXOMProperty> properties = instance.getProperties();
+        final var properties = instance.getProperties();
         final List<PropertyName> names = new LinkedList<>(properties.keySet());
-        for (PropertyName propertyName : names) {
+        for (final var propertyName : names) {
             update(properties.get(propertyName));
         }
     }
     
     
-    private void updateIntrinsic(FXOMIntrinsic intrinsic) {
+    private void updateIntrinsic(final FXOMIntrinsic intrinsic) {
         switch(intrinsic.getType()) {
             case FX_REFERENCE:
             case FX_COPY:
@@ -142,18 +139,18 @@ public class ReferencesUpdater {
     }
     
     
-    private void updatePropertyC(FXOMPropertyC property) {
-        final List<FXOMObject> values = property.getValues();
+    private void updatePropertyC(final FXOMPropertyC property) {
+        final var values = property.getValues();
         for (int i = 0, count = values.size(); i < count; i++) {
             update(values.get(i));
         }
     }
     
     
-    private void updatePropertyT(FXOMPropertyT property) {
-        final PrefixedValue pv = new PrefixedValue(property.getValue());
+    private void updatePropertyT(final FXOMPropertyT property) {
+        final var pv = new PrefixedValue(property.getValue());
         if (pv.isExpression()) {
-            final String suffix = pv.getSuffix();
+            final var suffix = pv.getSuffix();
             if (JavaLanguage.isIdentifier(suffix)) {
                 updateReference(property, suffix);
             }
@@ -161,11 +158,11 @@ public class ReferencesUpdater {
     }
     
     
-    private void updateReference(FXOMNode r, String fxId) {
+    private void updateReference(final FXOMNode r, final String fxId) {
         assert (r instanceof FXOMPropertyT) || (r instanceof FXOMIntrinsic);
         assert fxId != null;
         
-        if (declaredFxIds.contains(fxId) == false) {
+        if (!declaredFxIds.contains(fxId)) {
             // r is a forward reference
             //
             // 0) r is a toggleGroup reference
@@ -177,7 +174,7 @@ public class ReferencesUpdater {
             //    => we expand the reference
             
             
-            final FXOMObject declarer = fxomDocument.searchWithFxId(fxId);
+            final var declarer = fxomDocument.searchWithFxId(fxId);
 
             // 0)
             if (FXOMNodes.isToggleGroupReference(r)) {

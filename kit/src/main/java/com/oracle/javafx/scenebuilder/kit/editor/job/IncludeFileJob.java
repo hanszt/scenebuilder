@@ -35,8 +35,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.AbstractSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMIntrinsic;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMNodes;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
@@ -44,7 +42,6 @@ import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
 import com.oracle.javafx.scenebuilder.kit.util.URLUtils;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +54,7 @@ public class IncludeFileJob extends BatchSelectionJob {
     private FXOMObject targetObject;
     private FXOMIntrinsic newInclude;
 
-    public IncludeFileJob(File file, EditorController editorController) {
+    public IncludeFileJob(final File file, final EditorController editorController) {
         super(editorController);
 
         assert file != null;
@@ -73,24 +70,24 @@ public class IncludeFileJob extends BatchSelectionJob {
         final List<Job> result = new ArrayList<>();
 
         try {
-            final FXOMDocument targetDocument = getEditorController().getFxomDocument();
-            final URL documentURL = getEditorController().getFxmlLocation();
-            final URL fileURL = file.toURI().toURL();
+            final var targetDocument = getEditorController().getFxomDocument();
+            final var documentURL = getEditorController().getFxmlLocation();
+            final var fileURL = file.toURI().toURL();
 
             // Cannot include in non saved document
             // Cannot include same file as document one which will create cyclic reference
-            if (documentURL != null && URLUtils.equals(documentURL, fileURL) == false) {
+            if (documentURL != null && !URLUtils.equals(documentURL, fileURL)) {
                 newInclude = FXOMNodes.newInclude(targetDocument, file);
 
                 // newInclude is null when file is empty
                 if (newInclude != null) {
 
                     // Cannot include as root
-                    final FXOMObject rootObject = targetDocument.getFxomRoot();
+                    final var rootObject = targetDocument.getFxomRoot();
                     if (rootObject != null) {
                         // We include the new object under the common parent
                         // of the selected objects.
-                        final Selection selection = getEditorController().getSelection();
+                        final var selection = getEditorController().getSelection();
                         if (selection.isEmpty() || selection.isSelected(rootObject)) {
                             // No selection or root is selected -> we insert below root
                             targetObject = rootObject;
@@ -100,7 +97,7 @@ public class IncludeFileJob extends BatchSelectionJob {
                             targetObject = selection.getAncestor();
                         }
                         // Build InsertAsSubComponent jobs
-                        final DesignHierarchyMask targetMask = new DesignHierarchyMask(targetObject);
+                        final var targetMask = new DesignHierarchyMask(targetObject);
                         if (targetMask.isAcceptingSubComponent(newInclude)) {
                             result.add(new InsertAsSubComponentJob(
                                     newInclude,
@@ -111,7 +108,7 @@ public class IncludeFileJob extends BatchSelectionJob {
                     }
                 }
             }
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             result.clear();
         }
 

@@ -45,7 +45,7 @@ public abstract class AbstractCurveEditor<T extends Node> {
 
     protected final T sceneGraphObject;
 
-    public AbstractCurveEditor(T sceneGraphObject) {
+    public AbstractCurveEditor(final T sceneGraphObject) {
         assert sceneGraphObject != null;
         this.sceneGraphObject = sceneGraphObject;
     }

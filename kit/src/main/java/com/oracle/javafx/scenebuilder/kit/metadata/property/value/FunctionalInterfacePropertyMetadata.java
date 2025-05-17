@@ -43,8 +43,8 @@ public class FunctionalInterfacePropertyMetadata extends TextEncodablePropertyMe
         FUNCTION
     }
 
-    public FunctionalInterfacePropertyMetadata(PropertyName name, boolean readWrite,
-                                        String defaultValue, InspectorPath inspectorPath, FunctionalInterface functionalInterface) {
+    public FunctionalInterfacePropertyMetadata(final PropertyName name, final boolean readWrite,
+                                               final String defaultValue, final InspectorPath inspectorPath, final FunctionalInterface functionalInterface) {
         super(name, String.class, readWrite, defaultValue, inspectorPath);
         this.functionalInterface = functionalInterface;
     }
@@ -54,12 +54,12 @@ public class FunctionalInterfacePropertyMetadata extends TextEncodablePropertyMe
      */
 
     @Override
-    public String makeValueFromString(String string) {
+    public String makeValueFromString(final String string) {
         return string;
     }
 
     @Override
-    public String getValue(FXOMInstance fxomInstance) {
+    public String getValue(final FXOMInstance fxomInstance) {
         // We override just to add a sanity check
         assert isReadWrite();
         return super.getValue(fxomInstance);

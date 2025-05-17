@@ -45,13 +45,13 @@ public class CombineReferenceJob  extends Job {
     
     private final Job subJob;
     
-    public CombineReferenceJob(FXOMNode reference, EditorController editorController) {
+    public CombineReferenceJob(final FXOMNode reference, final EditorController editorController) {
         super(editorController);
         if (reference instanceof FXOMIntrinsic) {
-            final FXOMIntrinsic fxomIntrinsic = (FXOMIntrinsic) reference;
+            final var fxomIntrinsic = (FXOMIntrinsic) reference;
             subJob = new CombineIntrinsicReferenceJob(fxomIntrinsic, getEditorController());
         } else if (reference instanceof FXOMPropertyT) {
-            final FXOMPropertyT fxomProperty = (FXOMPropertyT) reference;
+            final var fxomProperty = (FXOMPropertyT) reference;
             subJob = new CombineExpressionReferenceJob(fxomProperty, getEditorController());
         } else {
             throw new RuntimeException("Bug"); //NOI18N

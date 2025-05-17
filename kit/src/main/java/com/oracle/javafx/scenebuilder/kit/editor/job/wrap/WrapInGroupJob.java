@@ -39,7 +39,7 @@ import javafx.scene.Group;
  */
 public class WrapInGroupJob extends AbstractWrapInSubComponentJob {
 
-    public WrapInGroupJob(EditorController editorController) {
+    public WrapInGroupJob(final EditorController editorController) {
         super(editorController);
         newContainerClass = Group.class;
     }

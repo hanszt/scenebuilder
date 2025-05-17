@@ -40,7 +40,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 
 /**
  * Defines preferences for Scene Builder App.
@@ -109,23 +108,23 @@ public class PreferencesController extends PreferencesControllerBase {
         super(SB_RELEASE_NODE, new PreferencesRecordGlobal());
 
         // Cleanup document preferences at start time : 
-        final String items = applicationRootPreferences.get(RECENT_ITEMS, null); //NOI18N
-        if (items != null && items.isEmpty() == false) {
+        final var items = applicationRootPreferences.get(RECENT_ITEMS, null); //NOI18N
+        if (items != null && !items.isEmpty()) {
             // Remove document preferences node if needed
             try {
-                final String[] childrenNames = documentsRootPreferences.childrenNames();
+                final var childrenNames = documentsRootPreferences.childrenNames();
                 // Check among the document root chidlren if there is a child
                 // which path matches the specified one
-                for (String child : childrenNames) {
-                    final Preferences documentPreferences = documentsRootPreferences.node(child);
-                    final String nodePath = documentPreferences.get(PATH, null);
+                for (final var child : childrenNames) {
+                    final var documentPreferences = documentsRootPreferences.node(child);
+                    final var nodePath = documentPreferences.get(PATH, null);
                     // Each document node defines a path
                     // If path is null or empty, this means preferences DB has been corrupted
                     if (nodePath == null || nodePath.isEmpty()) {
                         documentPreferences.removeNode();
                     }
                 }
-            } catch (BackingStoreException ex) {
+            } catch (final BackingStoreException ex) {
                 Logger.getLogger(PreferencesController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
@@ -166,15 +165,15 @@ public class PreferencesController extends PreferencesControllerBase {
         // Clear individual DOCUMENTS preferences
         try {
             // Remove nodes from the DOCUMENTS root preference
-            for (String child : documentsRootPreferences.childrenNames()) {
-                final Preferences documentPreferences = documentsRootPreferences.node(child);
+            for (final var child : documentsRootPreferences.childrenNames()) {
+                final var documentPreferences = documentsRootPreferences.node(child);
                 documentPreferences.removeNode();
             }
             // Reset the PreferencesRecordDocuments
-            for (PreferencesRecordDocument prd : recordDocuments.values()) {
+            for (final var prd : recordDocuments.values()) {
                 prd.resetDocumentPreferences();
             }
-        } catch (BackingStoreException ex) {
+        } catch (final BackingStoreException ex) {
             Logger.getLogger(PreferencesController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

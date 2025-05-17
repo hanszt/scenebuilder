@@ -46,10 +46,10 @@ public class AddPropertyJob extends Job {
     private final FXOMInstance targetInstance;
     private final int targetIndex;
     
-    public AddPropertyJob(FXOMProperty property, 
-            FXOMInstance targetInstance,
-            int targetIndex,
-            EditorController editorController) {
+    public AddPropertyJob(final FXOMProperty property,
+                          final FXOMInstance targetInstance,
+                          final int targetIndex,
+                          final EditorController editorController) {
         super(editorController);
         
         assert property != null;

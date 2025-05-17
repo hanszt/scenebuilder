@@ -49,7 +49,7 @@ public class DeleteObjectJob extends InlineDocumentJob {
 
     private final FXOMObject targetFxomObject;
 
-    public DeleteObjectJob(FXOMObject fxomObject, EditorController editorController) {
+    public DeleteObjectJob(final FXOMObject fxomObject, final EditorController editorController) {
         super(editorController);
 
         assert fxomObject != null;
@@ -100,7 +100,7 @@ public class DeleteObjectJob extends InlineDocumentJob {
              * => this class will take care of references
              */
             
-            final ObjectDeleter deleter = new ObjectDeleter(getEditorController());
+            final var deleter = new ObjectDeleter(getEditorController());
             deleter.delete(targetFxomObject);
             result.addAll(deleter.getExecutedJobs());
         }
@@ -110,12 +110,12 @@ public class DeleteObjectJob extends InlineDocumentJob {
 
     @Override
     protected String makeDescription() {
-        final StringBuilder sb = new StringBuilder();
+        final var sb = new StringBuilder();
 
         sb.append("Delete ");
 
         if (targetFxomObject instanceof FXOMInstance) {
-            final Object sceneGraphObject = targetFxomObject.getSceneGraphObject();
+            final var sceneGraphObject = targetFxomObject.getSceneGraphObject();
             if (sceneGraphObject != null) {
                 sb.append(sceneGraphObject.getClass().getSimpleName());
             } else {

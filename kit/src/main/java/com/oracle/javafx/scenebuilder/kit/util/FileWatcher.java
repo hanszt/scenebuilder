@@ -60,7 +60,7 @@ public class FileWatcher {
     private boolean started;
     private Timer watchingTimer;
     
-    public FileWatcher(long pollingTime, Delegate delegate, String name) {
+    public FileWatcher(final long pollingTime, final Delegate delegate, final String name) {
         assert pollingTime > 0;
         assert delegate != null;
         assert name != null;
@@ -70,20 +70,20 @@ public class FileWatcher {
         this.name = getClass().getSimpleName() + "[" + name + "]"; //NOI18N
     }
     
-    public synchronized void addTarget(Path target) {
+    public synchronized void addTarget(final Path target) {
         assert target != null;
-        assert targets.contains(target) == false;
+        assert !targets.contains(target);
         targets.add(target);
         try {
-            final FileTime modifiedTime = Files.getLastModifiedTime(target);
+            final var modifiedTime = Files.getLastModifiedTime(target);
             modifiedTimes.put(target, modifiedTime);
-        } catch(IOException x) {
+        } catch(final IOException x) {
             // Nothing special to do here
         }
         updateWatchingTimer();
     }
     
-    public synchronized void removeTarget(Path target) {
+    public synchronized void removeTarget(final Path target) {
         assert target != null;
         assert targets.contains(target);
         targets.remove(target);
@@ -91,7 +91,7 @@ public class FileWatcher {
         updateWatchingTimer();
     }
     
-    public synchronized void setTargets(Collection<Path> newTargets) {
+    public synchronized void setTargets(final Collection<Path> newTargets) {
         
         final Set<Path> toBeAdded = new HashSet<>();
         toBeAdded.addAll(newTargets);
@@ -101,11 +101,11 @@ public class FileWatcher {
         toBeRemoved.addAll(targets);
         toBeRemoved.removeAll(newTargets);
         
-        for (Path target : toBeAdded) {
+        for (final var target : toBeAdded) {
             addTarget(target);
         }
         
-        for (Path target : toBeRemoved) {
+        for (final var target : toBeRemoved) {
             removeTarget(target);
         }
     }
@@ -115,13 +115,13 @@ public class FileWatcher {
     }
     
     public synchronized void start() {
-        assert isStarted() == false;
+        assert !isStarted();
         started = true;
         updateWatchingTimer();
     }
     
     public synchronized void stop() {
-        assert isStarted() == true;
+        assert isStarted();
         started = false;
         updateWatchingTimer();
     }
@@ -142,7 +142,7 @@ public class FileWatcher {
      */
     
     private void updateWatchingTimer() {
-        final boolean timerNeeded = started && (targets.isEmpty() == false);
+        final var timerNeeded = started && (!targets.isEmpty());
         
         if (timerNeeded) {
             if (watchingTimer == null) {
@@ -169,15 +169,15 @@ public class FileWatcher {
         // null and we should simply do nothing.
         
         if (watchingTimer != null) {
-            for (Path target : targets) {
+            for (final var target : targets) {
                 FileTime newModifiedTime;
                 try {
                     newModifiedTime = Files.getLastModifiedTime(target);
-                } catch(IOException x) {
+                } catch(final IOException x) {
                     newModifiedTime = null;
                 }
 
-                final FileTime lastModifiedTime = modifiedTimes.get(target);
+                final var lastModifiedTime = modifiedTimes.get(target);
 
                 if ((lastModifiedTime == null) && (newModifiedTime != null)) {
                     // target has been created
@@ -187,7 +187,7 @@ public class FileWatcher {
                     // target has been deleted
                     modifiedTimes.remove(target);
                     Platform.runLater(() -> delegate.fileWatcherDidWatchTargetDeletion(target));
-                } else if (Objects.equals(lastModifiedTime, newModifiedTime) == false) {
+                } else if (!Objects.equals(lastModifiedTime, newModifiedTime)) {
                     // target has been modified
                     assert newModifiedTime != null;
                     modifiedTimes.put(target, newModifiedTime);

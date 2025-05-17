@@ -51,28 +51,28 @@ public class PaintPicker extends Pane {
 
     private final PaintPickerController controller;
 
-    public PaintPicker(Delegate delegate) {        
-        final FXMLLoader loader = new FXMLLoader();
+    public PaintPicker(final Delegate delegate) {
+        final var loader = new FXMLLoader();
         loader.setLocation(PaintPicker.class.getResource("PaintPicker.fxml")); //NOI18N
 
         try {
             // Loading
-            final Object rootObject = loader.load();
+            final var rootObject = loader.load();
             assert rootObject instanceof Node;
-            final Node rootNode = (Node) rootObject;
+            final var rootNode = (Node) rootObject;
             getChildren().add(rootNode);
 
             // Retrieving the controller
-            final Object ctl = loader.getController();
+            final var ctl = loader.getController();
             assert ctl instanceof PaintPickerController;
             this.controller = (PaintPickerController) ctl;
             this.controller.setDelegate(delegate);
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             throw new IllegalStateException(ex);
         }
     }
 
-    public PaintPicker(Delegate delegate, Mode mode) {
+    public PaintPicker(final Delegate delegate, final Mode mode) {
         this(delegate);
         controller.setSingleMode(mode);
     }
@@ -81,7 +81,7 @@ public class PaintPicker extends Pane {
         return controller.paintProperty();
     }
 
-    public final void setPaintProperty(Paint value) {
+    public final void setPaintProperty(final Paint value) {
         // Update model
         controller.setPaintProperty(value);
         // Update UI

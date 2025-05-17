@@ -39,7 +39,6 @@ import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.TreeTableColumn;
-import javafx.scene.control.TreeTableView;
 
 /**
  *
@@ -50,7 +49,7 @@ public class TreeTableColumnPring extends AbstractGenericPring<Object> {
     private final TreeTableViewDesignInfoX tableViewDesignInfo
             = new TreeTableViewDesignInfoX();
     
-    public TreeTableColumnPring(ContentPanelController contentPanelController, FXOMInstance fxomInstance) {
+    public TreeTableColumnPring(final ContentPanelController contentPanelController, final FXOMInstance fxomInstance) {
         super(contentPanelController, fxomInstance, Object.class);
         assert fxomInstance.getSceneGraphObject() instanceof TreeTableColumn;
     }
@@ -76,20 +75,20 @@ public class TreeTableColumnPring extends AbstractGenericPring<Object> {
 
     @Override
     protected void startListeningToSceneGraphObject() {
-        final TreeTableView<?> ttv = getTreeTableColumn().getTreeTableView();
+        final var ttv = getTreeTableColumn().getTreeTableView();
         startListeningToLayoutBounds(ttv);
         startListeningToLocalToSceneTransform(ttv);
     }
 
     @Override
     protected void stopListeningToSceneGraphObject() {
-        final TreeTableView<?> ttv = getTreeTableColumn().getTreeTableView();
+        final var ttv = getTreeTableColumn().getTreeTableView();
         stopListeningToLayoutBounds(ttv);
         stopListeningToLocalToSceneTransform(ttv);
     }
 
     @Override
-    public AbstractGesture findGesture(Node node) {
+    public AbstractGesture findGesture(final Node node) {
         final AbstractGesture result;
         
         if (node == ringPath) {

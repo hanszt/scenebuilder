@@ -39,7 +39,7 @@ import javafx.scene.layout.FlowPane;
  */
 public class WrapInFlowPaneJob extends AbstractWrapInSubComponentJob {
 
-    public WrapInFlowPaneJob(EditorController editorController) {
+    public WrapInFlowPaneJob(final EditorController editorController) {
         super(editorController);
         newContainerClass = FlowPane.class;
     }

@@ -39,7 +39,6 @@ import com.oracle.javafx.scenebuilder.kit.util.control.effectpicker.editors.Ligh
 import com.oracle.javafx.scenebuilder.kit.util.control.effectpicker.editors.SliderControl;
 import com.oracle.javafx.scenebuilder.kit.util.control.paintpicker.PaintPicker;
 import com.oracle.javafx.scenebuilder.kit.util.control.paintpicker.PaintPicker.Mode;
-import java.net.URL;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
@@ -49,8 +48,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.scene.control.Slider;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.effect.Blend;
 import javafx.scene.effect.BlendMode;
@@ -103,7 +100,7 @@ public class EffectPickerController {
 
     public EffectPickerController() {
         // Initialize selection chevron image
-        final URL selectionChevronURL = EffectPickerController.class.getResource("images/selection-chevron.png"); //NOI18N
+        final var selectionChevronURL = EffectPickerController.class.getResource("images/selection-chevron.png"); //NOI18N
         assert selectionChevronURL != null;
         selectionChevronImage = new Image(selectionChevronURL.toExternalForm());
     }
@@ -116,7 +113,7 @@ public class EffectPickerController {
         return rootEffect.get();
     }
 
-    public final void setRootEffectProperty(Effect value) {
+    public final void setRootEffectProperty(final Effect value) {
         rootEffect.setValue(value);
     }
 
@@ -132,7 +129,7 @@ public class EffectPickerController {
         return liveUpdate.get();
     }
     
-    public void setLiveUpdate(boolean value) {
+    public void setLiveUpdate(final boolean value) {
         liveUpdate.setValue(value);
     }
     
@@ -140,7 +137,7 @@ public class EffectPickerController {
         return effectPickerDelegate;
     }
     
-    void setEffectPickerDelegate(EffectPicker.Delegate delegate) {
+    void setEffectPickerDelegate(final EffectPicker.Delegate delegate) {
         this.effectPickerDelegate = delegate;
     }
 
@@ -148,7 +145,7 @@ public class EffectPickerController {
         return paintPickerDelegate;
     }
     
-    void setPaintPickerDelegate(PaintPicker.Delegate delegate) {
+    void setPaintPickerDelegate(final PaintPicker.Delegate delegate) {
         this.paintPickerDelegate = delegate;
     }
 
@@ -158,13 +155,13 @@ public class EffectPickerController {
     public void updateUI() {
         effects_path_hbox.getChildren().clear();
         if (getRootEffectProperty() != null) {
-            final EffectPathItem rootEffectPathItem = makeEffectPathItem(getRootEffectProperty(), null);
+            final var rootEffectPathItem = makeEffectPathItem(getRootEffectProperty(), null);
             assert rootEffectPathItem != null;
-            EffectPathItem epi = rootEffectPathItem;
+            var epi = rootEffectPathItem;
             while (epi != null) {
                 effects_path_hbox.getChildren().add(epi);
                 if (epi.getSelectedInputPathItem() != null) {
-                    final ImageView img = new ImageView(selectionChevronImage);
+                    final var img = new ImageView(selectionChevronImage);
                     effects_path_hbox.getChildren().add(img);
                     epi = epi.getSelectedInputPathItem();
                 } else {
@@ -180,19 +177,19 @@ public class EffectPickerController {
      *
      * @param effectPathItem
      */
-    public void updateUI(EffectPathItem effectPathItem) {
+    public void updateUI(final EffectPathItem effectPathItem) {
         assert effectPathItem != null;
-        int index = effects_path_hbox.getChildren().indexOf(effectPathItem);
+        final var index = effects_path_hbox.getChildren().indexOf(effectPathItem);
         // Remove sub items if any
         if (index + 1 < effects_path_hbox.getChildren().size()) {
             effects_path_hbox.getChildren().remove(index + 1, effects_path_hbox.getChildren().size());
         }
         // Add new sub items if any
-        EffectPathItem epi = effectPathItem.getSelectedInputPathItem();
+        var epi = effectPathItem.getSelectedInputPathItem();
         while (epi != null) {
             effects_path_hbox.getChildren().add(epi);
             if (epi.getSelectedInputPathItem() != null) {
-                final ImageView img = new ImageView(selectionChevronImage);
+                final var img = new ImageView(selectionChevronImage);
                 effects_path_hbox.getChildren().add(img);
                 epi = epi.getSelectedInputPathItem();
             } else {
@@ -206,12 +203,12 @@ public class EffectPickerController {
     }
 
     public String getEffectPath() {
-        final EffectPathItem rootEffectPathItem = makeEffectPathItem(getRootEffectProperty(), null);
+        final var rootEffectPathItem = makeEffectPathItem(getRootEffectProperty(), null);
         if (rootEffectPathItem == null) {
             return "+"; //NOI18N
         } else {
-            final StringBuilder sb = new StringBuilder();
-            EffectPathItem epi = rootEffectPathItem;
+            final var sb = new StringBuilder();
+            var epi = rootEffectPathItem;
             while (epi != null) {
                 sb.append(epi.getSimpleName());
                 if (epi.getSelectedInputPathItem() != null) {
@@ -236,7 +233,7 @@ public class EffectPickerController {
         revision.set(revision.get() + 1);
     }
 
-    private EffectPathItem makeEffectPathItem(Effect effect, EffectPathItem hostPathItem) {
+    private EffectPathItem makeEffectPathItem(final Effect effect, final EffectPathItem hostPathItem) {
         final EffectPathItem epi;
         if (effect == null) {
             return null;
@@ -255,60 +252,60 @@ public class EffectPickerController {
         return epi;
     }
 
-    private EffectPathItem makeBlendPathItem(Effect effect, EffectPathItem hostPathItem) {
+    private EffectPathItem makeBlendPathItem(final Effect effect, final EffectPathItem hostPathItem) {
         assert effect != null;
-        final BlendPathItem epi = new BlendPathItem(this, effect, hostPathItem);
-        final Effect topInput = epi.getTopInput();
-        final EffectPathItem topInputPathItem
+        final var epi = new BlendPathItem(this, effect, hostPathItem);
+        final var topInput = epi.getTopInput();
+        final var topInputPathItem
                 = topInput == null ? null : makeEffectPathItem(topInput, epi);
         epi.setTopInputPathItem(topInputPathItem);
-        final Effect bottomInput = epi.getBottomInput();
-        final EffectPathItem bottomInputPathItem
+        final var bottomInput = epi.getBottomInput();
+        final var bottomInputPathItem
                 = bottomInput == null ? null : makeEffectPathItem(bottomInput, epi);
         epi.setBottomInputPathItem(bottomInputPathItem);
         return epi;
     }
 
-    private EffectPathItem makeColorInputPathItem(Effect effect, EffectPathItem hostPathItem) {
+    private EffectPathItem makeColorInputPathItem(final Effect effect, final EffectPathItem hostPathItem) {
         assert effect != null;
-        final ColorInputPathItem epi = new ColorInputPathItem(this, effect, hostPathItem);
+        final var epi = new ColorInputPathItem(this, effect, hostPathItem);
         return epi;
     }
 
-    private EffectPathItem makeImageInputPathItem(Effect effect, EffectPathItem hostPathItem) {
+    private EffectPathItem makeImageInputPathItem(final Effect effect, final EffectPathItem hostPathItem) {
         assert effect != null;
-        final ImageInputPathItem epi = new ImageInputPathItem(this, effect, hostPathItem);
+        final var epi = new ImageInputPathItem(this, effect, hostPathItem);
         return epi;
     }
 
-    private EffectPathItem makeLightingPathItem(Effect effect, EffectPathItem hostPathItem) {
+    private EffectPathItem makeLightingPathItem(final Effect effect, final EffectPathItem hostPathItem) {
         assert effect != null;
-        final LightingPathItem epi = new LightingPathItem(this, effect, hostPathItem);
-        final Effect bumpInput = epi.getBumpInput();
-        final EffectPathItem bumpInputPathItem
+        final var epi = new LightingPathItem(this, effect, hostPathItem);
+        final var bumpInput = epi.getBumpInput();
+        final var bumpInputPathItem
                 = bumpInput == null ? null : makeEffectPathItem(bumpInput, epi);
         epi.setBumpInputPathItem(bumpInputPathItem);
-        final Effect contentInput = epi.getContentInput();
-        final EffectPathItem contentInputPathItem
+        final var contentInput = epi.getContentInput();
+        final var contentInputPathItem
                 = contentInput == null ? null : makeEffectPathItem(contentInput, epi);
         epi.setContentInputPathItem(contentInputPathItem);
         return epi;
     }
 
-    private EffectPathItem makeSingleInputPathItem(Effect effect, EffectPathItem hostPathItem) {
+    private EffectPathItem makeSingleInputPathItem(final Effect effect, final EffectPathItem hostPathItem) {
         assert effect != null;
-        final SingleInputPathItem epi = new SingleInputPathItem(this, effect, hostPathItem);
-        final Effect input = epi.getInput();
-        final EffectPathItem inputPathItem
+        final var epi = new SingleInputPathItem(this, effect, hostPathItem);
+        final var input = epi.getInput();
+        final var inputPathItem
                 = input == null ? null : makeEffectPathItem(input, epi);
         epi.setInputPathItem(inputPathItem);
         return epi;
     }
 
-    public void selectEffectPathItem(EffectPathItem epi) {
+    public void selectEffectPathItem(final EffectPathItem epi) {
         assert epi != null;
-        final ToggleButton tb = epi.getToggleButton();
-        final Effect effect = epi.getValue();
+        final var tb = epi.getToggleButton();
+        final var effect = epi.getValue();
         tb.setSelected(true);
         props_vbox.getChildren().clear();
         if (effect != null) {
@@ -319,7 +316,7 @@ public class EffectPickerController {
     ////////////////////////////////////////////////////////////////////////////
     //////////////////////////////// Effects UI ////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////
-    private void makeEffectUI(Effect effect) {
+    private void makeEffectUI(final Effect effect) {
         if (effect instanceof Blend) {
             makeBlendUI(effect);
         } else if (effect instanceof Bloom) {
@@ -358,17 +355,17 @@ public class EffectPickerController {
         }
     }
 
-    private void makeBlendUI(Effect effect) {
+    private void makeBlendUI(final Effect effect) {
         assert effect instanceof Blend;
-        final Blend blend = (Blend) effect;
-        final VBox vBox = new VBox(8.0);
+        final var blend = (Blend) effect;
+        final var vBox = new VBox(8.0);
 
-        final EnumControl<BlendMode> modeEditor = new EnumControl<>(
+        final var modeEditor = new EnumControl<BlendMode>(
                 this, "mode", BlendMode.values(), blend.getMode()); //NOI18N
         blend.modeProperty().bind(modeEditor.valueProperty());
         vBox.getChildren().add(modeEditor);
 
-        final SliderControl opacityEditor = new SliderControl(
+        final var opacityEditor = new SliderControl(
                 this, "opacity", 0, 1.0, blend.getOpacity(), 0.1, false); //NOI18N
         blend.opacityProperty().bind(opacityEditor.valueProperty());
         vBox.getChildren().add(opacityEditor);
@@ -376,12 +373,12 @@ public class EffectPickerController {
         props_vbox.getChildren().add(vBox);
     }
 
-    private void makeBloomUI(Effect effect) {
+    private void makeBloomUI(final Effect effect) {
         assert effect instanceof Bloom;
-        final Bloom bloom = (Bloom) effect;
-        VBox vBox = new VBox(8.0);
+        final var bloom = (Bloom) effect;
+        final var vBox = new VBox(8.0);
 
-        final SliderControl thresholdEditor = new SliderControl(
+        final var thresholdEditor = new SliderControl(
                 this, "threshold", 0, 1.0, bloom.getThreshold(), 0.1, false); //NOI18N
         bloom.thresholdProperty().bind(thresholdEditor.valueProperty());
         vBox.getChildren().add(thresholdEditor);
@@ -389,24 +386,24 @@ public class EffectPickerController {
         props_vbox.getChildren().add(vBox);
     }
 
-    private void makeBoxBlurUI(Effect effect) {
+    private void makeBoxBlurUI(final Effect effect) {
         assert effect instanceof BoxBlur;
-        final BoxBlur boxBlur = (BoxBlur) effect;
-        VBox vBox = new VBox(8.0);
+        final var boxBlur = (BoxBlur) effect;
+        final var vBox = new VBox(8.0);
 
-        final SliderControl widthEditor = new SliderControl(
+        final var widthEditor = new SliderControl(
                 this, "width", 0, 255.0, boxBlur.getWidth(), 1.0, false); //NOI18N
         boxBlur.widthProperty().bind(widthEditor.valueProperty());
         vBox.getChildren().add(widthEditor);
 
-        final SliderControl heightEditor = new SliderControl(
+        final var heightEditor = new SliderControl(
                 this, "height", 0, 255.0, boxBlur.getHeight(), 1.0, false); //NOI18N
         boxBlur.heightProperty().bind(heightEditor.valueProperty());
         vBox.getChildren().add(heightEditor);
 
-        final SliderControl iterationsEditor = new SliderControl(
+        final var iterationsEditor = new SliderControl(
                 this, "iterations", 0, 3.0, boxBlur.getIterations(), 1.0, true); //NOI18N
-        final Slider slider = iterationsEditor.getSlider();
+        final var slider = iterationsEditor.getSlider();
         slider.setBlockIncrement(1.0);
         slider.setMajorTickUnit(1.0);
         slider.setMinorTickCount(0);
@@ -418,27 +415,27 @@ public class EffectPickerController {
         props_vbox.getChildren().add(vBox);
     }
 
-    private void makeColorAdjustUI(Effect effect) {
+    private void makeColorAdjustUI(final Effect effect) {
         assert effect instanceof ColorAdjust;
-        final ColorAdjust colorAdjust = (ColorAdjust) effect;
-        VBox vBox = new VBox(8.0);
+        final var colorAdjust = (ColorAdjust) effect;
+        final var vBox = new VBox(8.0);
 
-        final SliderControl brightnessEditor = new SliderControl(
+        final var brightnessEditor = new SliderControl(
                 this, "brightness", -1.0, 1.0, colorAdjust.getBrightness(), 0.1, false); //NOI18N
         colorAdjust.brightnessProperty().bind(brightnessEditor.valueProperty());
         vBox.getChildren().add(brightnessEditor);
 
-        final SliderControl contrastEditor = new SliderControl(
+        final var contrastEditor = new SliderControl(
                 this, "contrast", -1.0, 1.0, colorAdjust.getContrast(), 0.1, false); //NOI18N
         colorAdjust.contrastProperty().bind(contrastEditor.valueProperty());
         vBox.getChildren().add(contrastEditor);
 
-        final SliderControl hueEditor = new SliderControl(
+        final var hueEditor = new SliderControl(
                 this, "hue", -1.0, 1.0, colorAdjust.getHue(), 0.1, false); //NOI18N
         colorAdjust.hueProperty().bind(hueEditor.valueProperty());
         vBox.getChildren().add(hueEditor);
 
-        final SliderControl saturationEditor = new SliderControl(
+        final var saturationEditor = new SliderControl(
                 this, "saturation", -1.0, 1.0, colorAdjust.getSaturation(), 0.1, false); //NOI18N
         colorAdjust.saturationProperty().bind(saturationEditor.valueProperty());
         vBox.getChildren().add(saturationEditor);
@@ -446,32 +443,32 @@ public class EffectPickerController {
         props_vbox.getChildren().add(vBox);
     }
 
-    private void makeColorInputUI(Effect effect) {
+    private void makeColorInputUI(final Effect effect) {
         assert effect instanceof ColorInput;
-        final ColorInput colorInput = (ColorInput) effect;
-        VBox vBox = new VBox(8.0);
+        final var colorInput = (ColorInput) effect;
+        final var vBox = new VBox(8.0);
 
-        final SliderControl widthEditor = new SliderControl(
+        final var widthEditor = new SliderControl(
                 this, "width", 0, 255.0, colorInput.getWidth(), 1.0, false); //NOI18N
         colorInput.widthProperty().bind(widthEditor.valueProperty());
         vBox.getChildren().add(widthEditor);
 
-        final SliderControl heightEditor = new SliderControl(
+        final var heightEditor = new SliderControl(
                 this, "height", 0, 255.0, colorInput.getHeight(), 1.0, false); //NOI18N
         colorInput.heightProperty().bind(heightEditor.valueProperty());
         vBox.getChildren().add(heightEditor);
 
-        final DoubleTextFieldControl xEditor = new DoubleTextFieldControl(
+        final var xEditor = new DoubleTextFieldControl(
                 this, "x", -10.0, 10.0, colorInput.getX(), 1.0); //NOI18N
         colorInput.xProperty().bind(xEditor.valueProperty());
         vBox.getChildren().add(xEditor);
 
-        final DoubleTextFieldControl yEditor = new DoubleTextFieldControl(
+        final var yEditor = new DoubleTextFieldControl(
                 this, "y", -10.0, 10.0, colorInput.getY(), 1.0); //NOI18N
         colorInput.yProperty().bind(yEditor.valueProperty());
         vBox.getChildren().add(yEditor);
 
-        final PaintPicker colorPicker = new PaintPicker(paintPickerDelegate);
+        final var colorPicker = new PaintPicker(paintPickerDelegate);
         colorPicker.setPaintProperty(colorInput.getPaint());
         colorPicker.paintProperty().addListener(new PaintChangeListener(this, colorInput));
         colorPicker.liveUpdateProperty().addListener(new PaintPickerLiveUpdateListener(colorPicker, this));
@@ -480,32 +477,32 @@ public class EffectPickerController {
         props_vbox.getChildren().add(vBox);
     }
 
-    private void makeDisplacementMapUI(Effect effect) {
+    private void makeDisplacementMapUI(final Effect effect) {
         assert effect instanceof DisplacementMap;
-        final DisplacementMap displacementMap = (DisplacementMap) effect;
-        VBox vBox = new VBox(8.0);
+        final var displacementMap = (DisplacementMap) effect;
+        final var vBox = new VBox(8.0);
 
-        final DoubleTextFieldControl offsetXEditor = new DoubleTextFieldControl(
+        final var offsetXEditor = new DoubleTextFieldControl(
                 this, "offsetX", -10.0, 10.0, displacementMap.getOffsetX(), 1.0); //NOI18N
         displacementMap.offsetXProperty().bind(offsetXEditor.valueProperty());
         vBox.getChildren().add(offsetXEditor);
 
-        final DoubleTextFieldControl offsetYEditor = new DoubleTextFieldControl(
+        final var offsetYEditor = new DoubleTextFieldControl(
                 this, "offsetY", -10.0, 10.0, displacementMap.getOffsetY(), 1.0); //NOI18N
         displacementMap.offsetYProperty().bind(offsetYEditor.valueProperty());
         vBox.getChildren().add(offsetYEditor);
 
-        final DoubleTextFieldControl scaleXEditor = new DoubleTextFieldControl(
+        final var scaleXEditor = new DoubleTextFieldControl(
                 this, "scaleX", -10.0, 10.0, displacementMap.getScaleX(), 1.0); //NOI18N
         displacementMap.scaleXProperty().bind(scaleXEditor.valueProperty());
         vBox.getChildren().add(scaleXEditor);
 
-        final DoubleTextFieldControl scaleYEditor = new DoubleTextFieldControl(
+        final var scaleYEditor = new DoubleTextFieldControl(
                 this, "scaleY", -10.0, 10.0, displacementMap.getScaleY(), 1.0); //NOI18N
         displacementMap.scaleYProperty().bind(scaleYEditor.valueProperty());
         vBox.getChildren().add(scaleYEditor);
 
-        final CheckBoxControl wrapEditor = new CheckBoxControl(
+        final var wrapEditor = new CheckBoxControl(
                 this, "wrap", displacementMap.isWrap()); //NOI18N
         displacementMap.wrapProperty().bind(wrapEditor.valueProperty());
         vBox.getChildren().add(wrapEditor);
@@ -513,48 +510,48 @@ public class EffectPickerController {
         props_vbox.getChildren().add(vBox);
     }
 
-    private void makeDropShadowUI(Effect effect) {
+    private void makeDropShadowUI(final Effect effect) {
         assert effect instanceof DropShadow;
-        final DropShadow dropShadow = (DropShadow) effect;
-        VBox vBox = new VBox(8.0);
+        final var dropShadow = (DropShadow) effect;
+        final var vBox = new VBox(8.0);
 
-        final EnumControl<BlurType> blurTypeEditor = new EnumControl<>(
+        final var blurTypeEditor = new EnumControl<BlurType>(
                 this, "blurType", BlurType.values(), dropShadow.getBlurType()); //NOI18N
         dropShadow.blurTypeProperty().bind(blurTypeEditor.valueProperty());
         vBox.getChildren().add(blurTypeEditor);
 
-        final SliderControl widthEditor = new SliderControl(
+        final var widthEditor = new SliderControl(
                 this, "width", 0, 255.0, dropShadow.getWidth(), 1.0, false); //NOI18N
         dropShadow.widthProperty().bind(widthEditor.valueProperty());
         vBox.getChildren().add(widthEditor);
 
-        final SliderControl heightEditor = new SliderControl(
+        final var heightEditor = new SliderControl(
                 this, "height", 0, 255.0, dropShadow.getHeight(), 1.0, false); //NOI18N
         dropShadow.heightProperty().bind(heightEditor.valueProperty());
         vBox.getChildren().add(heightEditor);
 
         // setting radius equivalent to setting both width and height attributes to value of (2 * radius + 1)
-        final SliderControl radiusEditor = new SliderControl(
+        final var radiusEditor = new SliderControl(
                 this, "radius", 0, 127.0, dropShadow.getRadius(), 1.0, false); //NOI18N
         dropShadow.radiusProperty().bind(radiusEditor.valueProperty());
         vBox.getChildren().add(radiusEditor);
 
-        final DoubleTextFieldControl offsetXEditor = new DoubleTextFieldControl(
+        final var offsetXEditor = new DoubleTextFieldControl(
                 this, "offsetX", -10.0, 10.0, dropShadow.getOffsetX(), 1.0); //NOI18N
         dropShadow.offsetXProperty().bind(offsetXEditor.valueProperty());
         vBox.getChildren().add(offsetXEditor);
 
-        final DoubleTextFieldControl offsetYEditor = new DoubleTextFieldControl(
+        final var offsetYEditor = new DoubleTextFieldControl(
                 this, "offsetY", -10.0, 10.0, dropShadow.getOffsetY(), 1.0); //NOI18N
         dropShadow.offsetYProperty().bind(offsetYEditor.valueProperty());
         vBox.getChildren().add(offsetYEditor);
 
-        final SliderControl spreadEditor = new SliderControl(
+        final var spreadEditor = new SliderControl(
                 this, "spread", 0, 1.0, dropShadow.getSpread(), 0.1, false); //NOI18N
         dropShadow.spreadProperty().bind(spreadEditor.valueProperty());
         vBox.getChildren().add(spreadEditor);
 
-        final PaintPicker colorPicker = new PaintPicker(paintPickerDelegate, Mode.COLOR);
+        final var colorPicker = new PaintPicker(paintPickerDelegate, Mode.COLOR);
         colorPicker.setPaintProperty(dropShadow.getColor());
         colorPicker.paintProperty().addListener(new ColorChangeListener(this, dropShadow));
         colorPicker.liveUpdateProperty().addListener(new PaintPickerLiveUpdateListener(colorPicker, this));
@@ -563,12 +560,12 @@ public class EffectPickerController {
         props_vbox.getChildren().add(vBox);
     }
 
-    private void makeGaussianBlurUI(Effect effect) {
+    private void makeGaussianBlurUI(final Effect effect) {
         assert effect instanceof GaussianBlur;
-        final GaussianBlur gaussianBlur = (GaussianBlur) effect;
-        VBox vBox = new VBox(8.0);
+        final var gaussianBlur = (GaussianBlur) effect;
+        final var vBox = new VBox(8.0);
 
-        final SliderControl radiusEditor = new SliderControl(
+        final var radiusEditor = new SliderControl(
                 this, "radius", 0, 63.0, gaussianBlur.getRadius(), 0.1, false); //NOI18N
         gaussianBlur.radiusProperty().bind(radiusEditor.valueProperty());
         vBox.getChildren().add(radiusEditor);
@@ -576,12 +573,12 @@ public class EffectPickerController {
         props_vbox.getChildren().add(vBox);
     }
 
-    private void makeGlowUI(Effect effect) {
+    private void makeGlowUI(final Effect effect) {
         assert effect instanceof Glow;
-        final Glow glow = (Glow) effect;
-        VBox vBox = new VBox(8.0);
+        final var glow = (Glow) effect;
+        final var vBox = new VBox(8.0);
 
-        final SliderControl levelEditor = new SliderControl(
+        final var levelEditor = new SliderControl(
                 this, "level", 0, 1.0, glow.getLevel(), 0.1, false); //NOI18N
         glow.levelProperty().bind(levelEditor.valueProperty());
         vBox.getChildren().add(levelEditor);
@@ -589,22 +586,22 @@ public class EffectPickerController {
         props_vbox.getChildren().add(vBox);
     }
 
-    private void makeImageInputUI(Effect effect) {
+    private void makeImageInputUI(final Effect effect) {
         assert effect instanceof ImageInput;
-        final ImageInput imageInput = (ImageInput) effect;
-        VBox vBox = new VBox(8.0);
+        final var imageInput = (ImageInput) effect;
+        final var vBox = new VBox(8.0);
 
-        final DoubleTextFieldControl xEditor = new DoubleTextFieldControl(
+        final var xEditor = new DoubleTextFieldControl(
                 this, "x", -10.0, 10.0, imageInput.getX(), 1.0); //NOI18N
         imageInput.xProperty().bind(xEditor.valueProperty());
         vBox.getChildren().add(xEditor);
 
-        final DoubleTextFieldControl yEditor = new DoubleTextFieldControl(
+        final var yEditor = new DoubleTextFieldControl(
                 this, "y", -10.0, 10.0, imageInput.getY(), 1.0); //NOI18N
         imageInput.yProperty().bind(yEditor.valueProperty());
         vBox.getChildren().add(yEditor);
 
-        final ImageControl imageEditor = new ImageControl(
+        final var imageEditor = new ImageControl(
                 this, "source", imageInput.getSource()); //NOI18N
         imageInput.sourceProperty().bind(imageEditor.valueProperty());
         vBox.getChildren().add(imageEditor);
@@ -612,48 +609,48 @@ public class EffectPickerController {
         props_vbox.getChildren().add(vBox);
     }
 
-    private void makeInnerShadowUI(Effect effect) {
+    private void makeInnerShadowUI(final Effect effect) {
         assert effect instanceof InnerShadow;
-        final InnerShadow innerShadow = (InnerShadow) effect;
-        VBox vBox = new VBox(8.0);
+        final var innerShadow = (InnerShadow) effect;
+        final var vBox = new VBox(8.0);
 
-        final EnumControl<BlurType> blurTypeEditor = new EnumControl<>(
+        final var blurTypeEditor = new EnumControl<BlurType>(
                 this, "blurType", BlurType.values(), innerShadow.getBlurType()); //NOI18N
         innerShadow.blurTypeProperty().bind(blurTypeEditor.valueProperty());
         vBox.getChildren().add(blurTypeEditor);
 
-        final SliderControl chokeEditor = new SliderControl(
+        final var chokeEditor = new SliderControl(
                 this, "choke", 0, 1.0, innerShadow.getChoke(), 0.1, false); //NOI18N
         innerShadow.chokeProperty().bind(chokeEditor.valueProperty());
         vBox.getChildren().add(chokeEditor);
 
-        final SliderControl widthEditor = new SliderControl(
+        final var widthEditor = new SliderControl(
                 this, "width", 0, 255.0, innerShadow.getWidth(), 1.0, false); //NOI18N
         innerShadow.widthProperty().bind(widthEditor.valueProperty());
         vBox.getChildren().add(widthEditor);
 
-        final SliderControl heightEditor = new SliderControl(
+        final var heightEditor = new SliderControl(
                 this, "height", 0, 255.0, innerShadow.getHeight(), 1.0, false); //NOI18N
         innerShadow.heightProperty().bind(heightEditor.valueProperty());
         vBox.getChildren().add(heightEditor);
 
         // setting radius equivalent to setting both width and height attributes to value of (2 * radius + 1)
-        final SliderControl radiusEditor = new SliderControl(
+        final var radiusEditor = new SliderControl(
                 this, "radius", 0, 127.0, innerShadow.getRadius(), 1.0, false); //NOI18N
         innerShadow.radiusProperty().bind(radiusEditor.valueProperty());
         vBox.getChildren().add(radiusEditor);
 
-        final DoubleTextFieldControl offsetXEditor = new DoubleTextFieldControl(
+        final var offsetXEditor = new DoubleTextFieldControl(
                 this, "offsetX", -10.0, 10.0, innerShadow.getOffsetX(), 1.0); //NOI18N
         innerShadow.offsetXProperty().bind(offsetXEditor.valueProperty());
         vBox.getChildren().add(offsetXEditor);
 
-        final DoubleTextFieldControl offsetYEditor = new DoubleTextFieldControl(
+        final var offsetYEditor = new DoubleTextFieldControl(
                 this, "offsetY", -10.0, 10.0, innerShadow.getOffsetY(), 1.0); //NOI18N
         innerShadow.offsetYProperty().bind(offsetYEditor.valueProperty());
         vBox.getChildren().add(offsetYEditor);
 
-        final PaintPicker colorPicker = new PaintPicker(paintPickerDelegate, Mode.COLOR);
+        final var colorPicker = new PaintPicker(paintPickerDelegate, Mode.COLOR);
         colorPicker.setPaintProperty(innerShadow.getColor());
         colorPicker.paintProperty().addListener(new ColorChangeListener(this, innerShadow));
         colorPicker.liveUpdateProperty().addListener(new PaintPickerLiveUpdateListener(colorPicker, this));
@@ -662,32 +659,32 @@ public class EffectPickerController {
         props_vbox.getChildren().add(vBox);
     }
 
-    private void makeLightingUI(Effect effect) {
+    private void makeLightingUI(final Effect effect) {
         assert effect instanceof Lighting;
-        final Lighting lighting = (Lighting) effect;
-        VBox vBox = new VBox(8.0);
+        final var lighting = (Lighting) effect;
+        final var vBox = new VBox(8.0);
 
-        final SliderControl diffuseConstantEditor = new SliderControl(
+        final var diffuseConstantEditor = new SliderControl(
                 this, "diffuseConstant", 0, 2.0, lighting.getDiffuseConstant(), 1.0, false); //NOI18N
         lighting.diffuseConstantProperty().bind(diffuseConstantEditor.valueProperty());
         vBox.getChildren().add(diffuseConstantEditor);
 
-        final SliderControl specularConstantEditor = new SliderControl(
+        final var specularConstantEditor = new SliderControl(
                 this, "specularConstant", 0, 2.0, lighting.getSpecularConstant(), 1.0, false); //NOI18N
         lighting.specularConstantProperty().bind(specularConstantEditor.valueProperty());
         vBox.getChildren().add(specularConstantEditor);
 
-        final SliderControl specularExponentEditor = new SliderControl(
+        final var specularExponentEditor = new SliderControl(
                 this, "specularExponent", 0, 40.0, lighting.getSpecularExponent(), 1.0, false); //NOI18N
         lighting.specularExponentProperty().bind(specularExponentEditor.valueProperty());
         vBox.getChildren().add(specularExponentEditor);
 
-        final SliderControl surfaceScaleEditor = new SliderControl(
+        final var surfaceScaleEditor = new SliderControl(
                 this, "surfaceScale", 0, 10.0, lighting.getSurfaceScale(), 1.0, false); //NOI18N
         lighting.surfaceScaleProperty().bind(surfaceScaleEditor.valueProperty());
         vBox.getChildren().add(surfaceScaleEditor);
 
-        final LightControl lightControl = new LightControl(
+        final var lightControl = new LightControl(
                 this, "light", lighting.getLight()); //NOI18N
         lighting.lightProperty().bind(lightControl.valueProperty());
         lightControl.liveUpdateProperty().addListener(new LightControlLiveUpdateListener(lightControl, this));
@@ -696,17 +693,17 @@ public class EffectPickerController {
         props_vbox.getChildren().add(vBox);
     }
 
-    private void makeMotionBlurUI(Effect effect) {
+    private void makeMotionBlurUI(final Effect effect) {
         assert effect instanceof MotionBlur;
-        final MotionBlur motionBlur = (MotionBlur) effect;
-        VBox vBox = new VBox(8.0);
+        final var motionBlur = (MotionBlur) effect;
+        final var vBox = new VBox(8.0);
 
-        final SliderControl angleEditor = new SliderControl(
+        final var angleEditor = new SliderControl(
                 this, "angle", 0, 360.0, motionBlur.getAngle(), 1.0, false); //NOI18N
         motionBlur.angleProperty().bind(angleEditor.valueProperty());
         vBox.getChildren().add(angleEditor);
 
-        final SliderControl radiusEditor = new SliderControl(
+        final var radiusEditor = new SliderControl(
                 this, "radius", 0, 63.0, motionBlur.getRadius(), 1.0, false); //NOI18N
         motionBlur.radiusProperty().bind(radiusEditor.valueProperty());
         vBox.getChildren().add(radiusEditor);
@@ -714,47 +711,47 @@ public class EffectPickerController {
         props_vbox.getChildren().add(vBox);
     }
 
-    private void makePerspectiveTransformUI(Effect effect) {
+    private void makePerspectiveTransformUI(final Effect effect) {
         assert effect instanceof PerspectiveTransform;
-        final PerspectiveTransform perspectiveTransform = (PerspectiveTransform) effect;
-        VBox vBox = new VBox(8.0);
+        final var perspectiveTransform = (PerspectiveTransform) effect;
+        final var vBox = new VBox(8.0);
 
-        final DoubleTextFieldControl llxEditor = new DoubleTextFieldControl(
+        final var llxEditor = new DoubleTextFieldControl(
                 this, "llx", -10.0, 10.0, perspectiveTransform.getLlx(), 1.0); //NOI18N
         perspectiveTransform.llxProperty().bind(llxEditor.valueProperty());
         vBox.getChildren().add(llxEditor);
 
-        final DoubleTextFieldControl llyEditor = new DoubleTextFieldControl(
+        final var llyEditor = new DoubleTextFieldControl(
                 this, "lly", -10.0, 10.0, perspectiveTransform.getLly(), 1.0); //NOI18N
         perspectiveTransform.llyProperty().bind(llyEditor.valueProperty());
         vBox.getChildren().add(llyEditor);
 
-        final DoubleTextFieldControl lrxEditor = new DoubleTextFieldControl(
+        final var lrxEditor = new DoubleTextFieldControl(
                 this, "lrx", -10.0, 10.0, perspectiveTransform.getLrx(), 1.0); //NOI18N
         perspectiveTransform.lrxProperty().bind(lrxEditor.valueProperty());
         vBox.getChildren().add(lrxEditor);
 
-        final DoubleTextFieldControl lryEditor = new DoubleTextFieldControl(
+        final var lryEditor = new DoubleTextFieldControl(
                 this, "lry", -10.0, 10.0, perspectiveTransform.getLry(), 1.0); //NOI18N
         perspectiveTransform.lryProperty().bind(lryEditor.valueProperty());
         vBox.getChildren().add(lryEditor);
 
-        final DoubleTextFieldControl ulxEditor = new DoubleTextFieldControl(
+        final var ulxEditor = new DoubleTextFieldControl(
                 this, "ulx", -10.0, 10.0, perspectiveTransform.getUlx(), 1.0); //NOI18N
         perspectiveTransform.ulxProperty().bind(ulxEditor.valueProperty());
         vBox.getChildren().add(ulxEditor);
 
-        final DoubleTextFieldControl ulyEditor = new DoubleTextFieldControl(
+        final var ulyEditor = new DoubleTextFieldControl(
                 this, "uly", -10.0, 10.0, perspectiveTransform.getUly(), 1.0); //NOI18N
         perspectiveTransform.ulyProperty().bind(ulyEditor.valueProperty());
         vBox.getChildren().add(ulyEditor);
 
-        final DoubleTextFieldControl urxEditor = new DoubleTextFieldControl(
+        final var urxEditor = new DoubleTextFieldControl(
                 this, "urx", -10.0, 10.0, perspectiveTransform.getUrx(), 1.0); //NOI18N
         perspectiveTransform.urxProperty().bind(urxEditor.valueProperty());
         vBox.getChildren().add(urxEditor);
 
-        final DoubleTextFieldControl uryEditor = new DoubleTextFieldControl(
+        final var uryEditor = new DoubleTextFieldControl(
                 this, "ury", -10.0, 10.0, perspectiveTransform.getUry(), 1.0); //NOI18N
         perspectiveTransform.uryProperty().bind(uryEditor.valueProperty());
         vBox.getChildren().add(uryEditor);
@@ -762,27 +759,27 @@ public class EffectPickerController {
         props_vbox.getChildren().add(vBox);
     }
 
-    private void makeReflectionUI(Effect effect) {
+    private void makeReflectionUI(final Effect effect) {
         assert effect instanceof Reflection;
-        final Reflection reflection = (Reflection) effect;
-        VBox vBox = new VBox(8.0);
+        final var reflection = (Reflection) effect;
+        final var vBox = new VBox(8.0);
 
-        final SliderControl bottomOpacityEditor = new SliderControl(
+        final var bottomOpacityEditor = new SliderControl(
                 this, "bottomOpacity", 0, 1.0, reflection.getBottomOpacity(), 0.1, false); //NOI18N
         reflection.bottomOpacityProperty().bind(bottomOpacityEditor.valueProperty());
         vBox.getChildren().add(bottomOpacityEditor);
 
-        final SliderControl topOpacityEditor = new SliderControl(
+        final var topOpacityEditor = new SliderControl(
                 this, "topOpacity", 0, 1.0, reflection.getTopOpacity(), 0.1, false); //NOI18N
         reflection.topOpacityProperty().bind(topOpacityEditor.valueProperty());
         vBox.getChildren().add(topOpacityEditor);
 
-        final DoubleTextFieldControl topOffsetEditor = new DoubleTextFieldControl(
+        final var topOffsetEditor = new DoubleTextFieldControl(
                 this, "topOffset", -10.0, 10.0, reflection.getTopOffset(), 1.0); //NOI18N
         reflection.topOffsetProperty().bind(topOffsetEditor.valueProperty());
         vBox.getChildren().add(topOffsetEditor);
 
-        final SliderControl fractionEditor = new SliderControl(
+        final var fractionEditor = new SliderControl(
                 this, "fraction", 0, 1.0, reflection.getFraction(), 0.1, false); //NOI18N
         reflection.fractionProperty().bind(fractionEditor.valueProperty());
         vBox.getChildren().add(fractionEditor);
@@ -790,12 +787,12 @@ public class EffectPickerController {
         props_vbox.getChildren().add(vBox);
     }
 
-    private void makeSepiaToneUI(Effect effect) {
+    private void makeSepiaToneUI(final Effect effect) {
         assert effect instanceof SepiaTone;
-        final SepiaTone sepiaTone = (SepiaTone) effect;
-        VBox vBox = new VBox(8.0);
+        final var sepiaTone = (SepiaTone) effect;
+        final var vBox = new VBox(8.0);
 
-        final SliderControl levelEditor = new SliderControl(
+        final var levelEditor = new SliderControl(
                 this, "level", 0, 1.0, sepiaTone.getLevel(), 0.1, false); //NOI18N
         sepiaTone.levelProperty().bind(levelEditor.valueProperty());
         vBox.getChildren().add(levelEditor);
@@ -803,33 +800,33 @@ public class EffectPickerController {
         props_vbox.getChildren().add(vBox);
     }
 
-    private void makeShadowUI(Effect effect) {
+    private void makeShadowUI(final Effect effect) {
         assert effect instanceof Shadow;
-        final Shadow shadow = (Shadow) effect;
-        VBox vBox = new VBox(8.0);
+        final var shadow = (Shadow) effect;
+        final var vBox = new VBox(8.0);
 
-        final EnumControl<BlurType> blurTypeEditor = new EnumControl<>(
+        final var blurTypeEditor = new EnumControl<BlurType>(
                 this, "blurType", BlurType.values(), shadow.getBlurType()); //NOI18N
         shadow.blurTypeProperty().bind(blurTypeEditor.valueProperty());
         vBox.getChildren().add(blurTypeEditor);
 
-        final SliderControl widthEditor = new SliderControl(
+        final var widthEditor = new SliderControl(
                 this, "width", 0, 255.0, shadow.getWidth(), 1.0, false); //NOI18N
         shadow.widthProperty().bind(widthEditor.valueProperty());
         vBox.getChildren().add(widthEditor);
 
-        final SliderControl heightEditor = new SliderControl(
+        final var heightEditor = new SliderControl(
                 this, "height", 0, 255.0, shadow.getHeight(), 1.0, false); //NOI18N
         shadow.heightProperty().bind(heightEditor.valueProperty());
         vBox.getChildren().add(heightEditor);
 
         // setting radius equivalent to setting both width and height attributes to value of (2 * radius + 1)
-        final SliderControl radiusEditor = new SliderControl(
+        final var radiusEditor = new SliderControl(
                 this, "radius", 0, 127.0, shadow.getRadius(), 1.0, false); //NOI18N
         shadow.radiusProperty().bind(radiusEditor.valueProperty());
         vBox.getChildren().add(radiusEditor);
 
-        final PaintPicker colorPicker = new PaintPicker(paintPickerDelegate, Mode.COLOR);
+        final var colorPicker = new PaintPicker(paintPickerDelegate, Mode.COLOR);
         colorPicker.setPaintProperty(shadow.getColor());
         colorPicker.paintProperty().addListener(new ColorChangeListener(this, shadow));
         colorPicker.liveUpdateProperty().addListener(new PaintPickerLiveUpdateListener(colorPicker, this));
@@ -849,14 +846,14 @@ public class EffectPickerController {
         private final EffectPickerController effectPickerController;
 
         public PaintPickerLiveUpdateListener(
-                PaintPicker paintPicker,
-                EffectPickerController effectPickerController) {
+                final PaintPicker paintPicker,
+                final EffectPickerController effectPickerController) {
             this.paintPicker = paintPicker;
             this.effectPickerController = effectPickerController;
         }
 
         @Override
-        public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
+        public void changed(final ObservableValue<? extends Boolean> ov, final Boolean oldValue, final Boolean newValue) {
             effectPickerController.setLiveUpdate(paintPicker.isLiveUpdate());
         }
     }
@@ -867,14 +864,14 @@ public class EffectPickerController {
         private final EffectPickerController effectPickerController;
 
         public LightControlLiveUpdateListener(
-                LightControl lightControl,
-                EffectPickerController effectPickerController) {
+                final LightControl lightControl,
+                final EffectPickerController effectPickerController) {
             this.lightControl = lightControl;
             this.effectPickerController = effectPickerController;
         }
 
         @Override
-        public void changed(ObservableValue<? extends Boolean> ov, Boolean oldValue, Boolean newValue) {
+        public void changed(final ObservableValue<? extends Boolean> ov, final Boolean oldValue, final Boolean newValue) {
             effectPickerController.setLiveUpdate(lightControl.isLiveUpdate());
         }
     }
@@ -884,7 +881,7 @@ public class EffectPickerController {
         private final EffectPickerController effectPickerController;
         private final Effect effect;
 
-        public ColorChangeListener(EffectPickerController effectPickerController, Effect effect) {
+        public ColorChangeListener(final EffectPickerController effectPickerController, final Effect effect) {
             assert effect instanceof DropShadow
                     || effect instanceof InnerShadow
                     || effect instanceof Shadow;
@@ -893,9 +890,9 @@ public class EffectPickerController {
         }
 
         @Override
-        public void changed(ObservableValue<? extends Paint> ov, Paint oldValue, Paint newValue) {
+        public void changed(final ObservableValue<? extends Paint> ov, final Paint oldValue, final Paint newValue) {
             assert newValue instanceof Color;
-            final Color color = (Color) newValue;
+            final var color = (Color) newValue;
             if (effect instanceof DropShadow) {
                 ((DropShadow) effect).setColor(color);
             } else if (effect instanceof InnerShadow) {
@@ -914,13 +911,13 @@ public class EffectPickerController {
         private final EffectPickerController effectPickerController;
         private final ColorInput colorInput;
 
-        public PaintChangeListener(EffectPickerController effectPickerController, ColorInput colorInput) {
+        public PaintChangeListener(final EffectPickerController effectPickerController, final ColorInput colorInput) {
             this.effectPickerController = effectPickerController;
             this.colorInput = colorInput;
         }
 
         @Override
-        public void changed(ObservableValue<? extends Paint> ov, Paint oldValue, Paint newValue) {
+        public void changed(final ObservableValue<? extends Paint> ov, final Paint oldValue, final Paint newValue) {
             colorInput.setPaint(newValue);
             // Then notify the controller a change occured
             effectPickerController.incrementRevision();

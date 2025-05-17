@@ -59,11 +59,11 @@ class XMLBuffer {
         buffer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>"); //NOI18N
     }
     
-    public void addProcessingInstruction(String target, String content) {
+    public void addProcessingInstruction(final String target, final String content) {
         assert target != null;
         assert content != null;
         assert elementStack.isEmpty();
-        assert tagOpened == false;
+        assert !tagOpened;
         
         buffer.append("<?"); //NOI18N
         buffer.append(target);
@@ -72,7 +72,7 @@ class XMLBuffer {
         buffer.append("?>"); //NOI18N
     }
     
-    public void beginElement(String elementName) {
+    public void beginElement(final String elementName) {
         assert elementName != null;
         
         if (tagOpened) {
@@ -84,7 +84,7 @@ class XMLBuffer {
         tagOpened = true;
     }
     
-    public void addAttribute(String attributeName, String attributeValue) {
+    public void addAttribute(final String attributeName, final String attributeValue) {
         assert attributeName != null;
         assert attributeValue != null;
         assert tagOpened;
@@ -97,10 +97,10 @@ class XMLBuffer {
     }
     
     public void endElement() {
-        assert elementStack.isEmpty() == false;
+        assert !elementStack.isEmpty();
         
-        final String elementName = elementStack.get(elementStack.size()-1);
-        elementStack.remove(elementStack.size()-1);
+        final var elementName = elementStack.getLast();
+        elementStack.removeLast();
         if (tagOpened) {
             buffer.append(" />"); //NOI18N
             tagOpened = false;
@@ -112,7 +112,7 @@ class XMLBuffer {
     }
     
     
-    public void addText(String text) {
+    public void addText(final String text) {
         if (tagOpened) {
             buffer.append(">"); //NOI18N
             tagOpened = false;
@@ -121,8 +121,8 @@ class XMLBuffer {
     }
     
     
-    public void addComment(String comment) {
-        assert tagOpened == false;
+    public void addComment(final String comment) {
+        assert !tagOpened;
         buffer.append("<!--"); //NOI18N
         buffer.append(comment);
         buffer.append("-->"); //NOI18N
@@ -151,11 +151,11 @@ class XMLBuffer {
      */    
     
     
-    private String encodeToAttributeValue(String s) {
-        final StringBuffer result = new StringBuffer();
+    private String encodeToAttributeValue(final String s) {
+        final var result = new StringBuffer();
         
-        for (int i = 0; i < s.length(); i++) {
-            final char c = s.charAt(i);
+        for (var i = 0; i < s.length(); i++) {
+            final var c = s.charAt(i);
             switch (c) {
                 case '&': 
                     result.append("&amp;");  //NOI18N

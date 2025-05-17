@@ -12,37 +12,34 @@ import com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.resizer.Ab
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.tring.AbstractTring;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMProperty;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyC;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
-import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
 
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 
 public class SceneDriver extends AbstractDriver {
-    public SceneDriver(ContentPanelController contentPanelController) {
+    public SceneDriver(final ContentPanelController contentPanelController) {
         super(contentPanelController);
     }
 
     @Override
-    public AbstractHandles<?> makeHandles(FXOMObject fxomObject) {
+    public AbstractHandles<?> makeHandles(final FXOMObject fxomObject) {
         assert fxomObject.getSceneGraphObject() instanceof Scene;
         assert fxomObject instanceof FXOMInstance;
         return new SceneHandles(contentPanelController, (FXOMInstance) fxomObject);
     }
 
     @Override
-    public AbstractTring<?> makeTring(AbstractDropTarget dropTarget) {
+    public AbstractTring<?> makeTring(final AbstractDropTarget dropTarget) {
         return null;
     }
 
     @Override
-    public AbstractPring<?> makePring(FXOMObject fxomObject) {
+    public AbstractPring<?> makePring(final FXOMObject fxomObject) {
         assert fxomObject.getSceneGraphObject() instanceof Scene;
-        DesignHierarchyMask designHierarchyMask = new DesignHierarchyMask(fxomObject);
-        FXOMObject root = designHierarchyMask.getAccessory(DesignHierarchyMask.Accessory.ROOT);
+        final var designHierarchyMask = new DesignHierarchyMask(fxomObject);
+        final var root = designHierarchyMask.getAccessory(DesignHierarchyMask.Accessory.ROOT);
         assert root != null;
         assert root.getSceneGraphObject() instanceof Node;
         assert root instanceof FXOMInstance;
@@ -50,41 +47,41 @@ public class SceneDriver extends AbstractDriver {
     }
 
     @Override
-    public AbstractResizer<?> makeResizer(FXOMObject fxomObject) {
+    public AbstractResizer<?> makeResizer(final FXOMObject fxomObject) {
         // Resize gesture does not apply to Scenes
         return null;
     }
 
     @Override
-    public AbstractCurveEditor<?> makeCurveEditor(FXOMObject fxomObject) {
+    public AbstractCurveEditor<?> makeCurveEditor(final FXOMObject fxomObject) {
         return null;
     }
 
     @Override
-    public FXOMObject refinePick(Node hitNode, double sceneX, double sceneY, FXOMObject fxomObject) {
+    public FXOMObject refinePick(final Node hitNode, final double sceneX, final double sceneY, final FXOMObject fxomObject) {
         return fxomObject;
     }
 
     @Override
-    public AbstractDropTarget makeDropTarget(FXOMObject fxomObject, double sceneX, double sceneY) {
+    public AbstractDropTarget makeDropTarget(final FXOMObject fxomObject, final double sceneX, final double sceneY) {
         assert fxomObject instanceof FXOMInstance;
         return new AccessoryDropTarget((FXOMInstance) fxomObject, DesignHierarchyMask.Accessory.ROOT);
     }
 
     @Override
-    public Node getInlineEditorBounds(FXOMObject fxomObject) {
+    public Node getInlineEditorBounds(final FXOMObject fxomObject) {
         return null;
     }
 
     @Override
-    public boolean intersectsBounds(FXOMObject fxomObject, Bounds bounds) {
+    public boolean intersectsBounds(final FXOMObject fxomObject, final Bounds bounds) {
         assert fxomObject.getSceneGraphObject() instanceof Scene;
-        DesignHierarchyMask designHierarchyMask = new DesignHierarchyMask(fxomObject);
-        FXOMObject root = designHierarchyMask.getAccessory(DesignHierarchyMask.Accessory.ROOT);
+        final var designHierarchyMask = new DesignHierarchyMask(fxomObject);
+        final var root = designHierarchyMask.getAccessory(DesignHierarchyMask.Accessory.ROOT);
         assert root != null;
         assert root.getSceneGraphObject() instanceof Node;
-        Node rootNode = (Node) root.getSceneGraphObject();
-        final Bounds rootNodeBounds = rootNode.localToScene(rootNode.getLayoutBounds(), true /* rootScene */);
+        final var rootNode = (Node) root.getSceneGraphObject();
+        final var rootNodeBounds = rootNode.localToScene(rootNode.getLayoutBounds(), true /* rootScene */);
         return rootNodeBounds.intersects(bounds);
     }
 }

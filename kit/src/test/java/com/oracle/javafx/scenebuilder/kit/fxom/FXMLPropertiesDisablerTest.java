@@ -47,35 +47,35 @@ public class FXMLPropertiesDisablerTest {
     @Test
     public void that_property_value_is_set_to_false_on_MacOS() throws Exception {
         classUnderTest = new FXMLPropertiesDisabler(OS.MAC);
-        String fxmlText = readResourceText("ContainerWithMenuSystemMenuBarEnabled.fxml");
+        final var fxmlText = readResourceText("ContainerWithMenuSystemMenuBarEnabled.fxml");
         assertTrue(fxmlText.contains("<MenuBar useSystemMenuBar=\"true\" VBox.vgrow=\"NEVER\" fx:id=\"theMenuBar\">"),
                 "ensures that test resource is correct");
-        String modfiedFxmlText = classUnderTest.disableProperties(fxmlText);
+        final var modfiedFxmlText = classUnderTest.disableProperties(fxmlText);
         assertTrue(modfiedFxmlText.contains("<MenuBar useSystemMenuBar=\"false\" VBox.vgrow=\"NEVER\" fx:id=\"theMenuBar\">"));
     }
 
     @Test
     public void that_property_value_is_not_modified_on_Windows() throws Exception {
         classUnderTest = new FXMLPropertiesDisabler(OS.WINDOWS);
-        String fxmlText = readResourceText("ContainerWithMenuSystemMenuBarEnabled.fxml");
+        final var fxmlText = readResourceText("ContainerWithMenuSystemMenuBarEnabled.fxml");
         assertTrue(fxmlText.contains("<MenuBar useSystemMenuBar=\"true\" VBox.vgrow=\"NEVER\" fx:id=\"theMenuBar\">"),
                 "ensures that test resource is correct");
-        String modfiedFxmlText = classUnderTest.disableProperties(fxmlText);
+        final var modfiedFxmlText = classUnderTest.disableProperties(fxmlText);
         assertTrue(modfiedFxmlText.contains("<MenuBar useSystemMenuBar=\"true\" VBox.vgrow=\"NEVER\" fx:id=\"theMenuBar\">"));
     }
 
     @Test
     public void that_property_value_is_not_modified_on_LINUX() throws Exception {
         classUnderTest = new FXMLPropertiesDisabler(OS.LINUX);
-        String fxmlText = readResourceText("ContainerWithMenuSystemMenuBarEnabled.fxml");
+        final var fxmlText = readResourceText("ContainerWithMenuSystemMenuBarEnabled.fxml");
         assertTrue(fxmlText.contains("<MenuBar useSystemMenuBar=\"true\" VBox.vgrow=\"NEVER\" fx:id=\"theMenuBar\">"),
                 "ensures that test resource is correct");
-        String modfiedFxmlText = classUnderTest.disableProperties(fxmlText);
+        final var modfiedFxmlText = classUnderTest.disableProperties(fxmlText);
         assertTrue(modfiedFxmlText.contains("<MenuBar useSystemMenuBar=\"true\" VBox.vgrow=\"NEVER\" fx:id=\"theMenuBar\">"));
     }
 
-    private String readResourceText(String resourceName) throws Exception {
-        File fxmlFileName = new File(getClass().getResource(resourceName).toURI());
+    private String readResourceText(final String resourceName) throws Exception {
+        final var fxmlFileName = new File(getClass().getResource(resourceName).toURI());
         return Files.readString(fxmlFileName.toPath());
     }
 }

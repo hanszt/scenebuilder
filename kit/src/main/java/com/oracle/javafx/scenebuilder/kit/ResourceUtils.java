@@ -54,7 +54,7 @@ public class ResourceUtils {
         // no-op
     }
 
-    public static String getToolStylesheet(ToolTheme theme) {
+    public static String getToolStylesheet(final ToolTheme theme) {
         switch(theme) {
             case DARK:
                 return THEME_DARK_STYLESHEET;
@@ -64,19 +64,19 @@ public class ResourceUtils {
         return null;
     }
 
-    public static void setToolTheme(ToolTheme theme, Scene scene) {
+    public static void setToolTheme(final ToolTheme theme, final Scene scene) {
         setToolTheme(theme, scene.getStylesheets());
     }
 
-    public static void setToolTheme(ToolTheme theme, Parent parent) {
+    public static void setToolTheme(final ToolTheme theme, final Parent parent) {
         setToolTheme(theme, parent.getStylesheets());
     }
 
-    private static void setToolTheme(ToolTheme theme, ObservableList<String> stylesheets) {
+    private static void setToolTheme(final ToolTheme theme, final ObservableList<String> stylesheets) {
         if (!stylesheets.contains(BASE)) {
             stylesheets.add(BASE);
         }
-        String themeStylesheet = getToolStylesheet(theme);
+        final var themeStylesheet = getToolStylesheet(theme);
         if (!stylesheets.contains(themeStylesheet)) {
             stylesheets.add(themeStylesheet);
         }

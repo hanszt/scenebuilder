@@ -47,8 +47,8 @@ public class LightPropertyMetadata extends ComplexPropertyMetadata<Light> {
     private final PointLightPropertyMetadata pointLightMetadata;
     private final SpotLightPropertyMetadata spotLightMetadata;
 
-    public LightPropertyMetadata(PropertyName name, boolean readWrite,
-            Light defaultValue, InspectorPath inspectorPath) {
+    public LightPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                 final Light defaultValue, final InspectorPath inspectorPath) {
         super(name, Light.class, readWrite, defaultValue, inspectorPath);
         distantLightMetadata = new DistantLightPropertyMetadata(name, readWrite, null, inspectorPath);
         pointLightMetadata = new PointLightPropertyMetadata(name, readWrite, null, inspectorPath);
@@ -60,7 +60,7 @@ public class LightPropertyMetadata extends ComplexPropertyMetadata<Light> {
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(Light value, FXOMDocument fxomDocument) {
+    public FXOMInstance makeFxomInstanceFromValue(final Light value, final FXOMDocument fxomDocument) {
         final FXOMInstance result;
         
         if (value instanceof Light.Distant) {

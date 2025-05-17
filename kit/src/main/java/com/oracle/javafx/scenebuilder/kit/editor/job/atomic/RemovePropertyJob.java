@@ -46,7 +46,7 @@ public class RemovePropertyJob extends Job {
     private FXOMInstance parentInstance;
     private int indexInParentInstance;
     
-    public RemovePropertyJob(FXOMProperty targetProperty, EditorController editorController) {
+    public RemovePropertyJob(final FXOMProperty targetProperty, final EditorController editorController) {
         super(editorController);
         
         assert targetProperty != null;
@@ -57,7 +57,7 @@ public class RemovePropertyJob extends Job {
         return targetProperty;
     }
 
-    public Job makeMirrorJob(FXOMProperty anotherProperty) {
+    public Job makeMirrorJob(final FXOMProperty anotherProperty) {
         return new AddPropertyJob(anotherProperty, parentInstance, 
                 indexInParentInstance, getEditorController());
     }

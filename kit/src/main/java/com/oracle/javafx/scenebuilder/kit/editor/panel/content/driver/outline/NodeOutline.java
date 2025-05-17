@@ -42,8 +42,8 @@ import javafx.scene.Node;
  */
 public class NodeOutline extends AbstractOutline<Node> {
     
-    public NodeOutline(ContentPanelController contentPanelController, 
-            FXOMInstance fxomInstance) {
+    public NodeOutline(final ContentPanelController contentPanelController,
+                       final FXOMInstance fxomInstance) {
         super(contentPanelController, fxomInstance, Node.class);
     }
     

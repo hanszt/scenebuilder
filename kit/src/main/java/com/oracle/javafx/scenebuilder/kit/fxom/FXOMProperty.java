@@ -44,8 +44,8 @@ public abstract class FXOMProperty extends FXOMNode {
     
     
     FXOMProperty(
-            FXOMDocument document, 
-            PropertyName name) {
+            final FXOMDocument document,
+            final PropertyName name) {
         super(document);
         
         assert name != null;
@@ -71,7 +71,7 @@ public abstract class FXOMProperty extends FXOMNode {
      */
     
     @Override
-    protected void changeFxomDocument(FXOMDocument destination) {
+    protected void changeFxomDocument(final FXOMDocument destination) {
         assert destination != null;
         assert destination != getFxomDocument();
         assert (parentInstance == null) || (destination == parentInstance.getFxomDocument());
@@ -85,7 +85,7 @@ public abstract class FXOMProperty extends FXOMNode {
      * Package
      */
 
-    void setParentInstance(FXOMInstance parentInstance) {
+    void setParentInstance(final FXOMInstance parentInstance) {
         this.parentInstance = parentInstance;
     }
 }

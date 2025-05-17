@@ -40,7 +40,7 @@ class SkeletonCreator {
     /**
      * @return a code skeleton for the given context
      */
-    String createFrom(SkeletonContext context) {
+    String createFrom(final SkeletonContext context) {
         switch (context.getSettings().getLanguage()) {
             case JAVA:
                 return skeletonCreatorJava.createFrom(context);

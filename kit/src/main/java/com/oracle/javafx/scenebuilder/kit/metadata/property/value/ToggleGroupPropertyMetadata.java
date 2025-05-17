@@ -44,7 +44,7 @@ import javafx.scene.control.ToggleGroup;
  */
 public class ToggleGroupPropertyMetadata extends SingleValuePropertyMetadata<String> {
 
-    public ToggleGroupPropertyMetadata(PropertyName name, boolean readWrite, String defaultValue, InspectorPath inspectorPath) {
+    public ToggleGroupPropertyMetadata(final PropertyName name, final boolean readWrite, final String defaultValue, final InspectorPath inspectorPath) {
         super(name, String.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -54,8 +54,8 @@ public class ToggleGroupPropertyMetadata extends SingleValuePropertyMetadata<Str
      */
     
     @Override
-    public String makeValueFromString(String string) {
-        final PrefixedValue pv = new PrefixedValue(string);
+    public String makeValueFromString(final String string) {
+        final var pv = new PrefixedValue(string);
         final String result;
         
         if (pv.isExpression()) {
@@ -69,7 +69,7 @@ public class ToggleGroupPropertyMetadata extends SingleValuePropertyMetadata<Str
     }
 
     @Override
-    public String makeValueFromFxomInstance(FXOMInstance valueFxomInstance) {
+    public String makeValueFromFxomInstance(final FXOMInstance valueFxomInstance) {
         final String result;
         
         if (valueFxomInstance.getDeclaredClass() == ToggleGroup.class) {
@@ -84,17 +84,17 @@ public class ToggleGroupPropertyMetadata extends SingleValuePropertyMetadata<Str
     }
 
     @Override
-    public boolean canMakeStringFromValue(String value) {
+    public boolean canMakeStringFromValue(final String value) {
         throw new UnsupportedOperationException("Should not be invoked"); //NOI18N
     }
 
     @Override
-    public String makeStringFromValue(String value) {
+    public String makeStringFromValue(final String value) {
         throw new UnsupportedOperationException("Should not be invoked"); //NOI18N
     }
 
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(String value, FXOMDocument fxomDocument) {
+    public FXOMInstance makeFxomInstanceFromValue(final String value, final FXOMDocument fxomDocument) {
         throw new UnsupportedOperationException("Should not be invoked"); //NOI18N
     }
     

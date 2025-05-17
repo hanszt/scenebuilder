@@ -67,14 +67,14 @@ public class RemoveColumnContentJob extends BatchDocumentJob {
         final List<Job> result = new ArrayList<>();
 
         assert targetGridPane instanceof FXOMInstance;
-        assert targetIndexes.isEmpty() == false;
-        final DesignHierarchyMask targetGridPaneMask
+        assert !targetIndexes.isEmpty();
+        final var targetGridPaneMask
                 = new DesignHierarchyMask(targetGridPane);
 
-        for (int targetIndex : targetIndexes) {
-            final List<FXOMObject> children
+        for (final int targetIndex : targetIndexes) {
+            final var children
                     = targetGridPaneMask.getColumnContentAtIndex(targetIndex);
-            for (FXOMObject child : children) {
+            for (final var child : children) {
                 final Job removeChildJob = new DeleteObjectJob(
                         child,
                         getEditorController());

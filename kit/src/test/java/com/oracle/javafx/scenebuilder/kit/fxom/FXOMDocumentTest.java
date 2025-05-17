@@ -87,13 +87,13 @@ public class FXOMDocumentTest {
     public void that_FOR_PREVIEW_useSystemMenuBarProperty_is_enabled() throws Exception {
         classUnderTest = new FXOMDocument(fxmlText, fxmlUrl, loader, resourceBundle, FXOMDocumentSwitch.FOR_PREVIEW);
 
-        FXOMObject fxomObject = classUnderTest.searchWithFxId("theMenuBar");
+        final var fxomObject = classUnderTest.searchWithFxId("theMenuBar");
 
         assertTrue(fxomObject.getSceneGraphObject() instanceof MenuBar);
         assertTrue(((MenuBar) fxomObject.getSceneGraphObject()).useSystemMenuBarProperty().get(),
                 "for preview, useSystemMenu is expected to be enabled");
 
-        String generatedFxml = classUnderTest.getFxmlText(false);
+        final var generatedFxml = classUnderTest.getFxmlText(false);
         assertTrue(generatedFxml.contains("useSystemMenuBar=\"true\""));
     }
 
@@ -102,13 +102,13 @@ public class FXOMDocumentTest {
     public void that_useSystemMenuBarProperty_is_disabled_on_MacOS() throws Exception {
         classUnderTest = new FXOMDocument(fxmlText, fxmlUrl, loader, resourceBundle);
 
-        FXOMObject fxomObject = classUnderTest.searchWithFxId("theMenuBar");
+        final var fxomObject = classUnderTest.searchWithFxId("theMenuBar");
 
         assertTrue(fxomObject.getSceneGraphObject() instanceof MenuBar);
         assertFalse(((MenuBar) fxomObject.getSceneGraphObject()).useSystemMenuBarProperty().get(),
                 "for preview, useSystemMenu is expected to be enabled");
 
-        String generatedFxml = classUnderTest.getFxmlText(false);
+        final var generatedFxml = classUnderTest.getFxmlText(false);
         assertTrue(generatedFxml.contains("useSystemMenuBar=\"true\""));
     }
 
@@ -117,13 +117,13 @@ public class FXOMDocumentTest {
     public void that_useSystemMenuBarProperty_not_modified_on_Linux_and_Windows() throws Exception {
         classUnderTest = new FXOMDocument(fxmlText, fxmlUrl, loader, resourceBundle);
 
-        FXOMObject fxomObject = classUnderTest.searchWithFxId("theMenuBar");
+        final var fxomObject = classUnderTest.searchWithFxId("theMenuBar");
 
         assertTrue(fxomObject.getSceneGraphObject() instanceof MenuBar);
         assertTrue(((MenuBar) fxomObject.getSceneGraphObject()).useSystemMenuBarProperty().get(),
                 "for preview, useSystemMenu is expected to be enabled");
 
-        String generatedFxml = classUnderTest.getFxmlText(false);
+        final var generatedFxml = classUnderTest.getFxmlText(false);
         assertTrue(generatedFxml.contains("useSystemMenuBar=\"true\""));
     }
 
@@ -133,8 +133,8 @@ public class FXOMDocumentTest {
         fxmlUrl = getResourceUrl("NonNormalizedAccordion.fxml");
         classUnderTest = new FXOMDocument(fxmlText, fxmlUrl, loader, resourceBundle, FXOMDocumentSwitch.NORMALIZED);
 
-        String generatedFxml = extractContentsOfFirstChildrenTag(classUnderTest.getFxmlText(false));
-        String expectedFxml = extractContentsOfFirstChildrenTag(readResourceText("NormalizedAccordion.fxml"));
+        final var generatedFxml = extractContentsOfFirstChildrenTag(classUnderTest.getFxmlText(false));
+        final var expectedFxml = extractContentsOfFirstChildrenTag(readResourceText("NormalizedAccordion.fxml"));
         assertEquals(expectedFxml, generatedFxml);
     }
 
@@ -144,88 +144,88 @@ public class FXOMDocumentTest {
         fxmlUrl = getResourceUrl("NonNormalizedAccordion.fxml");
         classUnderTest = new FXOMDocument(fxmlText, fxmlUrl, loader, resourceBundle);
 
-        String generatedFxml = extractContentsOfFirstChildrenTag(classUnderTest.getFxmlText(false));
-        String expectedFxml = extractContentsOfFirstChildrenTag(readResourceText("NonNormalizedAccordion.fxml"));
+        final var generatedFxml = extractContentsOfFirstChildrenTag(classUnderTest.getFxmlText(false));
+        final var expectedFxml = extractContentsOfFirstChildrenTag(readResourceText("NonNormalizedAccordion.fxml"));
         assertEquals(expectedFxml, generatedFxml);
     }
 
-    private String readResourceText(String resourceName) throws Exception {
-        File fxmlFileName = new File(getResourceUrl(resourceName).toURI());
+    private String readResourceText(final String resourceName) throws Exception {
+        final var fxmlFileName = new File(getResourceUrl(resourceName).toURI());
         return useOnlyNewLine(Files.readString(fxmlFileName.toPath()));
     }
 
-    private URL getResourceUrl(String resourceName) {
+    private URL getResourceUrl(final String resourceName) {
         return getClass().getResource(resourceName);
     }
 
-    private String useOnlyNewLine(String source) {
+    private String useOnlyNewLine(final String source) {
         return source.replace("\r\n", "\n");
     }
     
-    private String extractContentsOfFirstChildrenTag(String source) {
-        String openingTag = "<children>";
-        String closingTag = "</children>";
-        int open = source.indexOf(openingTag);
-        int close = source.lastIndexOf(closingTag) + closingTag.length();
+    private String extractContentsOfFirstChildrenTag(final String source) {
+        final var openingTag = "<children>";
+        final var closingTag = "</children>";
+        final var open = source.indexOf(openingTag);
+        final var close = source.lastIndexOf(closingTag) + closingTag.length();
         return source.substring(open, close);
     }
 
     @Test
     public void that_IOException_is_thrown_in_case_FXMLLoader_error() throws Exception {
-        URL resource = getClass().getResource("BrokenByUserData.fxml");
-        String fxmlText = FXOMDocument.readContentFromURL(resource);
-        Throwable t = assertThrows(IOException.class, () -> new FXOMDocument(fxmlText, resource, null, null));
-        String message = t.getMessage();
+        final var resource = getClass().getResource("BrokenByUserData.fxml");
+        final var fxmlText = FXOMDocument.readContentFromURL(resource);
+        final Throwable t = assertThrows(IOException.class, () -> new FXOMDocument(fxmlText, resource, null, null));
+        final var message = t.getMessage();
         assertTrue(message.startsWith("javafx.fxml.LoadException:"));
     }
 
     @Test
     public void that_illegal_null_value_for_fxmlText_raises_AssertionError() throws Exception {
-        URL resource = getClass().getResource("BrokenByUserData.fxml");
-        String fxmlText = null;
+        final var resource = getClass().getResource("BrokenByUserData.fxml");
+        final String fxmlText = null;
         assertThrows(AssertionError.class, () -> new FXOMDocument(fxmlText, resource, null, null));
     }
 
     @Test
     public void that_exception_in_case_of_broken_XML_is_captured() throws Exception {
-        URL resource = getClass().getResource("IncompleteXml.fxml");
-        String fxmlText = FXOMDocument.readContentFromURL(resource);
-        Throwable t = assertThrows(IOException.class, () -> new FXOMDocument(fxmlText, resource, null, null));
-        String message = t.getMessage();
+        final var resource = getClass().getResource("IncompleteXml.fxml");
+        final var fxmlText = FXOMDocument.readContentFromURL(resource);
+        final Throwable t = assertThrows(IOException.class, () -> new FXOMDocument(fxmlText, resource, null, null));
+        final var message = t.getMessage();
         assertTrue(message.startsWith("org.xml.sax.SAXParseException;"));
 
-        Throwable cause = t.getCause();
+        final var cause = t.getCause();
         assertTrue(cause instanceof SAXParseException);
     }
 
     @Test
     public void that_no_exception_is_created_with_empty_FXML() throws Exception {
-        URL resource = getClass().getResource("Empty.fxml");
-        String fxmlText = "";
+        final var resource = getClass().getResource("Empty.fxml");
+        final var fxmlText = "";
 
         // FXOM will only apply normalization when FXOMDocumentSwitch.NORMALIZED is set 
-        FXOMDocument classUnderTest = new FXOMDocument(fxmlText, resource, null, null);
+        final var classUnderTest = new FXOMDocument(fxmlText, resource, null, null);
         assertNotNull(classUnderTest);
     }
 
     @Test
     public void that_FXOMDocument_is_created_for_valid_FXML() throws Exception {
-        URL validResource = getClass().getResource("ValidFxml.fxml");
-        String validFxmlText = FXOMDocument.readContentFromURL(validResource);
-        FXOMDocument classUnderTest = new FXOMDocument(validFxmlText, validResource, null, null);
+        final var validResource = getClass().getResource("ValidFxml.fxml");
+        final var validFxmlText = FXOMDocument.readContentFromURL(validResource);
+        final var classUnderTest = new FXOMDocument(validFxmlText, validResource, null, null);
         assertNotNull(classUnderTest);
     }
 
     @Test
     public void that_wildcard_imports_are_built_on_demand() throws Exception {
-        URL validResource = getClass().getResource("PublicStaticImport.fxml");
-        String validFxmlText = FXOMDocument.readContentFromURL(validResource);
-        FXOMDocument classUnderTest = new FXOMDocument(validFxmlText, validResource, null, null);
-        boolean withWildCardImports = true;
+        final var validResource = getClass().getResource("PublicStaticImport.fxml");
+        final var validFxmlText = FXOMDocument.readContentFromURL(validResource);
+        final var classUnderTest = new FXOMDocument(validFxmlText, validResource, null, null);
+        final var withWildCardImports = true;
 
-        String javaFxVersion = FXMLLoader.JAVAFX_VERSION;
-        String generatedFxmlText = classUnderTest.getFxmlText(withWildCardImports);
-        String expectedFxmlText = 
+        final var javaFxVersion = FXMLLoader.JAVAFX_VERSION;
+        final var generatedFxmlText = classUnderTest.getFxmlText(withWildCardImports);
+        final var expectedFxmlText =
                   "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n\n"
                 + "<?import javafx.scene.effect.*?>\n"
                 + "<?import javafx.scene.layout.*?>\n"
@@ -248,30 +248,30 @@ public class FXOMDocumentTest {
 
     @Test
     public void that_generated_FXML_text_is_empty_for_empty_FXOMDocument() throws Exception {
-        FXOMDocument classUnderTest = new FXOMDocument();
-        boolean withWildCardImports = false;
-        String generatedFxmlText = classUnderTest.getFxmlText(withWildCardImports);
+        final var classUnderTest = new FXOMDocument();
+        final var withWildCardImports = false;
+        final var generatedFxmlText = classUnderTest.getFxmlText(withWildCardImports);
 
         assertEquals("", generatedFxmlText);
     }
 
     @Test
     public void that_fxml_with_defines_loads_without_error_without_normalization() throws Exception {
-        URL resource = getClass().getResource("DynamicScreenSize.fxml");
-        String validFxmlText = FXOMDocument.readContentFromURL(resource);
+        final var resource = getClass().getResource("DynamicScreenSize.fxml");
+        final var validFxmlText = FXOMDocument.readContentFromURL(resource);
 
         // Non-normalizing by default
-        FXOMDocument classUnderTest = waitFor(() -> new FXOMDocument(validFxmlText, resource, null, null));
-        String beforeNormalization = classUnderTest.getFxmlText(false);
+        final var classUnderTest = waitFor(() -> new FXOMDocument(validFxmlText, resource, null, null));
+        final var beforeNormalization = classUnderTest.getFxmlText(false);
         assertFalse(beforeNormalization.isBlank());
     }
 
     @Test
     public void that_missing_imports_during_defines_resolution_cause_exception() throws Exception {
-        URL resource = getClass().getResource("DynamicScreenSize.fxml");
-        String validFxmlText = FXOMDocument.readContentFromURL(resource);
+        final var resource = getClass().getResource("DynamicScreenSize.fxml");
+        final var validFxmlText = FXOMDocument.readContentFromURL(resource);
 
-        Throwable t = assertThrows(Throwable.class,
+        var t = assertThrows(Throwable.class,
                        () -> waitFor(() -> new FXOMDocument(validFxmlText, resource, null, null, FXOMDocumentSwitch.NORMALIZED)));
         
         if (t.getCause() != null) {
@@ -282,8 +282,8 @@ public class FXOMDocumentTest {
         assertTrue(t.getMessage().contains("Bug in FXOMRefresher"));
     }
 
-    private <T> T waitFor(Callable<T> callable) throws Exception {
-        FutureTask<T> task = new FutureTask<T>(callable);
+    private <T> T waitFor(final Callable<T> callable) throws Exception {
+        final var task = new FutureTask<T>(callable);
         if (Platform.isFxApplicationThread()) {
             return callable.call();
         } else {

@@ -89,7 +89,7 @@ public class Selection {
      * 
      * @param fxomObject the object to be selected
      */
-    public void select(FXOMObject fxomObject) {
+    public void select(final FXOMObject fxomObject) {
         assert fxomObject != null;
         
         select(fxomObject, null);
@@ -102,7 +102,7 @@ public class Selection {
      * @param fxomObject the object to be selected
      * @param hitNode null or the node hit by the mouse during selection
      */
-    public void select(FXOMObject fxomObject, Node hitNode) {
+    public void select(final FXOMObject fxomObject, final Node hitNode) {
         select(new ObjectSelectionGroup(fxomObject, hitNode));
     }
     
@@ -112,7 +112,7 @@ public class Selection {
      * 
      * @param fxomObjects the objects to be selected
      */
-    public void select(Collection<FXOMObject> fxomObjects) {
+    public void select(final Collection<FXOMObject> fxomObjects) {
         assert fxomObjects != null;
         
         final FXOMObject hitObject;
@@ -133,7 +133,7 @@ public class Selection {
      * @param hitObject the object hit by the mouse during selection
      * @param hitNode null or the node hit by the mouse during selection
      */
-    public void select(Collection<FXOMObject> fxomObjects, FXOMObject hitObject, Node hitNode) {
+    public void select(final Collection<FXOMObject> fxomObjects, final FXOMObject hitObject, final Node hitNode) {
         
         assert fxomObjects != null;
         
@@ -152,7 +152,7 @@ public class Selection {
      * 
      * @param fxomObject the object to be added/removed
      */
-    public void toggleSelection(FXOMObject fxomObject) {
+    public void toggleSelection(final FXOMObject fxomObject) {
         toggleSelection(fxomObject, null);
     }
     
@@ -163,14 +163,14 @@ public class Selection {
      * @param fxomObject the object to be added/removed
      * @param hitNode null or the node hit by the mouse during selection
      */
-    public void toggleSelection(FXOMObject fxomObject, Node hitNode) {
+    public void toggleSelection(final FXOMObject fxomObject, final Node hitNode) {
         
         assert fxomObject != null;
         
         final ObjectSelectionGroup newGroup;
         if (group instanceof ObjectSelectionGroup) {
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) group;
-            final Set<FXOMObject> currentItems = osg.getItems();
+            final var osg = (ObjectSelectionGroup) group;
+            final var currentItems = osg.getItems();
             if (currentItems.contains(fxomObject)) {
                 if (currentItems.size() == 1) {
                     // fxomObject is selected and is the last item
@@ -179,7 +179,7 @@ public class Selection {
                     final Set<FXOMObject> newItems = new HashSet<>();
                     newItems.addAll(currentItems);
                     newItems.remove(fxomObject);
-                    final FXOMObject newHitItem = newItems.iterator().next();
+                    final var newHitItem = newItems.iterator().next();
                     newGroup = new ObjectSelectionGroup(newItems, newHitItem, null);
                 }
             } else {
@@ -201,10 +201,10 @@ public class Selection {
      * @param hitObject the object hit by the mouse during selection
      * @param hitNode null or the node hit by the mouse during selection
      */
-    public void updateHitObject(FXOMObject hitObject, Node hitNode) {
+    public void updateHitObject(final FXOMObject hitObject, final Node hitNode) {
         if (isSelected(hitObject)) {
             assert group instanceof ObjectSelectionGroup;
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) group;
+            final var osg = (ObjectSelectionGroup) group;
             select(osg.getItems(), hitObject, hitNode);
         } else {
             select(hitObject, hitNode);
@@ -221,13 +221,13 @@ public class Selection {
      * 
      * @return  true if this foxm object is selected.
      */
-    public boolean isSelected(FXOMObject fxomObject) {
+    public boolean isSelected(final FXOMObject fxomObject) {
         final boolean result;
         
         assert fxomObject != null;
         
         if (group instanceof ObjectSelectionGroup) {
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) group;
+            final var osg = (ObjectSelectionGroup) group;
             result = osg.getItems().contains(fxomObject);
         } else {
             result = false;
@@ -241,10 +241,10 @@ public class Selection {
         final FXOMObject result;
         
         if (group instanceof ObjectSelectionGroup) {
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) group;
+            final var osg = (ObjectSelectionGroup) group;
             result = osg.getHitItem();
         } else if (group instanceof GridSelectionGroup) {
-            final GridSelectionGroup gsg = (GridSelectionGroup) group;
+            final var gsg = (GridSelectionGroup) group;
             result = gsg.getParentObject();
         } else {
             result = null;
@@ -257,7 +257,7 @@ public class Selection {
         final Node result;
         
         if (group instanceof ObjectSelectionGroup) {
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) group;
+            final var osg = (ObjectSelectionGroup) group;
             result = osg.getCheckedHitNode();
         } else {
             result = null;
@@ -274,7 +274,7 @@ public class Selection {
      * @param feature column/row
      * @param featureIndex index of the column/row to be selected
      */
-    public void select(FXOMInstance gridPaneObject, Type feature, int featureIndex) {
+    public void select(final FXOMInstance gridPaneObject, final Type feature, final int featureIndex) {
         
         assert gridPaneObject != null;
         assert gridPaneObject.getSceneGraphObject() instanceof GridPane;
@@ -290,16 +290,16 @@ public class Selection {
      * @param feature column/row
      * @param featureIndex index of the column/row to be selected
      */
-    public void toggleSelection(FXOMInstance gridPaneObject, Type feature, int featureIndex) {
+    public void toggleSelection(final FXOMInstance gridPaneObject, final Type feature, final int featureIndex) {
         
         assert gridPaneObject != null;
         assert gridPaneObject.getSceneGraphObject() instanceof GridPane;
         
         final AbstractSelectionGroup newGroup;
         if (group instanceof GridSelectionGroup) {
-            final GridSelectionGroup gsg = (GridSelectionGroup) group;
+            final var gsg = (GridSelectionGroup) group;
             if (gsg.getType() == feature) {
-                final Set<Integer> indexes = gsg.getIndexes();
+                final var indexes = gsg.getIndexes();
                 if (indexes.contains(featureIndex)) {
                     if (indexes.size() == 1) {
                         // featureIndex is the last selected index
@@ -340,14 +340,14 @@ public class Selection {
      * @param featureIndex index of the column/row to be checked
      * @return  true if this foxm object is selected.
      */
-    public boolean isSelected(FXOMInstance gridPaneObject, Type feature, int featureIndex) {
+    public boolean isSelected(final FXOMInstance gridPaneObject, final Type feature, final int featureIndex) {
         final boolean result;
         
         assert gridPaneObject != null;
         assert gridPaneObject.getSceneGraphObject() instanceof GridPane;
         
         if (group instanceof GridSelectionGroup) {
-            final GridSelectionGroup gsg = (GridSelectionGroup) group;
+            final var gsg = (GridSelectionGroup) group;
             result = (gsg.getType() == feature)
                     && (gsg.getIndexes().contains(featureIndex));
         } else {
@@ -362,14 +362,14 @@ public class Selection {
      * 
      * @param newGroup null or the selection group defining items to be selected
      */
-    public void select(AbstractSelectionGroup newGroup) {
+    public void select(final AbstractSelectionGroup newGroup) {
         
         if (lock) {
             // Method is called from a revision property listener
             throw new IllegalStateException("Changing selection from a selection listener is forbidden");
         }
         
-        if (Objects.equals(this.group, newGroup) == false) {
+        if (!Objects.equals(this.group, newGroup)) {
             beginUpdate();
             this.group = newGroup;
             endUpdate();
@@ -382,11 +382,11 @@ public class Selection {
      * @param fxomObject an fxom object
      * @return null or the first selected ancestor of the specified fxom object.
      */
-    public FXOMObject lookupSelectedAncestor(FXOMObject fxomObject) {
+    public FXOMObject lookupSelectedAncestor(final FXOMObject fxomObject) {
         assert fxomObject != null;
         
         FXOMObject result = null;
-        FXOMObject parent = fxomObject.getParentObject();
+        var parent = fxomObject.getParentObject();
         
         while ((parent != null) && (result == null)) {
             if (isSelected(parent)) {
@@ -487,7 +487,7 @@ public class Selection {
      * @return true if the selected objects are all connected to the 
      * specified documents.
      */
-    public boolean isValid(FXOMDocument fxomDocument) {
+    public boolean isValid(final FXOMDocument fxomDocument) {
         assert fxomDocument != null;
         
         final boolean result;
@@ -506,7 +506,7 @@ public class Selection {
     
     private void incrementRevision() {
         lock = true;
-        final long startTime = System.nanoTime();
+        final var startTime = System.nanoTime();
         try {
             revision.set(revision.get()+1);
         } finally {

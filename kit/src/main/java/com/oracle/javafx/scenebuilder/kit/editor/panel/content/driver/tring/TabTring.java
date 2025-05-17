@@ -37,7 +37,6 @@ import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
 import javafx.scene.paint.Paint;
 
 /**
@@ -48,7 +47,7 @@ public class TabTring extends AbstractTring<Tab> {
 
     private final TabOutline tabOutline;
 
-    public TabTring(ContentPanelController contentPanelController, FXOMInstance fxomInstance) {
+    public TabTring(final ContentPanelController contentPanelController, final FXOMInstance fxomInstance) {
         super(contentPanelController, fxomInstance, Tab.class);
         assert fxomInstance.getSceneGraphObject() instanceof Tab;
         
@@ -72,7 +71,7 @@ public class TabTring extends AbstractTring<Tab> {
     }
     
     @Override
-    public void changeStroke(Paint stroke) {
+    public void changeStroke(final Paint stroke) {
         tabOutline.getRingPath().setStroke(stroke);
     }
     
@@ -93,14 +92,14 @@ public class TabTring extends AbstractTring<Tab> {
 
     @Override
     protected void startListeningToSceneGraphObject() {
-        final TabPane tabPane = getSceneGraphObject().getTabPane();
+        final var tabPane = getSceneGraphObject().getTabPane();
         startListeningToLayoutBounds(tabPane);
         startListeningToLocalToSceneTransform(tabPane);
     }
 
     @Override
     protected void stopListeningToSceneGraphObject() {
-        final TabPane tabPane = getSceneGraphObject().getTabPane();
+        final var tabPane = getSceneGraphObject().getTabPane();
         stopListeningToLayoutBounds(tabPane);
         stopListeningToLocalToSceneTransform(tabPane);
     }

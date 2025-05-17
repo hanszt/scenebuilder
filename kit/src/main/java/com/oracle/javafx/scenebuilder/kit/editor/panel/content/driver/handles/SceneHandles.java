@@ -2,7 +2,6 @@ package com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.handles;
 
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.ContentPanelController;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
 
 import javafx.geometry.Bounds;
@@ -12,12 +11,12 @@ import javafx.scene.Scene;
 public class SceneHandles extends AbstractGenericHandles<Scene> {
     private Node sceneGraphObject;
 
-    public SceneHandles(ContentPanelController contentPanelController,
-                        FXOMInstance fxomInstance) {
+    public SceneHandles(final ContentPanelController contentPanelController,
+                        final FXOMInstance fxomInstance) {
         super(contentPanelController, fxomInstance, Scene.class);
 
-        final DesignHierarchyMask designHierarchyMask = new DesignHierarchyMask(getFxomObject());
-        final FXOMObject root = designHierarchyMask.getAccessory(DesignHierarchyMask.Accessory.ROOT);
+        final var designHierarchyMask = new DesignHierarchyMask(getFxomObject());
+        final var root = designHierarchyMask.getAccessory(DesignHierarchyMask.Accessory.ROOT);
         assert root != null;
         assert root instanceof FXOMInstance;
         assert root.getSceneGraphObject() instanceof Node;

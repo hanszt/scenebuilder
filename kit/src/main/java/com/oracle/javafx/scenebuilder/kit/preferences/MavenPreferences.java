@@ -69,15 +69,15 @@ public class MavenPreferences {
      *                                                                         *
      **************************************************************************/
 
-    public PreferencesRecordArtifact getRecordArtifact(String coordinates) {
+    public PreferencesRecordArtifact getRecordArtifact(final String coordinates) {
         return recordArtifacts.get(coordinates);
     }
     
-    public void addRecordArtifact(String key, PreferencesRecordArtifact object) {
+    public void addRecordArtifact(final String key, final PreferencesRecordArtifact object) {
         recordArtifacts.put(key, object);
     }
     
-    public void removeRecordArtifact(String coordinates) {
+    public void removeRecordArtifact(final String coordinates) {
         recordArtifacts.remove(coordinates);
     }
     
@@ -85,22 +85,22 @@ public class MavenPreferences {
      * Single Artifact
      */
     
-    private String getArtifactJarPath(MavenArtifact artifact) {
+    private String getArtifactJarPath(final MavenArtifact artifact) {
         return recordArtifacts.get(artifact.getCoordinates()).getPath();
     }
     
-    private List<String> getArtifactJarDependencies(MavenArtifact artifact) {
-        String dep = recordArtifacts.get(artifact.getCoordinates()).getMavenArtifact().getDependencies();
+    private List<String> getArtifactJarDependencies(final MavenArtifact artifact) {
+        final var dep = recordArtifacts.get(artifact.getCoordinates()).getMavenArtifact().getDependencies();
         if (dep != null && !dep.isEmpty()) {
                 return Stream.of(dep.split(File.pathSeparator)).collect(Collectors.toList());
         } 
         return new ArrayList<>();
     }
     
-    public File getArtifactFile(MavenArtifact artifact) {
-        String path = getArtifactJarPath(artifact);
+    public File getArtifactFile(final MavenArtifact artifact) {
+        final var path = getArtifactJarPath(artifact);
         if (path != null && !path.isEmpty()) {
-            File file = new File(path);
+            final var file = new File(path);
             if (file.exists()) {
                 return file;
             }
@@ -108,11 +108,11 @@ public class MavenPreferences {
         return null;
     }
     
-    public List<File> getArtifactFileWithDependencies(MavenArtifact artifact) {
-        String path = getArtifactJarPath(artifact);
+    public List<File> getArtifactFileWithDependencies(final MavenArtifact artifact) {
+        final var path = getArtifactJarPath(artifact);
         if (path != null && !path.isEmpty()) {
         
-            List<File> jarPaths = new ArrayList<>();
+            final List<File> jarPaths = new ArrayList<>();
             jarPaths.add(getArtifactFile(artifact));
             
             jarPaths.addAll(getArtifactJarDependencies(artifact)
@@ -126,8 +126,8 @@ public class MavenPreferences {
         return null;
     }
     
-    public List<String> getArtifactFilter(MavenArtifact artifact) {
-        String filter = recordArtifacts.get(artifact.getCoordinates()).getMavenArtifact().getFilter();
+    public List<String> getArtifactFilter(final MavenArtifact artifact) {
+        final var filter = recordArtifacts.get(artifact.getCoordinates()).getMavenArtifact().getFilter();
         if (filter != null && !filter.isEmpty()) {
                 return Stream.of(filter.split(File.pathSeparator)).collect(Collectors.toList());
         } 
@@ -165,7 +165,7 @@ public class MavenPreferences {
     }
     
     public List<File> getArtifactsFilesWithDependencies() {
-        List<String> jarsPaths = getArtifactsJarsPaths();
+        final var jarsPaths = getArtifactsJarsPaths();
         jarsPaths.addAll(getArtifactsJarsDependencies());
         return jarsPaths.stream()
                 .filter(s -> s != null && !s.isEmpty())

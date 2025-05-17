@@ -41,8 +41,8 @@ import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
  */
 public class ObjectPropertyMetadata extends SingleValuePropertyMetadata<Object> {
 
-    public ObjectPropertyMetadata(PropertyName name, boolean readWrite, 
-            Object defaultValue, InspectorPath inspectorPath) {
+    public ObjectPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                  final Object defaultValue, final InspectorPath inspectorPath) {
         super(name, Object.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -50,27 +50,27 @@ public class ObjectPropertyMetadata extends SingleValuePropertyMetadata<Object> 
      * SingleValuePropertyMetadata
      */
     @Override
-    public Object makeValueFromString(String string) {
+    public Object makeValueFromString(final String string) {
         return string;
     }
 
     @Override
-    public Object makeValueFromFxomInstance(FXOMInstance valueFxomInstance) {
+    public Object makeValueFromFxomInstance(final FXOMInstance valueFxomInstance) {
         return valueFxomInstance.getSceneGraphObject();
     }
 
     @Override
-    public boolean canMakeStringFromValue(Object value) {
+    public boolean canMakeStringFromValue(final Object value) {
         return false;
     }
 
     @Override
-    public String makeStringFromValue(Object value) {
+    public String makeStringFromValue(final Object value) {
         throw new RuntimeException("Bug"); //NOI18N
     }
 
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(Object value, FXOMDocument fxomDocument) {
+    public FXOMInstance makeFxomInstanceFromValue(final Object value, final FXOMDocument fxomDocument) {
         throw new RuntimeException("Bug"); //NOI18N
     }
     

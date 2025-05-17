@@ -45,7 +45,7 @@ public class RemoveNodeJob extends Job {
     
     private final Job subJob;
     
-    public RemoveNodeJob(FXOMNode targetNode, EditorController editorController) {
+    public RemoveNodeJob(final FXOMNode targetNode, final EditorController editorController) {
         super(editorController);
         
         assert (targetNode instanceof FXOMObject) || (targetNode instanceof FXOMProperty);

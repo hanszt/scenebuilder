@@ -37,7 +37,6 @@ import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.TreeTableColumn;
-import javafx.scene.control.TreeTableView;
 
 /**
  *
@@ -48,7 +47,7 @@ public class TreeTableColumnTring extends AbstractGenericTring<Object> {
     private final TreeTableViewDesignInfoX tableViewDesignInfo
             = new TreeTableViewDesignInfoX();
     
-    public TreeTableColumnTring(ContentPanelController contentPanelController, FXOMInstance fxomInstance) {
+    public TreeTableColumnTring(final ContentPanelController contentPanelController, final FXOMInstance fxomInstance) {
         super(contentPanelController, fxomInstance, Object.class);
         assert fxomInstance.getSceneGraphObject() instanceof TreeTableColumn;
     }
@@ -74,14 +73,14 @@ public class TreeTableColumnTring extends AbstractGenericTring<Object> {
 
     @Override
     protected void startListeningToSceneGraphObject() {
-        final TreeTableView<?> tableView = getTreeTableColumn().getTreeTableView();
+        final var tableView = getTreeTableColumn().getTreeTableView();
         startListeningToLayoutBounds(tableView);
         startListeningToLocalToSceneTransform(tableView);
     }
 
     @Override
     protected void stopListeningToSceneGraphObject() {
-        final TreeTableView<?> tableView = getTreeTableColumn().getTreeTableView();
+        final var tableView = getTreeTableColumn().getTreeTableView();
         stopListeningToLayoutBounds(tableView);
         stopListeningToLocalToSceneTransform(tableView);
     }

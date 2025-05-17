@@ -50,21 +50,21 @@ public class FxIdEditor extends AutoSuggestEditor {
     private static final String DEFAULT_VALUE = null;
     private EditorController editorController;
 
-    public FxIdEditor(List<String> suggestedFxIds, EditorController editorController) {
+    public FxIdEditor(final List<String> suggestedFxIds, final EditorController editorController) {
         super(PROPERTY_NAME, DEFAULT_VALUE, suggestedFxIds); //NOI18N
         initialize(editorController);
     }
     
-    private void initialize(EditorController editorController) {
+    private void initialize(final EditorController editorController) {
         this.editorController = editorController;
 
         // text field events handling
-        EventHandler<ActionEvent> onActionListener = event -> {
+        final EventHandler<ActionEvent> onActionListener = event -> {
             if (isHandlingError()) {
                 // Event received because of focus lost due to error dialog
                 return;
             }
-            String value = textField.getText();
+            final var value = textField.getText();
             if (value != null && !value.isEmpty()) {
                 if (!JavaLanguage.isIdentifier(value)) {
 //                        System.err.println(I18N.getString("log.warning.invalid.fxid", value));
@@ -88,13 +88,13 @@ public class FxIdEditor extends AutoSuggestEditor {
         setTextEditorBehavior(this, textField, onActionListener);
     }
 
-    public void reset(List<String> suggestedFxIds, EditorController editorController) {
+    public void reset(final List<String> suggestedFxIds, final EditorController editorController) {
         reset(PROPERTY_NAME, DEFAULT_VALUE, suggestedFxIds);
         this.editorController = editorController;
     }
 
     private List<String> getFxIdsInUse() {
-        FXOMFxIdIndex fxomIndex = new FXOMFxIdIndex(editorController.getFxomDocument());
+        final var fxomIndex = new FXOMFxIdIndex(editorController.getFxomDocument());
         return new ArrayList<>(fxomIndex.getFxIds().keySet());
     }
 

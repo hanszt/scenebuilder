@@ -42,7 +42,7 @@ public abstract class AbstractGesture {
     
     protected final ContentPanelController contentPanelController;
     
-    public AbstractGesture(ContentPanelController contentPanelController) {
+    public AbstractGesture(final ContentPanelController contentPanelController) {
         this.contentPanelController = contentPanelController;
     }
 

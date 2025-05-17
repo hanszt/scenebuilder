@@ -33,7 +33,6 @@ package com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.handles;
 
 import java.util.List;
 
-import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.shape.Circle;
@@ -58,8 +57,8 @@ public class QuadCurveHandles extends AbstractCurveHandles<QuadCurve> {
     private final Line rightHandle = new Line();
 
     
-    public QuadCurveHandles(ContentPanelController contentPanelController,
-            FXOMInstance fxomInstance) {
+    public QuadCurveHandles(final ContentPanelController contentPanelController,
+                            final FXOMInstance fxomInstance) {
         super(contentPanelController, fxomInstance, QuadCurve.class);
         
         setupHandleState(startHandle);
@@ -91,12 +90,12 @@ public class QuadCurveHandles extends AbstractCurveHandles<QuadCurve> {
      */
     @Override
     protected void layoutDecoration() {
-        final QuadCurve l = getSceneGraphObject();
+        final var l = getSceneGraphObject();
         
-        final boolean snapToPixel = true;
-        final Point2D s = sceneGraphObjectToDecoration(l.getStartX(), l.getStartY(), snapToPixel);
-        final Point2D c = sceneGraphObjectToDecoration(l.getControlX(), l.getControlY(), snapToPixel);
-        final Point2D e = sceneGraphObjectToDecoration(l.getEndX(), l.getEndY(), snapToPixel);
+        final var snapToPixel = true;
+        final var s = sceneGraphObjectToDecoration(l.getStartX(), l.getStartY(), snapToPixel);
+        final var c = sceneGraphObjectToDecoration(l.getControlX(), l.getControlY(), snapToPixel);
+        final var e = sceneGraphObjectToDecoration(l.getEndX(), l.getEndY(), snapToPixel);
 
         startHandle.setCenterX(s.getX());
         startHandle.setCenterY(s.getY());
@@ -119,7 +118,7 @@ public class QuadCurveHandles extends AbstractCurveHandles<QuadCurve> {
     protected void startListeningToSceneGraphObject() {
         super.startListeningToSceneGraphObject();
         
-        final QuadCurve l = getSceneGraphObject();
+        final var l = getSceneGraphObject();
         l.startXProperty().addListener(coordinateListener);
         l.startYProperty().addListener(coordinateListener);
         l.controlXProperty().addListener(coordinateListener);
@@ -132,7 +131,7 @@ public class QuadCurveHandles extends AbstractCurveHandles<QuadCurve> {
     protected void stopListeningToSceneGraphObject() {
         super.stopListeningToSceneGraphObject();
         
-        final QuadCurve l = getSceneGraphObject();
+        final var l = getSceneGraphObject();
         l.startXProperty().removeListener(coordinateListener);
         l.startYProperty().removeListener(coordinateListener);
         l.controlXProperty().removeListener(coordinateListener);
@@ -142,7 +141,7 @@ public class QuadCurveHandles extends AbstractCurveHandles<QuadCurve> {
     }
 
     @Override
-    public AbstractGesture findGesture(Node node) {
+    public AbstractGesture findGesture(final Node node) {
         final AbstractGesture result;
         
         if (node == startHandle) {
@@ -172,10 +171,10 @@ public class QuadCurveHandles extends AbstractCurveHandles<QuadCurve> {
      * Private
      */
     
-    private void setupHandleState(Circle handleCircle) {
+    private void setupHandleState(final Circle handleCircle) {
         
-        final String styleClass = isEnabled() ? SELECTION_HANDLES : SELECTION_HANDLES_DIM;
-        final Cursor cursor = isEnabled() ? Cursor.OPEN_HAND : Cursor.DEFAULT;
+        final var styleClass = isEnabled() ? SELECTION_HANDLES : SELECTION_HANDLES_DIM;
+        final var cursor = isEnabled() ? Cursor.OPEN_HAND : Cursor.DEFAULT;
         
         handleCircle.getStyleClass().add(styleClass);
         handleCircle.setCursor(cursor);
@@ -185,7 +184,7 @@ public class QuadCurveHandles extends AbstractCurveHandles<QuadCurve> {
     /* 
      * Wraper to avoid the 'leaking this in constructor' warning emitted by NB.
      */
-    private void setupHandles(Node node) {
+    private void setupHandles(final Node node) {
         attachHandles(node, this);
     }
 }

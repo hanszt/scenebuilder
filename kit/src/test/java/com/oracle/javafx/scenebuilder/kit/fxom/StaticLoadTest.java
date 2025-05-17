@@ -33,7 +33,6 @@ package com.oracle.javafx.scenebuilder.kit.fxom;
 
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import java.io.IOException;
-import java.net.URL;
 
 import com.oracle.javafx.scenebuilder.kit.JfxInitializer;
 
@@ -56,12 +55,12 @@ public class StaticLoadTest {
     @Test
     public void testStaticLoadWithoutEventHandler() throws IOException {
         thrown = false;
-        EditorController editorController = new EditorController();
-        final URL fxmlURL = StaticLoadTest.class.getResource("TestStaticLoadWithoutEventHandler.fxml");
+        final var editorController = new EditorController();
+        final var fxmlURL = StaticLoadTest.class.getResource("TestStaticLoadWithoutEventHandler.fxml");
         try {
-            final String fxmlText = FXOMDocument.readContentFromURL(fxmlURL);
+            final var fxmlText = FXOMDocument.readContentFromURL(fxmlURL);
             editorController.setFxmlTextAndLocation(fxmlText, fxmlURL, false);
-        } catch (IOException e) {
+        } catch (final IOException e) {
            thrown = true;
         }
 
@@ -71,12 +70,12 @@ public class StaticLoadTest {
     @Test
     public void testStaticLoad() throws IOException {
         thrown = false;
-        EditorController editorController = new EditorController();
-        final URL fxmlURL = StaticLoadTest.class.getResource("TestStaticLoad.fxml");
+        final var editorController = new EditorController();
+        final var fxmlURL = StaticLoadTest.class.getResource("TestStaticLoad.fxml");
         try {
-            final String fxmlText = FXOMDocument.readContentFromURL(fxmlURL);
+            final var fxmlText = FXOMDocument.readContentFromURL(fxmlURL);
             editorController.setFxmlTextAndLocation(fxmlText, fxmlURL, false);
-        } catch (IOException e) {
+        } catch (final IOException e) {
            thrown = true;
         }
 

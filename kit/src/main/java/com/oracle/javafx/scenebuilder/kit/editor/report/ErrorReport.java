@@ -40,9 +40,7 @@ import com.oracle.javafx.scenebuilder.kit.fxom.FXOMIntrinsic;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMNode;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMNodes;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMProperty;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyC;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyT;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PrefixedValue;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -67,7 +65,7 @@ public class ErrorReport {
     private FXOMDocument fxomDocument;
     private boolean dirty = true;
     
-    public void setFxomDocument(FXOMDocument fxomDocument) {
+    public void setFxomDocument(final FXOMDocument fxomDocument) {
         this.fxomDocument = fxomDocument;
         forget();
     }
@@ -77,7 +75,7 @@ public class ErrorReport {
         this.dirty = true;
     }
     
-    public List<ErrorReportEntry> query(FXOMObject fxomObject, boolean recursive) {
+    public List<ErrorReportEntry> query(final FXOMObject fxomObject, final boolean recursive) {
         final List<ErrorReportEntry> result;
         
         updateReport();
@@ -90,8 +88,8 @@ public class ErrorReport {
                 collected.addAll(entries.get(fxomObject));
             }
             if (fxomObject instanceof FXOMInstance) {
-                final FXOMInstance fxomInstance = (FXOMInstance) fxomObject;
-                for (FXOMProperty fxomProperty : fxomInstance.getProperties().values()) {
+                final var fxomInstance = (FXOMInstance) fxomObject;
+                for (final var fxomProperty : fxomInstance.getProperties().values()) {
                     if (entries.get(fxomProperty) != null) {
                         collected.addAll(entries.get(fxomProperty));
                     }
@@ -115,7 +113,7 @@ public class ErrorReport {
         return Collections.unmodifiableMap(entries);
     }
     
-    public void cssFileDidChange(Path cssPath) {
+    public void cssFileDidChange(final Path cssPath) {
         if (cssParsingReports.containsKey(cssPath)) {
             cssParsingReports.remove(cssPath);
             forget();
@@ -142,21 +140,21 @@ public class ErrorReport {
     
     
     private void verifyAssets() {
-        final FXOMAssetIndex assetIndex = new FXOMAssetIndex(fxomDocument);
-        for (Map.Entry<Path, FXOMNode> e : assetIndex.getFileAssets().entrySet()) {
-            final Path assetPath = e.getKey();
-            if (assetPath.toFile().canRead() == false) {
-                final ErrorReportEntry newEntry 
+        final var assetIndex = new FXOMAssetIndex(fxomDocument);
+        for (final var e : assetIndex.getFileAssets().entrySet()) {
+            final var assetPath = e.getKey();
+            if (!assetPath.toFile().canRead()) {
+                final var newEntry
                         = new ErrorReportEntry(e.getValue(), ErrorReportEntry.Type.UNRESOLVED_LOCATION);
                 addEntry(e.getValue(), newEntry);
             } else {
-                final String assetPathName = assetPath.toString();
+                final var assetPathName = assetPath.toString();
                 if (assetPathName.toLowerCase(Locale.ROOT).endsWith(".css")) { //NOI18N
                     // assetPath is a CSS file : check its parsing report
-                    final CSSParsingReport r = getCSSParsingReport(assetPath);
+                    final var r = getCSSParsingReport(assetPath);
                     assert r != null;
-                    if (r.isEmpty() == false) {
-                        final ErrorReportEntry newEntry 
+                    if (!r.isEmpty()) {
+                        final var newEntry
                                 = new ErrorReportEntry(e.getValue(), ErrorReportEntry.Type.INVALID_CSS_CONTENT, r);
                         addEntry(e.getValue(), newEntry);
                     }
@@ -166,16 +164,16 @@ public class ErrorReport {
     }
     
     private void verifyUnresolvedObjects() {
-        for (FXOMObject fxomObject : FXOMNodes.serializeObjects(fxomDocument.getFxomRoot())) {
+        for (final var fxomObject : FXOMNodes.serializeObjects(fxomDocument.getFxomRoot())) {
             final Object sceneGraphObject;
             if (fxomObject instanceof FXOMIntrinsic) {
-                final FXOMIntrinsic fxomIntrinsic = (FXOMIntrinsic) fxomObject;
+                final var fxomIntrinsic = (FXOMIntrinsic) fxomObject;
                 sceneGraphObject = fxomIntrinsic.getSourceSceneGraphObject();
             } else {
                 sceneGraphObject = fxomObject.getSceneGraphObject();
             }
             if (sceneGraphObject == null) {
-                final ErrorReportEntry newEntry 
+                final var newEntry
                         = new ErrorReportEntry(fxomObject, ErrorReportEntry.Type.UNRESOLVED_CLASS);
                 addEntry(fxomObject, newEntry);
             }
@@ -183,18 +181,18 @@ public class ErrorReport {
     }
     
     private void verifyBindingExpressions() {
-        for (FXOMPropertyT p : fxomDocument.getFxomRoot().collectPropertiesT()) {
-            final PrefixedValue pv = new PrefixedValue(p.getValue());
+        for (final var p : fxomDocument.getFxomRoot().collectPropertiesT()) {
+            final var pv = new PrefixedValue(p.getValue());
             if (pv.isBindingExpression()) {
-                final ErrorReportEntry newEntry 
+                final var newEntry
                         = new ErrorReportEntry(p, ErrorReportEntry.Type.UNSUPPORTED_EXPRESSION);
                 addEntry(p, newEntry);
             }
         }
     }
     
-    private void addEntry(FXOMNode fxomNode, ErrorReportEntry newEntry) {
-        List<ErrorReportEntry> nodeEntries = entries.get(fxomNode);
+    private void addEntry(final FXOMNode fxomNode, final ErrorReportEntry newEntry) {
+        var nodeEntries = entries.get(fxomNode);
         if (nodeEntries == null) {
             nodeEntries = new ArrayList<> ();
             entries.put(fxomNode, nodeEntries);
@@ -202,8 +200,8 @@ public class ErrorReport {
         nodeEntries.add(newEntry);
     }
     
-    private CSSParsingReport getCSSParsingReport(Path assetPath) {
-        CSSParsingReport result = cssParsingReports.get(assetPath);
+    private CSSParsingReport getCSSParsingReport(final Path assetPath) {
+        var result = cssParsingReports.get(assetPath);
         if (result == null) {
             result = new CSSParsingReport(assetPath);
             cssParsingReports.put(assetPath, result);
@@ -211,28 +209,28 @@ public class ErrorReport {
         return result;
     }
     
-    private void collectEntries(FXOMNode fxomNode, List<ErrorReportEntry> collected) {
+    private void collectEntries(final FXOMNode fxomNode, final List<ErrorReportEntry> collected) {
         assert fxomNode != null;
         assert collected != null;
         
-        final List<ErrorReportEntry> nodeEntries = entries.get(fxomNode);
+        final var nodeEntries = entries.get(fxomNode);
         if (nodeEntries != null) {
             collected.addAll(nodeEntries);
         }
         
         if (fxomNode instanceof FXOMCollection) {
-            final FXOMCollection fxomCollection = (FXOMCollection) fxomNode;
-            for (FXOMObject item : fxomCollection.getItems()) {
+            final var fxomCollection = (FXOMCollection) fxomNode;
+            for (final var item : fxomCollection.getItems()) {
                 collectEntries(item, collected);
             }
         } else if (fxomNode instanceof FXOMInstance) {
-            final FXOMInstance fxomInstance = (FXOMInstance) fxomNode;
-            for (FXOMProperty fxomProperty : fxomInstance.getProperties().values()) {
+            final var fxomInstance = (FXOMInstance) fxomNode;
+            for (final var fxomProperty : fxomInstance.getProperties().values()) {
                 collectEntries(fxomProperty, collected);
             }
         } else if (fxomNode instanceof FXOMPropertyC) {
-            final FXOMPropertyC fxomPropertyC = (FXOMPropertyC) fxomNode;
-            for (FXOMObject value : fxomPropertyC.getValues()) {
+            final var fxomPropertyC = (FXOMPropertyC) fxomNode;
+            for (final var value : fxomPropertyC.getValues()) {
                 collectEntries(value, collected);
             }
         }

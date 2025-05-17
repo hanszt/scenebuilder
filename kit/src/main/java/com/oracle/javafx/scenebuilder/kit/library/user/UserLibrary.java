@@ -40,6 +40,7 @@ import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;
 import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -111,22 +112,22 @@ public class UserLibrary extends Library {
      * Public
      */
 
-    public UserLibrary(String path) {
+    public UserLibrary(final String path) {
         this(path, null, null);
     }
 
-    public UserLibrary(String path, Supplier<List<Path>> additionalJarPaths, Supplier<List<String>> additionalFilter) {
+    public UserLibrary(final String path, final Supplier<List<Path>> additionalJarPaths, final Supplier<List<String>> additionalFilter) {
         this.path = path;
         this.additionalJarPaths = additionalJarPaths;
         this.additionalFilter = additionalFilter;
     }
 
-    public void setAdditionalJarPaths(Supplier<List<Path>> additionalJarPaths)
+    public void setAdditionalJarPaths(final Supplier<List<Path>> additionalJarPaths)
     {
         this.additionalJarPaths = additionalJarPaths;
     }
 
-    public void setAdditionalFilter(Supplier<List<String>> additionalFilter) {
+    public void setAdditionalFilter(final Supplier<List<String>> additionalFilter) {
         this.additionalFilter = additionalFilter;
     }
     
@@ -182,7 +183,7 @@ public class UserLibrary extends Library {
             
             try {
                 watcherThread.join();
-            } catch(InterruptedException e) {
+            } catch(final InterruptedException e) {
                 Logger.getLogger(getClass().getName()).log(Level.WARNING, "Failed to join watcher thread: ", e);
             } finally {
                 watcher = null;
@@ -213,18 +214,18 @@ public class UserLibrary extends Library {
         return explorationDateProperty;
     }
     
-    public void setFilter(List<String> classnames) throws FileNotFoundException, IOException {
+    public void setFilter(final List<String> classnames) throws FileNotFoundException, IOException {
 //        if (classnames != null && classnames.size() > 0) { // empty classnames means "no filter", so we need to clear filters.txt file
-            File filterFile = new File(getFilterFileName());
+        final var filterFile = new File(getFilterFileName());
             // TreeSet to get natural order sorting and no duplicates
-            TreeSet<String> allClassnames = new TreeSet<>();
+        final var allClassnames = new TreeSet<String>();
 
-            for (String classname : classnames) {
+            for (final var classname : classnames) {
                 allClassnames.add(classname);
             }
-            
-            Path filterFilePath = Paths.get(getPath(), filterFileName);
-            Path formerFilterFilePath = Paths.get(getPath(), filterFileName + ".tmp"); //NOI18N
+
+        final var filterFilePath = Paths.get(getPath(), filterFileName);
+        final var formerFilterFilePath = Paths.get(getPath(), filterFileName + ".tmp"); //NOI18N
             Files.deleteIfExists(formerFilterFilePath);
 
             try {
@@ -237,8 +238,8 @@ public class UserLibrary extends Library {
                 Files.createFile(filterFilePath);
 
                 // Write content of the new filter file
-                try (PrintWriter writer = new PrintWriter(filterFile, "UTF-8")) { //NOI18N
-                    for (String classname : allClassnames) {
+                try (final var writer = new PrintWriter(filterFile, StandardCharsets.UTF_8)) { //NOI18N
+                    for (final var classname : allClassnames) {
                         writer.write(classname + "\n"); //NOI18N
                     }
                 }
@@ -247,7 +248,7 @@ public class UserLibrary extends Library {
                 if (Files.exists(formerFilterFilePath)) {
                     Files.delete(formerFilterFilePath);
                 }
-            } catch (IOException ioe) {
+            } catch (final IOException ioe) {
                 // Rollback
                 if (Files.exists(formerFilterFilePath)) {
                     Files.move(formerFilterFilePath, filterFilePath, StandardCopyOption.ATOMIC_MOVE);
@@ -258,11 +259,11 @@ public class UserLibrary extends Library {
     }
     
     public List<String> getFilter() throws FileNotFoundException, IOException {
-        List<String> res = new ArrayList<>();
-        File filterFile = new File(getFilterFileName());
+        final List<String> res = new ArrayList<>();
+        final var filterFile = new File(getFilterFileName());
 
         if (filterFile.exists()) {
-            try (LineNumberReader reader = new LineNumberReader(new InputStreamReader(new FileInputStream(filterFile), "UTF-8"))) { //NOI18N
+            try (final var reader = new LineNumberReader(new InputStreamReader(new FileInputStream(filterFile), StandardCharsets.UTF_8))) { //NOI18N
                 String line;
                 while ((line = reader.readLine()) != null) {
                     res.add(line);
@@ -273,7 +274,7 @@ public class UserLibrary extends Library {
         return res;
     }
 
-    public void setOnUpdatedJarReports(Consumer<List<JarReport>> onFinishedUpdatingJarReports) {
+    public void setOnUpdatedJarReports(final Consumer<List<JarReport>> onFinishedUpdatingJarReports) {
         this.onFinishedUpdatingJarReports = onFinishedUpdatingJarReports;
     }
 
@@ -293,7 +294,7 @@ public class UserLibrary extends Library {
         return exploringProperty().get();
     }
 
-    public void setExploring(boolean value) {
+    public void setExploring(final boolean value) {
         if (Platform.isFxApplicationThread())
             exploringProperty().set(value);
         else
@@ -309,12 +310,12 @@ public class UserLibrary extends Library {
         return getPath() + File.separator + filterFileName;
     }
     
-    void updateJarReports(Collection<JarReport> newJarReports) {
+    void updateJarReports(final Collection<JarReport> newJarReports) {
         previousJarReports.setAll(jarReports);
         jarReports.setAll(newJarReports);
     }
     
-    void updateFxmlFileReports(Collection<Path> newFxmlFileReports) {
+    void updateFxmlFileReports(final Collection<Path> newFxmlFileReports) {
         if (Platform.isFxApplicationThread()) {
             previousFxmlFileReports.setAll(fxmlFileReports);
             fxmlFileReports.setAll(newFxmlFileReports);
@@ -326,7 +327,7 @@ public class UserLibrary extends Library {
         }
     }
     
-    void setItems(Collection<LibraryItem> items) {
+    void setItems(final Collection<LibraryItem> items) {
         if (Platform.isFxApplicationThread()) {
             getItems().setAll(items);
         } else {
@@ -334,7 +335,7 @@ public class UserLibrary extends Library {
         }
     }
     
-    void addItems(Collection<LibraryItem> items) {
+    void addItems(final Collection<LibraryItem> items) {
         if (Platform.isFxApplicationThread()) {
             getItems().addAll(items);
         } else {
@@ -342,7 +343,7 @@ public class UserLibrary extends Library {
         }
     }
     
-    void updateClassLoader(ClassLoader newClassLoader) {
+    void updateClassLoader(final ClassLoader newClassLoader) {
         if (Platform.isFxApplicationThread()) {
             changeClassLoader(newClassLoader);
         } else {
@@ -350,7 +351,7 @@ public class UserLibrary extends Library {
         }
     }
     
-    void updateExplorationCount(int count) {
+    void updateExplorationCount(final int count) {
         if (Platform.isFxApplicationThread()) {
             explorationCountProperty.set(count);
         } else {
@@ -358,7 +359,7 @@ public class UserLibrary extends Library {
         }
     }
     
-    void updateExplorationDate(Date date) {
+    void updateExplorationDate(final Date date) {
         if (Platform.isFxApplicationThread()) {
             explorationDateProperty.set(date);
         } else {
@@ -398,7 +399,7 @@ public class UserLibrary extends Library {
      * Private
      */
     
-    private void changeClassLoader(ClassLoader newClassLoader) {
+    private void changeClassLoader(final ClassLoader newClassLoader) {
         assert Platform.isFxApplicationThread();
         
         /*
@@ -406,12 +407,12 @@ public class UserLibrary extends Library {
          * we invoke URLClassLoader.close() on the existing one
          * so that it releases its associated jar files.
          */
-        final ClassLoader classLoader = getClassLoader();
+        final var classLoader = getClassLoader();
         if (classLoader instanceof URLClassLoader) {
-            final URLClassLoader urlClassLoader = (URLClassLoader) classLoader;
+            final var urlClassLoader = (URLClassLoader) classLoader;
             try {
                 urlClassLoader.close();
-            } catch(IOException e) {
+            } catch(final IOException e) {
                 Logger.getLogger(getClass().getName()).log(Level.WARNING, "Failed to close URL classloader: ", e);
             }
         }
@@ -424,9 +425,9 @@ public class UserLibrary extends Library {
      * Debug
      */
     
-    public static void main(String[] args) throws Exception {
-        final String path = "/Users/elp/Desktop/MyLib"; //NOI18N
-        final UserLibrary lib = new UserLibrary(path);
+    public static void main(final String[] args) throws Exception {
+        final var path = "/Users/elp/Desktop/MyLib"; //NOI18N
+        final var lib = new UserLibrary(path);
         lib.startWatching();
         System.out.println("Starting to watch for 20 s"); //NOI18N
         Thread.sleep(20 * 1000);

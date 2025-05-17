@@ -113,7 +113,7 @@ public class GluonEditorPlatform {
             GLUON_SWATCH_PURPLE, GLUON_SWATCH_RED, GLUON_SWATCH_TEAL, GLUON_SWATCH_YELLOW);
     }
 
-    public static EditorPlatform.Theme swatchValueOf(String themeName) {
+    public static EditorPlatform.Theme swatchValueOf(final String themeName) {
         return getGluonSwatchList().stream()
             .filter(t -> t.name().equals(themeName))
             .findFirst()
@@ -144,43 +144,43 @@ public class GluonEditorPlatform {
     private static final String PRIMARY_SWATCH_500_STR = "-primary-swatch-500:";
 
 
-    public static boolean isGluonMobileLight(EditorPlatform.Theme theme) { return theme == GLUON_MOBILE_LIGHT; }
+    public static boolean isGluonMobileLight(final EditorPlatform.Theme theme) { return theme == GLUON_MOBILE_LIGHT; }
 
-    public static boolean isGluonMobileDark(EditorPlatform.Theme theme) {
+    public static boolean isGluonMobileDark(final EditorPlatform.Theme theme) {
         return theme == GLUON_MOBILE_DARK;
     }
 
     private static Color color;
 
-    private static Color getSwatchColor(EditorPlatform.Theme theme) {
+    private static Color getSwatchColor(final EditorPlatform.Theme theme) {
         if (color == null) {
             try {
-                URL url = new URL(theme.getStylesheetURLs().getFirst());
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()))) {
-                    String s = reader.readLine();
+                final var url = new URL(theme.getStylesheetURLs().getFirst());
+                try (final var reader = new BufferedReader(new InputStreamReader(url.openStream()))) {
+                    var s = reader.readLine();
                     while (s != null) {
                         // Remove white spaces
-                        String trimmedString = s.replaceAll("\\s+", "");
-                        int indexOf = trimmedString.indexOf(PRIMARY_SWATCH_500_STR);
+                        final var trimmedString = s.replaceAll("\\s+", "");
+                        final var indexOf = trimmedString.indexOf(PRIMARY_SWATCH_500_STR);
                         if (indexOf != -1) {
-                            String colorString = trimmedString.substring(indexOf + PRIMARY_SWATCH_500_STR.length(), trimmedString.indexOf(";"));
+                            final var colorString = trimmedString.substring(indexOf + PRIMARY_SWATCH_500_STR.length(), trimmedString.indexOf(";"));
                             color = Color.web(colorString);
                             break;
                         }
                         s = reader.readLine();
                     }
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     LOGGER.log(Level.WARNING, "Failed reading color from stylesheet: ", e);
                 }
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 LOGGER.log(Level.WARNING, "Failed to get color from stylesheet: ", e);
             }
         }
         return color;
     }
 
-    public static Node createGraphicForSwatch(EditorPlatform.Theme theme) {
-        Rectangle rect = new Rectangle(8, 8);
+    public static Node createGraphicForSwatch(final EditorPlatform.Theme theme) {
+        final var rect = new Rectangle(8, 8);
         rect.setFill(getSwatchColor(theme));
         rect.setStroke(Color.BLACK);
         return rect;

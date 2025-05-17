@@ -39,7 +39,7 @@ import javafx.scene.layout.AnchorPane;
  */
 public class WrapInAnchorPaneJob extends AbstractWrapInSubComponentJob {
 
-    public WrapInAnchorPaneJob(EditorController editorController) {
+    public WrapInAnchorPaneJob(final EditorController editorController) {
         super(editorController);
         newContainerClass = AnchorPane.class;
     }

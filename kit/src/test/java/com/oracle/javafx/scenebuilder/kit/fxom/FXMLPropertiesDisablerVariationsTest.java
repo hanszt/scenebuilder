@@ -60,10 +60,10 @@ public class FXMLPropertiesDisablerVariationsTest {
         "6, LINUX,   <MenuBar    useSystemMenuBar  =  \"true\"\\t fx:id=\"theMenuBar\">,"
                   + "<MenuBar    useSystemMenuBar  =  \"true\"\\t fx:id=\"theMenuBar\">",
     })
-    public void that_property_is_disabled_when_required(String id, String osName, String input, String expected) {
-        OS os = OS.valueOf(osName);        
-        FXMLPropertiesDisabler classUnderTest = new FXMLPropertiesDisabler(os);
-        String modified = classUnderTest.disableProperties(input);
+    public void that_property_is_disabled_when_required(final String id, final String osName, final String input, final String expected) {
+        final var os = OS.valueOf(osName);
+        final var classUnderTest = new FXMLPropertiesDisabler(os);
+        final var modified = classUnderTest.disableProperties(input);
         assertEquals(expected, modified, id);
     }
 

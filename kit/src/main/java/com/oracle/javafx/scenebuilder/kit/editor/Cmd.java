@@ -53,12 +53,12 @@ final class Cmd {
      * @throws IOException - if the command was not found or the program execution exceeds the given timeout duration.
      * @throws InterruptedException - if the current thread is interrupted while waiting
      */
-    public final Integer exec(List<String> cmd, File wDir, long timeoutSec) throws IOException, 
+    public final Integer exec(final List<String> cmd, final File wDir, final long timeoutSec) throws IOException,
                                                                                    InterruptedException {
-            ProcessBuilder builder = new ProcessBuilder(cmd);
+        var builder = new ProcessBuilder(cmd);
             builder = builder.directory(wDir);
-            Process proc = builder.start();
-            boolean completed = proc.waitFor(timeoutSec, TimeUnit.SECONDS);
+        final var proc = builder.start();
+        final var completed = proc.waitFor(timeoutSec, TimeUnit.SECONDS);
             if (completed) {
                 return proc.exitValue();
             }

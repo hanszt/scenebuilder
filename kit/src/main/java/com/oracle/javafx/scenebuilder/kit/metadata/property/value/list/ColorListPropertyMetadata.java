@@ -46,8 +46,8 @@ public class ColorListPropertyMetadata extends ListValuePropertyMetadata<Color> 
             = new ColorPropertyMetadata(new PropertyName("unused"), //NOI18N
                     true, Color.BLACK, InspectorPath.UNUSED);
 
-    public ColorListPropertyMetadata(PropertyName name, boolean readWrite, 
-            List<Color> defaultValue, InspectorPath inspectorPath) {
+    public ColorListPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                     final List<Color> defaultValue, final InspectorPath inspectorPath) {
         super(name, Color.class, itemMetadata, readWrite, defaultValue, inspectorPath);
     }
 

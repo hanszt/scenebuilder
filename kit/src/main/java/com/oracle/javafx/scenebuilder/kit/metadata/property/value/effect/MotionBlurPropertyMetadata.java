@@ -55,8 +55,8 @@ public class MotionBlurPropertyMetadata extends ComplexPropertyMetadata<MotionBl
             = new DoublePropertyMetadata(new PropertyName("radius"), //NOI18N
             DoublePropertyMetadata.DoubleKind.SIZE, true /* readWrite */, 10.0, InspectorPath.UNUSED);
 
-    public MotionBlurPropertyMetadata(PropertyName name, boolean readWrite, 
-            MotionBlur defaultValue, InspectorPath inspectorPath) {
+    public MotionBlurPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                      final MotionBlur defaultValue, final InspectorPath inspectorPath) {
         super(name, MotionBlur.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -65,8 +65,8 @@ public class MotionBlurPropertyMetadata extends ComplexPropertyMetadata<MotionBl
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(MotionBlur value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, value.getClass());
+    public FXOMInstance makeFxomInstanceFromValue(final MotionBlur value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, value.getClass());
         
         angleMetadata.setValue(result, value.getAngle());
         inputMetadata.setValue(result, value.getInput());

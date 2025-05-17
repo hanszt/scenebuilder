@@ -66,11 +66,11 @@ public abstract class AbstractWindowController {
         this(null, true);
     }
     
-    public AbstractWindowController(Stage owner) {
+    public AbstractWindowController(final Stage owner) {
         this(owner, true);
     }
     
-    public AbstractWindowController(Stage owner, boolean sizeToScene) {
+    public AbstractWindowController(final Stage owner, final boolean sizeToScene) {
         this.owner = owner;
         this.sizeToScene = sizeToScene;
     }
@@ -175,8 +175,8 @@ public abstract class AbstractWindowController {
      * 
      * @param toolStylesheet the tool stylesheet to be used by this window controller.
      */
-    public void setToolStylesheet(String toolStylesheet) {
-        final String oldStylesheet = this.toolStylesheet;
+    public void setToolStylesheet(final String toolStylesheet) {
+        final var oldStylesheet = this.toolStylesheet;
         this.toolStylesheet = toolStylesheet;
         if (this.root != null) {
             toolStylesheetDidChange(oldStylesheet);
@@ -219,13 +219,13 @@ public abstract class AbstractWindowController {
      * 
      * @param root the root panel (non null).
      */
-    protected  final void setRoot(Parent root) {
+    protected  final void setRoot(final Parent root) {
         assert root != null;
         this.root = root;
     }
 
     
-    protected void toolStylesheetDidChange(String oldStylesheet) {
+    protected void toolStylesheetDidChange(final String oldStylesheet) {
         final List<String> stylesheets = root.getStylesheets();
         if (oldStylesheet != null) {
             stylesheets.remove(oldStylesheet);
@@ -253,21 +253,21 @@ public abstract class AbstractWindowController {
     // a Region, which is for now acceptable but could perhaps be an issue later.
     private void clampWindow() {
         if (getRoot() instanceof Region) {
-            Rectangle2D vBounds = Screen.getPrimary().getVisualBounds();
-            double primaryScreenHeight = vBounds.getHeight();
-            double primaryScreenWidth = vBounds.getWidth();
-            double currentHeight = getRoot().prefHeight(-1);
-            double currentWidth = getRoot().prefWidth(-1);
+            final var vBounds = Screen.getPrimary().getVisualBounds();
+            final var primaryScreenHeight = vBounds.getHeight();
+            final var primaryScreenWidth = vBounds.getWidth();
+            final var currentHeight = getRoot().prefHeight(-1);
+            final var currentWidth = getRoot().prefWidth(-1);
 
             if (currentHeight > primaryScreenHeight) {
-                double newHeight = primaryScreenHeight * CLAMP_FACTOR;
+                final var newHeight = primaryScreenHeight * CLAMP_FACTOR;
     //            System.out.println("Clamp: new height is " + newHeight);
                 assert getRoot() instanceof Region;
                 ((Region)getRoot()).setPrefHeight(newHeight);
             }
 
             if (currentWidth > primaryScreenWidth) {
-                double newWidth = primaryScreenWidth * CLAMP_FACTOR;
+                final var newWidth = primaryScreenWidth * CLAMP_FACTOR;
     //            System.out.println("Clamp: new width is " + newWidth);
                 assert getRoot() instanceof Region;
                 ((Region)getRoot()).setPrefWidth(newWidth);
@@ -278,18 +278,18 @@ public abstract class AbstractWindowController {
     protected Rectangle2D getBiggestViewableRectangle() {
         assert stage != null;
         
-        Rectangle2D res;
+        final Rectangle2D res;
         
         if (Screen.getScreens().size() == 1) {
             res = Screen.getPrimary().getVisualBounds();
         } else {
-            Rectangle2D stageRect = new Rectangle2D(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
-            List<Screen> screens = Screen.getScreensForRectangle(stageRect);
+            final var stageRect = new Rectangle2D(stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
+            final List<Screen> screens = Screen.getScreensForRectangle(stageRect);
             
             // The stage is entirely rendered on one screen, which is either the
             // primary one or not, we don't care here.
 //            if (screens.size() == 1) {
-                res = screens.get(0).getVisualBounds();
+                res = screens.getFirst().getVisualBounds();
 //            } else {
                 // The stage is spread over several screens.
                 // We compute the surface of the stage on each on the involved

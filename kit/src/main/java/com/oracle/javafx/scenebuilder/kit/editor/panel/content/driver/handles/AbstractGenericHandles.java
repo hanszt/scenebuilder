@@ -32,7 +32,6 @@
 package com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.handles;
 
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.ContentPanelController;
-import com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.AbstractDriver;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.gesture.AbstractGesture;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.gesture.mouse.DiscardGesture;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.gesture.mouse.ResizeGesture;
@@ -87,11 +86,11 @@ public abstract class AbstractGenericHandles<T> extends AbstractHandles<T> {
     private final LineTo lineTo2 = new LineTo();
     private final LineTo lineTo3 = new LineTo();
     
-    public AbstractGenericHandles(ContentPanelController contentPanelController,
-            FXOMObject fxomObject, Class<T> sceneGraphObjectClass) {
+    public AbstractGenericHandles(final ContentPanelController contentPanelController,
+                                  final FXOMObject fxomObject, final Class<T> sceneGraphObjectClass) {
         super(contentPanelController, fxomObject, sceneGraphObjectClass);
         
-        final Path shadow = new Path();
+        final var shadow = new Path();
         final List<PathElement> shadowElements = shadow.getElements();
         shadowElements.add(moveTo0);
         shadowElements.add(lineTo1);
@@ -136,7 +135,7 @@ public abstract class AbstractGenericHandles<T> extends AbstractHandles<T> {
         rootNodeChildren.add(handleWW);
     }
     
-    public Node getHandleNode(CardinalPoint cp) {
+    public Node getHandleNode(final CardinalPoint cp) {
         final Node result;
         
         switch(cp) {
@@ -179,19 +178,19 @@ public abstract class AbstractGenericHandles<T> extends AbstractHandles<T> {
 
     @Override
     protected void layoutDecoration() {
-        final Bounds b = getSceneGraphObjectBounds();
+        final var b = getSceneGraphObjectBounds();
         
-        final double minX = b.getMinX();
-        final double minY = b.getMinY();
-        final double maxX = b.getMaxX();
-        final double maxY = b.getMaxY();
-        final double midX = (minX + maxX) / 2.0;
-        final double midY = (minY + maxY) / 2.0;
+        final var minX = b.getMinX();
+        final var minY = b.getMinY();
+        final var maxX = b.getMaxX();
+        final var maxY = b.getMaxY();
+        final var midX = (minX + maxX) / 2.0;
+        final var midY = (minY + maxY) / 2.0;
         
-        final boolean zeroWidth = MathUtils.equals(minX, maxX);
-        final boolean zeroHeight = MathUtils.equals(minY, maxY);
+        final var zeroWidth = MathUtils.equals(minX, maxX);
+        final var zeroHeight = MathUtils.equals(minY, maxY);
         
-        final boolean snapToPixel = true;
+        final var snapToPixel = true;
         final Point2D pNW, pNE, pSE, pSW;
         final Point2D pNN, pEE, pSS, pWW;
         
@@ -252,8 +251,8 @@ public abstract class AbstractGenericHandles<T> extends AbstractHandles<T> {
         handleWW.setLayoutX(pWW.getX());
         handleWW.setLayoutY(pWW.getY());
         
-        final Bounds handlesBounds = computeBounds(pNW, pNE, pSE, pSW);
-        final int rotation = computeNWHandleRotation(pNW, handlesBounds);
+        final var handlesBounds = computeBounds(pNW, pNE, pSE, pSW);
+        final var rotation = computeNWHandleRotation(pNW, handlesBounds);
         
         setupCornerHandle(handleNW, rotation +   0);
         setupCornerHandle(handleNE, rotation +  90);
@@ -273,15 +272,15 @@ public abstract class AbstractGenericHandles<T> extends AbstractHandles<T> {
 
 
     @Override
-    public AbstractGesture findGesture(Node node) {
+    public AbstractGesture findGesture(final Node node) {
         final AbstractGesture result;
         
-        if (isResizable() == false) {
+        if (!isResizable()) {
             result = new DiscardGesture(getContentPanelController());
         } else {
             assert getFxomObject() instanceof FXOMInstance;
             
-            final FXOMInstance fxomInstance = (FXOMInstance) getFxomObject();
+            final var fxomInstance = (FXOMInstance) getFxomObject();
             
             if (node == handleNW) {
                 result = new ResizeGesture(getContentPanelController(), 
@@ -324,7 +323,7 @@ public abstract class AbstractGenericHandles<T> extends AbstractHandles<T> {
      * Private
      */
     
-    private Bounds computeBounds(Point2D p0, Point2D p1, Point2D p2, Point2D p3) {
+    private Bounds computeBounds(final Point2D p0, final Point2D p1, final Point2D p2, final Point2D p3) {
         final double minX, minY, maxX, maxY;
         
         minX = Math.min(Math.min(p0.getX(), p1.getX()), Math.min(p2.getX(), p3.getX()));
@@ -335,12 +334,12 @@ public abstract class AbstractGenericHandles<T> extends AbstractHandles<T> {
         return new BoundingBox(minX, minY, maxX - minX, maxY - minY);
     }
     
-    private void setupCornerHandle(ImageView handle, int rotation) {
+    private void setupCornerHandle(final ImageView handle, int rotation) {
         
         rotation = ((rotation % 360) + 360) % 360; // Clamp between 0 and 360
         
         final double dx, dy;
-        final double handleWidth = handle.getLayoutBounds().getWidth();
+        final var handleWidth = handle.getLayoutBounds().getWidth();
         if (rotation == 0) {
             dx = +0.0;
             dy = +0.0;
@@ -364,14 +363,14 @@ public abstract class AbstractGenericHandles<T> extends AbstractHandles<T> {
         handle.setTranslateY(dy);
     }
     
-    private void setupSideHandle(ImageView handle, int rotation) {
+    private void setupSideHandle(final ImageView handle, int rotation) {
         
         rotation = ((rotation % 360) + 360) % 360; // Clamp between 0 and 360
         
         final double dx, dy;
-        final double w = handle.getLayoutBounds().getWidth()  / 2.0;
-        final double h = handle.getLayoutBounds().getHeight() / 2.0;
-        final double k0 = 1.0; // Hugly trick to force pixel alignment :(
+        final var w = handle.getLayoutBounds().getWidth() / 2.0;
+        final var h = handle.getLayoutBounds().getHeight() / 2.0;
+        final var k0 = 1.0; // Hugly trick to force pixel alignment :(
         
         if (rotation == 0) {
             dx = -w;
@@ -396,7 +395,7 @@ public abstract class AbstractGenericHandles<T> extends AbstractHandles<T> {
         handle.setTranslateY(dy);
     }
     
-    private int computeNWHandleRotation(Point2D handlePos, Bounds handlesBounds) {
+    private int computeNWHandleRotation(final Point2D handlePos, final Bounds handlesBounds) {
         final int result;
         
         assert handlePos != null;
@@ -423,15 +422,15 @@ public abstract class AbstractGenericHandles<T> extends AbstractHandles<T> {
              *      y1  *---------*---------*
              */
 
-            final double x0 = handlesBounds.getMinX();
-            final double x1 = handlesBounds.getMaxX();
-            final double xm = (x0 + x1) / 2.0;
-            final double y0 = handlesBounds.getMinY();
-            final double y1 = handlesBounds.getMaxY();
-            final double ym = (y0 + y1) / 2.0;
+            final var x0 = handlesBounds.getMinX();
+            final var x1 = handlesBounds.getMaxX();
+            final var xm = (x0 + x1) / 2.0;
+            final var y0 = handlesBounds.getMinY();
+            final var y1 = handlesBounds.getMaxY();
+            final var ym = (y0 + y1) / 2.0;
 
-            final double x = handlePos.getX();
-            final double y = handlePos.getY();
+            final var x = handlePos.getX();
+            final var y = handlePos.getY();
             
             if (x <= xm) {
                 if (y <= ym) {
@@ -456,17 +455,17 @@ public abstract class AbstractGenericHandles<T> extends AbstractHandles<T> {
     }
     
     
-    private void showHideSideHandle(ImageView handle, Point2D p0, Point2D p1) {
+    private void showHideSideHandle(final ImageView handle, final Point2D p0, final Point2D p1) {
         
-        final double dx = p1.getX() - p0.getX();
-        final double dy = p1.getY() - p0.getY();
-        final double d01 = Math.sqrt(dx * dx + dy * dy);
+        final var dx = p1.getX() - p0.getX();
+        final var dy = p1.getY() - p0.getY();
+        final var d01 = Math.sqrt(dx * dx + dy * dy);
         
-        final double sideHandleWidth = getSideHandleImage().getWidth();
-        final double sideHandleHeight = getSideHandleImage().getHeight();
-        final double sideHandleSize = Math.max(sideHandleWidth, sideHandleHeight);
+        final var sideHandleWidth = getSideHandleImage().getWidth();
+        final var sideHandleHeight = getSideHandleImage().getHeight();
+        final var sideHandleSize = Math.max(sideHandleWidth, sideHandleHeight);
         
-        final boolean handleVisible = sideHandleSize < d01;
+        final var handleVisible = sideHandleSize < d01;
         handle.setVisible(handleVisible);
         handle.setMouseTransparent(! handleVisible);
     }
@@ -519,7 +518,7 @@ public abstract class AbstractGenericHandles<T> extends AbstractHandles<T> {
     
     
     private boolean isResizable() {
-        final AbstractDriver driver 
+        final var driver
                 = getContentPanelController().lookupDriver(getFxomObject());
         return driver.makeResizer(getFxomObject()) != null;
     }
@@ -527,7 +526,7 @@ public abstract class AbstractGenericHandles<T> extends AbstractHandles<T> {
     /* 
      * Wraper to avoid the 'leaking this in constructor' warning emitted by NB.
      */
-    private void attachHandles(Node node) {
+    private void attachHandles(final Node node) {
         attachHandles(node, this);
     }
 }

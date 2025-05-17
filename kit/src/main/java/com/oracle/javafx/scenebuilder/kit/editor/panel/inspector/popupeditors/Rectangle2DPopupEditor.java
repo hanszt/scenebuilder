@@ -63,22 +63,22 @@ public class Rectangle2DPopupEditor extends PopupEditor {
     private Parent root;
     private Rectangle2D rectangle2D;
 
-    public Rectangle2DPopupEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public Rectangle2DPopupEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super(propMeta, selectedClasses);
     }
 
     @Override
     public Object getValue() {
-        Double[] values = new Double[4];
-        int index = 0;
-        for (DoubleField doubleField : doubleFields) {
-            String val = doubleField.getText();
+        final var values = new Double[4];
+        var index = 0;
+        for (final var doubleField : doubleFields) {
+            var val = doubleField.getText();
             if (val == null || val.isEmpty()) {
                 val = "0"; //NOI18N
             } else {
                 try {
                     Double.parseDouble(val);
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                     // should not happen, DoubleField should prevent any error
                     return null;
                 }
@@ -101,20 +101,20 @@ public class Rectangle2DPopupEditor extends PopupEditor {
         doubleFields[1] = minYDf;
         doubleFields[2] = widthDf;
         doubleFields[3] = heightDf;
-        for (DoubleField doubleField : doubleFields) {
-            EventHandler<ActionEvent> valueListener = event -> commitValue(getValue());
+        for (final var doubleField : doubleFields) {
+            final EventHandler<ActionEvent> valueListener = event -> commitValue(getValue());
             setNumericEditorBehavior(this, doubleField, valueListener, false);
         }
     }
 
     @Override
-    public String getPreviewString(Object value) {
+    public String getPreviewString(final Object value) {
         if (value == null) {
             return I18N.getString("inspector.rectangle2D.not.defined");
         }
         assert value instanceof Rectangle2D;
-        Rectangle2D rectangle2DVal = (Rectangle2D) value;
-        String valueAsString;
+        final var rectangle2DVal = (Rectangle2D) value;
+        final String valueAsString;
         if (isIndeterminate()) {
             valueAsString = "-"; //NOI18N
         } else {
@@ -127,10 +127,10 @@ public class Rectangle2DPopupEditor extends PopupEditor {
     }
 
     @Override
-    public void setPopupContentValue(Object value) {
+    public void setPopupContentValue(final Object value) {
         if (value == null) {
             rectangle2D = null;
-            for (DoubleField doubleField : doubleFields) {
+            for (final var doubleField : doubleFields) {
                 doubleField.setText(""); //NOI18N
             }
         } else {

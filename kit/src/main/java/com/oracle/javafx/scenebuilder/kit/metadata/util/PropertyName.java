@@ -40,14 +40,14 @@ public class PropertyName implements Comparable<PropertyName> {
     private final String name;
     private final Class<?> residenceClass;
 
-    public PropertyName(String propertyName, Class<?> foreignClass) {
+    public PropertyName(final String propertyName, final Class<?> foreignClass) {
         assert propertyName != null;
         
         this.residenceClass = foreignClass;
         this.name = propertyName;
     }
 
-    public PropertyName(String propertyName) {
+    public PropertyName(final String propertyName) {
         this(propertyName, null);
     }
     
@@ -59,15 +59,15 @@ public class PropertyName implements Comparable<PropertyName> {
         return name;
     }
     
-    public Object getValue(Object sceneGraphObject) {
+    public Object getValue(final Object sceneGraphObject) {
         final Object result;
         
         if (residenceClass == null) {
-            final BeanPropertyIntrospector bpi 
+            final var bpi
                     = new BeanPropertyIntrospector(sceneGraphObject);
             result = bpi.getValue(name);
         } else {
-            final StaticPropertyIntrospector spi 
+            final var spi
                     = new StaticPropertyIntrospector(sceneGraphObject, residenceClass);
             result = spi.getValue(name);
         }
@@ -75,25 +75,25 @@ public class PropertyName implements Comparable<PropertyName> {
         return result;
     }
     
-    public void setValue(Object sceneGraphObject, Object value) {
+    public void setValue(final Object sceneGraphObject, final Object value) {
         if (residenceClass == null) {
-            final BeanPropertyIntrospector bpi 
+            final var bpi
                     = new BeanPropertyIntrospector(sceneGraphObject);
             bpi.setValue(name, value);
         } else {
-            final StaticPropertyIntrospector spi 
+            final var spi
                     = new StaticPropertyIntrospector(sceneGraphObject, residenceClass);
             spi.setValue(name, value);
         }
     }
     
     
-    public static String makeClassFullName(Class<?> aClass) {
+    public static String makeClassFullName(final Class<?> aClass) {
         assert aClass != null;
         
-        final StringBuilder result = new StringBuilder();
+        final var result = new StringBuilder();
         result.append(aClass.getSimpleName());
-        Class<?> declaringClass = aClass.getDeclaringClass();
+        var declaringClass = aClass.getDeclaringClass();
         while (declaringClass != null) {
             result.insert(0, '.');
             result.insert(0, declaringClass.getSimpleName());
@@ -108,7 +108,7 @@ public class PropertyName implements Comparable<PropertyName> {
      */
     
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         boolean result;
         
         if (this == o) {
@@ -116,7 +116,7 @@ public class PropertyName implements Comparable<PropertyName> {
         } else if ((o == null) || (o.getClass() != this.getClass())) {
             result = false;
         } else {
-            final PropertyName other = (PropertyName) o;
+            final var other = (PropertyName) o;
             
             result = true;
             if (residenceClass == null) {
@@ -133,7 +133,7 @@ public class PropertyName implements Comparable<PropertyName> {
     
     @Override
     public int hashCode() {
-        int result = 7;
+        var result = 7;
         if (residenceClass != null) {
             result = 31 * result + residenceClass.hashCode();
         }
@@ -159,7 +159,7 @@ public class PropertyName implements Comparable<PropertyName> {
      * Comparable
      */
     @Override
-    public int compareTo(PropertyName t) {
+    public int compareTo(final PropertyName t) {
         int result;
         
         if (this == t) {

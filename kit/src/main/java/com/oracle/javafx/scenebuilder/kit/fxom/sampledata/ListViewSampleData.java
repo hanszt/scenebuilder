@@ -44,7 +44,7 @@ class ListViewSampleData extends AbstractSampleData {
     private final List<String> samples = new ArrayList<>();
 
     public ListViewSampleData() {
-        for (int i = 0; i < 20; i++) {
+        for (var i = 0; i < 20; i++) {
             samples.add(lorem(i));
         }
     }
@@ -54,21 +54,21 @@ class ListViewSampleData extends AbstractSampleData {
      */
     
     @Override
-    public void applyTo(Object sceneGraphObject) {
+    public void applyTo(final Object sceneGraphObject) {
         assert sceneGraphObject != null;
         
         @SuppressWarnings("unchecked")        
-        final ListView<String> listView = (ListView<String>) sceneGraphObject;
+        final var listView = (ListView<String>) sceneGraphObject;
         listView.getItems().clear();
         listView.getItems().addAll(samples);
     }
     
     @Override
-    public void removeFrom(Object sceneGraphObject) {
+    public void removeFrom(final Object sceneGraphObject) {
         assert sceneGraphObject != null;
         
         @SuppressWarnings("unchecked")        
-        final ListView<String> listView = (ListView<String>) sceneGraphObject;
+        final var listView = (ListView<String>) sceneGraphObject;
         listView.getItems().clear();
     }
     

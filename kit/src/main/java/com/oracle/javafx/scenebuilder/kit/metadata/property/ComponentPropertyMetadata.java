@@ -43,7 +43,7 @@ public class ComponentPropertyMetadata extends PropertyMetadata {
     private final ComponentClassMetadata classMetadata;
     private final boolean collection;
 
-    public ComponentPropertyMetadata(PropertyName name, ComponentClassMetadata classMetadata, boolean collection) {
+    public ComponentPropertyMetadata(final PropertyName name, final ComponentClassMetadata classMetadata, final boolean collection) {
         super(name);
         this.classMetadata = classMetadata;
         this.collection = collection;
@@ -67,7 +67,7 @@ public class ComponentPropertyMetadata extends PropertyMetadata {
     }
 
     @Override
-    public boolean equals(Object obj) { // To please FindBugs
+    public boolean equals(final Object obj) { // To please FindBugs
         if (obj == null) {
             return false;
         }

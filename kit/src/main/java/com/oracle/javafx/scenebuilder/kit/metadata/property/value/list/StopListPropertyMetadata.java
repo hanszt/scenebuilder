@@ -46,8 +46,8 @@ public class StopListPropertyMetadata extends ListValuePropertyMetadata<Stop> {
             = new StopPropertyMetadata(new PropertyName("unused"), //NOI18N
             true /* readWrite */, null, InspectorPath.UNUSED);
     
-    public StopListPropertyMetadata(PropertyName name, boolean readWrite, 
-            List<Stop> defaultValue, InspectorPath inspectorPath) {
+    public StopListPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                    final List<Stop> defaultValue, final InspectorPath inspectorPath) {
         super(name, Stop.class, itemMetadata, readWrite, defaultValue, inspectorPath);
     }
     

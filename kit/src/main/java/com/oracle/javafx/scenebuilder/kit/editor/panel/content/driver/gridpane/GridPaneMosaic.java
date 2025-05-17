@@ -95,7 +95,7 @@ class GridPaneMosaic {
     private int targetGapRowIndex = -1;
     private Color trayColor;
     
-    public GridPaneMosaic(String baseStyleClass, boolean shouldShowTrays, boolean shouldCreateSensors) {
+    public GridPaneMosaic(final String baseStyleClass, final boolean shouldShowTrays, final boolean shouldCreateSensors) {
         assert baseStyleClass != null;
         
         this.baseStyleClass = baseStyleClass;
@@ -148,31 +148,31 @@ class GridPaneMosaic {
         return gridPane;
     }
 
-    public void setGridPane(GridPane gridPane) {
+    public void setGridPane(final GridPane gridPane) {
         this.gridPane = gridPane;
         update();
     }
     
-    public void setTrayColor(Color trayColor) {
+    public void setTrayColor(final Color trayColor) {
         this.trayColor = trayColor;
         if (shouldShowTrays) {
             updateTrayColor();
         }
     }
     
-    public void setSelectedColumnIndexes(Set<Integer> indexes) {
+    public void setSelectedColumnIndexes(final Set<Integer> indexes) {
         selectedColumnIndexes.clear();
         selectedColumnIndexes.addAll(indexes);
         update();
     }
     
-    public void setSelectedRowIndexes(Set<Integer> indexes) {
+    public void setSelectedRowIndexes(final Set<Integer> indexes) {
         selectedRowIndexes.clear();
         selectedRowIndexes.addAll(indexes);
         update();
     }
 
-    public void setTargetCell(int targetColumnIndex, int targetRowIndex) {
+    public void setTargetCell(final int targetColumnIndex, final int targetRowIndex) {
         assert (targetColumnIndex == -1) == (targetRowIndex == -1);
         this.targetColumnIndex = targetColumnIndex;
         this.targetRowIndex = targetRowIndex;
@@ -181,7 +181,7 @@ class GridPaneMosaic {
         update();
     }
     
-    public void setTargetGap(int targetGapColumnIndex, int targetGapRowIndex) {
+    public void setTargetGap(final int targetGapColumnIndex, final int targetGapRowIndex) {
         assert (-1 <= targetGapColumnIndex) && (targetGapColumnIndex <= columnCount);
         assert (-1 <= targetGapRowIndex) && (targetGapRowIndex <= rowCount);
         
@@ -200,8 +200,8 @@ class GridPaneMosaic {
             columnCount = rowCount = 0;
         }
         this.cellBounds.clear();
-        for (int c = 0; c < columnCount; c++) {
-            for (int r = 0; r < rowCount; r++) {
+        for (var c = 0; c < columnCount; c++) {
+            for (var r = 0; r < rowCount; r++) {
                 this.cellBounds.add(Deprecation.getGridPaneCellBounds(gridPane, c, r));
             }
         }
@@ -217,8 +217,8 @@ class GridPaneMosaic {
             adjustTrayItems(eastTrayGroup.getChildren(), "east", rowCount);
         }
         if (shouldCreateSensors) {
-            final int hgapSensorCount = Math.max(0, columnCount-1);
-            final int vgapSensorCount = Math.max(0, rowCount-1);
+            final var hgapSensorCount = Math.max(0, columnCount - 1);
+            final var vgapSensorCount = Math.max(0, rowCount - 1);
             adjustGapSensors(hgapSensorsGroup.getChildren(), Cursor.H_RESIZE, hgapSensorCount);
             adjustGapSensors(vgapSensorsGroup.getChildren(), Cursor.V_RESIZE, vgapSensorCount);
         }
@@ -287,15 +287,15 @@ class GridPaneMosaic {
     
     
     private void adjustHoleItems() {
-        final int holeCount = columnCount * rowCount;
+        final var holeCount = columnCount * rowCount;
         
         while (gridHoleQuads.size() < holeCount) {
-            final Quad holeQuad = new Quad(false /* clockwise */); // Counterclockwise !!
+            final var holeQuad = new Quad(false /* clockwise */); // Counterclockwise !!
             holeQuad.addToPath(gridPath);
             gridHoleQuads.add(holeQuad);
         }
         while (holeCount < gridHoleQuads.size()) {
-            final int cellIndex = gridHoleQuads.size()-1;
+            final var cellIndex = gridHoleQuads.size() - 1;
             gridHoleQuads.get(cellIndex).removeFromPath(gridPath);
             gridHoleQuads.remove(cellIndex);
         }
@@ -314,7 +314,7 @@ class GridPaneMosaic {
             children.add(makeGapLine());
         }
         while (children.size() > hgapLineCount) {
-            children.remove(0);
+            children.removeFirst();
         }
     }
     
@@ -330,12 +330,12 @@ class GridPaneMosaic {
             children.add(makeGapLine());
         }
         while (children.size() > vgapLineCount) {
-            children.remove(0);
+            children.removeFirst();
         }
     }
     
     private Line makeGapLine() {
-        final Line result = new Line();
+        final var result = new Line();
         result.getStyleClass().add("gap");
         result.getStyleClass().add("empty");
         result.getStyleClass().add(baseStyleClass);
@@ -343,20 +343,20 @@ class GridPaneMosaic {
     }
     
     
-    private void adjustTrayItems(List<Node> trayChildren, String direction, int targetCount) {
+    private void adjustTrayItems(final List<Node> trayChildren, final String direction, final int targetCount) {
         
         while (trayChildren.size() < targetCount) {
-            final int trayIndex = trayChildren.size();
+            final var trayIndex = trayChildren.size();
             trayChildren.add(makeTrayLabel(trayIndex, direction));
         }
         while (targetCount < trayChildren.size()) {
-            final int trayIndex = trayChildren.size()-1;
+            final var trayIndex = trayChildren.size() - 1;
             trayChildren.remove(trayIndex);
         }
     }
     
-    private Label makeTrayLabel(int num, String direction) {
-        final Label result = new Label();
+    private Label makeTrayLabel(final int num, final String direction) {
+        final var result = new Label();
         result.getStyleClass().add("tray");
         result.getStyleClass().add(direction);
         result.getStyleClass().add(baseStyleClass);
@@ -367,8 +367,8 @@ class GridPaneMosaic {
         result.setMaxHeight(Region.USE_PREF_SIZE);
 
         if (trayColor != null) {
-            final String webColor = ColorEncoder.encodeColorToRGBA(trayColor);
-            final String style = "-fx-background-color:"+ webColor +";";//NOI18N
+            final var webColor = ColorEncoder.encodeColorToRGBA(trayColor);
+            final var style = "-fx-background-color:" + webColor + ";";//NOI18N
             result.setStyle(style);
         }
         
@@ -381,7 +381,7 @@ class GridPaneMosaic {
         if (trayColor == null) {
             style = "";//NOI18N
         } else {
-            final String webColor = ColorEncoder.encodeColorToRGBA(trayColor);
+            final var webColor = ColorEncoder.encodeColorToRGBA(trayColor);
             style = "-fx-background-color:"+ webColor +";";//NOI18N
         }
 
@@ -392,28 +392,28 @@ class GridPaneMosaic {
     }
     
     
-    private void adjustTrayStyle(List<Node> trayChildren, String style) {
+    private void adjustTrayStyle(final List<Node> trayChildren, final String style) {
         
-        for (Node tray : trayChildren) {
+        for (final var tray : trayChildren) {
             assert tray instanceof Label;
-            final Label trayLabel = (Label) tray;
+            final var trayLabel = (Label) tray;
             trayLabel.setStyle(style);
         }
     }
     
     
-    private void adjustGapSensors(List<Node> gapSensors, Cursor cursor, int targetCount) {
+    private void adjustGapSensors(final List<Node> gapSensors, final Cursor cursor, final int targetCount) {
         while (gapSensors.size() < targetCount) {
             gapSensors.add(makeGapSensor(cursor));
         }
         while (targetCount < gapSensors.size()) {
-            final int gapIndex = gapSensors.size()-1;
+            final var gapIndex = gapSensors.size() - 1;
             gapSensors.remove(gapIndex);
         }
     }
     
-    private Line makeGapSensor(Cursor cursor) {
-        final Line result = new Line();
+    private Line makeGapSensor(final Cursor cursor) {
+        final var result = new Line();
         result.setCursor(cursor);
         result.setStroke(Color.TRANSPARENT);
 
@@ -424,9 +424,9 @@ class GridPaneMosaic {
     
     private void updateHGapSensors() {
         final List<Node> children = hgapSensorsGroup.getChildren();
-        final int sensorCount = children.size();
+        final var sensorCount = children.size();
         assert (sensorCount == 0) || (sensorCount == columnCount-1);
-        for (int i = 0; i < sensorCount; i++) {
+        for (var i = 0; i < sensorCount; i++) {
             /*
              *                       x0  xm   x1
              *   y0  +----------------+       +-----------------+
@@ -440,16 +440,16 @@ class GridPaneMosaic {
              *   y1  +----------------+       +-----------------+
              */
             
-            final Bounds topLeftCellBounds = getCellBounds(i, 0);
-            final Bounds topRightCellBounds = getCellBounds(i+1, 0);
-            final Bounds bottomLeftCellBounds = getCellBounds(i, rowCount-1);
-            final double x0 = topLeftCellBounds.getMaxX();
-            final double x1 = topRightCellBounds.getMinX();
-            final double xm = (x0 + x1) / 2.0;
-            final double y0 = topLeftCellBounds.getMinY();
-            final double y1 = bottomLeftCellBounds.getMaxY();
-            final double strokeWidth = Math.max(8.0, x1 - x0);
-            final Line line = (Line) children.get(i);
+            final var topLeftCellBounds = getCellBounds(i, 0);
+            final var topRightCellBounds = getCellBounds(i + 1, 0);
+            final var bottomLeftCellBounds = getCellBounds(i, rowCount - 1);
+            final var x0 = topLeftCellBounds.getMaxX();
+            final var x1 = topRightCellBounds.getMinX();
+            final var xm = (x0 + x1) / 2.0;
+            final var y0 = topLeftCellBounds.getMinY();
+            final var y1 = bottomLeftCellBounds.getMaxY();
+            final var strokeWidth = Math.max(8.0, x1 - x0);
+            final var line = (Line) children.get(i);
             line.setStartX(xm);
             line.setStartY(y0);
             line.setEndX(xm);
@@ -460,9 +460,9 @@ class GridPaneMosaic {
     
     private void updateVGapSensors() {
         final List<Node> children = vgapSensorsGroup.getChildren();
-        final int sensorCount = children.size();
+        final var sensorCount = children.size();
         assert (sensorCount == 0) || (sensorCount == rowCount-1);
-        for (int i = 0; i < sensorCount; i++) {
+        for (var i = 0; i < sensorCount; i++) {
             
             /*
              *       x0                                        x1
@@ -475,16 +475,16 @@ class GridPaneMosaic {
              *       +----------------+       +-----------------+
              */
             
-            final Bounds topLeftCellBounds = getCellBounds(0, i);
-            final Bounds bottomLeftCellBounds = getCellBounds(0, i+1);
-            final Bounds topRightCellBounds = getCellBounds(columnCount-1, i);
-            final double x0 = topLeftCellBounds.getMinX();
-            final double x1 = topRightCellBounds.getMaxX();
-            final double y0 = topLeftCellBounds.getMaxY();
-            final double y1 = bottomLeftCellBounds.getMinY();
-            final double ym = (y0 + y1) / 2.0;
-            final double strokeWidth = Math.max(8.0, y1 - y0);
-            final Line line = (Line) children.get(i);
+            final var topLeftCellBounds = getCellBounds(0, i);
+            final var bottomLeftCellBounds = getCellBounds(0, i + 1);
+            final var topRightCellBounds = getCellBounds(columnCount - 1, i);
+            final var x0 = topLeftCellBounds.getMinX();
+            final var x1 = topRightCellBounds.getMaxX();
+            final var y0 = topLeftCellBounds.getMaxY();
+            final var y1 = bottomLeftCellBounds.getMinY();
+            final var ym = (y0 + y1) / 2.0;
+            final var strokeWidth = Math.max(8.0, y1 - y0);
+            final var line = (Line) children.get(i);
             line.setStartX(x0);
             line.setStartY(ym);
             line.setEndX(x1);
@@ -494,9 +494,9 @@ class GridPaneMosaic {
     }
     
     private void updateHoleBounds() {
-        for (int c = 0; c < columnCount; c++) {
-            for (int r = 0; r < rowCount; r++) {
-                final Bounds cb = getCellBounds(c, r);
+        for (var c = 0; c < columnCount; c++) {
+            for (var r = 0; r < rowCount; r++) {
+                final var cb = getCellBounds(c, r);
                 gridHoleQuads.get(getCellIndex(c, r)).setBounds(cb);
             }
         }
@@ -504,17 +504,17 @@ class GridPaneMosaic {
     
     private void updateHGapLines() {
         final List<Node> children = hgapLinesGroup.getChildren();
-        final int lineCount = children.size();
+        final var lineCount = children.size();
         assert (lineCount == 0) || (lineCount == columnCount-1);
-        for (int i = 0; i < lineCount; i++) {
-            final Bounds topLeftCellBounds = getCellBounds(i, 0);
-            final Bounds topRightCellBounds = getCellBounds(i+1, 0);
-            final Bounds bottomLeftCellBounds = getCellBounds(i, rowCount-1);
-            final double startX = (topLeftCellBounds.getMaxX() + topRightCellBounds.getMinX()) / 2.0;
-            final double startY = topLeftCellBounds.getMinY();
-            final double endY = bottomLeftCellBounds.getMaxY();
-            final double snappedX = Math.round(startX) + 0.5;
-            final Line line = (Line) children.get(i);
+        for (var i = 0; i < lineCount; i++) {
+            final var topLeftCellBounds = getCellBounds(i, 0);
+            final var topRightCellBounds = getCellBounds(i + 1, 0);
+            final var bottomLeftCellBounds = getCellBounds(i, rowCount - 1);
+            final var startX = (topLeftCellBounds.getMaxX() + topRightCellBounds.getMinX()) / 2.0;
+            final var startY = topLeftCellBounds.getMinY();
+            final var endY = bottomLeftCellBounds.getMaxY();
+            final var snappedX = Math.round(startX) + 0.5;
+            final var line = (Line) children.get(i);
             line.setStartX(snappedX);
             line.setStartY(startY);
             line.setEndX(snappedX);
@@ -524,17 +524,17 @@ class GridPaneMosaic {
     
     private void updateVGapLines() {
         final List<Node> children = vgapLinesGroup.getChildren();
-        final int lineCount = children.size();
+        final var lineCount = children.size();
         assert (lineCount == 0) || (lineCount == rowCount-1);
-        for (int i = 0; i < lineCount; i++) {
-            final Bounds topLeftCellBounds = getCellBounds(0, i);
-            final Bounds bottomLeftCellBounds = getCellBounds(0, i+1);
-            final Bounds topRightCellBounds = getCellBounds(columnCount-1, i);
-            final double startX = topLeftCellBounds.getMinX();
-            final double startY = (topLeftCellBounds.getMaxY() + bottomLeftCellBounds.getMinY()) / 2.0;
-            final double endX = topRightCellBounds.getMaxX();
-            final double snappedY = Math.round(startY) + 0.5;
-            final Line line = (Line) children.get(i);
+        for (var i = 0; i < lineCount; i++) {
+            final var topLeftCellBounds = getCellBounds(0, i);
+            final var bottomLeftCellBounds = getCellBounds(0, i + 1);
+            final var topRightCellBounds = getCellBounds(columnCount - 1, i);
+            final var startX = topLeftCellBounds.getMinX();
+            final var startY = (topLeftCellBounds.getMaxY() + bottomLeftCellBounds.getMinY()) / 2.0;
+            final var endX = topRightCellBounds.getMaxX();
+            final var snappedY = Math.round(startY) + 0.5;
+            final var line = (Line) children.get(i);
             line.setStartX(startX);
             line.setStartY(snappedY);
             line.setEndX(endX);
@@ -547,15 +547,15 @@ class GridPaneMosaic {
         final List<Node> northTrayChildren = northTrayGroup.getChildren();
         assert northTrayChildren.size() == columnCount;
         
-        for (int c = 0; c < columnCount; c++) {
+        for (var c = 0; c < columnCount; c++) {
             updateNorthTrayBounds(c, (Label)northTrayChildren.get(c));
         }
     }
     
     
-    private void updateNorthTrayBounds(int column, Label label) {
-        final Bounds gb = gridPane.getLayoutBounds();
-        final Bounds cb = getCellBounds(column, 0);
+    private void updateNorthTrayBounds(final int column, final Label label) {
+        final var gb = gridPane.getLayoutBounds();
+        final var cb = getCellBounds(column, 0);
 
 
         /*
@@ -571,10 +571,10 @@ class GridPaneMosaic {
          * y1  ....---+-----------------+---...
          */
 
-        final double x0 = cb.getMinX();
-        final double x1 = cb.getMaxX();
-        final double y0 = gb.getMinY();
-        final double y1 = cb.getMaxY();
+        final var x0 = cb.getMinX();
+        final var x1 = cb.getMaxX();
+        final var y0 = gb.getMinY();
+        final var y1 = cb.getMaxY();
         assert x0 <= x1;
         assert y0 <= y1;
         
@@ -590,15 +590,15 @@ class GridPaneMosaic {
         final List<Node> trayChildren = southTrayGroup.getChildren();
         assert trayChildren.size() == columnCount;
         
-        for (int c = 0; c < columnCount; c++) {
+        for (var c = 0; c < columnCount; c++) {
             updateSouthTrayBounds(c, (Label)trayChildren.get(c));
         }
     }
     
     
-    private void updateSouthTrayBounds(int column, Label label) {
-        final Bounds gb = gridPane.getLayoutBounds();
-        final Bounds cb = getCellBounds(column, 0);
+    private void updateSouthTrayBounds(final int column, final Label label) {
+        final var gb = gridPane.getLayoutBounds();
+        final var cb = getCellBounds(column, 0);
 
 
         /*
@@ -614,10 +614,10 @@ class GridPaneMosaic {
          *            +-----------------+
          */
 
-        final double x0 = cb.getMinX();
-        final double x1 = cb.getMaxX();
-        final double y0 = cb.getMinY();
-        final double y1 = gb.getMaxY();
+        final var x0 = cb.getMinX();
+        final var x1 = cb.getMaxX();
+        final var y0 = cb.getMinY();
+        final var y1 = gb.getMaxY();
         assert x0 <= x1;
         assert y0 <= y1;
 
@@ -633,15 +633,15 @@ class GridPaneMosaic {
         final List<Node> trayChildren = westTrayGroup.getChildren();
         assert trayChildren.size() == rowCount;
         
-        for (int r = 0; r < rowCount; r++) {
+        for (var r = 0; r < rowCount; r++) {
             updateWestTrayBounds(r, (Label)trayChildren.get(r));
         }
     }
     
     
-    private void updateWestTrayBounds(int row, Label label) {
-        final Bounds gb = gridPane.getLayoutBounds();
-        final Bounds cb = getCellBounds(0,row);
+    private void updateWestTrayBounds(final int row, final Label label) {
+        final var gb = gridPane.getLayoutBounds();
+        final var cb = getCellBounds(0,row);
 
 
         /*
@@ -670,10 +670,10 @@ class GridPaneMosaic {
          *      west(r)
          */
 
-        final double x0 = gb.getMinX();
-        final double x1 = cb.getMaxX();
-        final double y0 = cb.getMinY();
-        final double y1 = cb.getMaxY();
+        final var x0 = gb.getMinX();
+        final var x1 = cb.getMaxX();
+        final var y0 = cb.getMinY();
+        final var y1 = cb.getMaxY();
         assert x0 <= x1;
         assert y0 <= y1;
 
@@ -691,15 +691,15 @@ class GridPaneMosaic {
         final List<Node> trayChildren = eastTrayGroup.getChildren();
         assert trayChildren.size() == rowCount;
         
-        for (int r = 0; r < rowCount; r++) {
+        for (var r = 0; r < rowCount; r++) {
             updateEastTrayBounds(r, (Label)trayChildren.get(r));
         }
     }
     
     
-    private void updateEastTrayBounds(int row, Label label) {
-        final Bounds gb = gridPane.getLayoutBounds();
-        final Bounds cb = getCellBounds(0,row);
+    private void updateEastTrayBounds(final int row, final Label label) {
+        final var gb = gridPane.getLayoutBounds();
+        final var cb = getCellBounds(0,row);
 
 
         /*
@@ -728,10 +728,10 @@ class GridPaneMosaic {
          *                                  padding.right
          */
 
-        final double x0 = cb.getMinX();
-        final double x1 = gb.getMaxX();
-        final double y0 = cb.getMinY();
-        final double y1 = cb.getMaxY();
+        final var x0 = cb.getMinX();
+        final var x1 = gb.getMaxX();
+        final var y0 = cb.getMinY();
+        final var y1 = cb.getMaxY();
         assert x0 <= x1;
         assert y0 <= y1;
 
@@ -743,13 +743,13 @@ class GridPaneMosaic {
     }
     
     
-    private void relocateNode(Label node, Bounds area, CardinalPoint cp) {
+    private void relocateNode(final Label node, final Bounds area, final CardinalPoint cp) {
         assert node != null;
         
-        final double nodeW = node.getPrefWidth();
-        final double nodeH = node.getPrefHeight();
-        final double areaW = area.getWidth();
-        final double areaH = area.getHeight();
+        final var nodeW = node.getPrefWidth();
+        final var nodeH = node.getPrefHeight();
+        final var areaW = area.getWidth();
+        final var areaH = area.getHeight();
                 
         /*
          * From
@@ -843,10 +843,10 @@ class GridPaneMosaic {
                 break;
         }
         
-        final double nodeCenterX = nodeW / 2.0;
-        final double nodeCenterY = nodeH / 2.0;
-        final double layoutDX = area.getMinX() - nodeCenterX + translateX;
-        final double layoutDY = area.getMinY() - nodeCenterY + translateY;
+        final var nodeCenterX = nodeW / 2.0;
+        final var nodeCenterY = nodeH / 2.0;
+        final var layoutDX = area.getMinX() - nodeCenterX + translateX;
+        final var layoutDY = area.getMinY() - nodeCenterY + translateY;
         
         node.setLayoutX(layoutDX);
         node.setLayoutY(layoutDY);
@@ -855,13 +855,13 @@ class GridPaneMosaic {
     
     
     
-    private void updateSelection(List<Node> trayChildren, Set<Integer> selectedIndexes) {
-        final String selectedClass = "selected";
+    private void updateSelection(final List<Node> trayChildren, final Set<Integer> selectedIndexes) {
+        final var selectedClass = "selected";
         
         for (int i = 0, count = trayChildren.size(); i < count; i++) {
             final List<String> trayStyleClasses = trayChildren.get(i).getStyleClass();
             if (selectedIndexes.contains(i)) {
-                if (trayStyleClasses.contains(selectedClass) == false) {
+                if (!trayStyleClasses.contains(selectedClass)) {
                     trayStyleClasses.add(selectedClass);
                 }
             } else {
@@ -879,7 +879,7 @@ class GridPaneMosaic {
             targetCellShadow.setVisible(false);
         } else {
             targetCellShadow.setVisible(true);
-            final Bounds tb = getCellBounds(targetColumnIndex, targetRowIndex);
+            final var tb = getCellBounds(targetColumnIndex, targetRowIndex);
             targetCellShadow.setX(tb.getMinX());
             targetCellShadow.setY(tb.getMinY());
             targetCellShadow.setWidth(tb.getWidth());
@@ -888,13 +888,13 @@ class GridPaneMosaic {
     }
     
     
-    private Bounds getCellBounds(int c, int r) {
-        final int cellIndex = getCellIndex(c, r);
+    private Bounds getCellBounds(final int c, final int r) {
+        final var cellIndex = getCellIndex(c, r);
         assert cellIndex < cellBounds.size();
         return cellBounds.get(cellIndex);
     }
     
-    private int getCellIndex(int c, int r) {
+    private int getCellIndex(final int c, final int r) {
         return c * rowCount + r;
     }
     
@@ -913,8 +913,8 @@ class GridPaneMosaic {
             
             final double startX, startY, endY, strokeWidth;
             if (targetGapColumnIndex < columnCount) {
-                final Bounds topCellBounds = getCellBounds(targetGapColumnIndex, 0);
-                final Bounds bottomCellBounds = getCellBounds(targetGapColumnIndex, rowCount-1);
+                final var topCellBounds = getCellBounds(targetGapColumnIndex, 0);
+                final var bottomCellBounds = getCellBounds(targetGapColumnIndex, rowCount - 1);
                 startY = topCellBounds.getMinY();
                 endY = bottomCellBounds.getMaxY();
                 if (targetGapColumnIndex == 0) {
@@ -922,13 +922,13 @@ class GridPaneMosaic {
                     strokeWidth = MIN_STROKE_WIDTH;
                 } else {
                     assert targetGapColumnIndex >= 1;
-                    final Bounds leftTopCellBounds = getCellBounds(targetGapColumnIndex-1, 0);
+                    final var leftTopCellBounds = getCellBounds(targetGapColumnIndex - 1, 0);
                     startX = (leftTopCellBounds.getMaxX() + topCellBounds.getMinX()) / 2.0;
                     strokeWidth = Math.abs(leftTopCellBounds.getMaxX() - topCellBounds.getMinX());
                 }
             } else {
-                final Bounds topCellBounds = getCellBounds(columnCount-1, 0);
-                final Bounds bottomCellBounds = getCellBounds(columnCount-1, rowCount-1);
+                final var topCellBounds = getCellBounds(columnCount - 1, 0);
+                final var bottomCellBounds = getCellBounds(columnCount - 1, rowCount - 1);
                 startX = topCellBounds.getMaxX();
                 startY = topCellBounds.getMinY();
                 endY = bottomCellBounds.getMaxY();
@@ -951,8 +951,8 @@ class GridPaneMosaic {
             
             final double startX, endX, startY, strokeWidth;
             if (targetGapRowIndex < rowCount) {
-                final Bounds leftCellBounds = getCellBounds(0, targetGapRowIndex);
-                final Bounds rightCellBounds = getCellBounds(columnCount-1, targetGapRowIndex);
+                final var leftCellBounds = getCellBounds(0, targetGapRowIndex);
+                final var rightCellBounds = getCellBounds(columnCount - 1, targetGapRowIndex);
                 startX = leftCellBounds.getMinX();
                 endX = rightCellBounds.getMaxX();
                 if (targetGapRowIndex == 0) {
@@ -960,13 +960,13 @@ class GridPaneMosaic {
                     strokeWidth = MIN_STROKE_WIDTH;
                 } else {
                     assert targetGapRowIndex >= 1;
-                    final Bounds aboveLeftCellBounds = getCellBounds(0, targetGapRowIndex-1);
+                    final var aboveLeftCellBounds = getCellBounds(0, targetGapRowIndex - 1);
                     startY = (aboveLeftCellBounds.getMaxY() + leftCellBounds.getMinY()) / 2.0;
                     strokeWidth = Math.abs(aboveLeftCellBounds.getMaxY() - leftCellBounds.getMinY());
                 }
             } else {
-                final Bounds leftCellBounds = getCellBounds(0, rowCount-1);
-                final Bounds rightCellBounds = getCellBounds(columnCount-1, rowCount-1);
+                final var leftCellBounds = getCellBounds(0, rowCount - 1);
+                final var rightCellBounds = getCellBounds(columnCount - 1, rowCount - 1);
                 startX = leftCellBounds.getMinX();
                 endX = rightCellBounds.getMaxX();
                 startY = leftCellBounds.getMaxY();

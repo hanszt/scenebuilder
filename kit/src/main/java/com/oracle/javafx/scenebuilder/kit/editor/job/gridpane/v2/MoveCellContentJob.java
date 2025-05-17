@@ -34,7 +34,6 @@ package com.oracle.javafx.scenebuilder.kit.editor.job.gridpane.v2;
 
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.editor.job.Job;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.metadata.property.value.IntegerPropertyMetadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.InspectorPath;
@@ -66,9 +65,9 @@ public class MoveCellContentJob extends Job {
     private int oldColumnIndex = -1;
     private int oldRowIndex = -1;
 
-    public MoveCellContentJob(FXOMInstance fxomObject, 
-            int columnIndexDelta, int rowIndexDelta, 
-            EditorController editorController) {
+    public MoveCellContentJob(final FXOMInstance fxomObject,
+                              final int columnIndexDelta, final int rowIndexDelta,
+                              final EditorController editorController) {
         super(editorController);
         assert fxomObject != null;
         assert fxomObject.getSceneGraphObject() instanceof Node;
@@ -103,7 +102,7 @@ public class MoveCellContentJob extends Job {
     public void undo() {
         assert isExecutable();
 
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
+        final var fxomDocument = getEditorController().getFxomDocument();
         fxomDocument.beginUpdate();
         columnIndexMeta.setValue(fxomObject, oldColumnIndex);
         rowIndexMeta.setValue(fxomObject, oldRowIndex);
@@ -114,7 +113,7 @@ public class MoveCellContentJob extends Job {
     public void redo() {
         assert isExecutable();
 
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
+        final var fxomDocument = getEditorController().getFxomDocument();
         fxomDocument.beginUpdate();
         columnIndexMeta.setValue(fxomObject, oldColumnIndex + columnIndexDelta);
         rowIndexMeta.setValue(fxomObject, oldRowIndex + rowIndexDelta);

@@ -32,7 +32,6 @@
 package com.oracle.javafx.scenebuilder.kit.util.control.effectpicker;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,7 +43,6 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
@@ -75,7 +73,7 @@ public abstract class EffectPathItem extends HBox {
     protected final EffectPathItem parentPahItem;
     protected final EffectPickerController effectPickerController;
 
-    public EffectPathItem(EffectPickerController epc, Effect effect, EffectPathItem parentPahItem) {
+    public EffectPathItem(final EffectPickerController epc, final Effect effect, final EffectPathItem parentPahItem) {
         assert epc != null;
         assert effect != null;
         this.effectPickerController = epc;
@@ -105,13 +103,13 @@ public abstract class EffectPathItem extends HBox {
     }
 
     @FXML
-    void deleteEffect(ActionEvent event) {
+    void deleteEffect(final ActionEvent event) {
 
         // Update model
         //---------------------------------------------
         if (parentPahItem != null) {
             // Delete this effect from the chain but relink it's input to its parent effect
-            final Effect inputEffect = getSelectedInputEffect();
+            final var inputEffect = getSelectedInputEffect();
             parentPahItem.setSelectedInputEffect(inputEffect);
         } else {
             // This is the root effect
@@ -125,7 +123,7 @@ public abstract class EffectPathItem extends HBox {
     }
 
     @FXML
-    void deleteEffectInput(ActionEvent event) {
+    void deleteEffectInput(final ActionEvent event) {
 
         // Update model
         //---------------------------------------------
@@ -138,15 +136,15 @@ public abstract class EffectPathItem extends HBox {
     }
 
     @FXML
-    void replaceEffect(ActionEvent event) {
-        final MenuItem menuItem = (MenuItem) event.getSource();
-        final String text = menuItem.getText();
+    void replaceEffect(final ActionEvent event) {
+        final var menuItem = (MenuItem) event.getSource();
+        final var text = menuItem.getText();
 
         // Update model
         //---------------------------------------------
-        final Effect newEffect = Utils.newInstance(text);
+        final var newEffect = Utils.newInstance(text);
         // Relink this effect input to the new effect
-        final Effect inputEffect = getSelectedInputEffect();
+        final var inputEffect = getSelectedInputEffect();
         Utils.setDefaultInput(newEffect, inputEffect);
         // Update effect parent with the new effect
         if (parentPahItem != null) {
@@ -163,13 +161,13 @@ public abstract class EffectPathItem extends HBox {
     }
 
     @FXML
-    void replaceEffectInput(ActionEvent event) {
-        final MenuItem menuItem = (MenuItem) event.getSource();
-        final String text = menuItem.getText();
+    void replaceEffectInput(final ActionEvent event) {
+        final var menuItem = (MenuItem) event.getSource();
+        final var text = menuItem.getText();
 
         // Update model
         //---------------------------------------------
-        final Effect newEffect = Utils.newInstance(text);
+        final var newEffect = Utils.newInstance(text);
         setSelectedInputEffect(newEffect);
         effectPickerController.incrementRevision();
 
@@ -179,19 +177,19 @@ public abstract class EffectPathItem extends HBox {
     }
 
     @FXML
-    void selectEffect(ActionEvent event) {
+    void selectEffect(final ActionEvent event) {
         effectPickerController.selectEffectPathItem(this);
         event.consume();
     }
 
     private void initialize() {
-        final FXMLLoader loader = new FXMLLoader();
+        final var loader = new FXMLLoader();
         loader.setLocation(EffectPathItem.class.getResource("EffectPathItem.fxml")); //NOI18N
         loader.setController(this);
         loader.setRoot(this);
         try {
             loader.load();
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             Logger.getLogger(EffectPathItem.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -204,13 +202,13 @@ public abstract class EffectPathItem extends HBox {
         assert replace_input_menu != null;
 
         // Update ToggleButton
-        final ToggleGroup toggleGroup = effectPickerController.getEffectToggleGroup();
+        final var toggleGroup = effectPickerController.getEffectToggleGroup();
         toggle_button.setToggleGroup(toggleGroup);
         toggle_button.setText(getSimpleName());
 
         // Update ImageView
-        final URL url = EffectPathItem.class.getResource("images/" + effect.getClass().getSimpleName() + ".png"); //NOI18N
-        final Image img = new Image(url.toExternalForm());
+        final var url = EffectPathItem.class.getResource("images/" + effect.getClass().getSimpleName() + ".png"); //NOI18N
+        final var img = new Image(url.toExternalForm());
         image_view.setImage(img);
 
         menu_button.showingProperty().addListener((ChangeListener<Boolean>) (ov, oldValue, newValue) -> {

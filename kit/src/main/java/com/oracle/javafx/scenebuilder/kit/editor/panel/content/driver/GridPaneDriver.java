@@ -48,8 +48,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.panel.content.util.BoundsUtils;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.util.Deprecation;
-import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 
@@ -60,7 +58,7 @@ public class GridPaneDriver extends AbstractNodeDriver {
 
     private static final double MATCH_DIST = 4;
 
-    public GridPaneDriver(ContentPanelController contentPanelController) {
+    public GridPaneDriver(final ContentPanelController contentPanelController) {
         super(contentPanelController);
     }
 
@@ -69,21 +67,21 @@ public class GridPaneDriver extends AbstractNodeDriver {
      */
     
     @Override
-    public AbstractHandles<?> makeHandles(FXOMObject fxomObject) {
+    public AbstractHandles<?> makeHandles(final FXOMObject fxomObject) {
         assert fxomObject instanceof FXOMInstance;
         assert fxomObject.getSceneGraphObject() instanceof GridPane;
         return new GridPaneHandles(contentPanelController, (FXOMInstance)fxomObject);
     }
 
     @Override
-    public AbstractPring<?> makePring(FXOMObject fxomObject) {
+    public AbstractPring<?> makePring(final FXOMObject fxomObject) {
         assert fxomObject instanceof FXOMInstance;
         assert fxomObject.getSceneGraphObject() instanceof GridPane;
         return new GridPanePring(contentPanelController, (FXOMInstance) fxomObject);
     }
 
     @Override
-    public AbstractTring<?> makeTring(AbstractDropTarget dropTarget) {
+    public AbstractTring<?> makeTring(final AbstractDropTarget dropTarget) {
         assert dropTarget != null;
         assert dropTarget.getTargetObject() instanceof FXOMInstance;
         assert dropTarget.getTargetObject().getSceneGraphObject() instanceof GridPane;
@@ -92,23 +90,23 @@ public class GridPaneDriver extends AbstractNodeDriver {
 
     
     @Override
-    public AbstractResizer<?> makeResizer(FXOMObject fxomObject) {
+    public AbstractResizer<?> makeResizer(final FXOMObject fxomObject) {
         assert fxomObject.getSceneGraphObject() instanceof GridPane;
         return new RegionResizer((Region) fxomObject.getSceneGraphObject());
     }
     
     
     @Override
-    public AbstractDropTarget makeDropTarget(FXOMObject fxomObject, double sceneX, double sceneY) {
+    public AbstractDropTarget makeDropTarget(final FXOMObject fxomObject, final double sceneX, final double sceneY) {
         assert fxomObject.getSceneGraphObject() instanceof GridPane;
         assert fxomObject instanceof FXOMInstance;
         
         final AbstractDropTarget result;
         
-        final FXOMInstance fxomInstance = (FXOMInstance) fxomObject;
-        final GridPane gridPane = (GridPane) fxomInstance.getSceneGraphObject();
-        final int columnCount = Deprecation.getGridPaneColumnCount(gridPane);
-        final int rowCount = Deprecation.getGridPaneRowCount(gridPane);
+        final var fxomInstance = (FXOMInstance) fxomObject;
+        final var gridPane = (GridPane) fxomInstance.getSceneGraphObject();
+        final var columnCount = Deprecation.getGridPaneColumnCount(gridPane);
+        final var rowCount = Deprecation.getGridPaneRowCount(gridPane);
         
         
         /*
@@ -155,16 +153,16 @@ public class GridPaneDriver extends AbstractNodeDriver {
             result = new GridPaneDropTarget(fxomInstance, 0, 0, ColumnArea.CENTER, RowArea.CENTER);
         } else {
         
-            final Point2D hitPoint = gridPane.sceneToLocal(sceneX, sceneY, true /* rootScene */);
-            final double hitX = hitPoint.getX();
-            final double hitY = hitPoint.getY();
+            final var hitPoint = gridPane.sceneToLocal(sceneX, sceneY, true /* rootScene */);
+            final var hitX = hitPoint.getX();
+            final var hitY = hitPoint.getY();
             final int targetColumnIndex, targetRowIndex;
             final double targetCellX, targetCellY;
             
             // Searches the column where hitX resides
-            int c = 0;
-            Bounds cellBounds = Deprecation.getGridPaneCellBounds(gridPane, c++, 0);
-            double columnMaxX = cellBounds.getMaxX();
+            var c = 0;
+            var cellBounds = Deprecation.getGridPaneCellBounds(gridPane, c++, 0);
+            var columnMaxX = cellBounds.getMaxX();
             while ((columnMaxX < hitX) && (c < columnCount)) {
                 cellBounds = Deprecation.getGridPaneCellBounds(gridPane, c++, 0);                
                 columnMaxX = cellBounds.getMaxX();
@@ -179,9 +177,9 @@ public class GridPaneDriver extends AbstractNodeDriver {
             }
             
             // Searches the row where hitY resides
-            int r = 0;
+            var r = 0;
             cellBounds = Deprecation.getGridPaneCellBounds(gridPane, 0, r++);
-            double rowMaxY = cellBounds.getMaxY();
+            var rowMaxY = cellBounds.getMaxY();
             while ((rowMaxY < hitY) && (r < rowCount)) {
                 cellBounds = Deprecation.getGridPaneCellBounds(gridPane, 0, r++);
                 rowMaxY = cellBounds.getMaxY();
@@ -222,17 +220,17 @@ public class GridPaneDriver extends AbstractNodeDriver {
             
             final ColumnArea targetColumnArea;
             if (targetColumnIndex < columnCount) {
-                final Bounds targetCellBounds 
+                final var targetCellBounds
                         = Deprecation.getGridPaneCellBounds(gridPane, targetColumnIndex, 0);
-                final BoundsUtils.EdgeInfo edgeInfo
+                final var edgeInfo
                         = BoundsUtils.distanceToEdges(targetCellBounds, targetCellX, targetCellY, gridPane);
                 if (targetCellX < targetCellBounds.getMinX()) {
                     targetColumnArea= ColumnArea.LEFT; // (A)
                 } else if (edgeInfo == null) {
                     targetColumnArea= ColumnArea.CENTER; // cell bounds are empty
                 } else {
-                    final boolean eastMatch = edgeInfo.getEastDistance() < MATCH_DIST;
-                    final boolean westMatch = edgeInfo.getWestDistance() < MATCH_DIST;
+                    final var eastMatch = edgeInfo.getEastDistance() < MATCH_DIST;
+                    final var westMatch = edgeInfo.getWestDistance() < MATCH_DIST;
                     if (westMatch) {
                         targetColumnArea= ColumnArea.LEFT; // (B)
                     } else if (eastMatch) {
@@ -271,17 +269,17 @@ public class GridPaneDriver extends AbstractNodeDriver {
             
             final RowArea targetRowArea;
             if (targetRowIndex < rowCount) {
-                final Bounds targetCellBounds 
+                final var targetCellBounds
                         = Deprecation.getGridPaneCellBounds(gridPane, 0, targetRowIndex);
-                final BoundsUtils.EdgeInfo edgeInfo
+                final var edgeInfo
                         = BoundsUtils.distanceToEdges(targetCellBounds, targetCellX, targetCellY, gridPane);
                 if (targetCellY < targetCellBounds.getMinY()) {
                     targetRowArea = RowArea.TOP; // (A)
                 } else if (edgeInfo == null) {
                     targetRowArea = RowArea.CENTER; // cell bounds are empty
                 } else {
-                    final boolean northMatch = edgeInfo.getNorthDistance() < MATCH_DIST;
-                    final boolean southMatch = edgeInfo.getSouthDistance() < MATCH_DIST;
+                    final var northMatch = edgeInfo.getNorthDistance() < MATCH_DIST;
+                    final var southMatch = edgeInfo.getSouthDistance() < MATCH_DIST;
                     if (northMatch) {
                         targetRowArea= RowArea.TOP; // (B)
                     } else if (southMatch) {

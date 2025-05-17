@@ -41,7 +41,7 @@ public abstract class CompositeJob extends Job {
 
     private String description;
 
-    public CompositeJob(EditorController editorController) {
+    public CompositeJob(final EditorController editorController) {
         super(editorController);
     }
 

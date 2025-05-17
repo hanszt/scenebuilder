@@ -47,7 +47,7 @@ class SpinnerSampleData extends AbstractSampleData {
     private static final int ALPHABET_SIZE = 26;
 
     public SpinnerSampleData() {
-        for (int i = 0; i < ALPHABET_SIZE; i++) {
+        for (var i = 0; i < ALPHABET_SIZE; i++) {
             samples.add(alphabet(i));
         }
     }
@@ -56,22 +56,22 @@ class SpinnerSampleData extends AbstractSampleData {
      * AbstractSampleData
      */
     @Override
-    public void applyTo(Object sceneGraphObject) {
+    public void applyTo(final Object sceneGraphObject) {
         assert sceneGraphObject != null;
 
         @SuppressWarnings("unchecked")
-        final Spinner<String> spinner = (Spinner<String>) sceneGraphObject;
+        final var spinner = (Spinner<String>) sceneGraphObject;
         valueFactory = spinner.getValueFactory();
         spinner.setValueFactory(new SpinnerValueFactory<String>() {
 
             @Override
-            public void decrement(int steps) {
+            public void decrement(final int steps) {
                 index = Math.max((index - 1), 0);
                 setValue(samples.get(index));
             }
 
             @Override
-            public void increment(int steps) {
+            public void increment(final int steps) {
                 index = Math.min((index + 1), ALPHABET_SIZE - 1);
                 setValue(samples.get(index));
             }
@@ -81,11 +81,11 @@ class SpinnerSampleData extends AbstractSampleData {
     }
 
     @Override
-    public void removeFrom(Object sceneGraphObject) {
+    public void removeFrom(final Object sceneGraphObject) {
         assert sceneGraphObject != null;
 
         @SuppressWarnings("unchecked")
-        final Spinner<String> spinner = (Spinner<String>) sceneGraphObject;
+        final var spinner = (Spinner<String>) sceneGraphObject;
         spinner.setValueFactory(valueFactory);
     }
 

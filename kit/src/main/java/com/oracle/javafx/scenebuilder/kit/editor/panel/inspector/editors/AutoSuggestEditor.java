@@ -88,37 +88,37 @@ public abstract class AutoSuggestEditor extends PropertyEditor {
         INTEGER // IntegerField
     }
 
-    public AutoSuggestEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses, List<String> suggestedList) {
+    public AutoSuggestEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses, final List<String> suggestedList) {
         super(propMeta, selectedClasses);
         preInit(suggestedList);
     }
 
-    public AutoSuggestEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses, List<String> suggestedList, Type type) {
+    public AutoSuggestEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses, final List<String> suggestedList, final Type type) {
         super(propMeta, selectedClasses);
         this.type = type;
         preInit(suggestedList);
     }
 
-    public AutoSuggestEditor(String name, String defaultValue, List<String> suggestedList) {
+    public AutoSuggestEditor(final String name, final String defaultValue, final List<String> suggestedList) {
         this(name, defaultValue, suggestedList, Type.ALPHA, true);
     }
     
-    public AutoSuggestEditor(String name, String defaultValue, List<String> suggestedList, Type type) {
+    public AutoSuggestEditor(final String name, final String defaultValue, final List<String> suggestedList, final Type type) {
         this(name, defaultValue, suggestedList, type, true);
     }
     
-    public AutoSuggestEditor(String name, String defaultValue, List<String> suggestedList, boolean showMenuButton) {
+    public AutoSuggestEditor(final String name, final String defaultValue, final List<String> suggestedList, final boolean showMenuButton) {
         this(name, defaultValue, suggestedList, Type.ALPHA, showMenuButton);
     }
     
-    public AutoSuggestEditor(String name, String defaultValue, List<String> suggestedList, Type type, boolean showMenuButton) {
+    public AutoSuggestEditor(final String name, final String defaultValue, final List<String> suggestedList, final Type type, final boolean showMenuButton) {
         super(name, defaultValue);
         this.type = type;
         this.showMenuButton = showMenuButton;
         preInit(suggestedList);
     }
 
-    private void preInit(List<String> suggestedList) {
+    private void preInit(final List<String> suggestedList) {
         setSuggestedList(suggestedList);
         if (type == Type.ALPHA) {
             root = EditorUtils.loadFxml("StringAutoSuggestEditor.fxml", this); //NOI18N
@@ -170,7 +170,7 @@ public abstract class AutoSuggestEditor extends PropertyEditor {
 
     @Override
     public Object getValue() {
-        String value = entryField.getText();
+        final var value = entryField.getText();
         if (value == null) {
             return null;
         }
@@ -178,7 +178,7 @@ public abstract class AutoSuggestEditor extends PropertyEditor {
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(final Object value) {
         setValueGeneric(value);
         if (isSetValueDone()) {
             return;
@@ -202,17 +202,17 @@ public abstract class AutoSuggestEditor extends PropertyEditor {
         EditorUtils.doNextFrame(() -> entryField.requestFocus());
     }
 
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses, List<String> suggestedList) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses, final List<String> suggestedList) {
         super.reset(propMeta, selectedClasses);
         resetSuggestedList(suggestedList);
     }
 
-    public void reset(String name, String defaultValue, List<String> suggestedList) {
+    public void reset(final String name, final String defaultValue, final List<String> suggestedList) {
         super.reset(name, defaultValue);
         resetSuggestedList(suggestedList);
     }
 
-    protected void resetSuggestedList(List<String> suggestedList) {
+    protected void resetSuggestedList(final List<String> suggestedList) {
         setSuggestedList(suggestedList);
         updateMenuButtonIfNeeded();
         entryField.setPromptText(null);
@@ -222,7 +222,7 @@ public abstract class AutoSuggestEditor extends PropertyEditor {
         return suggestedList;
     }
     
-    private void setSuggestedList(List<String> suggestedList) {
+    private void setSuggestedList(final List<String> suggestedList) {
         Collections.sort(suggestedList);
         this.suggestedList = suggestedList;
     }
@@ -236,7 +236,7 @@ public abstract class AutoSuggestEditor extends PropertyEditor {
     }
 
     @FXML
-    protected void suggestedLvKeyPressed(KeyEvent event) {
+    protected void suggestedLvKeyPressed(final KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             useSuggested();
         }
@@ -247,12 +247,12 @@ public abstract class AutoSuggestEditor extends PropertyEditor {
     }
 
     @FXML
-    protected void suggestedLvMousePressed(MouseEvent event) {
+    protected void suggestedLvMousePressed(final MouseEvent event) {
         useSuggested();
     }
 
     @FXML
-    protected void textFieldKeyReleased(KeyEvent event) {
+    protected void textFieldKeyReleased(final KeyEvent event) {
 //                System.out.println("Key code : " + event.getCode());
         if ((event.getCode() == KeyCode.ENTER) || (event.getCode() == KeyCode.UP)
                 || (event.getCode() == KeyCode.ESCAPE)) {
@@ -267,7 +267,7 @@ public abstract class AutoSuggestEditor extends PropertyEditor {
     }
 
     @FXML
-    protected void textFieldMouseClicked(MouseEvent event) {
+    protected void textFieldMouseClicked(final MouseEvent event) {
     }
 
     private void initConstants() {
@@ -282,7 +282,7 @@ public abstract class AutoSuggestEditor extends PropertyEditor {
     }
 
     private void handleSuggestedPopup() {
-        String value = entryField.getText();
+        final var value = entryField.getText();
         if (!suggest) {
             // Suggest popup is disabled
             if (value == null || value.isEmpty()) {
@@ -293,12 +293,12 @@ public abstract class AutoSuggestEditor extends PropertyEditor {
             }
         }
 
-        List<String> suggestedItems;
+        final List<String> suggestedItems;
         suggestedItems = getSuggestedItems(value, value);
         // If the suggested list is empty, or contains a single element equals to the current value,
         // hide the popup
         if (suggestedItems.isEmpty()
-                || ((suggestedItems.size() == 1) && suggestedItems.get(0).equals(value))) {
+                || ((suggestedItems.size() == 1) && suggestedItems.getFirst().equals(value))) {
             hidePopup();
         } else {
             showPopup(suggestedItems);
@@ -306,7 +306,7 @@ public abstract class AutoSuggestEditor extends PropertyEditor {
     }
 
     private List<String> getSuggestedItems(String filter, String currentValue) {
-        List<String> suggestedItems = new ArrayList<>();
+        final List<String> suggestedItems = new ArrayList<>();
         if (filter == null || currentValue == null) {
             // Return the whole suggestedList
             return suggestedList;
@@ -314,8 +314,8 @@ public abstract class AutoSuggestEditor extends PropertyEditor {
         // We don't want to be case sensitive
         filter = filter.toLowerCase(Locale.ROOT);
         currentValue = currentValue.toLowerCase(Locale.ROOT);
-        for (String suggestItem : suggestedList) {
-            String suggestItemLower = suggestItem.toLowerCase(Locale.ROOT);
+        for (final var suggestItem : suggestedList) {
+            final var suggestItemLower = suggestItem.toLowerCase(Locale.ROOT);
             if (suggestItemLower.contains(filter)) {
                 // We don't want to suggest the already used value
                 if (suggestItemLower.equals(currentValue)) {
@@ -327,11 +327,11 @@ public abstract class AutoSuggestEditor extends PropertyEditor {
         return suggestedItems;
     }
 
-    private void showPopup(List<String> suggestedItems) {
+    private void showPopup(final List<String> suggestedItems) {
         if (!suggestedLv.getItems().equals(suggestedItems)) {
             suggestedLv.setItems(FXCollections.observableArrayList(suggestedItems));
         }
-        if (entryField.getContextMenu().isShowing() == false) {
+        if (!entryField.getContextMenu().isShowing()) {
 //                System.out.println("showPopup");
             suggestedLv.getSelectionModel().clearSelection();
             // popup x coordinate need to be slightly moved, so that the popup is centered 
@@ -340,7 +340,7 @@ public abstract class AutoSuggestEditor extends PropertyEditor {
     }
 
     private void hidePopup() {
-        if (entryField.getContextMenu().isShowing() == true) {
+        if (entryField.getContextMenu().isShowing()) {
             entryField.getContextMenu().hide();
 
         }
@@ -348,7 +348,7 @@ public abstract class AutoSuggestEditor extends PropertyEditor {
 
     private void useSuggested() {
         if (!suggestedLv.getSelectionModel().isEmpty()) {
-            String selected = suggestedLv.getSelectionModel().getSelectedItem();
+            final var selected = suggestedLv.getSelectionModel().getSelectedItem();
             entryField.setText(selected);
             entryField.requestFocus();
             entryField.selectAll();
@@ -374,8 +374,8 @@ public abstract class AutoSuggestEditor extends PropertyEditor {
     private void addConstantsInMenuButton() {
         assert menuButton != null;
         menuButton.getItems().clear();
-        for (String suggestItem : suggestedList) {
-            MenuItem menuItem = new MenuItem(suggestItem);
+        for (final var suggestItem : suggestedList) {
+            final var menuItem = new MenuItem(suggestItem);
 //            MenuItem menuItem = new MenuItem();
             menuItem.setMnemonicParsing(false);
             menuItem.setOnAction(t -> {

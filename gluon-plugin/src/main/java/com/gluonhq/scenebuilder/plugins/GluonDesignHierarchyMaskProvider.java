@@ -76,7 +76,7 @@ public class GluonDesignHierarchyMaskProvider implements ExternalDesignHierarchy
     }
 
     @Override
-    public Predicate<Object> isExternalAccepting(DesignHierarchyMask.Accessory accessory) {
+    public Predicate<Object> isExternalAccepting(final DesignHierarchyMask.Accessory accessory) {
         if (accessory == DesignHierarchyMask.Accessory.CONTENT || accessory == DesignHierarchyMask.Accessory.GRAPHIC ||
             accessory == DesignHierarchyMask.Accessory.DP_CONTENT || accessory == DesignHierarchyMask.Accessory.DP_GRAPHIC) {
             // For these accessories, we accept every object except an ExpandedPanel
@@ -101,10 +101,10 @@ public class GluonDesignHierarchyMaskProvider implements ExternalDesignHierarchy
     }
 
     @Override
-    public Optional<DesignHierarchyMask.Accessory> getExternalAccessoryForHierarchyItem(HierarchyItem hierarchyItem) {
-        if (hierarchyItem instanceof HierarchyItemExpandedPanel expandedPanel) {
+    public Optional<DesignHierarchyMask.Accessory> getExternalAccessoryForHierarchyItem(final HierarchyItem hierarchyItem) {
+        if (hierarchyItem instanceof final HierarchyItemExpandedPanel expandedPanel) {
             return Optional.of(expandedPanel.getAccessory());
-        } else if (hierarchyItem instanceof HierarchyItemExpansionPanel expansionPanel) {
+        } else if (hierarchyItem instanceof final HierarchyItemExpansionPanel expansionPanel) {
             return Optional.of(expansionPanel.getAccessory());
         }
         return Optional.empty();

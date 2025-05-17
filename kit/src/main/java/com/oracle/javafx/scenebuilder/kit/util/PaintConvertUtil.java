@@ -51,10 +51,10 @@ public class PaintConvertUtil {
         // no-op
     }
 
-    public static String convertPaintToCss(Paint fxPaint) {
+    public static String convertPaintToCss(final Paint fxPaint) {
         if (fxPaint instanceof LinearGradient) {
-            LinearGradient paint = (LinearGradient) fxPaint;
-            StringBuilder strBuilder = new StringBuilder("linear-gradient(from ")
+            final var paint = (LinearGradient) fxPaint;
+            final var strBuilder = new StringBuilder("linear-gradient(from ")
                     .append(lenToStr(paint.getStartX(), paint.isProportional()))
                     .append(" ").append(lenToStr(paint.getStartY(), paint.isProportional()))
                     .append(" to ").append(lenToStr(paint.getEndX(), paint.isProportional()))
@@ -63,8 +63,8 @@ public class PaintConvertUtil {
             connectCycleMethodAndStops(strBuilder, paint.getCycleMethod(), paint.getStops());
             return strBuilder.toString();
         } else if (fxPaint instanceof RadialGradient) {
-            RadialGradient paint = (RadialGradient) fxPaint;
-            StringBuilder strBuilder = new StringBuilder("radial-gradient(focus-angle ").append(round(paint.getFocusAngle()))
+            final var paint = (RadialGradient) fxPaint;
+            final var strBuilder = new StringBuilder("radial-gradient(focus-angle ").append(round(paint.getFocusAngle()))
                     .append("deg, focus-distance ").append(round(paint.getFocusDistance() * 100))
                     .append("% , center ").append(lenToStr(paint.getCenterX(), paint.isProportional()))
                     .append(" ").append(lenToStr(paint.getCenterY(), paint.isProportional()))
@@ -78,9 +78,9 @@ public class PaintConvertUtil {
         return "";
     }
 
-    public static String convertPaintToJavaCode(Paint fxPaint) {
+    public static String convertPaintToJavaCode(final Paint fxPaint) {
         if (fxPaint instanceof LinearGradient) {
-            LinearGradient paint = (LinearGradient) fxPaint;
+            final var paint = (LinearGradient) fxPaint;
             return "LinearGradient paint = new LinearGradient(" + System.lineSeparator() +
                     round(paint.getStartX()) + ", " + round(paint.getStartY()) + ", " +
                     round(paint.getEndX()) + ", " + round(paint.getEndY()) + ", " +
@@ -89,7 +89,7 @@ public class PaintConvertUtil {
                     stopsToString(paint.getStops()) +
                     ");";
         } else if (fxPaint instanceof RadialGradient) {
-            RadialGradient paint = (RadialGradient) fxPaint;
+            final var paint = (RadialGradient) fxPaint;
             return "RadialGradient paint = new RadialGradient(" + System.lineSeparator() +
                     round(paint.getFocusAngle()) + ", " + round(paint.getFocusDistance()) + ", " + round(paint.getCenterX()) + ", "
                     + round(paint.getCenterY()) + ", " + round(paint.getRadius()) + ", " + paint.isProportional() + ", "
@@ -101,7 +101,7 @@ public class PaintConvertUtil {
         return "";
     }
 
-    private static void connectCycleMethodAndStops(StringBuilder strBuilder, CycleMethod cycleMethod, List<Stop> stops) {
+    private static void connectCycleMethodAndStops(final StringBuilder strBuilder, final CycleMethod cycleMethod, final List<Stop> stops) {
         switch (cycleMethod) {
             case REFLECT:
                 strBuilder.append("reflect").append(", ");
@@ -112,9 +112,9 @@ public class PaintConvertUtil {
             default:
                 break;
         }
-        int len = stops.size();
-        for (int i = 0; i < len; i++) {
-            Stop stop = stops.get(i);
+        final var len = stops.size();
+        for (var i = 0; i < len; i++) {
+            final var stop = stops.get(i);
             strBuilder.append(toHex(stop.getColor())).append(" ").append(round(stop.getOffset() * 100.0D)).append("%");
             if (i < len - 1) {
                 strBuilder.append(", ");
@@ -123,8 +123,8 @@ public class PaintConvertUtil {
         strBuilder.append(")");
     }
 
-    private static String cycleMethodToStr(CycleMethod cycleMethod) {
-        String cycleMethodStr;
+    private static String cycleMethodToStr(final CycleMethod cycleMethod) {
+        final String cycleMethodStr;
         if (CycleMethod.REFLECT.equals(cycleMethod)) {
             cycleMethodStr = "CycleMethod.REFLECT";
         } else if (CycleMethod.REPEAT.equals(cycleMethod)) {
@@ -135,14 +135,14 @@ public class PaintConvertUtil {
         return cycleMethodStr;
     }
 
-    private static String stopsToString(List<Stop> stops) {
-        StringBuilder stopsBuilder = new StringBuilder(32);
-        int len = stops.size();
-        for (int i = 0; i < len; i++) {
-            Stop stop = stops.get(i);
-            Color color = stop.getColor();
-            double offset = round(stop.getOffset());
-            String strColor = colorToJavaStr(color);
+    private static String stopsToString(final List<Stop> stops) {
+        final var stopsBuilder = new StringBuilder(32);
+        final var len = stops.size();
+        for (var i = 0; i < len; i++) {
+            final var stop = stops.get(i);
+            final var color = stop.getColor();
+            final var offset = round(stop.getOffset());
+            final var strColor = colorToJavaStr(color);
             stopsBuilder.append("new Stop(").append(offset).append(", ").append(strColor).append(")");
             if (i < len - 1) {
                 stopsBuilder.append(",").append(System.lineSeparator());
@@ -151,24 +151,24 @@ public class PaintConvertUtil {
         return stopsBuilder.toString();
     }
 
-    private static String colorToJavaStr(Color color) {
+    private static String colorToJavaStr(final Color color) {
         return String.format("new Color(%s, %s, %s, %s)", round(color.getRed()), round(color.getGreen()), round(color.getBlue()), round(color.getOpacity()));
     }
 
-    private static String lenToStr(double num, boolean isProportional) {
+    private static String lenToStr(final double num, final boolean isProportional) {
         return isProportional ? round(num * 100.0D) + "%" : num + "px";
     }
 
-    private static double round(double num) {
-        double doubleRounded = Math.round(num * ROUNDING_FACTOR);
+    private static double round(final double num) {
+        final double doubleRounded = Math.round(num * ROUNDING_FACTOR);
         return doubleRounded / ROUNDING_FACTOR;
     }
 
-    private static String toHex(Color color) {
-        int red = (int) Math.round(color.getRed() * 255.0D);
-        int green = (int) Math.round(color.getGreen() * 255.0D);
-        int blue = (int) Math.round(color.getBlue() * 255.0D);
-        int alpha = (int) Math.round(color.getOpacity() * 255.0D);
+    private static String toHex(final Color color) {
+        final var red = (int) Math.round(color.getRed() * 255.0D);
+        final var green = (int) Math.round(color.getGreen() * 255.0D);
+        final var blue = (int) Math.round(color.getBlue() * 255.0D);
+        final var alpha = (int) Math.round(color.getOpacity() * 255.0D);
         if (alpha == 255) {
             return String.format("#%02x%02x%02x", red, green, blue);
         } else {

@@ -46,25 +46,25 @@ public class ScrollPaneBooster {
     
     public final ScrollPane scrollPane;
     
-    public ScrollPaneBooster(ScrollPane scrollPane) {
+    public ScrollPaneBooster(final ScrollPane scrollPane) {
         assert scrollPane != null;
         this.scrollPane = scrollPane;
     }
     
-    public void scrollTo(Node node) {
+    public void scrollTo(final Node node) {
         assert node != null;
     }
     
-    public void scrollTo(Bounds targetRect) {
-        final Bounds visibleRect = getContentVisibleRect();
+    public void scrollTo(final Bounds targetRect) {
+        final var visibleRect = getContentVisibleRect();
         
-        if (visibleRect.intersects(targetRect) == false) {
+        if (!visibleRect.intersects(targetRect)) {
             // targetRect is not visible (not even partially)
             
             final double targetCenterX, targetCenterY, hValue, vValue;
             targetCenterX = (targetRect.getMinX() + targetRect.getMaxX()) / 2.0;
             targetCenterY = (targetRect.getMinY() + targetRect.getMaxY()) / 2.0;
-            final boolean clamp = true;
+            final var clamp = true;
             hValue = xContentToHValue(targetCenterX, clamp);
             vValue = yContentToVValue(targetCenterY, clamp);
             
@@ -73,15 +73,15 @@ public class ScrollPaneBooster {
         }
     }
     
-    public double xContentToHValue(double x, boolean clamp) {
-        final double xNormalized = xContentToNormalized(x, clamp);
-        final double hmin = scrollPane.getHmin();
-        final double hmax = scrollPane.getHmax();
+    public double xContentToHValue(final double x, final boolean clamp) {
+        final var xNormalized = xContentToNormalized(x, clamp);
+        final var hmin = scrollPane.getHmin();
+        final var hmax = scrollPane.getHmax();
        
         return hmin + xNormalized * (hmax - hmin);
     }
     
-    public double xContentToNormalized(double x, boolean clamp) {
+    public double xContentToNormalized(final double x, final boolean clamp) {
         
         /*
          * viewport     +-----+-----+                 +-----+-----+
@@ -94,12 +94,12 @@ public class ScrollPaneBooster {
          * 
          */
         
-        final Bounds contentBounds = scrollPane.getContent().getLayoutBounds();
-        final Bounds visibleBounds = getContentVisibleRect();
-        final double minX = visibleBounds.getWidth() / 2 - contentBounds.getMinX();
-        final double maxX = contentBounds.getWidth() - visibleBounds.getWidth() / 2.0 - contentBounds.getMinX();
-        
-        double result = (x - minX) / (maxX - minX);
+        final var contentBounds = scrollPane.getContent().getLayoutBounds();
+        final var visibleBounds = getContentVisibleRect();
+        final var minX = visibleBounds.getWidth() / 2 - contentBounds.getMinX();
+        final var maxX = contentBounds.getWidth() - visibleBounds.getWidth() / 2.0 - contentBounds.getMinX();
+
+        var result = (x - minX) / (maxX - minX);
         
         if (clamp) {
             result = Math.max(Math.min(result, 1.0), 0.0);
@@ -108,21 +108,21 @@ public class ScrollPaneBooster {
         return result;
     }
     
-    public double yContentToVValue(double y, boolean clamp) {
-        final double yNormalized = yContentToNormalized(y, clamp);
-        final double vmin = scrollPane.getVmin();
-        final double vmax = scrollPane.getVmax();
+    public double yContentToVValue(final double y, final boolean clamp) {
+        final var yNormalized = yContentToNormalized(y, clamp);
+        final var vmin = scrollPane.getVmin();
+        final var vmax = scrollPane.getVmax();
        
         return vmin + yNormalized * (vmax - vmin);
     }
     
-    public double yContentToNormalized(double y, boolean clamp) {
-        final Bounds contentBounds = scrollPane.getContent().getLayoutBounds();
-        final Bounds visibleBounds = getContentVisibleRect();
-        final double minY = visibleBounds.getHeight() / 2 - contentBounds.getMinY();
-        final double maxY = contentBounds.getHeight() - visibleBounds.getHeight() / 2.0 - contentBounds.getMinY();
-        
-        double result = (y - minY) / (maxY - minY);
+    public double yContentToNormalized(final double y, final boolean clamp) {
+        final var contentBounds = scrollPane.getContent().getLayoutBounds();
+        final var visibleBounds = getContentVisibleRect();
+        final var minY = visibleBounds.getHeight() / 2 - contentBounds.getMinY();
+        final var maxY = contentBounds.getHeight() - visibleBounds.getHeight() / 2.0 - contentBounds.getMinY();
+
+        var result = (y - minY) / (maxY - minY);
         
         if (clamp) {
             result = Math.max(Math.min(result, 1.0), 0.0);
@@ -132,7 +132,7 @@ public class ScrollPaneBooster {
     }
     
     public Bounds getContentVisibleRect() {
-        final Bounds viewportBounds = scrollPane.getViewportBounds();
+        final var viewportBounds = scrollPane.getViewportBounds();
 
         /*
          * ScrollPane.viewportBounds is a strange beast.
@@ -164,7 +164,7 @@ public class ScrollPaneBooster {
          *     
          */
         
-        final Bounds contentBounds = scrollPane.getContent().getLayoutBounds();
+        final var contentBounds = scrollPane.getContent().getLayoutBounds();
         final double minX, minY, width, height;
         minX = - viewportBounds.getMinX() - contentBounds.getMinX();
         minY = - viewportBounds.getMinY() - contentBounds.getMinY();

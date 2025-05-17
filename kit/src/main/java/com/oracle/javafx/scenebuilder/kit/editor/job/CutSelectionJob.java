@@ -44,7 +44,7 @@ public class CutSelectionJob extends InlineSelectionJob {
 
     private DeleteSelectionJob deleteSelectionSubJob;
 
-    public CutSelectionJob(EditorController editorController) {
+    public CutSelectionJob(final EditorController editorController) {
         super(editorController);
     }
 

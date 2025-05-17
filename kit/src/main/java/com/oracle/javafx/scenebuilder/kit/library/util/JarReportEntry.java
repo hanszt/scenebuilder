@@ -54,7 +54,7 @@ public class JarReportEntry {
     private final Throwable exception;
     private final String className;
 
-    public JarReportEntry(String name, Status status, Throwable exception, Class<?> klass, String className) {
+    public JarReportEntry(final String name, final Status status, final Throwable exception, final Class<?> klass, final String className) {
         assert name != null;
         assert (klass != null) || (status != Status.OK);
         assert (exception == null) || (status != Status.OK);
@@ -94,7 +94,7 @@ public class JarReportEntry {
     
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder();
+        final var sb = new StringBuilder();
         
         switch(status) {
             case OK:

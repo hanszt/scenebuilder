@@ -41,13 +41,11 @@ import com.oracle.javafx.scenebuilder.app.SceneBuilderApp;
 import com.oracle.javafx.scenebuilder.app.SceneBuilderApp.ApplicationControlAction;
 import com.oracle.javafx.scenebuilder.app.i18n.I18N;
 import com.oracle.javafx.scenebuilder.app.preferences.PreferencesController;
-import com.oracle.javafx.scenebuilder.app.preferences.PreferencesRecordGlobal;
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController.ControlAction;
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController.EditAction;
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController.Size;
 import com.oracle.javafx.scenebuilder.kit.editor.EditorPlatform;
-import com.oracle.javafx.scenebuilder.kit.editor.panel.content.ContentPanelController;
 import com.oracle.javafx.scenebuilder.kit.library.BuiltinLibrary;
 import com.oracle.javafx.scenebuilder.kit.library.BuiltinSectionComparator;
 import com.oracle.javafx.scenebuilder.kit.library.LibraryItem;
@@ -58,7 +56,6 @@ import com.oracle.javafx.scenebuilder.kit.util.control.effectpicker.EffectPicker
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -70,7 +67,6 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -443,7 +439,7 @@ public class MenuBarController {
         }
     }
 
-    public MenuBarController(DocumentWindowController documentWindowController) {
+    public MenuBarController(final DocumentWindowController documentWindowController) {
         this.documentWindowController = documentWindowController;
     }
 
@@ -456,8 +452,8 @@ public class MenuBarController {
     public MenuBar getMenuBar() {
 
         if (menuBar == null) {
-            final URL fxmlURL = MenuBarController.class.getResource("MenuBar.fxml"); //NOI18N
-            final FXMLLoader loader = new FXMLLoader();
+            final var fxmlURL = MenuBarController.class.getResource("MenuBar.fxml"); //NOI18N
+            final var loader = new FXMLLoader();
 
             loader.setController(this);
             loader.setLocation(fxmlURL);
@@ -465,10 +461,10 @@ public class MenuBarController {
             try {
                 loader.load();
                 controllerDidLoadFxml();
-            } catch (RuntimeException | IOException x) {
-                var logMessage = "Failed to load MenuBar.fxml:\n"
-                        + "loader.getController()=" + loader.getController() + "\n"
-                        + "loader.getLocation()=" + loader.getLocation() + ":";
+            } catch (final RuntimeException | IOException x) {
+                final var logMessage = "Failed to load MenuBar.fxml:\n"
+                                       + "loader.getController()=" + loader.getController() + "\n"
+                                       + "loader.getLocation()=" + loader.getLocation() + ":";
 
                 Logger.getLogger(getClass().getName()).log(Level.WARNING, logMessage, x);
 
@@ -479,7 +475,7 @@ public class MenuBarController {
         return menuBar;
     }
 
-    public void setDebugMenuVisible(boolean visible) {
+    public void setDebugMenuVisible(final boolean visible) {
         if (isDebugMenuVisible() != visible) {
             if (visible) {
                 if (debugMenuController == null) {
@@ -664,7 +660,7 @@ public class MenuBarController {
          * in a StackPane. This stack pane is useless now.
          * So we unwrap the menu bar and make it the panel root.
          */
-        final StackPane rootStackPane = (StackPane) menuBar.getParent();
+        final var rootStackPane = (StackPane) menuBar.getParent();
         rootStackPane.getChildren().remove(menuBar);
 
         /*
@@ -719,9 +715,9 @@ public class MenuBarController {
 
             @Override
             public String getTitle() {
-                String title = I18N.getString("menu.title.edit.included.default");
+                var title = I18N.getString("menu.title.edit.included.default");
                 if (documentWindowController != null) {
-                    final File file = documentWindowController.getEditorController().getIncludedFile();
+                    final var file = documentWindowController.getEditorController().getIncludedFile();
                     if (file != null) {
                         title = I18N.getString("menu.title.edit.included", file.getName());
                     }
@@ -733,9 +729,9 @@ public class MenuBarController {
 
             @Override
             public String getTitle() {
-                String title = I18N.getString("menu.title.reveal.included.default");
+                var title = I18N.getString("menu.title.reveal.included.default");
                 if (documentWindowController != null) {
-                    final File file = documentWindowController.getEditorController().getIncludedFile();
+                    final var file = documentWindowController.getEditorController().getIncludedFile();
                     if (file != null) {
                         if (EditorPlatform.IS_MAC) {
                             title = I18N.getString("menu.title.reveal.included.finder", file.getName());
@@ -915,7 +911,7 @@ public class MenuBarController {
                 if (documentWindowController == null) {
                     titleKey = "menu.title.disable.guides";
                 } else {
-                    final ContentPanelController contentPanelController
+                    final var contentPanelController
                             = documentWindowController.getContentPanelController();
                     if (contentPanelController.isGuidesVisible()) {
                         titleKey = "menu.title.disable.guides";
@@ -1119,7 +1115,7 @@ public class MenuBarController {
         removeResourceMenuItem.setUserData(new DocumentControlActionController(DocumentControlAction.REMOVE_RESOURCE) {
             @Override
             public String getTitle() {
-                String title = I18N.getString("menu.title.remove.resource");
+                var title = I18N.getString("menu.title.remove.resource");
                 if (documentWindowController != null
                         && documentWindowController.getResourceFile() != null) {
                     title = I18N.getString("menu.title.remove.resource.with.file",
@@ -1133,7 +1129,7 @@ public class MenuBarController {
 
             @Override
             public String getTitle() {
-                String title = I18N.getString("menu.title.reveal.resource");
+                var title = I18N.getString("menu.title.reveal.resource");
                 if (documentWindowController != null
                         && documentWindowController.getResourceFile() != null) {
                     title = I18N.getString("menu.title.reveal.resource.with.file",
@@ -1180,7 +1176,7 @@ public class MenuBarController {
          * Put some generic handlers on each Menu and MenuItem.
          * For Insert and Window menu, we override with specific handlers.
          */
-        for (Menu m : menuBar.getMenus()) {
+        for (final var m : menuBar.getMenus()) {
             setupMenuItemHandlers(m);
         }
         
@@ -1196,19 +1192,19 @@ public class MenuBarController {
         windowMenu.setOnMenuValidation(onWindowMenuValidationHandler);
     }
 
-    private void addSwatchGraphic(RadioMenuItem swatchMenuItem) {
-        EditorPlatform.Theme swatch = ((GluonActionController) swatchMenuItem.getUserData()).getSwatch();
+    private void addSwatchGraphic(final RadioMenuItem swatchMenuItem) {
+        final var swatch = ((GluonActionController) swatchMenuItem.getUserData()).getSwatch();
         swatchMenuItem.setGraphic(GluonEditorPlatform.createGraphicForSwatch(swatch));
     }
 
     /*
      * Generic menu and item handlers
      */
-    private void setupMenuItemHandlers(MenuItem i) {
+    private void setupMenuItemHandlers(final MenuItem i) {
         if (i instanceof Menu) {
-            final Menu m = (Menu) i;
+            final var m = (Menu) i;
             m.setOnMenuValidation(onMenuValidationEventHandler);
-            for (MenuItem child : m.getItems()) {
+            for (final var child : m.getItems()) {
                 setupMenuItemHandlers(child);
             }
         } else {
@@ -1225,21 +1221,21 @@ public class MenuBarController {
         handleOnMenuValidation((Menu) t.getSource());
     };
 
-    private void handleOnMenuValidation(Menu menu) {
-        for (MenuItem i : menu.getItems()) {
+    private void handleOnMenuValidation(final Menu menu) {
+        for (final var i : menu.getItems()) {
             final boolean disable, selected;
             final String title;
             if (i.getUserData() instanceof MenuItemController) {
-                final MenuItemController c = (MenuItemController) i.getUserData();
+                final var c = (MenuItemController) i.getUserData();
                 boolean canPerform;
                 try {
                     canPerform = c.canPerform();
-                } catch(RuntimeException x) {
+                } catch(final RuntimeException x) {
                     // This catch is protection against a bug in canPerform().
                     // It avoids to block all the items in the menu in case
                     // of crash in canPerform() (see DTL-6164).
                     canPerform = false;
-                    final Exception xx 
+                    final var xx
                             = new Exception(c.getClass().getSimpleName() 
                             + ".canPerform() did break for menu item " + i, x); //NOI18N
 
@@ -1264,7 +1260,7 @@ public class MenuBarController {
                 i.setText(title);
             }
             if (i instanceof RadioMenuItem) {
-                final RadioMenuItem ri = (RadioMenuItem) i;
+                final var ri = (RadioMenuItem) i;
                 ri.setSelected(selected);
             }
         }
@@ -1276,9 +1272,9 @@ public class MenuBarController {
         handleOnActionMenu((MenuItem) t.getSource());
     };
 
-    private void handleOnActionMenu(MenuItem i) {
+    private void handleOnActionMenu(final MenuItem i) {
         assert i.getUserData() instanceof MenuItemController;
-        final MenuItemController c = (MenuItemController) i.getUserData();
+        final var c = (MenuItemController) i.getUserData();
         c.perform();
     }
     
@@ -1289,34 +1285,34 @@ public class MenuBarController {
     final static double[] scalingTable = {0.25, 0.50, 0.75, 1.00, 1.50, 2.0, 4.0};
     
     private void updateZoomMenu() {
-        final double[] scalingTable = {0.25, 0.50, 0.75, 1.00, 1.50, 2.0, 4.0};
+        final var scalingTable = new double[]{0.25, 0.50, 0.75, 1.00, 1.50, 2.0, 4.0};
 
-        final MenuItem zoomInMenuItem = new MenuItem(I18N.getString("menu.title.zoom.in"));
+        final var zoomInMenuItem = new MenuItem(I18N.getString("menu.title.zoom.in"));
         zoomInMenuItem.setUserData(new ZoomInActionController());
         zoomInMenuItem.setAccelerator(new KeyCharacterCombination("+", modifier)); //NOI18N
         zoomMenu.getItems().add(zoomInMenuItem);
         
-        final MenuItem zoomOutMenuItem = new MenuItem(I18N.getString("menu.title.zoom.out"));
+        final var zoomOutMenuItem = new MenuItem(I18N.getString("menu.title.zoom.out"));
         zoomOutMenuItem.setUserData(new ZoomOutActionController());
         zoomOutMenuItem.setAccelerator(new KeyCharacterCombination("/", modifier));  //NOI18N
         zoomMenu.getItems().add(zoomOutMenuItem);
         
         zoomMenu.getItems().add(new SeparatorMenuItem());
         
-        for (int i = 0; i < scalingTable.length; i++) {
-            final double scaling = scalingTable[i];
-            final String title = String.format("%.0f%%", scaling * 100); //NOI18N
-            final RadioMenuItem mi = new RadioMenuItem(title);
+        for (var i = 0; i < scalingTable.length; i++) {
+            final var scaling = scalingTable[i];
+            final var title = String.format("%.0f%%", scaling * 100); //NOI18N
+            final var mi = new RadioMenuItem(title);
             mi.setUserData(new SetZoomActionController(scaling));
             zoomMenu.getItems().add(mi);
         }
     }
 
     
-    private static int findZoomScaleIndex(double zoomScale) {
-        int result = -1;
+    private static int findZoomScaleIndex(final double zoomScale) {
+        var result = -1;
         
-        for (int i = 0; i < scalingTable.length; i++) {
+        for (var i = 0; i < scalingTable.length; i++) {
             if (MathUtils.equals(zoomScale, scalingTable[i])) {
                 result = i;
                 break;
@@ -1330,11 +1326,11 @@ public class MenuBarController {
 
         final List<MenuItem> menuItems = new ArrayList<>();
 
-        final PreferencesController pc = PreferencesController.getSingleton();
-        final PreferencesRecordGlobal recordGlobal = pc.getRecordGlobal();
-        final List<String> recentItems = recordGlobal.getRecentItems();
+        final var pc = PreferencesController.getSingleton();
+        final var recordGlobal = pc.getRecordGlobal();
+        final var recentItems = recordGlobal.getRecentItems();
 
-        final MenuItem clearMenuItem = new MenuItem(I18N.getString("menu.title.open.recent.clear"));
+        final var clearMenuItem = new MenuItem(I18N.getString("menu.title.open.recent.clear"));
         clearMenuItem.setOnAction(new ClearOpenRecentHandler());
 
         if (recentItems.isEmpty()) {
@@ -1347,10 +1343,10 @@ public class MenuBarController {
             final List<String> recentItemsToRemove = new ArrayList<>();
 
             // First pass to build recentItemsNames and recentItemsToRemove
-            for (String recentItem : recentItems) {
-                final File recentItemFile = new File(recentItem);
+            for (final var recentItem : recentItems) {
+                final var recentItemFile = new File(recentItem);
                 if (recentItemFile.exists()) {
-                    final String name = recentItemFile.getName();
+                    final var name = recentItemFile.getName();
                     if (recentItemsNames.containsKey(name)) {
                         recentItemsNames.replace(name, recentItemsNames.get(name) + 1);
                     } else {
@@ -1362,10 +1358,10 @@ public class MenuBarController {
                 }
             }
             // Second pass to build MenuItems
-            for (String recentItem : recentItems) {
-                final File recentItemFile = new File(recentItem);
+            for (final var recentItem : recentItems) {
+                final var recentItemFile = new File(recentItem);
                 if (recentItemFile.exists()) {
-                    final String name = recentItemFile.getName();
+                    final var name = recentItemFile.getName();
                     assert recentItemsNames.keySet().contains(name);
                     final MenuItem mi;
                     if (recentItemsNames.get(name) > 1) {
@@ -1377,7 +1373,7 @@ public class MenuBarController {
                         mi = new MenuItem(name);
                     }
                     mi.setOnAction(t -> {
-                        final File file = new File(recentItem);
+                        final var file = new File(recentItem);
                         SceneBuilderApp.getSingleton().performOpenRecent(documentWindowController, file);
                     });
                     mi.setMnemonicParsing(false);
@@ -1386,7 +1382,7 @@ public class MenuBarController {
             }
             
             // Cleanup recent items preferences if needed
-            if (recentItemsToRemove.isEmpty() == false) {
+            if (!recentItemsToRemove.isEmpty()) {
                 recordGlobal.removeRecentItems(recentItemsToRemove);
             }
 
@@ -1401,25 +1397,25 @@ public class MenuBarController {
         assert removeSceneStyleSheetMenu != null;
 
         if (documentWindowController != null) {
-            ObservableList<File> sceneStyleSheets = documentWindowController.getEditorController().getSceneStyleSheets();
+            final var sceneStyleSheets = documentWindowController.getEditorController().getSceneStyleSheets();
 
             if (sceneStyleSheets != null) {
                 removeSceneStyleSheetMenu.getItems().clear();
                 openSceneStyleSheetMenu.getItems().clear();
 
                 if (sceneStyleSheets.size() == 0) {
-                    MenuItem mi = new MenuItem(I18N.getString("scenestylesheet.none"));
+                    final var mi = new MenuItem(I18N.getString("scenestylesheet.none"));
                     mi.setDisable(true);
                     removeSceneStyleSheetMenu.getItems().add(mi);
-                    MenuItem mi2 = new MenuItem(I18N.getString("scenestylesheet.none"));
+                    final var mi2 = new MenuItem(I18N.getString("scenestylesheet.none"));
                     mi2.setDisable(true);
                     openSceneStyleSheetMenu.getItems().add(mi2);
                 } else {
-                    for (File f : sceneStyleSheets) {
-                        MenuItem mi = new MenuItem(f.getName());
+                    for (final var f : sceneStyleSheets) {
+                        final var mi = new MenuItem(f.getName());
                         mi.setUserData(new RemoveSceneStyleSheetActionController(f));
                         removeSceneStyleSheetMenu.getItems().add(mi);
-                        MenuItem mi2 = new MenuItem(f.getName());
+                        final var mi2 = new MenuItem(f.getName());
                         mi2.setUserData(new OpenSceneStyleSheetActionController(f));
                         openSceneStyleSheetMenu.getItems().add(mi2);
                     }
@@ -1442,13 +1438,13 @@ public class MenuBarController {
         assert insertCustomMenu != null;        
 
         if (documentWindowController != null) {
-            final EditorController editorController = documentWindowController.getEditorController();
+            final var editorController = documentWindowController.getEditorController();
             assert editorController.getLibrary() != null;
 
-            Set<LibraryItem> sectionItems = new TreeSet<>(new LibraryItemNameComparator());
+            final Set<LibraryItem> sectionItems = new TreeSet<>(new LibraryItemNameComparator());
             
             // Collect custom items
-            for (LibraryItem li : editorController.getLibrary().getItems()) {
+            for (final var li : editorController.getLibrary().getItems()) {
                 if (li.getSection().equals(UserLibrary.TAG_USER_DEFINED)) {
                     sectionItems.add(li);
                 }
@@ -1458,7 +1454,7 @@ public class MenuBarController {
             if (sectionItems.size() > 0) {
                 insertCustomMenu.getItems().clear();
                 
-                for (LibraryItem li : sectionItems) {
+                for (final var li : sectionItems) {
                     insertCustomMenu.getItems().add(makeMenuItemForLibraryItem(li));
                 }
                 
@@ -1473,7 +1469,7 @@ public class MenuBarController {
     private void constructCustomPartOfInsertMenu() {
         assert insertMenu != null;
         insertCustomMenu = makeMenuForLibrarySection(UserLibrary.TAG_USER_DEFINED);
-        insertMenu.getItems().add(0, insertCustomMenu);
+        insertMenu.getItems().addFirst(insertCustomMenu);
         insertCustomMenu.setVisible(false);
     }
     
@@ -1486,8 +1482,8 @@ public class MenuBarController {
         final Map<String, Set<LibraryItem>> sectionMap
                 = new TreeMap<>(new BuiltinSectionComparator());
 
-        for (LibraryItem li : BuiltinLibrary.getLibrary().getItems()) {
-            Set<LibraryItem> sectionItems = sectionMap.get(li.getSection());
+        for (final var li : BuiltinLibrary.getLibrary().getItems()) {
+            var sectionItems = sectionMap.get(li.getSection());
             if (sectionItems == null) {
                 sectionItems = new TreeSet<>(new LibraryItemNameComparator());
                 sectionMap.put(li.getSection(), sectionItems);
@@ -1498,24 +1494,24 @@ public class MenuBarController {
             }
         }
 
-        for (Map.Entry<String, Set<LibraryItem>> e : sectionMap.entrySet()) {
-            final Menu sectionMenu = makeMenuForLibrarySection(e.getKey());
+        for (final var e : sectionMap.entrySet()) {
+            final var sectionMenu = makeMenuForLibrarySection(e.getKey());
             insertMenu.getItems().add(sectionMenu);
-            for (LibraryItem li : e.getValue()) {
+            for (final var li : e.getValue()) {
                 sectionMenu.getItems().add(makeMenuItemForLibraryItem(li));
             }
         }
     }
 
-    private Menu makeMenuForLibrarySection(String section) {
-        final Menu result = new Menu();
+    private Menu makeMenuForLibrarySection(final String section) {
+        final var result = new Menu();
         result.setText(section);
         result.setOnShowing(t -> updateInsertMenuState(result));
         return result;
     }
 
     private MenuItem makeMenuItemForLibraryItem(final LibraryItem li) {
-        final MenuItem result = new MenuItem();
+        final var result = new MenuItem();
 
         result.setText(li.getName());
         result.setUserData(li);
@@ -1523,13 +1519,13 @@ public class MenuBarController {
         return result;
     }
 
-    private void updateInsertMenuState(Menu sectionMenu) {
+    private void updateInsertMenuState(final Menu sectionMenu) {
         if (documentWindowController != null && documentWindowController.getStage().isFocused()) {
-            final EditorController editorController = documentWindowController.getEditorController();
-            for (MenuItem menuItem : sectionMenu.getItems()) {
+            final var editorController = documentWindowController.getEditorController();
+            for (final var menuItem : sectionMenu.getItems()) {
                 assert menuItem.getUserData() instanceof LibraryItem;
-                final LibraryItem li = (LibraryItem) menuItem.getUserData();
-                final boolean enabled = editorController.canPerformInsert(li);
+                final var li = (LibraryItem) menuItem.getUserData();
+                final var enabled = editorController.canPerformInsert(li);
                 menuItem.setDisable(!enabled);
             }
         } else {
@@ -1538,16 +1534,16 @@ public class MenuBarController {
             // bar is part of the document window then even if some other non-modal
             // window is opened (Preferences, Skeleton, Preview) one has to give
             // focus to the document window to become able to open the Insert menu.
-            for (MenuItem menuItem : sectionMenu.getItems()) {
+            for (final var menuItem : sectionMenu.getItems()) {
                 assert menuItem.getUserData() instanceof LibraryItem;
                 menuItem.setDisable(true);
             }
         }
     }
 
-    private void handleInsertMenuAction(LibraryItem li) {
+    private void handleInsertMenuAction(final LibraryItem li) {
         if (documentWindowController != null) {
-            final EditorController editorController = documentWindowController.getEditorController();
+            final var editorController = documentWindowController.getEditorController();
             editorController.performInsert(li);
         }
     }
@@ -1557,13 +1553,13 @@ public class MenuBarController {
      */
     private void updateAddEffectMenu() {
         addEffectMenu.getItems().clear();
-        for (Class<? extends Effect> c : EffectPicker.getEffectClasses()) {
+        for (final var c : EffectPicker.getEffectClasses()) {
             addEffectMenu.getItems().add(makeMenuItemForEffect(c));
         }
     }
 
-    private MenuItem makeMenuItemForEffect(Class<? extends Effect> effectClass) {
-        final MenuItem result = new MenuItem();
+    private MenuItem makeMenuItemForEffect(final Class<? extends Effect> effectClass) {
+        final var result = new MenuItem();
         result.setText(effectClass.getSimpleName());
         result.setUserData(new AddEffectActionController(effectClass));
         return result;
@@ -1581,7 +1577,7 @@ public class MenuBarController {
     private void handleOnWindowMenuValidation() {
         windowMenu.getItems().clear();
 
-        final List<DocumentWindowController> documentWindowControllers
+        final var documentWindowControllers
                 = SceneBuilderApp.getSingleton().getDocumentWindowControllers();
         if (documentWindowControllers.isEmpty()) {
             // Adds the "No window" menu item
@@ -1591,14 +1587,14 @@ public class MenuBarController {
                     = new ArrayList<>(documentWindowControllers);
             Collections.sort(sortedControllers, new DocumentWindowController.TitleComparator());
 
-            for (DocumentWindowController dwc : sortedControllers) {
+            for (final var dwc : sortedControllers) {
                 windowMenu.getItems().add(makeWindowMenuItem(dwc));
             }
         }
     }
 
     private MenuItem makeWindowMenuItem(final DocumentWindowController dwc) {
-        final RadioMenuItem result = new RadioMenuItem();
+        final var result = new RadioMenuItem();
         if (dwc != null) {
             result.setText(dwc.getStage().getTitle());
             result.setDisable(false);
@@ -1617,12 +1613,12 @@ public class MenuBarController {
 
         private final DocumentWindowController dwc;
 
-        public WindowMenuEventHandler(DocumentWindowController dwc) {
+        public WindowMenuEventHandler(final DocumentWindowController dwc) {
             this.dwc = dwc;
         }
 
         @Override
-        public void handle(ActionEvent t) {
+        public void handle(final ActionEvent t) {
             dwc.getStage().toFront();
         }
     }
@@ -1649,9 +1645,9 @@ public class MenuBarController {
 
         @Override
         public boolean canPerform() {
-            boolean result;
+            final boolean result;
             if (documentWindowController == null
-                    || documentWindowController.getStage().isFocused() == false) {
+                || !documentWindowController.getStage().isFocused()) {
                 result = false;
             } else {
                 result = documentWindowController.getEditorController().canUndo();
@@ -1667,7 +1663,7 @@ public class MenuBarController {
 
         @Override
         public String getTitle() {
-            final StringBuilder result = new StringBuilder();
+            final var result = new StringBuilder();
             result.append(I18N.getString("menu.title.undo"));
             if (canPerform()) {
                 result.append(" "); //NOI18N
@@ -1681,9 +1677,9 @@ public class MenuBarController {
 
         @Override
         public boolean canPerform() {
-            boolean result;
+            final boolean result;
             if (documentWindowController == null
-                    || documentWindowController.getStage().isFocused() == false) {
+                || !documentWindowController.getStage().isFocused()) {
                 result = false;
             } else {
                 result = documentWindowController.getEditorController().canRedo();
@@ -1699,7 +1695,7 @@ public class MenuBarController {
 
         @Override
         public String getTitle() {
-            final StringBuilder result = new StringBuilder();
+            final var result = new StringBuilder();
             result.append(I18N.getString("menu.title.redo"));
             if (canPerform()) {
                 result.append(" "); //NOI18N
@@ -1713,15 +1709,15 @@ public class MenuBarController {
 
         private final EditAction editAction;
 
-        public EditActionController(EditAction editAction) {
+        public EditActionController(final EditAction editAction) {
             this.editAction = editAction;
         }
 
         @Override
         public boolean canPerform() {
-            boolean result;
+            final boolean result;
             if (documentWindowController == null
-                    || documentWindowController.getStage().isFocused() == false) {
+                || !documentWindowController.getStage().isFocused()) {
                 result = false;
             } else {
                 result = documentWindowController.getEditorController().canPerformEditAction(editAction);
@@ -1741,13 +1737,13 @@ public class MenuBarController {
 
         private final ControlAction controlAction;
 
-        public ControlActionController(ControlAction controlAction) {
+        public ControlActionController(final ControlAction controlAction) {
             this.controlAction = controlAction;
         }
 
         @Override
         public boolean canPerform() {
-            boolean result;
+            final boolean result;
             if (documentWindowController == null) {
                 result = false;
             } else {
@@ -1768,15 +1764,15 @@ public class MenuBarController {
 
         private final DocumentEditAction editAction;
 
-        public DocumentEditActionController(DocumentEditAction editAction) {
+        public DocumentEditActionController(final DocumentEditAction editAction) {
             this.editAction = editAction;
         }
 
         @Override
         public boolean canPerform() {
-            boolean result;
+            final boolean result;
             if (documentWindowController == null
-                    || documentWindowController.getStage().isFocused() == false) {
+                || !documentWindowController.getStage().isFocused()) {
                 result = false;
             } else {
                 result = documentWindowController.canPerformEditAction(editAction);
@@ -1796,13 +1792,13 @@ public class MenuBarController {
 
         private final DocumentControlAction controlAction;
 
-        public DocumentControlActionController(DocumentControlAction controlAction) {
+        public DocumentControlActionController(final DocumentControlAction controlAction) {
             this.controlAction = controlAction;
         }
 
         @Override
         public boolean canPerform() {
-            boolean result;
+            final boolean result;
             if (documentWindowController == null) {
                 result = false;
             } else {
@@ -1823,7 +1819,7 @@ public class MenuBarController {
 
         private final ApplicationControlAction controlAction;
 
-        public ApplicationControlActionController(ApplicationControlAction controlAction) {
+        public ApplicationControlActionController(final ApplicationControlAction controlAction) {
             this.controlAction = controlAction;
         }
 
@@ -1845,15 +1841,15 @@ public class MenuBarController {
 
         private final Class<? extends Effect> effectClass;
 
-        public AddEffectActionController(Class<? extends Effect> effectClass) {
+        public AddEffectActionController(final Class<? extends Effect> effectClass) {
             this.effectClass = effectClass;
         }
 
         @Override
         public boolean canPerform() {
-            boolean result;
+            final boolean result;
             if (documentWindowController == null
-                    || documentWindowController.getStage().isFocused() == false) {
+                || !documentWindowController.getStage().isFocused()) {
                 result = false;
             } else {
                 result = documentWindowController.getEditorController().canPerformSetEffect();
@@ -1871,7 +1867,7 @@ public class MenuBarController {
 
         private final double scaling;
 
-        public SetZoomActionController(double scaling) {
+        public SetZoomActionController(final double scaling) {
             this.scaling = scaling;
         }
 
@@ -1882,23 +1878,23 @@ public class MenuBarController {
 
         @Override
         public void perform() {
-            final ContentPanelController contentPanelController
+            final var contentPanelController
                     = documentWindowController.getContentPanelController();
-            final double currentScaling
+            final var currentScaling
                     = contentPanelController.getScaling();
-            if (MathUtils.equals(currentScaling, scaling) == false) {
+            if (!MathUtils.equals(currentScaling, scaling)) {
                 contentPanelController.setScaling(scaling);
             }
         }
 
         @Override
         public boolean isSelected() {
-            boolean result;
+            final boolean result;
 
             if (documentWindowController == null) {
                 result = false;
             } else {
-                final double currentScaling
+                final var currentScaling
                         = documentWindowController.getContentPanelController().getScaling();
                 result = MathUtils.equals(currentScaling, scaling);
             }
@@ -1912,13 +1908,13 @@ public class MenuBarController {
 
         @Override
         public boolean canPerform() {
-            boolean result;
+            final boolean result;
             if (documentWindowController == null) {
                 result = false;
             } else {
-                final ContentPanelController contentPanelController
+                final var contentPanelController
                         = documentWindowController.getContentPanelController();
-                final int currentScalingIndex
+                final var currentScalingIndex
                         = findZoomScaleIndex(contentPanelController.getScaling());
                 result = currentScalingIndex+1 < scalingTable.length;
             }
@@ -1927,11 +1923,11 @@ public class MenuBarController {
 
         @Override
         public void perform() {
-            final ContentPanelController contentPanelController
+            final var contentPanelController
                     = documentWindowController.getContentPanelController();
-            final int currentScalingIndex
+            final var currentScalingIndex
                     = findZoomScaleIndex(contentPanelController.getScaling());
-            final double newScaling
+            final var newScaling
                     = scalingTable[currentScalingIndex+1];
             contentPanelController.setScaling(newScaling);
         }
@@ -1943,13 +1939,13 @@ public class MenuBarController {
 
         @Override
         public boolean canPerform() {
-            boolean result;
+            final boolean result;
             if (documentWindowController == null) {
                 result = false;
             } else {
-                final ContentPanelController contentPanelController
+                final var contentPanelController
                         = documentWindowController.getContentPanelController();
-                final int currentScalingIndex
+                final var currentScalingIndex
                         = findZoomScaleIndex(contentPanelController.getScaling());
                 result = 0 <= currentScalingIndex-1;
             }
@@ -1958,18 +1954,18 @@ public class MenuBarController {
 
         @Override
         public void perform() {
-            final ContentPanelController contentPanelController
+            final var contentPanelController
                     = documentWindowController.getContentPanelController();
-            final int currentScalingIndex
+            final var currentScalingIndex
                     = findZoomScaleIndex(contentPanelController.getScaling());
-            final double newScaling
+            final var newScaling
                     = scalingTable[currentScalingIndex-1];
             contentPanelController.setScaling(newScaling);
         }
 
     }
     
-    private void updatePreviewWindowSize(Size size) {
+    private void updatePreviewWindowSize(final Size size) {
         if (documentWindowController != null
                 && documentWindowController.getPreviewWindowController() != null
                 && documentWindowController.getPreviewWindowController().getStage().isShowing()) {
@@ -1981,18 +1977,18 @@ public class MenuBarController {
 
         private final EditorController.Size size;
 
-        public SetSizeActionController(EditorController.Size size) {
+        public SetSizeActionController(final EditorController.Size size) {
             this.size = size;
         }
 
         @Override
         public boolean canPerform() {
-            boolean res = (documentWindowController != null)
-                    && (documentWindowController.getPreviewWindowController() != null)
-                    && documentWindowController.getPreviewWindowController().getStage().isShowing()
-                    && ! documentWindowController.getEditorController().is3D()
-                    && documentWindowController.getEditorController().isNode()
-                    && documentWindowController.getPreviewWindowController().sizeDoesFit(size);
+            final var res = (documentWindowController != null)
+                            && (documentWindowController.getPreviewWindowController() != null)
+                            && documentWindowController.getPreviewWindowController().getStage().isShowing()
+                            && ! documentWindowController.getEditorController().is3D()
+                            && documentWindowController.getEditorController().isNode()
+                            && documentWindowController.getPreviewWindowController().sizeDoesFit(size);
             return res;
         }
 
@@ -2005,12 +2001,12 @@ public class MenuBarController {
 
         @Override
         public boolean isSelected() {
-            boolean res;
+            final boolean res;
 
             if (documentWindowController == null || documentWindowController.getPreviewWindowController() == null) {
                 res = false;
             } else {
-                Size currentSize = documentWindowController.getPreviewWindowController().getSize();
+                final var currentSize = documentWindowController.getPreviewWindowController().getSize();
                 res = (size == currentSize)
                         && documentWindowController.getPreviewWindowController().getStage().isShowing()
                         && ! documentWindowController.getPreviewWindowController().userResizedPreviewWindow()
@@ -2028,7 +2024,7 @@ public class MenuBarController {
             }
             
             if (size == EditorController.Size.SIZE_PREFERRED) {
-                String title = I18N.getString("menu.title.size.preferred");
+                var title = I18N.getString("menu.title.size.preferred");
                 
                 if (documentWindowController.getPreviewWindowController() != null
                         && documentWindowController.getPreviewWindowController().getStage().isShowing()
@@ -2050,15 +2046,15 @@ public class MenuBarController {
 
         private final EditorPlatform.Theme theme;
 
-        public SetThemeActionController(EditorPlatform.Theme theme) {
+        public SetThemeActionController(final EditorPlatform.Theme theme) {
             this.theme = theme;
         }
 
         @Override
         public boolean canPerform() {
-            boolean res = documentWindowController != null;
+            var res = documentWindowController != null;
             if (res) {
-                final EditorPlatform.Theme currentTheme
+                final var currentTheme
                         = documentWindowController.getEditorController().getTheme();
                 // CASPIAN_HIGH_CONTRAST can be selected only if another CASPIAN
                 // theme is active.
@@ -2089,9 +2085,9 @@ public class MenuBarController {
         @Override
         public void perform() {
             assert documentWindowController != null;
-            EditorPlatform.Theme currentTheme
+            final var currentTheme
                             = documentWindowController.getEditorController().getTheme();
-            EditorPlatform.Theme overridingTheme = theme;
+            var overridingTheme = theme;
 
             switch (theme.name()) {
                 case "CASPIAN":
@@ -2290,12 +2286,12 @@ public class MenuBarController {
 
         @Override
         public boolean isSelected() {
-            boolean res;
+            final boolean res;
 
             if (documentWindowController == null) {
                 res = false;
             } else {
-                final EditorPlatform.Theme currentTheme
+                final var currentTheme
                         = documentWindowController.getEditorController().getTheme();
 
                 res = switch (theme.name()) {
@@ -2336,7 +2332,7 @@ public class MenuBarController {
 
         private final EditorPlatform.Theme gluonSwatch;
 
-        public GluonActionController(EditorPlatform.Theme gluonSwatch) {
+        public GluonActionController(final EditorPlatform.Theme gluonSwatch) {
             this.gluonSwatch = gluonSwatch;
         }
 
@@ -2346,7 +2342,7 @@ public class MenuBarController {
 
         @Override
         public boolean canPerform() {
-            EditorPlatform.Theme currentTheme
+            final var currentTheme
                     = documentWindowController.getEditorController().getTheme();
             return GluonEditorPlatform.isGluonMobileLight(currentTheme) || GluonEditorPlatform.isGluonMobileDark(currentTheme);
         }
@@ -2360,7 +2356,7 @@ public class MenuBarController {
 
         @Override
         public boolean isSelected() {
-            boolean res = false;
+            var res = false;
             if (documentWindowController == null) {
                 res = false;
             } else if (gluonSwatch != null) {
@@ -2374,7 +2370,7 @@ public class MenuBarController {
 
         private final File styleSheet;
 
-        public RemoveSceneStyleSheetActionController(File file) {
+        public RemoveSceneStyleSheetActionController(final File file) {
             this.styleSheet = file;
         }
 
@@ -2399,7 +2395,7 @@ public class MenuBarController {
 
         private final File styleSheet;
 
-        public OpenSceneStyleSheetActionController(File file) {
+        public OpenSceneStyleSheetActionController(final File file) {
             this.styleSheet = file;
         }
 
@@ -2420,7 +2416,7 @@ public class MenuBarController {
         }
     }
 
-    public MenuItem getMenuItem(KeyCombination key) {
+    public MenuItem getMenuItem(final KeyCombination key) {
         return keyToMenu.get(key);
     }
 
@@ -2430,8 +2426,8 @@ public class MenuBarController {
     
     // Returns a String with no trailing zero; if decimal part is non zero then
     // it is kept.
-    private String getStringFromDouble(double value) {
-        String res = Double.toString(value);
+    private String getStringFromDouble(final double value) {
+        var res = Double.toString(value);
         if(res.endsWith(".0")) { //NOI18N
             res = Integer.toString((int)value);
         }
@@ -2446,8 +2442,8 @@ public class MenuBarController {
     private static class ClearOpenRecentHandler implements EventHandler<ActionEvent> {
 
         @Override
-        public void handle(ActionEvent t) {
-            final PreferencesController pc = PreferencesController.getSingleton();
+        public void handle(final ActionEvent t) {
+            final var pc = PreferencesController.getSingleton();
             pc.clearRecentItems();
         }
     }

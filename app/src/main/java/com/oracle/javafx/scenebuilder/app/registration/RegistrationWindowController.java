@@ -34,7 +34,6 @@ package com.oracle.javafx.scenebuilder.app.registration;
 
 import com.oracle.javafx.scenebuilder.app.i18n.I18N;
 import com.oracle.javafx.scenebuilder.app.preferences.PreferencesController;
-import com.oracle.javafx.scenebuilder.app.preferences.PreferencesRecordGlobal;
 import com.oracle.javafx.scenebuilder.app.tracking.Tracking;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.util.AbstractFxmlWindowController;
 import javafx.fxml.FXML;
@@ -68,14 +67,14 @@ public class RegistrationWindowController extends AbstractFxmlWindowController {
 
     final private Window owner;
 
-    public RegistrationWindowController(Stage owner) {
+    public RegistrationWindowController(final Stage owner) {
         super(RegistrationWindowController.class.getResource("Registration.fxml"), //NOI18N
                 I18N.getBundle(), owner);
         this.owner = owner;
     }
 
     @Override
-    public void onCloseRequest(WindowEvent event) {
+    public void onCloseRequest(final WindowEvent event) {
         cancelUserRegistration();
 
         event.consume();
@@ -111,16 +110,16 @@ public class RegistrationWindowController extends AbstractFxmlWindowController {
     }
 
     private boolean isEmailAddressValid() {
-        String email = tfEmail.getText();
+        final var email = tfEmail.getText();
         return email != null && !email.isEmpty() && emailPattern.matcher(email).matches();
     }
 
     @FXML
     public void cancelUserRegistration() {
-        PreferencesController pc = PreferencesController.getSingleton();
-        PreferencesRecordGlobal recordGlobal = pc.getRecordGlobal();
+        final var pc = PreferencesController.getSingleton();
+        final var recordGlobal = pc.getRecordGlobal();
         if (recordGlobal.getRegistrationHash() == null) {
-            String hash = getUniqueId();
+            final var hash = getUniqueId();
             recordGlobal.updateRegistrationFields(hash, null, null);
             Tracking.sendTrackingInfo(Tracking.SCENEBUILDER_TYPE, hash, "", false, false);
         }
@@ -135,13 +134,13 @@ public class RegistrationWindowController extends AbstractFxmlWindowController {
             return;
         }
 
-        PreferencesController pc = PreferencesController.getSingleton();
-        PreferencesRecordGlobal recordGlobal = pc.getRecordGlobal();
-        
-        boolean update = recordGlobal.getRegistrationHash() != null;
-        String hash = update ? recordGlobal.getRegistrationHash() : getUniqueId();
-        String email = tfEmail.getText();
-        boolean optIn = cbOptIn.isSelected();
+        final var pc = PreferencesController.getSingleton();
+        final var recordGlobal = pc.getRecordGlobal();
+
+        final var update = recordGlobal.getRegistrationHash() != null;
+        final var hash = update ? recordGlobal.getRegistrationHash() : getUniqueId();
+        final var email = tfEmail.getText();
+        final var optIn = cbOptIn.isSelected();
                 
         // Update preferences
         recordGlobal.updateRegistrationFields(hash, email, optIn);
@@ -152,17 +151,17 @@ public class RegistrationWindowController extends AbstractFxmlWindowController {
     }
 
     private String getUniqueId(){
-        String uniqueId = "";
+        var uniqueId = "";
         try {
-            InetAddress address = InetAddress.getLocalHost();
-            NetworkInterface ni = NetworkInterface.getByInetAddress(address);
+            final var address = InetAddress.getLocalHost();
+            final var ni = NetworkInterface.getByInetAddress(address);
             if (ni != null) {
-                byte[] macAddress = ni.getHardwareAddress();
+                final var macAddress = ni.getHardwareAddress();
                 if (macAddress != null) {
                     uniqueId = computeHash(macAddress);
                 }
             }
-        } catch (UnknownHostException | SocketException e) {
+        } catch (final UnknownHostException | SocketException e) {
             // Intentionally blank catch
         }
 
@@ -173,22 +172,22 @@ public class RegistrationWindowController extends AbstractFxmlWindowController {
         return uniqueId;
     }
 
-    private String computeHash(byte[] buffer) {
+    private String computeHash(final byte[] buffer) {
         try {
-            final MessageDigest messageDigest = MessageDigest.getInstance("SHA1");
+            final var messageDigest = MessageDigest.getInstance("SHA1");
 
             messageDigest.reset();
             messageDigest.update(buffer);
-            byte[] digest = messageDigest.digest();
+            final var digest = messageDigest.digest();
 
             // Convert the byte to hex format
-            String hexStr = "";
-            for (int i = 0; i < digest.length; i++) {
+            var hexStr = "";
+            for (var i = 0; i < digest.length; i++) {
                 hexStr +=  Integer.toString((digest[i] & 0xff) + 0x100, 16).substring(1);
             }
 
             return hexStr;
-        } catch (NoSuchAlgorithmException e) {
+        } catch (final NoSuchAlgorithmException e) {
             // Intentionally blank catch
         }
 

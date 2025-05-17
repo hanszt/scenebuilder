@@ -46,9 +46,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import jakarta.json.Json;
-import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
-import jakarta.json.JsonReader;
 import org.eclipse.aether.artifact.DefaultArtifact;
 
 public class NexusSearch implements Search {
@@ -69,7 +67,7 @@ public class NexusSearch implements Search {
     private static final int ITEMS_ITERATION = 200;
     private static final int MAX_RESULTS = 2000;
     
-    public NexusSearch(String name, String domain, String username, String password) {
+    public NexusSearch(final String name, final String domain, final String username, final String password) {
         client = HttpClient.newHttpClient();
         this.name = name;
         this.domain = domain;
@@ -81,24 +79,24 @@ public class NexusSearch implements Search {
     }
     
     @Override
-    public List<DefaultArtifact> getCoordinates(String query) {
+    public List<DefaultArtifact> getCoordinates(final String query) {
         try {
-            HttpRequest.Builder builder = HttpRequest.newBuilder()
+            final var builder = HttpRequest.newBuilder()
                 .uri(URI.create(domain + URL_PREFIX + query + (first ? "" : URL_SUFFIX + iteration * ITEMS_ITERATION)))
                 .header("Accept", "application/json");
             if (!username.isEmpty() && !password.isEmpty()) {
-                String authStringEnc = Base64.getEncoder().encodeToString((username + ":" + password).getBytes());
+                final var authStringEnc = Base64.getEncoder().encodeToString((username + ":" + password).getBytes());
                 builder.header("Authorization", "Basic " + authStringEnc);
             }
-            HttpRequest request = builder.build();
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            try (JsonReader rdr = Json.createReader(new StringReader(response.body()))) {
-                JsonObject obj = rdr.readObject();
+            final var request = builder.build();
+            final var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            try (final var rdr = Json.createReader(new StringReader(response.body()))) {
+                final var obj = rdr.readObject();
                 if (first && obj != null && !obj.isEmpty() && obj.containsKey("totalCount")) {
                     first = false;
-                    int totalCount = Math.min(obj.getInt("totalCount", 0), MAX_RESULTS);
+                    var totalCount = Math.min(obj.getInt("totalCount", 0), MAX_RESULTS);
                     if (totalCount > ITEMS_ITERATION) {
-                        List<DefaultArtifact> coordinates = new ArrayList<>(processRequest(obj));
+                        final List<DefaultArtifact> coordinates = new ArrayList<>(processRequest(obj));
                         while (totalCount > ITEMS_ITERATION) {
                             iteration += 1;
                             coordinates.addAll(getCoordinates(query)
@@ -115,15 +113,15 @@ public class NexusSearch implements Search {
                 }
                 return processRequest(obj);
             }
-        } catch (InterruptedException | IOException ex) {
+        } catch (final InterruptedException | IOException ex) {
             Logger.getLogger(NexusSearch.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
     
-    private List<DefaultArtifact> processRequest(JsonObject obj) {
+    private List<DefaultArtifact> processRequest(final JsonObject obj) {
         if (obj != null && !obj.isEmpty() && obj.containsKey("data")) {
-            JsonArray docResults = obj.getJsonArray("data");
+            final var docResults = obj.getJsonArray("data");
             return docResults.getValuesAs(JsonObject.class)
                     .stream()
                     .map(doc -> {

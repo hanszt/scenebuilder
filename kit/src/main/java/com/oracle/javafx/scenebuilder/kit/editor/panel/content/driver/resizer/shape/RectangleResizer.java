@@ -54,7 +54,7 @@ public class RectangleResizer extends AbstractResizer<Rectangle> {
     private final PropertyName heightName = new PropertyName("height"); //NOI18N
     private final List<PropertyName> propertyNames = new ArrayList<>();
     
-    public RectangleResizer(Rectangle sceneGraphObject) {
+    public RectangleResizer(final Rectangle sceneGraphObject) {
         super(sceneGraphObject);
         originalWidth  = sceneGraphObject.getWidth();
         originalHeight = sceneGraphObject.getHeight();
@@ -67,9 +67,9 @@ public class RectangleResizer extends AbstractResizer<Rectangle> {
      */
     
     @Override
-    public final Bounds computeBounds(double width, double height) {
-        final double minX = sceneGraphObject.getX();
-        final double minY = sceneGraphObject.getY();
+    public final Bounds computeBounds(final double width, final double height) {
+        final var minX = sceneGraphObject.getX();
+        final var minY = sceneGraphObject.getY();
         return new BoundingBox(minX, minY, Math.round(width), Math.round(height));
     }
  
@@ -79,12 +79,12 @@ public class RectangleResizer extends AbstractResizer<Rectangle> {
     }
 
     @Override
-    public void changeWidth(double width) {
+    public void changeWidth(final double width) {
         sceneGraphObject.setWidth(Math.round(width));
     }
 
     @Override
-    public void changeHeight(double height) {
+    public void changeHeight(final double height) {
         sceneGraphObject.setHeight(Math.round(height));
     }
 
@@ -100,7 +100,7 @@ public class RectangleResizer extends AbstractResizer<Rectangle> {
     }
 
     @Override
-    public Object getValue(PropertyName propertyName) {
+    public Object getValue(final PropertyName propertyName) {
         assert propertyName != null;
         assert propertyNames.contains(propertyName);
         
@@ -120,10 +120,10 @@ public class RectangleResizer extends AbstractResizer<Rectangle> {
     @Override
     public Map<PropertyName, Object> getChangeMap() {
         final Map<PropertyName, Object> result = new HashMap<>();
-        if (MathUtils.equals(sceneGraphObject.getWidth(), originalWidth) == false) {
+        if (!MathUtils.equals(sceneGraphObject.getWidth(), originalWidth)) {
             result.put(widthName, sceneGraphObject.getWidth());
         }
-        if (MathUtils.equals(sceneGraphObject.getHeight(), originalHeight) == false) {
+        if (!MathUtils.equals(sceneGraphObject.getHeight(), originalHeight)) {
             result.put(heightName, sceneGraphObject.getHeight());
         }
         return result;

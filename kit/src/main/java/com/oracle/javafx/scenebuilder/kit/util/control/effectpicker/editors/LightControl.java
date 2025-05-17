@@ -35,8 +35,6 @@ import com.oracle.javafx.scenebuilder.kit.util.control.effectpicker.EffectPicker
 import com.oracle.javafx.scenebuilder.kit.util.control.paintpicker.PaintPicker;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
@@ -87,8 +85,8 @@ public class LightControl extends VBox {
         NONE
     }
 
-    public LightControl(EffectPickerController effectPickerController,
-            String label, Light initValue) {
+    public LightControl(final EffectPickerController effectPickerController,
+                        final String label, final Light initValue) {
         this.effectPickerController = effectPickerController;
         this.defaultDistant = new Distant();
         this.defaultPoint = new Point();
@@ -104,7 +102,7 @@ public class LightControl extends VBox {
         return value.get();
     }
 
-    public void setValue(Light v) {
+    public void setValue(final Light v) {
         value.set(v);
     }
 
@@ -116,21 +114,21 @@ public class LightControl extends VBox {
         return liveUpdate.get();
     }
 
-    public void setLiveUpdate(boolean value) {
+    public void setLiveUpdate(final boolean value) {
         liveUpdate.setValue(value);
     }
 
-    private void initialize(String label, Light initValue) {
+    private void initialize(final String label, final Light initValue) {
 
-        final URL layoutURL = EnumControl.class.getResource("LightControl.fxml"); //NOI18N
-        try (InputStream is = layoutURL.openStream()) {
-            final FXMLLoader loader = new FXMLLoader();
+        final var layoutURL = EnumControl.class.getResource("LightControl.fxml"); //NOI18N
+        try (final var is = layoutURL.openStream()) {
+            final var loader = new FXMLLoader();
             loader.setController(this);
             loader.setRoot(this);
             loader.setLocation(layoutURL);
-            final Parent p = (Parent) loader.load(is);
+            final var p = (Parent) loader.load(is);
             assert p == this;
-        } catch (IOException x) {
+        } catch (final IOException x) {
             throw new RuntimeException(x);
         }
 
@@ -176,7 +174,7 @@ public class LightControl extends VBox {
             effectPickerController.incrementRevision();
         });
 
-        lightChoiceBox.addEventHandler(ActionEvent.ACTION, (Event event) -> {
+        lightChoiceBox.addEventHandler(ActionEvent.ACTION, (final Event event) -> {
             event.consume();
         });
 
@@ -195,56 +193,56 @@ public class LightControl extends VBox {
             colorPicker.setPaintProperty(getValue().getColor());
 
             if (getValue() instanceof Distant) {
-                final Distant distant = (Distant) getValue();
+                final var distant = (Distant) getValue();
 
-                final SliderControl azimuthEditor = new SliderControl(
+                final var azimuthEditor = new SliderControl(
                         effectPickerController, "azimuth", 0, 360.0, distant.getAzimuth(), 1.0, false); //NOI18N
                 distant.azimuthProperty().bind(azimuthEditor.valueProperty());
                 lightProperties.getChildren().add(azimuthEditor);
 
-                final SliderControl elevationEditor = new SliderControl(
+                final var elevationEditor = new SliderControl(
                         effectPickerController, "elevation", 0, 360.0, distant.getElevation(), 1.0, false); //NOI18N
                 distant.elevationProperty().bind(elevationEditor.valueProperty());
                 lightProperties.getChildren().add(elevationEditor);
 
             } else {
                 assert getValue() instanceof Point;
-                final Point point = (Point) getValue();
+                final var point = (Point) getValue();
 
-                final DoubleTextFieldControl xEditor = new DoubleTextFieldControl(
+                final var xEditor = new DoubleTextFieldControl(
                         effectPickerController, "x", -10.0, 10.0, point.getX(), 1.0); //NOI18N
                 point.xProperty().bind(xEditor.valueProperty());
                 lightProperties.getChildren().add(xEditor);
 
-                final DoubleTextFieldControl yEditor = new DoubleTextFieldControl(
+                final var yEditor = new DoubleTextFieldControl(
                         effectPickerController, "y", -10.0, 10.0, point.getY(), 1.0); //NOI18N
                 point.yProperty().bind(yEditor.valueProperty());
                 lightProperties.getChildren().add(yEditor);
 
-                final DoubleTextFieldControl zEditor = new DoubleTextFieldControl(
+                final var zEditor = new DoubleTextFieldControl(
                         effectPickerController, "z", -10.0, 10.0, point.getY(), 1.0); //NOI18N
                 point.zProperty().bind(zEditor.valueProperty());
                 lightProperties.getChildren().add(zEditor);
 
                 if (point instanceof Spot) {
-                    final Spot spot = (Spot) getValue();
+                    final var spot = (Spot) getValue();
 
-                    final DoubleTextFieldControl pointsAtXEditor = new DoubleTextFieldControl(
+                    final var pointsAtXEditor = new DoubleTextFieldControl(
                             effectPickerController, "pointsAtX", -10.0, 10.0, spot.getPointsAtX(), 1.0); //NOI18N
                     spot.pointsAtXProperty().bind(pointsAtXEditor.valueProperty());
                     lightProperties.getChildren().add(pointsAtXEditor);
 
-                    final DoubleTextFieldControl pointsAtYEditor = new DoubleTextFieldControl(
+                    final var pointsAtYEditor = new DoubleTextFieldControl(
                             effectPickerController, "pointsAtY", -10.0, 10.0, spot.getPointsAtY(), 1.0); //NOI18N
                     spot.pointsAtYProperty().bind(pointsAtYEditor.valueProperty());
                     lightProperties.getChildren().add(pointsAtYEditor);
 
-                    final DoubleTextFieldControl pointsAtZEditor = new DoubleTextFieldControl(
+                    final var pointsAtZEditor = new DoubleTextFieldControl(
                             effectPickerController, "pointsAtZ", -10.0, 10.0, spot.getPointsAtZ(), 1.0); //NOI18N
                     spot.pointsAtZProperty().bind(pointsAtZEditor.valueProperty());
                     lightProperties.getChildren().add(pointsAtZEditor);
 
-                    final SliderControl specularExponentEditor = new SliderControl(
+                    final var specularExponentEditor = new SliderControl(
                             effectPickerController, "specularExponent", 0, 4.0, spot.getSpecularExponent(), 1.0, false); //NOI18N
                     spot.specularExponentProperty().bind(specularExponentEditor.valueProperty());
                     lightProperties.getChildren().add(specularExponentEditor);
@@ -259,7 +257,7 @@ public class LightControl extends VBox {
             colorPicker = new PaintPicker(effectPickerController.getPaintPickerDelegate(), PaintPicker.Mode.COLOR);
             colorPicker.paintProperty().addListener((ChangeListener<Paint>) (ov, oldValue, newValue) -> {
                 assert newValue instanceof Color;
-                final Color color = (Color) newValue;
+                final var color = (Color) newValue;
                 getValue().setColor(color);
                 // Then notify the controller a change occured
                 effectPickerController.incrementRevision();

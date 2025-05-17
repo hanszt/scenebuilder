@@ -32,11 +32,10 @@
 package com.oracle.javafx.scenebuilder.kit.editor.panel.hierarchy;
 
 import com.oracle.javafx.scenebuilder.kit.editor.panel.hierarchy.AbstractHierarchyPanelController.BorderSide;
-import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
+
 import java.util.Timer;
 import java.util.TimerTask;
 import javafx.application.Platform;
-import javafx.scene.control.Cell;
 import javafx.scene.control.TreeItem;
 
 /**
@@ -70,9 +69,9 @@ public class HierarchyTaskScheduler {
     }
 
     public void scheduleAddEmptyGraphicTask(final TreeItem<HierarchyItem> treeItem) {
-        final HierarchyItem item = treeItem.getValue();
+        final var item = treeItem.getValue();
         assert item != null;
-        final DesignHierarchyMask owner = item.getMask();
+        final var owner = item.getMask();
         assert owner != null;
         timerTask = new TimerTask() {
             @Override
@@ -80,12 +79,12 @@ public class HierarchyTaskScheduler {
                 // JavaFX data should only be accessed on the JavaFX thread. 
                 // => we must wrap the code into a Runnable object and call the Platform.runLater
                 Platform.runLater(() -> {
-                    final TreeItem<HierarchyItem> graphicTreeItem
+                    final var graphicTreeItem
                             = panelController.makeTreeItemGraphic(owner, null);
                     // Add Graphic at first position
-                    treeItem.getChildren().add(0, graphicTreeItem);
+                    treeItem.getChildren().addFirst(graphicTreeItem);
                     treeItem.setExpanded(true);
-                    final Cell<?> cell = panelController.getCell(treeItem);
+                    final var cell = panelController.getCell(treeItem);
                     assert cell != null;
                     panelController.setBorder(cell, BorderSide.TOP_RIGHT_BOTTOM_LEFT);
                     isAddEmptyGraphicTaskScheduled = false;

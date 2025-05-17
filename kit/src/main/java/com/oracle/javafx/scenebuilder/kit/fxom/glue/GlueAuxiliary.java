@@ -39,7 +39,7 @@ public class GlueAuxiliary extends GlueNode {
     
     private final GlueDocument document;
 
-    public GlueAuxiliary(GlueDocument document) {
+    public GlueAuxiliary(final GlueDocument document) {
         this.document = document;
     }
 

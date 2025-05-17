@@ -77,8 +77,8 @@ public class DropShadowPropertyMetadata extends ComplexPropertyMetadata<DropShad
             = new DoublePropertyMetadata(new PropertyName("width"), //NOI18N
             DoublePropertyMetadata.DoubleKind.OPACITY, true /* readWrite */, 21.0, InspectorPath.UNUSED);
 
-    public DropShadowPropertyMetadata(PropertyName name, boolean readWrite, 
-            DropShadow defaultValue, InspectorPath inspectorPath) {
+    public DropShadowPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                      final DropShadow defaultValue, final InspectorPath inspectorPath) {
         super(name, DropShadow.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -87,8 +87,8 @@ public class DropShadowPropertyMetadata extends ComplexPropertyMetadata<DropShad
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(DropShadow value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, value.getClass());
+    public FXOMInstance makeFxomInstanceFromValue(final DropShadow value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, value.getClass());
         
         blurTypeMetadata.setValue(result, value.getBlurType().toString());
         colorMetadata.setValue(result, value.getColor());

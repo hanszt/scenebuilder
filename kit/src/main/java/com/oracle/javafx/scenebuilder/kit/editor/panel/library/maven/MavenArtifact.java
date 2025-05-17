@@ -41,11 +41,11 @@ public class MavenArtifact {
     private String dependencies;
     private String filter;
 
-    public MavenArtifact(String coordinates) {
+    public MavenArtifact(final String coordinates) {
         this.coordinates = coordinates;
     }
 
-    public MavenArtifact(String coordinates, String path, String dependencies, String filter) {
+    public MavenArtifact(final String coordinates, final String path, final String dependencies, final String filter) {
         this.coordinates = coordinates;
         this.path = path;
         this.dependencies = dependencies;
@@ -56,7 +56,7 @@ public class MavenArtifact {
         return coordinates;
     }
 
-    public void setCoordinates(String coordinates) {
+    public void setCoordinates(final String coordinates) {
         this.coordinates = coordinates;
     }
 
@@ -64,7 +64,7 @@ public class MavenArtifact {
         return path;
     }
 
-    public void setPath(String path) {
+    public void setPath(final String path) {
         this.path = path;
     }
 
@@ -72,7 +72,7 @@ public class MavenArtifact {
         return dependencies;
     }
 
-    public void setDependencies(String dependencies) {
+    public void setDependencies(final String dependencies) {
         this.dependencies = dependencies;
     }
 
@@ -80,13 +80,13 @@ public class MavenArtifact {
         return filter;
     }
 
-    public void setFilter(String filter) {
+    public void setFilter(final String filter) {
         this.filter = filter;
     }
 
     @Override
     public int hashCode() {
-        int hash = 7;
+        var hash = 7;
         hash = 97 * hash + Objects.hashCode(this.coordinates);
         hash = 97 * hash + Objects.hashCode(this.path);
         hash = 97 * hash + Objects.hashCode(this.dependencies);
@@ -95,7 +95,7 @@ public class MavenArtifact {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -105,7 +105,7 @@ public class MavenArtifact {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final MavenArtifact other = (MavenArtifact) obj;
+        final var other = (MavenArtifact) obj;
         if (!Objects.equals(this.coordinates, other.coordinates)) {
             return false;
         }

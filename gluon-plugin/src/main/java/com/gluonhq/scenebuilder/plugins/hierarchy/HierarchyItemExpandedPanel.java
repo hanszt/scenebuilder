@@ -57,7 +57,7 @@ public class HierarchyItemExpandedPanel extends HierarchyItem {
      * @param accessory  The accessory
      */
     public HierarchyItemExpandedPanel(final DesignHierarchyMask owner,
-        final FXOMObject fxomObject, DesignHierarchyMask.Accessory accessory) {
+                                      final FXOMObject fxomObject, final DesignHierarchyMask.Accessory accessory) {
         assert owner != null;
         this.owner = owner;
         // fxomObject can be null for place holder items
@@ -66,14 +66,14 @@ public class HierarchyItemExpandedPanel extends HierarchyItem {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         }
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final HierarchyItemExpandedPanel item = (HierarchyItemExpandedPanel) obj;
+        final var item = (HierarchyItemExpandedPanel) obj;
         if (!isEmpty()) {
             // If the placeholder is not empty, we compare the fxom object
             assert getFxomObject() != null;
@@ -87,7 +87,7 @@ public class HierarchyItemExpandedPanel extends HierarchyItem {
 
     @Override
     public int hashCode() {
-        int hash = 7;
+        var hash = 7;
         hash = 37 * hash + Objects.hashCode(this.mask);
         hash = 37 * hash + Objects.hashCode(this.owner);
         hash = 37 * hash + Objects.hashCode(this.accessory);

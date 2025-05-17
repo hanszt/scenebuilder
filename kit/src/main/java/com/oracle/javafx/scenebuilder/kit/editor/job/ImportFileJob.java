@@ -35,8 +35,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.AbstractSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMNodes;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
@@ -53,7 +51,7 @@ public class ImportFileJob extends BatchSelectionJob {
     private final File file;
     private FXOMObject newObject, targetObject;
 
-    public ImportFileJob(File file, EditorController editorController) {
+    public ImportFileJob(final File file, final EditorController editorController) {
         super(editorController);
 
         assert file != null;
@@ -68,7 +66,7 @@ public class ImportFileJob extends BatchSelectionJob {
     protected List<Job> makeSubJobs() {
         final List<Job> result = new ArrayList<>();
 
-        final FXOMDocument targetDocument = getEditorController().getFxomDocument();
+        final var targetDocument = getEditorController().getFxomDocument();
 
         try {
             newObject = FXOMNodes.newObject(targetDocument, file);
@@ -79,12 +77,12 @@ public class ImportFileJob extends BatchSelectionJob {
                 // insert the new object as root.
                 // Otherwise, we insert the new object under the common parent 
                 // of the selected objects.
-                final FXOMObject rootObject = targetDocument.getFxomRoot();
+                final var rootObject = targetDocument.getFxomRoot();
 
                 if (rootObject == null) {
                     result.add(new SetDocumentRootJob(newObject, getEditorController()));
                 } else {
-                    final Selection selection = getEditorController().getSelection();
+                    final var selection = getEditorController().getSelection();
                     if (selection.isEmpty() || selection.isSelected(rootObject)) {
                         // No selection or root is selected -> we insert below root
                         targetObject = rootObject;
@@ -94,7 +92,7 @@ public class ImportFileJob extends BatchSelectionJob {
                         targetObject = selection.getAncestor();
                     }
                     // Build InsertAsSubComponent jobs
-                    final DesignHierarchyMask targetMask = new DesignHierarchyMask(targetObject);
+                    final var targetMask = new DesignHierarchyMask(targetObject);
                     if (targetMask.isAcceptingSubComponent(newObject)) {
                         result.add(new InsertAsSubComponentJob(
                                 newObject,
@@ -104,7 +102,7 @@ public class ImportFileJob extends BatchSelectionJob {
                     }
                 }
             }
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
         }
 
         return result;

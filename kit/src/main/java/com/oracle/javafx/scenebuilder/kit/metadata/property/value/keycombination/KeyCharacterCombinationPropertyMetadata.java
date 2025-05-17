@@ -77,8 +77,8 @@ public class KeyCharacterCombinationPropertyMetadata extends ComplexPropertyMeta
             = new StringPropertyMetadata(new PropertyName("character"), //NOI18N
             true, null, InspectorPath.UNUSED);
 
-    public KeyCharacterCombinationPropertyMetadata(PropertyName name, boolean readWrite, 
-            KeyCharacterCombination defaultValue, InspectorPath inspectorPath) {
+    public KeyCharacterCombinationPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                                   final KeyCharacterCombination defaultValue, final InspectorPath inspectorPath) {
         super(name, KeyCharacterCombination.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -87,8 +87,8 @@ public class KeyCharacterCombinationPropertyMetadata extends ComplexPropertyMeta
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(KeyCharacterCombination value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, value.getClass());
+    public FXOMInstance makeFxomInstanceFromValue(final KeyCharacterCombination value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, value.getClass());
         
         altMetadata.setValue(result, value.getAlt().toString());
         controlMetadata.setValue(result, value.getControl().toString());

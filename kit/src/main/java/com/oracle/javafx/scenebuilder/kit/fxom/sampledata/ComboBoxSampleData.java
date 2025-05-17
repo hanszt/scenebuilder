@@ -44,7 +44,7 @@ class ComboBoxSampleData extends AbstractSampleData {
     private final List<String> samples = new ArrayList<>();
 
     public ComboBoxSampleData() {
-        for (int i = 0; i < 20; i++) {
+        for (var i = 0; i < 20; i++) {
             samples.add(lorem(i));
         }
     }
@@ -54,22 +54,22 @@ class ComboBoxSampleData extends AbstractSampleData {
      */
     
     @Override
-    public void applyTo(Object sceneGraphObject) {
+    public void applyTo(final Object sceneGraphObject) {
         assert sceneGraphObject != null;
         
         @SuppressWarnings("unchecked")        
-        final ComboBox<String> comboBox = (ComboBox<String>) sceneGraphObject;
+        final var comboBox = (ComboBox<String>) sceneGraphObject;
         comboBox.getItems().clear();
         comboBox.getItems().addAll(samples);
-        comboBox.getSelectionModel().select(samples.get(0));
+        comboBox.getSelectionModel().select(samples.getFirst());
     }
     
     @Override
-    public void removeFrom(Object sceneGraphObject) {
+    public void removeFrom(final Object sceneGraphObject) {
         assert sceneGraphObject != null;
         
         @SuppressWarnings("unchecked")        
-        final ComboBox<String> comboBox = (ComboBox<String>) sceneGraphObject;
+        final var comboBox = (ComboBox<String>) sceneGraphObject;
         comboBox.getItems().clear();
     }
     

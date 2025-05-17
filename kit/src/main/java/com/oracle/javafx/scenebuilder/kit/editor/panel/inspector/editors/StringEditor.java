@@ -52,7 +52,7 @@ public class StringEditor extends PropertyEditor {
     private TextInputControl textField = new TextField();
     private EventHandler<ActionEvent> valueListener;
 
-    public StringEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public StringEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super(propMeta, selectedClasses);
         initialize();
     }
@@ -82,7 +82,7 @@ public class StringEditor extends PropertyEditor {
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(final Object value) {
         setValueGeneric(value);
         if (isSetValueDone()) {
             return;
@@ -93,12 +93,12 @@ public class StringEditor extends PropertyEditor {
             return;
         }
         assert value instanceof String;
-        String val = (String) value;
+        final var val = (String) value;
         textField.setText(val);
     }
 
     @Override
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super.reset(propMeta, selectedClasses);
         setLayoutFormat(PropertyEditor.LayoutFormat.DOUBLE_LINE);
     }

@@ -46,19 +46,19 @@ public class CharsetEditor extends AutoSuggestEditor {
 
     private final Map<String, Charset> availableCharsets;
 
-    public CharsetEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses, Map<String, Charset> availableCharsets) {
+    public CharsetEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses, final Map<String, Charset> availableCharsets) {
         super(propMeta, selectedClasses, new ArrayList<>(availableCharsets.keySet()), Type.ALPHA);
         this.availableCharsets = availableCharsets;
         initialize();
     }
 
     private void initialize() {
-        EventHandler<ActionEvent> onActionListener = event -> {
+        final EventHandler<ActionEvent> onActionListener = event -> {
             if (isHandlingError()) {
                 // Event received because of focus lost due to error dialog
                 return;
             }
-            Object value = getValue();
+            final var value = getValue();
             if ((value != null) && isValidValue((String) value)) {
                 userUpdateValueProperty(value);
                 getTextField().selectAll();
@@ -71,13 +71,13 @@ public class CharsetEditor extends AutoSuggestEditor {
 
     @Override
     public Object getValue() {
-        String val = getTextField().getText();
+        var val = getTextField().getText();
         if (val.isEmpty()) {
             val = "";
             getTextField().setText(val);
             return String.valueOf(val);
         }
-        Object constantValue = this.availableCharsets.get(val.toUpperCase(Locale.ROOT));
+        final Object constantValue = this.availableCharsets.get(val.toUpperCase(Locale.ROOT));
         if (constantValue != null) {
             val = EditorUtils.valAsStr(constantValue);
         }
@@ -85,14 +85,14 @@ public class CharsetEditor extends AutoSuggestEditor {
     }
 
     @Override
-    public void setValue(Object value) {
-        Object changedValue = value;
+    public void setValue(final Object value) {
+        var changedValue = value;
         setValueGeneric(changedValue);
         if (isSetValueDone()) {
             return;
         }
         // Get the corresponding constant if any
-        for (Map.Entry<String, Charset> entry : this.availableCharsets.entrySet()) {
+        for (final var entry : this.availableCharsets.entrySet()) {
             if (changedValue.equals(entry.getValue())) {
                 changedValue = entry.getKey();
             }
@@ -105,8 +105,8 @@ public class CharsetEditor extends AutoSuggestEditor {
         EditorUtils.doNextFrame(() -> getTextField().requestFocus());
     }
 
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses,
-                      Map<String, Charset> constants) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses,
+                      final Map<String, Charset> constants) {
         super.reset(propMeta, selectedClasses, new ArrayList<>(constants.keySet()));
     }
 
@@ -117,7 +117,7 @@ public class CharsetEditor extends AutoSuggestEditor {
      * @return Map with the standard charsets.
      */
     public static Map<String, Charset> getStandardCharsets() {
-        Map<String, Charset> charsets = new HashMap<>();
+        final Map<String, Charset> charsets = new HashMap<>();
         charsets.put("UTF-8", StandardCharsets.UTF_8);
         charsets.put("UTF-16", StandardCharsets.UTF_16);
         charsets.put("UTF-16BE", StandardCharsets.UTF_16BE);
@@ -127,8 +127,8 @@ public class CharsetEditor extends AutoSuggestEditor {
         return charsets;
     }
 
-    private boolean isValidValue(String value) {
-        boolean valid = false;
+    private boolean isValidValue(final String value) {
+        var valid = false;
         if (this.availableCharsets.containsKey(value)) {
             valid = true;
         }

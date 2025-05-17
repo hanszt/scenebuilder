@@ -40,7 +40,7 @@ public class TemplateTest {
 
     @ParameterizedTest
     @EnumSource(Template.class)
-    public void template_fields_are_not_null(Template template) {
+    public void template_fields_are_not_null(final Template template) {
         assertNotNull(template.getType());
         assertNotNull(template.getFXMLURL());
     }

@@ -46,7 +46,7 @@ class ResourceKeyCollector extends ResourceBundle {
     
     private final ResourceBundle backingResources;
     
-    public ResourceKeyCollector(ResourceBundle backingResources) {
+    public ResourceKeyCollector(final ResourceBundle backingResources) {
         this.backingResources = backingResources;
     }
             
@@ -55,13 +55,13 @@ class ResourceKeyCollector extends ResourceBundle {
      */
     
     @Override
-    protected Object handleGetObject(String key) {
+    protected Object handleGetObject(final String key) {
         Object result;
         
         if (backingResources != null) {
             try {
                 result = backingResources.getObject(key);
-            } catch(MissingResourceException x) {
+            } catch(final MissingResourceException x) {
                 result = null;
             }
         } else {
@@ -80,7 +80,7 @@ class ResourceKeyCollector extends ResourceBundle {
     }
 
     @Override
-    public boolean containsKey(String key) {
+    public boolean containsKey(final String key) {
         return true;
     }
 
@@ -89,7 +89,7 @@ class ResourceKeyCollector extends ResourceBundle {
         
         private final Iterator<T> iterator;
         
-        public EnumerationFromIterator(Iterator<T> iterator) {
+        public EnumerationFromIterator(final Iterator<T> iterator) {
             this.iterator = iterator;
         }
 

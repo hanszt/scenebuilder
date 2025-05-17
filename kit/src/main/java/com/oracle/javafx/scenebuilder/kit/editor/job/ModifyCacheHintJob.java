@@ -35,9 +35,7 @@ import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.ModifyObjectJob;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.Metadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.property.ValuePropertyMetadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
@@ -55,7 +53,7 @@ public class ModifyCacheHintJob extends ModifySelectionJob {
     private final PropertyName cachePN = new PropertyName("cache"); //NOI18N
     private final PropertyName cacheHintPN = new PropertyName("cacheHint"); //NOI18N
 
-    public ModifyCacheHintJob(ValuePropertyMetadata propertyMetadata, Object newValue, EditorController editorController) {
+    public ModifyCacheHintJob(final ValuePropertyMetadata propertyMetadata, final Object newValue, final EditorController editorController) {
         super(propertyMetadata, newValue, editorController);
         assert cacheHintPN.equals(propertyMetadata.getName());
     }
@@ -65,10 +63,10 @@ public class ModifyCacheHintJob extends ModifySelectionJob {
 
         final List<Job> result = new ArrayList<>();
         final Set<FXOMInstance> candidates = new HashSet<>();
-        final Selection selection = getEditorController().getSelection();
+        final var selection = getEditorController().getSelection();
         if (selection.getGroup() instanceof ObjectSelectionGroup) {
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) selection.getGroup();
-            for (FXOMObject fxomObject : osg.getItems()) {
+            final var osg = (ObjectSelectionGroup) selection.getGroup();
+            for (final var fxomObject : osg.getItems()) {
                 if (fxomObject instanceof FXOMInstance) {
                     candidates.add((FXOMInstance) fxomObject);
                 }
@@ -78,19 +76,19 @@ public class ModifyCacheHintJob extends ModifySelectionJob {
         }
 
         // Add ModifyObject jobs
-        for (FXOMInstance fxomInstance : candidates) {
+        for (final var fxomInstance : candidates) {
             // ModifyObject job for the cacheHint property
-            final ModifyObjectJob subJob1 = new ModifyObjectJob(
+            final var subJob1 = new ModifyObjectJob(
                     fxomInstance, propertyMetadata, newValue, getEditorController());
             if (subJob1.isExecutable()) {
                 result.add(subJob1);
                 subJobCount++;
             }
             // ModifyObject job for the cache property
-            if ("DEFAULT".equals(newValue) == false) { //NOI18N
-                final ValuePropertyMetadata cacheVPM
+            if (!"DEFAULT".equals(newValue)) { //NOI18N
+                final var cacheVPM
                         = Metadata.getMetadata().queryValueProperty(fxomInstance, cachePN);
-                final ModifyObjectJob subJob2 = new ModifyObjectJob(
+                final var subJob2 = new ModifyObjectJob(
                         fxomInstance, cacheVPM, Boolean.TRUE, getEditorController());
                 if (subJob2.isExecutable()) {
                     result.add(subJob2);
@@ -110,7 +108,7 @@ public class ModifyCacheHintJob extends ModifySelectionJob {
                 result = "Unexecutable Set"; //NOI18N
                 break;
             case 1: // Single selection
-                result = getSubJobs().get(0).getDescription();
+                result = getSubJobs().getFirst().getDescription();
                 break;
             default:
                 result = I18N.getString("label.action.edit.set.n",

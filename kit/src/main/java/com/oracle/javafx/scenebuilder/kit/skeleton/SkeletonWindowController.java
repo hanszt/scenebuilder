@@ -33,7 +33,6 @@
 package com.oracle.javafx.scenebuilder.kit.skeleton;
 
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
-import com.oracle.javafx.scenebuilder.kit.editor.EditorPlatform;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.util.AbstractFxmlWindowController;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
@@ -74,26 +73,26 @@ public class SkeletonWindowController extends AbstractFxmlWindowController {
     private SkeletonFileWriter skeletonFileWriter = null;
 
     @FXML
-    private void onCopyAction(ActionEvent event) {
-        String content = "";
+    private void onCopyAction(final ActionEvent event) {
+        var content = "";
         if (textArea.getSelection().getLength() == 0) {
             content = textArea.getText();
         } else {
             content = textArea.getSelectedText();
         }
-        ClipboardContent newContent = new ClipboardContent();
+        final var newContent = new ClipboardContent();
         newContent.putString(content);
         Clipboard.getSystemClipboard().setContent(newContent);
     }
 
     @FXML
-    private void onSaveAction(ActionEvent event) {
+    private void onSaveAction(final ActionEvent event) {
 
         if (skeletonFileWriter == null) {           
             skeletonFileWriter = new SkeletonFileWriter(() -> getStage(), textArea.textProperty());
         }
 
-        SkeletonSettings.LANGUAGE language = languageChoiceBox.getSelectionModel()
+        final var language = languageChoiceBox.getSelectionModel()
                                                               .getSelectedItem();
 
         skeletonFileWriter.run(editorController.getFxmlLocation(), controllerName, language);
@@ -106,7 +105,7 @@ public class SkeletonWindowController extends AbstractFxmlWindowController {
     private final KeyCodeCombination copyAccelerator;
     private EventHandler<KeyEvent> keyEventHandler;
     
-    public SkeletonWindowController(EditorController editorController, String documentName, Stage owner) {
+    public SkeletonWindowController(final EditorController editorController, final String documentName, final Stage owner) {
         super(SkeletonWindowController.class.getResource("SkeletonWindow.fxml"), I18N.getBundle(), owner); //NOI18N
         this.editorController = editorController;
         this.documentName = documentName;
@@ -130,7 +129,7 @@ public class SkeletonWindowController extends AbstractFxmlWindowController {
         this.copyAccelerator = new KeyCodeCombination(KeyCode.C, KeyCombination.SHORTCUT_DOWN);
     }
 
-    private void handleCopyToClipboardEvent(KeyEvent event, boolean condition, boolean modifier) {
+    private void handleCopyToClipboardEvent(final KeyEvent event, final boolean condition, final boolean modifier) {
         if (condition && modifier) {
             /* On macOS it is essential to run the copy action here
              * in the JavaFX thread. Otherwise the wrong contents 
@@ -143,7 +142,7 @@ public class SkeletonWindowController extends AbstractFxmlWindowController {
     }
 
     @Override
-    public void onCloseRequest(WindowEvent event) {
+    public void onCloseRequest(final WindowEvent event) {
         getStage().close();
     }
 
@@ -196,7 +195,7 @@ public class SkeletonWindowController extends AbstractFxmlWindowController {
     private final InvalidationListener fxomDocumentRevisionListener = (observable) -> update();
 
     private void updateTitle() {
-        final String title = I18N.getString("skeleton.window.title", documentName);
+        final var title = I18N.getString("skeleton.window.title", documentName);
         getStage().setTitle(title);
     }
 
@@ -206,7 +205,7 @@ public class SkeletonWindowController extends AbstractFxmlWindowController {
         // No need to eat CPU if the skeleton window isn't opened
         if (getStage().isShowing()) {
             updateTitle();
-            final SkeletonBuffer buf = new SkeletonBuffer(editorController.getFxomDocument(), documentName);
+            final var buf = new SkeletonBuffer(editorController.getFxomDocument(), documentName);
 
             buf.setLanguage(languageChoiceBox.getSelectionModel().getSelectedItem());
 

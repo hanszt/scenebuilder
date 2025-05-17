@@ -58,7 +58,7 @@ public class ImportBuilder {
      * @param importedPackage package the class comes from
      * @param importedClass imported class
      */
-    public static void add(String importedPackage, String importedClass) {
+    public static void add(final String importedPackage, final String importedClass) {
         imports.put(importedPackage, importedClass);
     }
 

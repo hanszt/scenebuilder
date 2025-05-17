@@ -35,11 +35,9 @@ import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.editor.job.BatchJob;
 import com.oracle.javafx.scenebuilder.kit.editor.job.Job;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.ModifyObjectJob;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.Metadata;
-import com.oracle.javafx.scenebuilder.kit.metadata.property.ValuePropertyMetadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
 import java.util.ArrayList;
@@ -93,7 +91,7 @@ public class ReIndexColumnContentJob extends Job {
 
     @Override
     public void execute() {
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
+        final var fxomDocument = getEditorController().getFxomDocument();
         assert isExecutable();
         fxomDocument.beginUpdate();
         subJob.execute();
@@ -102,7 +100,7 @@ public class ReIndexColumnContentJob extends Job {
 
     @Override
     public void undo() {
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
+        final var fxomDocument = getEditorController().getFxomDocument();
         fxomDocument.beginUpdate();
         subJob.undo();
         fxomDocument.endUpdate();
@@ -110,7 +108,7 @@ public class ReIndexColumnContentJob extends Job {
 
     @Override
     public void redo() {
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
+        final var fxomDocument = getEditorController().getFxomDocument();
         fxomDocument.beginUpdate();
         subJob.redo();
         fxomDocument.endUpdate();
@@ -127,21 +125,21 @@ public class ReIndexColumnContentJob extends Job {
         subJob = new BatchJob(getEditorController(),
                 true /* shouldRefreshSceneGraph */, null);
 
-        assert targetIndexes.isEmpty() == false;
-        final DesignHierarchyMask targetGridPaneMask
+        assert !targetIndexes.isEmpty();
+        final var targetGridPaneMask
                 = new DesignHierarchyMask(targetGridPane);
-        final PropertyName propertyName = new PropertyName(
+        final var propertyName = new PropertyName(
                 "columnIndex", javafx.scene.layout.GridPane.class); //NOI18N
 
-        for (int targetIndex : targetIndexes) {
-            final List<FXOMObject> children
+        for (final int targetIndex : targetIndexes) {
+            final var children
                     = targetGridPaneMask.getColumnContentAtIndex(targetIndex);
-            for (FXOMObject child : children) {
+            for (final var child : children) {
                 assert child instanceof FXOMInstance;
-                final FXOMInstance childInstance = (FXOMInstance) child;
-                final ValuePropertyMetadata vpm = Metadata.getMetadata().
+                final var childInstance = (FXOMInstance) child;
+                final var vpm = Metadata.getMetadata().
                         queryValueProperty(childInstance, propertyName);
-                int newIndexValue = targetIndex + offset;
+                final var newIndexValue = targetIndex + offset;
                 final Job modifyJob = new ModifyObjectJob(
                         childInstance, vpm, newIndexValue, getEditorController());
                 subJob.addSubJob(modifyJob);

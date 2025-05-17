@@ -79,12 +79,12 @@ public class FontPopupEditor extends PopupEditor {
     private BoundedDoubleEditor sizeEditor;
     private EditorController editorController;
 
-    public FontPopupEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses, EditorController editorController) {
+    public FontPopupEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses, final EditorController editorController) {
         super(propMeta, selectedClasses);
         initialize(editorController);
     }
 
-    private void initialize(EditorController editorController) {
+    private void initialize(final EditorController editorController) {
         this.editorController = editorController;
     }
     
@@ -106,10 +106,10 @@ public class FontPopupEditor extends PopupEditor {
     }
 
     private Font getFont() {
-        Font oldFont = font;
-        Object sizeObj = sizeEditor.getValue();
+        final var oldFont = font;
+        final var sizeObj = sizeEditor.getValue();
         assert sizeObj instanceof Double;
-        Font newFont = getFont(EditorUtils.toString(familyEditor.getValue()), EditorUtils.toString(styleEditor.getValue()),
+        final var newFont = getFont(EditorUtils.toString(familyEditor.getValue()), EditorUtils.toString(styleEditor.getValue()),
                 (Double) sizeObj, editorController);
         if (newFont != null) {
             return newFont;
@@ -123,7 +123,7 @@ public class FontPopupEditor extends PopupEditor {
         return font;
     }
 
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses, EditorController editorController) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses, final EditorController editorController) {
         super.reset(propMeta, selectedClasses);
         this.editorController = editorController;
     }
@@ -173,14 +173,14 @@ public class FontPopupEditor extends PopupEditor {
     }
 
     @Override
-    public String getPreviewString(Object value) {
+    public String getPreviewString(final Object value) {
         // value should never be null
         assert value instanceof Font;
-        Font fontVal = (Font) value;
+        final var fontVal = (Font) value;
         if (isIndeterminate()) {
             return "-"; //NOI18N
         } else {
-            String size = EditorUtils.valAsStr(fontVal.getSize());
+            final var size = EditorUtils.valAsStr(fontVal.getSize());
             return fontVal.getFamily() + " " + size + "px" //NOI18N
                     + (!fontVal.getName().equals(fontVal.getFamily()) && !"Regular".equals(fontVal.getStyle()) ? //NOI18N
                     " (" + fontVal.getStyle() + ")" : ""); //NOI18N
@@ -188,7 +188,7 @@ public class FontPopupEditor extends PopupEditor {
     }
 
     @Override
-    public void setPopupContentValue(Object value) {
+    public void setPopupContentValue(final Object value) {
         assert value instanceof Font;
         font = (Font) value;
         familyEditor.setUpdateFromModel(true);
@@ -210,14 +210,14 @@ public class FontPopupEditor extends PopupEditor {
         private List<String> families;
         private String family = null;
 
-        public FamilyEditor(String name, String defaultValue, List<String> families, EditorController editorController) {
+        public FamilyEditor(final String name, final String defaultValue, final List<String> families, final EditorController editorController) {
             super(name, defaultValue, families);
             initialize(families, editorController);
         }
         
-        private void initialize(List<String> families, EditorController editorController) {
+        private void initialize(final List<String> families, final EditorController editorController) {
             this.families = families;
-            EventHandler<ActionEvent> onActionListener = event -> {
+            final EventHandler<ActionEvent> onActionListener = event -> {
                 if (Objects.equals(family, getTextField().getText())) {
                     // no change
                     return;
@@ -251,13 +251,13 @@ public class FontPopupEditor extends PopupEditor {
         
         private String style = null;
 
-        public StyleEditor(String name, String defaultValue, List<String> suggestedList, EditorController editorController) {
+        public StyleEditor(final String name, final String defaultValue, final List<String> suggestedList, final EditorController editorController) {
             super(name, defaultValue, suggestedList);
             initialize(editorController);
         }
         
-        private void initialize(EditorController editorController) {
-            EventHandler<ActionEvent> onActionListener = event -> {
+        private void initialize(final EditorController editorController) {
+            final EventHandler<ActionEvent> onActionListener = event -> {
                 if (Objects.equals(style, getTextField().getText())) {
                     // no change
                     return;
@@ -281,7 +281,7 @@ public class FontPopupEditor extends PopupEditor {
         }
     }
 
-    private static void commitOnFocusLost(AutoSuggestEditor autoSuggestEditor) {
+    private static void commitOnFocusLost(final AutoSuggestEditor autoSuggestEditor) {
         autoSuggestEditor.getTextField().focusedProperty().addListener((ChangeListener<Boolean>) (ov, oldVal, newVal) -> {
             if (!newVal) {
                 autoSuggestEditor.getCommitListener().handle(null);
@@ -302,7 +302,7 @@ public class FontPopupEditor extends PopupEditor {
 
     private static final Comparator<Font> fontComparator
             = (t, t1) -> {
-        int cmp = t.getName().compareTo(t1.getName());
+        var cmp = t.getName().compareTo(t1.getName());
         if (cmp != 0) {
             return cmp;
         }
@@ -310,32 +310,32 @@ public class FontPopupEditor extends PopupEditor {
     };
 
     public static Set<Font> getAllFonts() {
-        Font f = Font.getDefault();
-        double defSize = f.getSize();
-        Set<Font> allFonts = new TreeSet<>(fontComparator);
-        for (String familly : Font.getFamilies()) {
+        final var f = Font.getDefault();
+        final var defSize = f.getSize();
+        final Set<Font> allFonts = new TreeSet<>(fontComparator);
+        for (final var familly : Font.getFamilies()) {
             //System.out.println("*** FAMILY: " + familly); //NOI18N
-            for (String name : Font.getFontNames(familly)) {
-                Font font = new Font(name, defSize);
+            for (final var name : Font.getFontNames(familly)) {
+                final var font = new Font(name, defSize);
                 allFonts.add(font);
                 //System.out.println("\t\""+name+"\" -- name=\""+font.getName()+"\", familly=\""+font.getFamily()+"\", style=\""+font.getStyle()+"\""); //NOI18N
             }
         }
         // some font will not appear with the code above: we also need to use getAllNames!
-        for (String name : Font.getFontNames()) {
-            Font font = new Font(name, defSize);
+        for (final var name : Font.getFontNames()) {
+            final var font = new Font(name, defSize);
             allFonts.add(font);
         }
         return allFonts;
     }
 
-    public static List<String> getFamilies(EditorController editorController) {
+    public static List<String> getFamilies(final EditorController editorController) {
 //        System.out.println("Getting font families...");
         return new ArrayList<>(getFontMap(editorController).keySet());
     }
 
-    public static Set<String> getStyles(String family, boolean canBeUnknown, EditorController editorController) {
-        Map<String, Font> styles = getFontMap(editorController).get(family);
+    public static Set<String> getStyles(final String family, final boolean canBeUnknown, final EditorController editorController) {
+        var styles = getFontMap(editorController).get(family);
         if (styles == null) {
             assert !canBeUnknown;
             styles = Collections.emptyMap();
@@ -343,8 +343,8 @@ public class FontPopupEditor extends PopupEditor {
         return styles.keySet();
     }
 
-    public static Font getFont(String family, String style, EditorController editorController) {
-        Map<String, Font> styles = getFontMap(editorController).get(family);
+    public static Font getFont(final String family, String style, final EditorController editorController) {
+        var styles = getFontMap(editorController).get(family);
         if (styles == null) {
             styles = Collections.emptyMap();
         }
@@ -357,15 +357,15 @@ public class FontPopupEditor extends PopupEditor {
         return styles.get(style);
     }
 
-    public static Font getFont(String family, String style, double size, EditorController editorController) {
-        final Font font = getFont(family, style, editorController);
+    public static Font getFont(final String family, final String style, final double size, final EditorController editorController) {
+        final var font = getFont(family, style, editorController);
         if (font == null) {
             return null;
         }
         return getFont(font, size);
     }
 
-    public static Font getFont(Font font, double size) {
+    public static Font getFont(Font font, final double size) {
         if (font == null) {
             assert false;
             font = Font.getDefault();
@@ -379,22 +379,22 @@ public class FontPopupEditor extends PopupEditor {
 
     public static Map<String, String> getPathologicalFonts() {
         if (pathologicalFonts == null) {
-            final double size = Font.getDefault().getSize();
-            final String defaultName = Font.getDefault().getName();
-            Map<String, String> problems = new HashMap<>();
+            final var size = Font.getDefault().getSize();
+            final var defaultName = Font.getDefault().getName();
+            final Map<String, String> problems = new HashMap<>();
             final Set<String> allNames = new HashSet<>(Font.getFontNames());
-            for (String familly : Font.getFamilies()) {
+            for (final var familly : Font.getFamilies()) {
                 allNames.addAll(Font.getFontNames(familly));
             }
-            for (String name : allNames) {
-                Font f = new Font(name, size);
+            for (final var name : allNames) {
+                final var f = new Font(name, size);
                 if (f.getName().equals(name)) {
                     continue;
                 }
                 if (f.getName().equals(defaultName) || f.getName().equals("System")) { //NOI18N
                     continue; //NOI18N
                 }
-                final Font f2 = new Font(f.getName(), size);
+                final var f2 = new Font(f.getName(), size);
                 if (f2.getName().equals(f.getName())) {
                     continue;
                 }
@@ -405,19 +405,19 @@ public class FontPopupEditor extends PopupEditor {
         return pathologicalFonts;
     }
 
-    public static String getPersistentName(Font font) {
+    public static String getPersistentName(final Font font) {
         // The block below is an ugly workaround for 
         // RT-23021: Inconsitent naming for fonts in the 'Tahoma' family.
-        final Map<String, String> problems = getPathologicalFonts();
+        final var problems = getPathologicalFonts();
         if (problems.containsKey(font.getName())) { // e.g. font.getName() is "Tahoma Bold" //NOI18N
-            final Font test = new Font(font.getName(), font.getSize());
+            final var test = new Font(font.getName(), font.getSize());
             if (test.getName().equals(font.getName())) {
                 // OK
                 return font.getName();
             } else {
-                final String alternateName = problems.get(font.getName()); // e.g: "Tahoma Negreta" //NOI18N
+                final var alternateName = problems.get(font.getName()); // e.g: "Tahoma Negreta" //NOI18N
                 assert alternateName != null;
-                final Font test2 = new Font(alternateName, font.getSize()); //NOI18N
+                final var test2 = new Font(alternateName, font.getSize()); //NOI18N
                 if (test2.getName().equals(font.getName())) {
                     // OK
                     return alternateName; // e.g: "Tahoma Negreta" //NOI18N
@@ -427,8 +427,8 @@ public class FontPopupEditor extends PopupEditor {
         return font.getName();
     }
 
-    private static Map<String, Map<String, Font>> getFontMap(EditorController editorController) {
-        Map<String, Map<String, Font>> fonts = fontCache.get();
+    private static Map<String, Map<String, Font>> getFontMap(final EditorController editorController) {
+        var fonts = fontCache.get();
         if (fonts == null) {
             fonts = makeFontMap(editorController);
             fontCache = new WeakReference<>(fonts);
@@ -436,17 +436,17 @@ public class FontPopupEditor extends PopupEditor {
         return fonts;
     }
 
-    private static Map<String, Map<String, Font>> makeFontMap(EditorController editorController) {
-        final Set<Font> fonts = getAllFonts();
+    private static Map<String, Map<String, Font>> makeFontMap(final EditorController editorController) {
+        final var fonts = getAllFonts();
         final Map<String, Map<String, Set<Font>>> fontTree = new TreeMap<>();
 
-        for (Font f : fonts) {
-            Map<String, Set<Font>> familyStyleMap = fontTree.get(f.getFamily());
+        for (final var f : fonts) {
+            var familyStyleMap = fontTree.get(f.getFamily());
             if (familyStyleMap == null) {
                 familyStyleMap = new TreeMap<>();
                 fontTree.put(f.getFamily(), familyStyleMap);
             }
-            Set<Font> styleFonts = familyStyleMap.get(f.getStyle());
+            var styleFonts = familyStyleMap.get(f.getStyle());
             if (styleFonts == null) {
                 styleFonts = new HashSet<>();
                 familyStyleMap.put(f.getStyle(), styleFonts);
@@ -455,14 +455,14 @@ public class FontPopupEditor extends PopupEditor {
         }
 
         final Map<String, Map<String, Font>> res = new TreeMap<>();
-        for (Map.Entry<String, Map<String, Set<Font>>> e1 : fontTree.entrySet()) {
-            final String family = e1.getKey();
-            final Map<String, Set<Font>> styleMap = e1.getValue();
+        for (final var e1 : fontTree.entrySet()) {
+            final var family = e1.getKey();
+            final var styleMap = e1.getValue();
             final Map<String, Font> resMap = new TreeMap<>();
-            for (Map.Entry<String, Set<Font>> e2 : styleMap.entrySet()) {
-                final String style = e2.getKey();
-                final Set<Font> fontSet = e2.getValue();
-                int size = fontSet.size();
+            for (final var e2 : styleMap.entrySet()) {
+                final var style = e2.getKey();
+                final var fontSet = e2.getValue();
+                final var size = fontSet.size();
                 assert 1 <= size;
                 if (1 < size) {
                     editorController.getMessageLog().logWarningMessage(
@@ -476,8 +476,8 @@ public class FontPopupEditor extends PopupEditor {
     }
 
     private static List<String> getPredefinedFontSizes() {
-        String[] predefinedFontSizes
-                = {"9", "10", "11", "12", "13", "14", "18", "24", "36", "48", "64", "72", "96"};//NOI18N
+        final var predefinedFontSizes
+                = new String[]{"9", "10", "11", "12", "13", "14", "18", "24", "36", "48", "64", "72", "96"};//NOI18N
         return Arrays.asList(predefinedFontSizes);
     }
 

@@ -77,7 +77,7 @@ class SkeletonFileNameProposal {
     private static final String DEFAULT_CONTROLLER_CLASS_NAME = "PleaseProvideControllerClassName";
     private final SkeletonSettings.LANGUAGE language;
 
-    public SkeletonFileNameProposal(SkeletonSettings.LANGUAGE language) {
+    public SkeletonFileNameProposal(final SkeletonSettings.LANGUAGE language) {
         this.language = language;
     }
 
@@ -92,26 +92,26 @@ class SkeletonFileNameProposal {
      *                         given, this value might be null
      * @return file name proposal
      */
-    public File create(URL fxmlLocation, String fxControllerName) {
+    public File create(final URL fxmlLocation, final String fxControllerName) {
         if (fxControllerName == null || fxControllerName.isBlank()) {
             if (null != fxmlLocation) {
-                File controllerAtFxmlLocation = createFileAccordingToFxml(fxmlLocation);
+                final var controllerAtFxmlLocation = createFileAccordingToFxml(fxmlLocation);
                 return adjustToSrcMainDirWhenPossible(controllerAtFxmlLocation);
             }
         } else {
-            File fromControllerName = createFileFromControllerName(fxmlLocation, fxControllerName);
+            final var fromControllerName = createFileFromControllerName(fxmlLocation, fxControllerName);
             return adjustToSrcMainDirWhenPossible(fromControllerName);
         }
         return createFileInUserDir();
     }
 
-    private File adjustToSrcMainDirWhenPossible(File controllerAtFxmlLocation) {
-        String location = controllerAtFxmlLocation.toPath().toString().replace('\\', '/');
-        List<Path> sourcePackages = List.of(Paths.get("src/main"));
-        for (Path sourcePackage : sourcePackages) {
-            String resources = resolvePath(sourcePackage, "resources");
-            String java = resolvePath(sourcePackage, "java");
-            String kotlin = resolvePath(sourcePackage, "kotlin");
+    private File adjustToSrcMainDirWhenPossible(final File controllerAtFxmlLocation) {
+        var location = controllerAtFxmlLocation.toPath().toString().replace('\\', '/');
+        final var sourcePackages = List.of(Paths.get("src/main"));
+        for (final var sourcePackage : sourcePackages) {
+            final var resources = resolvePath(sourcePackage, "resources");
+            final var java = resolvePath(sourcePackage, "java");
+            final var kotlin = resolvePath(sourcePackage, "kotlin");
             if (location.contains(resources)) {
                 switch (language) {
                 case JAVA:
@@ -126,50 +126,50 @@ class SkeletonFileNameProposal {
                 }
             }
         }
-        File adjustedLocation = new File(location); 
+        final var adjustedLocation = new File(location);
         if (Files.exists(adjustedLocation.toPath().getParent())) {
             return adjustedLocation;
         }
         return controllerAtFxmlLocation;
     }
     
-    private String resolvePath(Path source, String child) {
+    private String resolvePath(final Path source, final String child) {
         return source.resolve(child)
                      .toString()
                      .replace('\\', '/');
     }
 
-    private File createFileFromControllerName(URL fxmlLocation, String fxControllerName) {
-        String directory = obtainUserDirectory();
+    private File createFileFromControllerName(final URL fxmlLocation, final String fxControllerName) {
+        var directory = obtainUserDirectory();
         if (null != fxmlLocation) {
-            URI uri = resolveURI(fxmlLocation);
-            Path location = Paths.get(uri).toAbsolutePath().getParent();
+            final var uri = resolveURI(fxmlLocation);
+            final var location = Paths.get(uri).toAbsolutePath().getParent();
             if (Files.exists(location)) {
                 directory = location.toString();
             }
         }
-        String simpleControllerClassName = extractSimpleControllerName(fxControllerName);
-        String controllerFileName = simpleControllerClassName + language.getExtension();
+        final var simpleControllerClassName = extractSimpleControllerName(fxControllerName);
+        final var controllerFileName = simpleControllerClassName + language.getExtension();
         return new File(directory, controllerFileName);
     }
 
-    private URI resolveURI(URL fxmlLocation) {
+    private URI resolveURI(final URL fxmlLocation) {
         try {
             return fxmlLocation.toURI();
-        } catch (URISyntaxException e) {
-            File userDir = new File(obtainUserDirectory()).getAbsoluteFile();
+        } catch (final URISyntaxException e) {
+            final var userDir = new File(obtainUserDirectory()).getAbsoluteFile();
             return userDir.toURI();
         }
     }
 
-    private File createFileAccordingToFxml(URL fxmlLocation) {
-        URI  uri = resolveURI(fxmlLocation);
-        Path fxmlFile = Paths.get(uri);
-        String fxmlResource = fxmlFile.toString();
-        String controllerSuffix = "Controller" + language.getExtension();
-        int lastDot = fxmlResource.lastIndexOf('.');
+    private File createFileAccordingToFxml(final URL fxmlLocation) {
+        final var uri = resolveURI(fxmlLocation);
+        final var fxmlFile = Paths.get(uri);
+        final var fxmlResource = fxmlFile.toString();
+        final var controllerSuffix = "Controller" + language.getExtension();
+        final var lastDot = fxmlResource.lastIndexOf('.');
         if (lastDot > -1) {
-            String newFileName = fxmlResource.substring(0, lastDot) + controllerSuffix;
+            final var newFileName = fxmlResource.substring(0, lastDot) + controllerSuffix;
             return Paths.get(newFileName).toFile();
         }
 
@@ -178,8 +178,8 @@ class SkeletonFileNameProposal {
     }
 
     private File createFileInUserDir() {
-        String fileName = DEFAULT_CONTROLLER_CLASS_NAME + language.getExtension();
-        String userDirectory = obtainUserDirectory();
+        final var fileName = DEFAULT_CONTROLLER_CLASS_NAME + language.getExtension();
+        final var userDirectory = obtainUserDirectory();
         return buildFileName(userDirectory, fileName);
     }
 
@@ -187,7 +187,7 @@ class SkeletonFileNameProposal {
         return System.getProperty("user.home");
     }
 
-    private File buildFileName(String userDirectory, String fileName) {
+    private File buildFileName(final String userDirectory, final String fileName) {
         return Paths.get(userDirectory, fileName).normalize().toAbsolutePath().toFile();
     }
 
@@ -195,9 +195,9 @@ class SkeletonFileNameProposal {
      * TODO: Consider moving this into a shared place as this code snippet is used multiple times.
      * 
      */
-    private String extractSimpleControllerName(String fxControllerName) {
-        String simpleName = fxControllerName.replace("$", "."); // NOI18N
-        int dot = simpleName.lastIndexOf('.');
+    private String extractSimpleControllerName(final String fxControllerName) {
+        var simpleName = fxControllerName.replace("$", "."); // NOI18N
+        final var dot = simpleName.lastIndexOf('.');
         if (dot > -1) {
             simpleName = simpleName.substring(dot + 1);
         }

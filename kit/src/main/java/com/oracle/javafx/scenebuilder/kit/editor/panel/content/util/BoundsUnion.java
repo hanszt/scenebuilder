@@ -48,7 +48,7 @@ public class BoundsUnion {
         // no-op
     }
 
-    public void add(Bounds b) {
+    public void add(final Bounds b) {
         if (result == null) {
             result = b;
         } else {
@@ -60,8 +60,13 @@ public class BoundsUnion {
         return result;
     }
 
-    public static Bounds compute(Bounds b1, Bounds b2) {
-        double minX, minY, minZ, maxX, maxY, maxZ;
+    public static Bounds compute(final Bounds b1, final Bounds b2) {
+        final double minX;
+        double minY;
+        double minZ;
+        double maxX;
+        double maxY;
+        final double maxZ;
 
         minX = Math.min(b1.getMinX(), b2.getMinX());
         minY = Math.min(b1.getMinY(), b2.getMinY());

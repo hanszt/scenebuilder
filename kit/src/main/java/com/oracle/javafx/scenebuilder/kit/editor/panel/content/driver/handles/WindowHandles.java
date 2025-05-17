@@ -2,7 +2,6 @@ package com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.handles;
 
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.ContentPanelController;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
 
 import javafx.geometry.BoundingBox;
@@ -15,17 +14,17 @@ public class WindowHandles extends AbstractGenericHandles<Window> {
     private final Pane dummyPane = new Pane();
     private Node sceneGraphObject;
 
-    public WindowHandles(ContentPanelController contentPanelController,
-                         FXOMInstance fxomInstance) {
+    public WindowHandles(final ContentPanelController contentPanelController,
+                         final FXOMInstance fxomInstance) {
         super(contentPanelController, fxomInstance, Window.class);
 
-        final DesignHierarchyMask designHierarchyMask = new DesignHierarchyMask(fxomInstance);
-        FXOMObject scene = designHierarchyMask.getAccessory(DesignHierarchyMask.Accessory.SCENE);
+        final var designHierarchyMask = new DesignHierarchyMask(fxomInstance);
+        final var scene = designHierarchyMask.getAccessory(DesignHierarchyMask.Accessory.SCENE);
         if (scene == null) {
             sceneGraphObject = null;
         } else {
-            DesignHierarchyMask sceneDesignHierarchyMask = new DesignHierarchyMask(scene);
-            FXOMObject root = sceneDesignHierarchyMask.getAccessory(DesignHierarchyMask.Accessory.ROOT);
+            final var sceneDesignHierarchyMask = new DesignHierarchyMask(scene);
+            final var root = sceneDesignHierarchyMask.getAccessory(DesignHierarchyMask.Accessory.ROOT);
             assert root != null;
             assert root instanceof FXOMInstance;
             assert root.getSceneGraphObject() instanceof Node;

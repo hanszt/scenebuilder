@@ -33,16 +33,13 @@ package com.oracle.javafx.scenebuilder.kit.editor.panel.content.mode;
 
 import com.oracle.javafx.scenebuilder.kit.editor.images.ImageUtils;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.ContentPanelController;
-import com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.AbstractDriver;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.pring.AbstractPring;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.util.Deprecation;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 
@@ -56,7 +53,7 @@ public class PickModeController extends AbstractModeController {
 
     private HitNodeChrome hitNodeChrome;
     
-    public PickModeController(ContentPanelController contentPanelController) {
+    public PickModeController(final ContentPanelController contentPanelController) {
         super(contentPanelController);
     }
     
@@ -66,14 +63,14 @@ public class PickModeController extends AbstractModeController {
      */
     
     @Override
-    public void willResignActive(AbstractModeController nextModeController) {
+    public void willResignActive(final AbstractModeController nextModeController) {
         contentPanelController.getGlassLayer().setCursor(Cursor.DEFAULT);
         stopListeningToInputEvents();
         removeHitNodeChrome();
     }
 
     @Override
-    public void didBecomeActive(AbstractModeController previousModeController) {
+    public void didBecomeActive(final AbstractModeController previousModeController) {
         assert contentPanelController.getGlassLayer() != null;
         
         updateHitNodeChrome();
@@ -87,7 +84,7 @@ public class PickModeController extends AbstractModeController {
     }
 
     @Override
-    public void fxomDocumentDidChange(FXOMDocument oldDocument) {
+    public void fxomDocumentDidChange(final FXOMDocument oldDocument) {
         // Same logic as when the scene graph is changed
         fxomDocumentDidRefreshSceneGraph();
     }
@@ -126,13 +123,13 @@ public class PickModeController extends AbstractModeController {
             = e -> mousePressedOnGlassLayer(e);
     
     
-    private void mousePressedOnGlassLayer(MouseEvent e) {
+    private void mousePressedOnGlassLayer(final MouseEvent e) {
         
         
-        final Selection selection 
+        final var selection
                 = contentPanelController.getEditorController().getSelection();
         
-        final FXOMDocument fxomDocument
+        final var fxomDocument
                 = contentPanelController.getEditorController().getFxomDocument();
         
         final FXOMObject hitObject;
@@ -141,12 +138,12 @@ public class PickModeController extends AbstractModeController {
             hitObject = null;
             hitNode = null;
         } else {
-            final FXOMObject fxomRoot = fxomDocument.getFxomRoot();
-            final Object sceneGraphRoot = fxomRoot.getSceneGraphObject();
+            final var fxomRoot = fxomDocument.getFxomRoot();
+            final var sceneGraphRoot = fxomRoot.getSceneGraphObject();
             if (sceneGraphRoot instanceof Node) {
                 hitNode = Deprecation.pick((Node)sceneGraphRoot, e.getSceneX(), e.getSceneY());
                 FXOMObject fxomObject = null;
-                Node node = hitNode;
+                var node = hitNode;
                 while ((fxomObject == null) && (node != null)) {
                     fxomObject = fxomRoot.searchWithSceneGraphObject(node);
                     node = node.getParent();
@@ -172,7 +169,7 @@ public class PickModeController extends AbstractModeController {
     
     
     private void updateHitNodeChrome() {
-        final Selection selection = contentPanelController.getEditorController().getSelection();
+        final var selection = contentPanelController.getEditorController().getSelection();
         final HitNodeChrome newChrome;
         
         if ((hitNodeChrome == null) 
@@ -201,7 +198,7 @@ public class PickModeController extends AbstractModeController {
         }
         
         if (newChrome != hitNodeChrome) {
-            final Group rudderLayer = contentPanelController.getRudderLayer();
+            final var rudderLayer = contentPanelController.getRudderLayer();
             if (hitNodeChrome != null) {
                 rudderLayer.getChildren().remove(hitNodeChrome.getRootNode());
             }
@@ -215,7 +212,7 @@ public class PickModeController extends AbstractModeController {
     }
     
     
-    private HitNodeChrome makeHitNodeChrome(FXOMObject hitItem, Node hitNode) {
+    private HitNodeChrome makeHitNodeChrome(final FXOMObject hitItem, final Node hitNode) {
         final HitNodeChrome result;
         
         assert hitItem != null;
@@ -228,18 +225,18 @@ public class PickModeController extends AbstractModeController {
          *          CheckBox    <= KO because this CheckBox is in a separate scene (Case #2)
          */
         
-        final AbstractDriver driver = contentPanelController.lookupDriver(hitItem);
+        final var driver = contentPanelController.lookupDriver(hitItem);
         if (driver == null) {
             // Case #1 above
             result = null;
         } else {
-            final FXOMObject closestNodeObject = hitItem.getClosestNode();
+            final var closestNodeObject = hitItem.getClosestNode();
             if (closestNodeObject == null) {
                 // Document content is not displayable in content panel
                 result = null;
             } else {
                 assert closestNodeObject.getSceneGraphObject() instanceof Node;
-                final Node closestNode = (Node)closestNodeObject.getSceneGraphObject();
+                final var closestNode = (Node)closestNodeObject.getSceneGraphObject();
                 if (closestNode.getScene() == contentPanelController.getPanelRoot().getScene()) {
                     result = new HitNodeChrome(contentPanelController, hitItem, hitNode);
                 } else {
@@ -255,7 +252,7 @@ public class PickModeController extends AbstractModeController {
     
     private void removeHitNodeChrome() {
         if (hitNodeChrome != null) {
-            final Group rudderLayer = contentPanelController.getRudderLayer();
+            final var rudderLayer = contentPanelController.getRudderLayer();
             rudderLayer.getChildren().remove(hitNodeChrome.getRootNode());
             hitNodeChrome = null;
         }

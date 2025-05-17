@@ -63,8 +63,8 @@ public class ImagePropertyMetadata extends ComplexPropertyMetadata<DesignImage> 
             = new BooleanPropertyMetadata(new PropertyName("backgroundLoading"),
             true /* readWrite */, false /* defaultValue */, InspectorPath.UNUSED);
     
-    public ImagePropertyMetadata(PropertyName name, boolean readWrite, 
-            DesignImage defaultValue, InspectorPath inspectorPath) {
+    public ImagePropertyMetadata(final PropertyName name, final boolean readWrite,
+                                 final DesignImage defaultValue, final InspectorPath inspectorPath) {
         super(name, DesignImage.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -73,8 +73,8 @@ public class ImagePropertyMetadata extends ComplexPropertyMetadata<DesignImage> 
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(DesignImage value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, Image.class);
+    public FXOMInstance makeFxomInstanceFromValue(final DesignImage value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, Image.class);
         
         urlMetadata.setValue(result, value.getLocation());
         requestedWidthMetadata.setValue(result, value.getImage().getRequestedWidth());
@@ -87,9 +87,9 @@ public class ImagePropertyMetadata extends ComplexPropertyMetadata<DesignImage> 
     }
     
     @Override
-    public DesignImage makeValueFromFxomInstance(FXOMInstance valueFxomInstance) {
-        final String location = urlMetadata.getValue(valueFxomInstance);
-        final Image image = (Image)valueFxomInstance.getSceneGraphObject();
+    public DesignImage makeValueFromFxomInstance(final FXOMInstance valueFxomInstance) {
+        final var location = urlMetadata.getValue(valueFxomInstance);
+        final var image = (Image)valueFxomInstance.getSceneGraphObject();
         return new DesignImage(image, location);
     }
 }

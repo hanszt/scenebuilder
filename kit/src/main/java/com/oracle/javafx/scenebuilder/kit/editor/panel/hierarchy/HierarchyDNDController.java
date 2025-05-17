@@ -32,13 +32,10 @@
  */
 package com.oracle.javafx.scenebuilder.kit.editor.panel.hierarchy;
 
-import com.oracle.javafx.scenebuilder.kit.editor.drag.DragController;
-import com.oracle.javafx.scenebuilder.kit.editor.drag.source.AbstractDragSource;
 import com.oracle.javafx.scenebuilder.kit.editor.drag.target.AbstractDropTarget;
 import com.oracle.javafx.scenebuilder.kit.editor.drag.target.AccessoryDropTarget;
 import com.oracle.javafx.scenebuilder.kit.editor.drag.target.ContainerZDropTarget;
 import com.oracle.javafx.scenebuilder.kit.editor.drag.target.RootDropTarget;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
@@ -145,12 +142,12 @@ public class HierarchyDNDController {
         // Remove empty tree item graphic if previously added by the scheduler
         // when we exit the empty graphic TreeItem by the bottom
         if (treeItem != null) {
-            final HierarchyItem item = treeItem.getValue();
+            final var item = treeItem.getValue();
             assert item != null;
             if (item instanceof HierarchyItemGraphic
                     && item.isEmpty()
                     && location == DroppingMouseLocation.BOTTOM) {
-                final TreeItem<HierarchyItem> parentTreeItem = treeItem.getParent();
+                final var parentTreeItem = treeItem.getParent();
                 parentTreeItem.getChildren().remove(treeItem);
             }
         }
@@ -171,18 +168,18 @@ public class HierarchyDNDController {
         // Remove empty tree item graphic if previously added by the scheduler
         // when we hover the empty graphic owner TreeItem on the top area
         if (treeItem != null) {
-            final HierarchyItem item = treeItem.getValue();
+            final var item = treeItem.getValue();
             assert item != null;
-            final TreeItem<HierarchyItem> graphicTreeItem = getEmptyGraphicTreeItemFor(treeItem);
+            final var graphicTreeItem = getEmptyGraphicTreeItemFor(treeItem);
             if (graphicTreeItem != null && location == DroppingMouseLocation.TOP) {
                 treeItem.getChildren().remove(graphicTreeItem);
             }
         }
 
         // First update drop target
-        final DragController dragController
+        final var dragController
                 = panelController.getEditorController().getDragController();
-        final AbstractDropTarget dropTarget = makeDropTarget(treeItem, location);
+        final var dropTarget = makeDropTarget(treeItem, location);
         dragController.setDropTarget(dropTarget);
 
         // Then update transfer mode
@@ -196,7 +193,7 @@ public class HierarchyDNDController {
             // Retrieve the GRAPHIC accessory owner
             final TreeItem<HierarchyItem> graphicOwnerTreeItem;
             if (treeItem != null) {
-                if (treeItem.getValue().isEmpty() == false) {
+                if (!treeItem.getValue().isEmpty()) {
                     graphicOwnerTreeItem = treeItem;
                 } else {
                     // Empty graphic place holder
@@ -209,12 +206,12 @@ public class HierarchyDNDController {
                 graphicOwnerTreeItem = panelController.getRoot();
             }
             assert graphicOwnerTreeItem != null;
-            assert graphicOwnerTreeItem.getValue().isEmpty() == false;
+            assert !graphicOwnerTreeItem.getValue().isEmpty();
             // Schedule adding empty graphic place holder if :
             // - an empty graphic place holder has not yet been added
             // - an empty graphic place holder has not yet been scheduled
             if (getEmptyGraphicTreeItemFor(graphicOwnerTreeItem) == null
-                    && scheduler.isAddEmptyGraphicTaskScheduled() == false) {
+                && !scheduler.isAddEmptyGraphicTaskScheduled()) {
                 scheduler.scheduleAddEmptyGraphicTask(graphicOwnerTreeItem);
             }
         }
@@ -229,8 +226,8 @@ public class HierarchyDNDController {
      */
     public TreeItem<HierarchyItem> getEmptyGraphicTreeItemFor(final TreeItem<HierarchyItem> treeItem) {
         assert treeItem != null;
-        for (TreeItem<HierarchyItem> childTreeItem : treeItem.getChildren()) {
-            final HierarchyItem child = childTreeItem.getValue();
+        for (final var childTreeItem : treeItem.getChildren()) {
+            final var child = childTreeItem.getValue();
             if (child instanceof HierarchyItemGraphic && child.isEmpty()) {
                 return childTreeItem;
             }
@@ -244,13 +241,13 @@ public class HierarchyDNDController {
 
         assert location != null;
 
-        final TreeItem<HierarchyItem> rootTreeItem = panelController.getRoot();
+        final var rootTreeItem = panelController.getRoot();
         final FXOMObject dropTargetObject;
         final AbstractDropTarget result;
         Accessory accessory = null; // Used if we insert as accessory (drop over a place holder)
-        int targetIndex = -1; // Used if we insert as sub components
+        var targetIndex = -1; // Used if we insert as sub components
 
-        final FXOMDocument document = panelController.getEditorController().getFxomDocument();
+        final var document = panelController.getEditorController().getFxomDocument();
         if (document == null || document.getFxomRoot() == null) {
             return new RootDropTarget();
         }
@@ -260,7 +257,7 @@ public class HierarchyDNDController {
             dropTargetObject = rootTreeItem.getValue().getFxomObject();
 
         } else {
-            final HierarchyItem item = treeItem.getValue();
+            final var item = treeItem.getValue();
             assert item != null;
 
             // When the TreeItem is a placeholder :
@@ -282,7 +279,7 @@ public class HierarchyDNDController {
 
                 if (item.isEmpty()) {
                     // Set the drop target
-                    final TreeItem<HierarchyItem> parentTreeItem = treeItem.getParent();
+                    final var parentTreeItem = treeItem.getParent();
                     assert parentTreeItem != null; // Because of (1)
                     dropTargetObject = parentTreeItem.getValue().getFxomObject();
                     // Set the accessory
@@ -341,13 +338,13 @@ public class HierarchyDNDController {
                         } else {
                             // If the parent accepts sub components,
                             // this is a reordering gesture and the target is the parent
-                            final DragController dragController
+                            final var dragController
                                     = panelController.getEditorController().getDragController();
-                            final AbstractDragSource dragSource = dragController.getDragSource();
-                            final TreeItem<HierarchyItem> parentTreeItem = treeItem.getParent();
+                            final var dragSource = dragController.getDragSource();
+                            final var parentTreeItem = treeItem.getParent();
                             assert parentTreeItem != null; // Because of (2)
-                            final FXOMObject parentObject = parentTreeItem.getValue().getFxomObject();
-                            final DesignHierarchyMask parentMask = new DesignHierarchyMask(parentObject);
+                            final var parentObject = parentTreeItem.getValue().getFxomObject();
+                            final var parentMask = new DesignHierarchyMask(parentObject);
                             if (parentMask.isAcceptingSubComponent(dragSource.getDraggedObjects())) {
                                 dropTargetObject = parentTreeItem.getValue().getFxomObject();
                                 targetIndex = item.getFxomObject().getIndexInParentProperty();
@@ -368,13 +365,13 @@ public class HierarchyDNDController {
                             if (treeItem.isLeaf() || !treeItem.isExpanded()) {
                                 // If the parent accepts sub components,
                                 // this is a reordering gesture and the target is the parent
-                                final DragController dragController
+                                final var dragController
                                         = panelController.getEditorController().getDragController();
-                                final AbstractDragSource dragSource = dragController.getDragSource();
-                                final TreeItem<HierarchyItem> parentTreeItem = treeItem.getParent();
+                                final var dragSource = dragController.getDragSource();
+                                final var parentTreeItem = treeItem.getParent();
                                 assert parentTreeItem != null; // Because of (3)
-                                final FXOMObject parentObject = parentTreeItem.getValue().getFxomObject();
-                                final DesignHierarchyMask parentMask = new DesignHierarchyMask(parentObject);
+                                final var parentObject = parentTreeItem.getValue().getFxomObject();
+                                final var parentMask = new DesignHierarchyMask(parentObject);
                                 if (parentMask.isAcceptingSubComponent(dragSource.getDraggedObjects())) {
                                     dropTargetObject = parentTreeItem.getValue().getFxomObject();
                                     targetIndex = item.getFxomObject().getIndexInParentProperty() + 1;
@@ -403,20 +400,20 @@ public class HierarchyDNDController {
     private AbstractDropTarget makeDropTarget(
             final FXOMObject dropTargetObject,
             final Accessory accessory,
-            int targetIndex) {
+            final int targetIndex) {
 
         AbstractDropTarget result = null;
 
         if (dropTargetObject instanceof FXOMInstance) {
-            final DragController dragController
+            final var dragController
                     = panelController.getEditorController().getDragController();
-            final AbstractDragSource dragSource = dragController.getDragSource();
+            final var dragSource = dragController.getDragSource();
             assert dragSource != null;
-            final FXOMInstance dropTargetInstance = (FXOMInstance) dropTargetObject;
+            final var dropTargetInstance = (FXOMInstance) dropTargetObject;
             if (accessory != null) {
                 result = new AccessoryDropTarget(dropTargetInstance, accessory);
             } else {
-                final DesignHierarchyMask dropTargetMask
+                final var dropTargetMask
                         = new DesignHierarchyMask(dropTargetInstance);
                 // Check if the drop target accepts sub components
                 if (dropTargetMask.isAcceptingSubComponent(dragSource.getDraggedObjects())) {
@@ -437,7 +434,7 @@ public class HierarchyDNDController {
                 else {
                     // Check if there is an accessory that can be accepted by the drop target.
                     // First we build the list of accessories that can be set by DND gesture.
-                    final Accessory[] accessories = {
+                    final var accessories = new Accessory[]{
                         Accessory.TOP,
                         Accessory.LEFT,
                         Accessory.CENTER,
@@ -453,8 +450,8 @@ public class HierarchyDNDController {
                         Accessory.EXPANDABLE_CONTENT,
                         Accessory.SCENE
                     };
-                    for (Accessory a : accessories) {
-                        final AccessoryDropTarget dropTarget
+                    for (final var a : accessories) {
+                        final var dropTarget
                                 = new AccessoryDropTarget(dropTargetInstance, a);
                         // If the accessory drop target accepts the dragged objects, 
                         // we return this drop target.
@@ -473,9 +470,9 @@ public class HierarchyDNDController {
     // External providers
     private final Collection<ExternalDesignHierarchyMaskProvider> externalDesignHierarchyMaskProviders = getExternalDesignHierarchyMaskProviders();
 
-    private Optional<Accessory> getExternalAccessoryForHierarchyItem(HierarchyItem item) {
-        for (ExternalDesignHierarchyMaskProvider provider : externalDesignHierarchyMaskProviders) {
-            Optional<Accessory> externalAccessoryForHierarchyItem = provider.getExternalAccessoryForHierarchyItem(item);
+    private Optional<Accessory> getExternalAccessoryForHierarchyItem(final HierarchyItem item) {
+        for (final var provider : externalDesignHierarchyMaskProviders) {
+            final var externalAccessoryForHierarchyItem = provider.getExternalAccessoryForHierarchyItem(item);
             if (externalAccessoryForHierarchyItem.isPresent()) {
                 return externalAccessoryForHierarchyItem;
             }
@@ -484,8 +481,8 @@ public class HierarchyDNDController {
     }
 
     private Collection<ExternalDesignHierarchyMaskProvider> getExternalDesignHierarchyMaskProviders() {
-        ServiceLoader<ExternalDesignHierarchyMaskProvider> loader = ServiceLoader.load(ExternalDesignHierarchyMaskProvider.class);
-        Collection<ExternalDesignHierarchyMaskProvider> providers = new ArrayList<>();
+        final var loader = ServiceLoader.load(ExternalDesignHierarchyMaskProvider.class);
+        final Collection<ExternalDesignHierarchyMaskProvider> providers = new ArrayList<>();
         loader.iterator().forEachRemaining(providers::add);
         return providers;
     }

@@ -33,7 +33,6 @@ package com.oracle.javafx.scenebuilder.kit.i18n.spi;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -52,16 +51,16 @@ public class I18NResourcesProviderImpl extends AbstractResourceBundleProvider im
     }
 
     @Override
-    public ResourceBundle getBundle(String baseName, Locale locale) {
-        String bundleName = toBundleName(baseName, locale);
-        String resourceName = ResourceBundle.Control
+    public ResourceBundle getBundle(final String baseName, final Locale locale) {
+        final var bundleName = toBundleName(baseName, locale);
+        final var resourceName = ResourceBundle.Control
             .getControl(ResourceBundle.Control.FORMAT_DEFAULT)
             .toResourceName(bundleName, "properties");
-        try (InputStream is = Files.newInputStream(Path.of(resourceName));
-             InputStreamReader isr = new InputStreamReader(is, StandardCharsets.UTF_8);
-             BufferedReader reader = new BufferedReader(isr)) {
+        try (final var is = Files.newInputStream(Path.of(resourceName));
+             final var isr = new InputStreamReader(is, StandardCharsets.UTF_8);
+             final var reader = new BufferedReader(isr)) {
             return new PropertyResourceBundle(reader);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             Logger.getLogger(getClass().getName()).log(Level.WARNING, "Failed to create ResourceBundle for bundleName: " + bundleName + " and resourceName: " + resourceName, e);
             return null;
         }

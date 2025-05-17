@@ -45,16 +45,16 @@ class FxIdCollector {
     private final Set<String> fxIds = new HashSet<>();
     private Map<String, Integer> nextIndexes ; // Created lazily
     
-    public FxIdCollector(Set<String> fxIds) {
+    public FxIdCollector(final Set<String> fxIds) {
         assert fxIds != null;
         this.fxIds.addAll(fxIds);
     }
     
-    public FxIdCollector(FXOMDocument fxomDocument) {
+    public FxIdCollector(final FXOMDocument fxomDocument) {
         this(fxomDocument.collectFxIds().keySet());
     }
     
-    public String importFxId(String sourceFxId) {
+    public String importFxId(final String sourceFxId) {
         assert sourceFxId != null;
         
         final String result;
@@ -63,8 +63,8 @@ class FxIdCollector {
                 createNextIndexes();
                 assert nextIndexes != null;
             }
-            final PrefixSuffix pf = new PrefixSuffix(sourceFxId);
-            final Integer nextIndex = nextIndexes.get(pf.getPrefix());
+            final var pf = new PrefixSuffix(sourceFxId);
+            final var nextIndex = nextIndexes.get(pf.getPrefix());
             assert nextIndex != null;
             result = pf.getPrefix() + nextIndex;
         } else {
@@ -87,17 +87,17 @@ class FxIdCollector {
     private void createNextIndexes() {
         nextIndexes = new HashMap<>();
         
-        for (String fxId : fxIds) {
+        for (final var fxId : fxIds) {
             updateNextIndexes(fxId);
         }
     }
     
     
-    private void updateNextIndexes(String fxId) {
+    private void updateNextIndexes(final String fxId) {
         assert nextIndexes != null;
         
-        final PrefixSuffix pf = new PrefixSuffix(fxId);
-        final Integer nextIndex = nextIndexes.get(pf.getPrefix());
+        final var pf = new PrefixSuffix(fxId);
+        final var nextIndex = nextIndexes.get(pf.getPrefix());
         if ((nextIndex == null) || (pf.getSuffix() >= nextIndex)) {
             nextIndexes.put(pf.getPrefix(), pf.getSuffix()+1);
         } 
@@ -109,11 +109,11 @@ class FxIdCollector {
         private final String prefix;
         private final int suffix;
         
-        public PrefixSuffix(String fxId) {
+        public PrefixSuffix(final String fxId) {
             assert fxId != null;
-            assert fxId.isEmpty() == false;
-            
-            int endIndex = fxId.length();
+            assert !fxId.isEmpty();
+
+            var endIndex = fxId.length();
             while ((endIndex >= 1) && Character.isDigit(fxId.charAt(endIndex-1))) {
                 endIndex--;
             }

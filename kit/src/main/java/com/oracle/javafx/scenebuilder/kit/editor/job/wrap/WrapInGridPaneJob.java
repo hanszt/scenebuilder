@@ -34,7 +34,6 @@ package com.oracle.javafx.scenebuilder.kit.editor.job.wrap;
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.editor.job.Job;
 import com.oracle.javafx.scenebuilder.kit.editor.job.JobUtils;
-import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.ModifyObjectJob;
 import com.oracle.javafx.scenebuilder.kit.editor.job.wrap.FXOMObjectCourseComparator.BidimensionalComparator;
 import com.oracle.javafx.scenebuilder.kit.editor.job.wrap.FXOMObjectCourseComparator.GridCourse;
 import static com.oracle.javafx.scenebuilder.kit.editor.job.wrap.FXOMObjectCourseComparator.OVERLAP_FUZZ;
@@ -46,7 +45,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javafx.geometry.Bounds;
+
 import javafx.scene.Node;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -64,27 +63,27 @@ public class WrapInGridPaneJob extends AbstractWrapInSubComponentJob {
     // Value = 2 dimensions integer array for the COLUMN and ROW index
     private final Map<FXOMObject, int[]> indices = new HashMap<>();
 
-    public WrapInGridPaneJob(EditorController editorController) {
+    public WrapInGridPaneJob(final EditorController editorController) {
         super(editorController);
         newContainerClass = GridPane.class;
     }
 
     @Override
     protected List<Job> modifyChildrenJobs(final List<FXOMObject> children) {
-        final List<Job> jobs = super.modifyChildrenJobs(children);
+        final var jobs = super.modifyChildrenJobs(children);
 
-        for (FXOMObject child : children) {
-            int[] childIndices = indices.get(child);
+        for (final var child : children) {
+            final var childIndices = indices.get(child);
 
             // Modify child column index
-            final ModifyObjectJob modifyColumnIndex = WrapJobUtils.modifyObjectJob(
+            final var modifyColumnIndex = WrapJobUtils.modifyObjectJob(
                     (FXOMInstance) child, GridPane.class, "columnIndex", //NOI18N
                     childIndices[GridCourse.COL_BY_COL.index()],
                     getEditorController());
             jobs.add(modifyColumnIndex);
 
             // Modify child row index
-            final ModifyObjectJob modifyRowIndex = WrapJobUtils.modifyObjectJob(
+            final var modifyRowIndex = WrapJobUtils.modifyObjectJob(
                     (FXOMInstance) child, GridPane.class, "rowIndex", //NOI18N
                     childIndices[GridCourse.ROW_BY_ROW.index()],
                     getEditorController());
@@ -97,20 +96,20 @@ public class WrapInGridPaneJob extends AbstractWrapInSubComponentJob {
     protected void modifyNewContainer(final List<FXOMObject> children) {
         super.modifyNewContainer(children);
 
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
+        final var fxomDocument = getEditorController().getFxomDocument();
 
         // Update the GridPane constraints depending on its children positionning
         // Find and set the column index for each element in the indices map.
-        final int maxcol = computeIndexByCourse(children, GridCourse.COL_BY_COL, indices);
+        final var maxcol = computeIndexByCourse(children, GridCourse.COL_BY_COL, indices);
         // Find and set the row index for each element in the indices map.
-        final int maxrow = computeIndexByCourse(children, GridCourse.ROW_BY_ROW, indices);
-        final double[] columnWidth = new double[maxcol + 1];
-        final double[] rowHeight = new double[maxrow + 1];
+        final var maxrow = computeIndexByCourse(children, GridCourse.ROW_BY_ROW, indices);
+        final var columnWidth = new double[maxcol + 1];
+        final var rowHeight = new double[maxrow + 1];
         computeSizes(children, indices, columnWidth, rowHeight);
 
         // COLUMNS
-        for (int index = 0; index <= maxcol; index++) {
-            final FXOMInstance constraint = makeConstraintsInstance(ColumnConstraints.class);
+        for (var index = 0; index <= maxcol; index++) {
+            final var constraint = makeConstraintsInstance(ColumnConstraints.class);
             JobUtils.setHGrow(constraint, ColumnConstraints.class, Priority.SOMETIMES.name());
             if (columnWidth[index] >= DEFAULT_MIN_WIDTH) {
                 JobUtils.setMinWidth(constraint, ColumnConstraints.class, DEFAULT_MIN_WIDTH);
@@ -122,8 +121,8 @@ public class WrapInGridPaneJob extends AbstractWrapInSubComponentJob {
         }
 
         // ROWS
-        for (int index = 0; index <= maxrow; index++) {
-            final FXOMInstance constraint = makeConstraintsInstance(RowConstraints.class);
+        for (var index = 0; index <= maxrow; index++) {
+            final var constraint = makeConstraintsInstance(RowConstraints.class);
             JobUtils.setVGrow(constraint, RowConstraints.class, Priority.SOMETIMES.name());
             if (rowHeight[index] >= DEFAULT_MIN_HEIGHT) {
                 JobUtils.setMinHeight(constraint, RowConstraints.class, DEFAULT_MIN_HEIGHT);
@@ -155,25 +154,25 @@ public class WrapInGridPaneJob extends AbstractWrapInSubComponentJob {
             final GridCourse course,
             final Map<FXOMObject, int[]> indices) {
 
-        final BidimensionalComparator comparator = new BidimensionalComparator(course);
+        final var comparator = new BidimensionalComparator(course);
         final List<FXOMObject> unsorted = new ArrayList<>(fxomObjects);
         Collections.sort(unsorted, comparator);
         FXOMObject lastObject = null;
-        int rc = 0;
-        int max = -1;
-        for (int i = 0; i < unsorted.size(); i++) {
-            FXOMObject currentObject = unsorted.get(i);
-            int[] ind = indices.get(currentObject);
+        var rc = 0;
+        var max = -1;
+        for (var i = 0; i < unsorted.size(); i++) {
+            final var currentObject = unsorted.get(i);
+            var ind = indices.get(currentObject);
             if (ind == null) {
                 ind = new int[2];
                 indices.put(currentObject, ind);
             }
             if (lastObject != null) {
                 if (comparator.compare(lastObject, currentObject) != 0) {
-                    final Node lastNode = (Node) lastObject.getSceneGraphObject();
-                    final Node currentNode = (Node) currentObject.getSceneGraphObject();
-                    final Bounds lastBounds = lastNode.getBoundsInParent();
-                    final Bounds currentBounds = currentNode.getBoundsInParent();
+                    final var lastNode = (Node) lastObject.getSceneGraphObject();
+                    final var currentNode = (Node) currentObject.getSceneGraphObject();
+                    final var lastBounds = lastNode.getBoundsInParent();
+                    final var currentBounds = currentNode.getBoundsInParent();
                     if (course.getMinY(currentBounds) >= course.getMaxY(lastBounds) - OVERLAP_FUZZ) {
                         rc++;
                     }
@@ -189,15 +188,15 @@ public class WrapInGridPaneJob extends AbstractWrapInSubComponentJob {
     private void computeSizes(
             final List<FXOMObject> fxomObjects,
             final Map<FXOMObject, int[]> indices,
-            double[] columnWidth, double[] rowHeight) {
+            final double[] columnWidth, final double[] rowHeight) {
 
-        for (FXOMObject fxomObject : fxomObjects) {
-            final Node node = (Node) fxomObject.getSceneGraphObject();
-            final double width = node.getBoundsInLocal().getWidth();
-            final double height = node.getBoundsInLocal().getHeight();
-            final int[] ind = indices.get(fxomObject);
-            final int col = ind[GridCourse.COL_BY_COL.index()];
-            final int row = ind[GridCourse.ROW_BY_ROW.index()];
+        for (final var fxomObject : fxomObjects) {
+            final var node = (Node) fxomObject.getSceneGraphObject();
+            final var width = node.getBoundsInLocal().getWidth();
+            final var height = node.getBoundsInLocal().getHeight();
+            final var ind = indices.get(fxomObject);
+            final var col = ind[GridCourse.COL_BY_COL.index()];
+            final var row = ind[GridCourse.ROW_BY_ROW.index()];
             columnWidth[col] = Math.max(columnWidth[col], width);
             rowHeight[row] = Math.max(rowHeight[row], height);
         }
@@ -206,8 +205,8 @@ public class WrapInGridPaneJob extends AbstractWrapInSubComponentJob {
     private FXOMInstance makeConstraintsInstance(final Class<?> constraintsClass) {
 
         // Create new constraints instance
-        final FXOMDocument newDocument = new FXOMDocument();
-        final FXOMInstance result
+        final var newDocument = new FXOMDocument();
+        final var result
                 = new FXOMInstance(newDocument, constraintsClass);
         newDocument.setFxomRoot(result);
         result.moveToFxomDocument(getEditorController().getFxomDocument());

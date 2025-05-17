@@ -58,13 +58,13 @@ public class SkeletonContext {
     private final SortedSet<String> assertions;
 
     private SkeletonContext(
-        String fxController,
-        String documentName,
-        SkeletonSettings settings,
-        SortedSet<String> imports,
-        SortedMap<String, Class<?>> variables,
-        SortedMap<String, String> eventHandlers,
-        SortedSet<String> assertions
+            final String fxController,
+            final String documentName,
+            final SkeletonSettings settings,
+            final SortedSet<String> imports,
+            final SortedMap<String, Class<?>> variables,
+            final SortedMap<String, String> eventHandlers,
+            final SortedSet<String> assertions
     ) {
         this.fxController = fxController;
         this.documentName = documentName;
@@ -118,24 +118,24 @@ public class SkeletonContext {
         private final SortedMap<String, String> eventHandlers = new TreeMap<>();
         private final SortedSet<String> assertions = new TreeSet<>();
 
-        Builder withFxController(String fxController) {
+        Builder withFxController(final String fxController) {
             this.fxController = fxController;
             return this;
         }
 
-        Builder withDocumentName(String documentName) {
+        Builder withDocumentName(final String documentName) {
             this.documentName = documentName;
             return this;
         }
 
-        Builder withSettings(SkeletonSettings settings) {
+        Builder withSettings(final SkeletonSettings settings) {
             this.settings = settings;
             return this;
         }
 
-        public void addFxId(FXOMObject value) {
-            String fxId = value.getFxId();
-            Class<?> type = value.getSceneGraphObject().getClass();
+        public void addFxId(final FXOMObject value) {
+            final var fxId = value.getFxId();
+            final var type = value.getSceneGraphObject().getClass();
 
             addImportsFor(FXML.class, type);
 
@@ -143,14 +143,14 @@ public class SkeletonContext {
             assertions.add(fxId);
         }
 
-        public void addEventHandler(FXOMPropertyT eventHandler) {
-            String eventName = FindEventNamesUtil.findEventName(eventHandler.getName().getName());
+        public void addEventHandler(final FXOMPropertyT eventHandler) {
+            final var eventName = FindEventNamesUtil.findEventName(eventHandler.getName().getName());
 
             eventHandlers.put(eventHandler.getValue(), eventName);
             addImportsForEvents(eventName);
         }
 
-        private void addImportsForEvents(String eventName) {
+        private void addImportsForEvents(final String eventName) {
             if (EventNames.ACTION_EVENT.equals(eventName)) {
                 ImportBuilder.add(ImportBuilder.IMPORT_STATEMENT.concat(ImportBuilder.EVENT_PACKAGE), eventName);
             } else {
@@ -164,8 +164,8 @@ public class SkeletonContext {
          *
          * @param classes other classes the statement should be built.
          */
-        void addImportsFor(Class<?>... classes) {
-            for (Class<?> c : classes) {
+        void addImportsFor(final Class<?>... classes) {
+            for (final var c : classes) {
                 ImportBuilder.add(ImportBuilder.IMPORT_STATEMENT, c.getName().replace("$", "."));
                 buildAndCollectImports();
             }

@@ -46,7 +46,7 @@ class LiveUpdater {
     private AbstractDropTarget dropTarget;
     private Job dropTargetMoveJob;
     
-    public LiveUpdater(AbstractDragSource dragSource, EditorController editorController) {
+    public LiveUpdater(final AbstractDragSource dragSource, final EditorController editorController) {
         assert dragSource != null;
         assert editorController != null;
         
@@ -54,7 +54,7 @@ class LiveUpdater {
         this.editorController = editorController;
     }
     
-    public void setDropTarget(AbstractDropTarget newDropTarget) {
+    public void setDropTarget(final AbstractDropTarget newDropTarget) {
         assert (newDropTarget == null) || (this.dropTarget != newDropTarget);
         
         /*

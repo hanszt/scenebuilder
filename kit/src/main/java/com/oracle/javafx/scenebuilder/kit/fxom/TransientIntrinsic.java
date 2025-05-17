@@ -47,16 +47,16 @@ class TransientIntrinsic extends TransientNode {
     private final List<FXOMProperty> properties = new ArrayList<>();
 
     public TransientIntrinsic(
-            TransientNode parentNode,
-            FXOMIntrinsic.Type type,
-            GlueElement glueElement) {
+            final TransientNode parentNode,
+            final FXOMIntrinsic.Type type,
+            final GlueElement glueElement) {
         super(parentNode);
         this.type = type;
         this.glueElement = glueElement;
     }
 
-    public FXOMIntrinsic makeFxomIntrinsic(FXOMDocument fxomDocument) {
-        final FXOMIntrinsic result
+    public FXOMIntrinsic makeFxomIntrinsic(final FXOMDocument fxomDocument) {
+        final var result
                 = new FXOMIntrinsic(fxomDocument, glueElement, getSceneGraphObject(), properties);
         assert result.getType() == type;
         // need to deal with a charset property here

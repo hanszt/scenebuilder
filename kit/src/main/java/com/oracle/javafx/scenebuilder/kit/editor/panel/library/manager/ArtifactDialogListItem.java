@@ -40,7 +40,7 @@ public class ArtifactDialogListItem implements DialogListItem {
     private final LibraryDialogController libraryDialogController;
     private final String coordinates;
 
-    public ArtifactDialogListItem(LibraryDialogController libraryDialogController, String coordinates) {
+    public ArtifactDialogListItem(final LibraryDialogController libraryDialogController, final String coordinates) {
         this.libraryDialogController = libraryDialogController;
         this.coordinates = coordinates;
     }

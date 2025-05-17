@@ -47,14 +47,13 @@ import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.TreeTableColumn;
-import javafx.scene.control.TreeTableView;
 
 /**
  *
  */
 public class TreeTableColumnDriver extends AbstractDriver {
 
-    public TreeTableColumnDriver(ContentPanelController contentPanelController) {
+    public TreeTableColumnDriver(final ContentPanelController contentPanelController) {
         super(contentPanelController);
     }
 
@@ -63,21 +62,21 @@ public class TreeTableColumnDriver extends AbstractDriver {
      */
     
     @Override
-    public AbstractHandles<?> makeHandles(FXOMObject fxomObject) {
+    public AbstractHandles<?> makeHandles(final FXOMObject fxomObject) {
         assert fxomObject.getSceneGraphObject() instanceof TreeTableColumn;
         assert fxomObject instanceof FXOMInstance;
         return new TreeTableColumnHandles(contentPanelController, (FXOMInstance)fxomObject);
     }
     
     @Override
-    public AbstractPring<?> makePring(FXOMObject fxomObject) {
+    public AbstractPring<?> makePring(final FXOMObject fxomObject) {
         assert fxomObject.getSceneGraphObject() instanceof TreeTableColumn;
         assert fxomObject instanceof FXOMInstance;
         return new TreeTableColumnPring(contentPanelController, (FXOMInstance) fxomObject);
     }
 
     @Override
-    public AbstractTring<?> makeTring(AbstractDropTarget dropTarget) {
+    public AbstractTring<?> makeTring(final AbstractDropTarget dropTarget) {
         assert dropTarget != null;
         assert dropTarget.getTargetObject() instanceof FXOMInstance;
         assert dropTarget.getTargetObject().getSceneGraphObject() instanceof TreeTableColumn;
@@ -86,47 +85,47 @@ public class TreeTableColumnDriver extends AbstractDriver {
     }
 
     @Override
-    public AbstractResizer<?> makeResizer(FXOMObject fxomObject) {
+    public AbstractResizer<?> makeResizer(final FXOMObject fxomObject) {
         return null;
     }
 
     @Override
-    public AbstractCurveEditor<?> makeCurveEditor(FXOMObject fxomObject) {
+    public AbstractCurveEditor<?> makeCurveEditor(final FXOMObject fxomObject) {
         return null;
     }
     
     @Override
-    public FXOMObject refinePick(Node hitNode, double sceneX, double sceneY, FXOMObject fxomObject) {
+    public FXOMObject refinePick(final Node hitNode, final double sceneX, final double sceneY, final FXOMObject fxomObject) {
         // TODO(elp) : implement TableColumnDriver.refinePick()
         return fxomObject;
     }
 
     @Override
-    public AbstractDropTarget makeDropTarget(FXOMObject fxomObject, double sceneX, double sceneY) {
+    public AbstractDropTarget makeDropTarget(final FXOMObject fxomObject, final double sceneX, final double sceneY) {
         // TODO(elp) : temporary implementation
         assert fxomObject instanceof FXOMInstance;
         return new ContainerZDropTarget((FXOMInstance)fxomObject, null);
     }
 
     @Override
-    public Node getInlineEditorBounds(FXOMObject fxomObject) {
+    public Node getInlineEditorBounds(final FXOMObject fxomObject) {
         assert fxomObject.getSceneGraphObject() instanceof TreeTableColumn;
-        final TreeTableColumn<?,?> tc = (TreeTableColumn<?,?>) fxomObject.getSceneGraphObject();
-        final TreeTableViewDesignInfoX di = new TreeTableViewDesignInfoX();
+        final var tc = (TreeTableColumn<?,?>) fxomObject.getSceneGraphObject();
+        final var di = new TreeTableViewDesignInfoX();
         return di.getColumnNode(tc);
     }
 
     @Override
-    public boolean intersectsBounds(FXOMObject fxomObject, Bounds bounds) {
+    public boolean intersectsBounds(final FXOMObject fxomObject, final Bounds bounds) {
         assert fxomObject.getSceneGraphObject() instanceof TreeTableColumn;
         
-        final TreeTableColumn<?,?> tc 
+        final var tc
                 = (TreeTableColumn<?,?>) fxomObject.getSceneGraphObject();
-        final TreeTableView<?> tv 
+        final var tv
                 = tc.getTreeTableView();
-        final TreeTableViewDesignInfoX di 
+        final var di
                 = new TreeTableViewDesignInfoX();
-        final Bounds tcBounds 
+        final var tcBounds
                 = tv.localToScene(di.getColumnBounds(tc), true /* rootScene */);
         
         return tcBounds.intersects(bounds);

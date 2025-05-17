@@ -38,12 +38,12 @@ import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.ClipboardEncoder;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
-import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import javafx.geometry.Bounds;
+
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -72,11 +72,11 @@ public class DocumentDragSource extends AbstractDragSource {
     private final boolean singleContextMenuOnly;
 
     public DocumentDragSource(
-            List<FXOMObject> draggedObjects, 
-            FXOMObject hitObject,
-            double hitX,
-            double hitY,
-            Window ownerWindow) {
+            final List<FXOMObject> draggedObjects,
+            final FXOMObject hitObject,
+            final double hitX,
+            final double hitY,
+            final Window ownerWindow) {
         super(ownerWindow);
         
         assert draggedObjects != null;
@@ -94,9 +94,9 @@ public class DocumentDragSource extends AbstractDragSource {
             this.singleTooltipOnly = false;
             this.singleContextMenuOnly = false;
         } else {
-            final FXOMObject draggedObject = draggedObjects.get(0);
+            final var draggedObject = draggedObjects.getFirst();
             if (draggedObject instanceof FXOMInstance) {
-                final Object sceneGraphObject = draggedObject.getSceneGraphObject();
+                final var sceneGraphObject = draggedObject.getSceneGraphObject();
                 this.singleImageViewOnly = sceneGraphObject instanceof ImageView;
                 this.singleTooltipOnly = sceneGraphObject instanceof Tooltip;
                 this.singleContextMenuOnly = sceneGraphObject instanceof ContextMenu;
@@ -109,9 +109,9 @@ public class DocumentDragSource extends AbstractDragSource {
     }
 
     public DocumentDragSource(
-            List<FXOMObject> draggedObjects, 
-            FXOMObject hitObject,
-            Window ownerWindow) {
+            final List<FXOMObject> draggedObjects,
+            final FXOMObject hitObject,
+            final Window ownerWindow) {
         super(ownerWindow);
         
         assert draggedObjects != null;
@@ -121,7 +121,7 @@ public class DocumentDragSource extends AbstractDragSource {
         this.draggedObjects.addAll(draggedObjects);
         this.hitObject = hitObject;
         
-        final Point2D hitPoint = computeDefaultHit(hitObject);
+        final var hitPoint = computeDefaultHit(hitObject);
         this.hitX = hitPoint.getX();
         this.hitY = hitPoint.getY();
         this.nodeOnly = checkForNodeOnly();
@@ -131,9 +131,9 @@ public class DocumentDragSource extends AbstractDragSource {
             this.singleTooltipOnly = false;
             this.singleContextMenuOnly = false;
         } else {
-            final FXOMObject draggedObject = draggedObjects.get(0);
+            final var draggedObject = draggedObjects.getFirst();
             if (draggedObject instanceof FXOMInstance) {
-                final Object sceneGraphObject = draggedObject.getSceneGraphObject();
+                final var sceneGraphObject = draggedObject.getSceneGraphObject();
                 this.singleImageViewOnly = sceneGraphObject instanceof ImageView;
                 this.singleTooltipOnly = sceneGraphObject instanceof Tooltip;
                 this.singleContextMenuOnly = sceneGraphObject instanceof ContextMenu;
@@ -145,11 +145,11 @@ public class DocumentDragSource extends AbstractDragSource {
         }
     }
     
-    private static Point2D computeDefaultHit(FXOMObject fxomObject) {
+    private static Point2D computeDefaultHit(final FXOMObject fxomObject) {
         final double hitX, hitY;
         if (fxomObject.getSceneGraphObject() instanceof Node) {
-            final Node sceneGraphNode = (Node) fxomObject.getSceneGraphObject();
-            final Bounds lb = sceneGraphNode.getLayoutBounds();
+            final var sceneGraphNode = (Node) fxomObject.getSceneGraphObject();
+            final var lb = sceneGraphNode.getLayoutBounds();
             hitX = (lb.getMinX() + lb.getMaxX()) / 2.0;
             hitY = (lb.getMinY() + lb.getMaxY()) / 2.0;
         } else {
@@ -172,11 +172,11 @@ public class DocumentDragSource extends AbstractDragSource {
          * (because an Axis cannot be disconnected from its parent Chart).
          * In that case, this drag source is declared as 'non acceptable'.
          */
-        
-        boolean result = true;
-        for (FXOMObject draggedObject : draggedObjects) {
+
+        var result = true;
+        for (final var draggedObject : draggedObjects) {
             if (draggedObject.getSceneGraphObject() instanceof Axis) {
-                final FXOMObject parentObject = draggedObject.getParentObject();
+                final var parentObject = draggedObject.getParentObject();
                 if ((parentObject != null) && (parentObject.getSceneGraphObject() instanceof Chart)) {
                     result = false;
                     break;
@@ -212,9 +212,9 @@ public class DocumentDragSource extends AbstractDragSource {
     public ClipboardContent makeClipboardContent() {
         
         // Encode the dragged objects in FXML
-        final ClipboardEncoder encoder = new ClipboardEncoder(draggedObjects);
+        final var encoder = new ClipboardEncoder(draggedObjects);
         assert encoder.isEncodable();
-        final ClipboardContent result = encoder.makeEncoding();
+        final var result = encoder.makeEncoding();
         
         return result;
     }
@@ -222,8 +222,8 @@ public class DocumentDragSource extends AbstractDragSource {
     @Override
     public Image makeDragView() {
         final Image image;
-        final DesignHierarchyMask mask = new DesignHierarchyMask(hitObject);
-        final URL resource = mask.getClassNameIconURL();
+        final var mask = new DesignHierarchyMask(hitObject);
+        final var resource = mask.getClassNameIconURL();
         // Resource may be null for unresolved classes
         if (resource == null) {
             image = ImageUtils.getNodeIcon("MissingIcon.png"); //NOI18N
@@ -231,7 +231,7 @@ public class DocumentDragSource extends AbstractDragSource {
             image = new Image(resource.toExternalForm());
         }
 
-        final Label visualNode = new Label();
+        final var visualNode = new Label();
         visualNode.setGraphic(new ImageView(image));
 //        visualNode.setText(mask.getClassNameInfo());
         visualNode.getStylesheets().add(EditorController.getStylesheet().toString());
@@ -242,14 +242,14 @@ public class DocumentDragSource extends AbstractDragSource {
 
     @Override
     public Node makeShadow() {
-        final Group result = new Group();
+        final var result = new Group();
         
         result.getStylesheets().add(EditorController.getStylesheet().toString());
 
-        for (FXOMObject draggedObject : draggedObjects) {
+        for (final var draggedObject : draggedObjects) {
             if (draggedObject.getSceneGraphObject() instanceof Node) {
-                final Node sceneGraphNode = (Node) draggedObject.getSceneGraphObject();
-                final DragSourceShadow shadowNode = new DragSourceShadow();
+                final var sceneGraphNode = (Node) draggedObject.getSceneGraphObject();
+                final var shadowNode = new DragSourceShadow();
                 shadowNode.setupForNode(sceneGraphNode);
 //                assert shadowNode.getLayoutBounds().equals(sceneGraphNode.getLayoutBounds());
                 shadowNode.getTransforms().add(sceneGraphNode.getLocalToParentTransform());
@@ -260,7 +260,7 @@ public class DocumentDragSource extends AbstractDragSource {
         // Translate the group so that it renders (hitX, hitY) above (layoutX, layoutY).
         final Point2D hitPoint;
         if (hitObject.getSceneGraphObject() instanceof Node) {
-            final Node hitNode = (Node) hitObject.getSceneGraphObject();
+            final var hitNode = (Node) hitObject.getSceneGraphObject();
             hitPoint = hitNode.localToParent(hitX, hitY);
         } else {
             hitPoint = Point2D.ZERO;
@@ -276,8 +276,8 @@ public class DocumentDragSource extends AbstractDragSource {
         final String result;
         
         if (draggedObjects.size() == 1) {
-            final FXOMObject draggedObject = draggedObjects.get(0);
-            final Object sceneGraphObject = draggedObject.getSceneGraphObject();
+            final var draggedObject = draggedObjects.getFirst();
+            final var sceneGraphObject = draggedObject.getSceneGraphObject();
             if (sceneGraphObject == null) {
                 result = I18N.getString("drop.job.move.single.unresolved");
             } else {
@@ -286,18 +286,18 @@ public class DocumentDragSource extends AbstractDragSource {
             }
         } else {
             final Set<Class<?>> classes = new HashSet<>();
-            int unresolvedCount = 0;
-            for (FXOMObject o : draggedObjects) {
+            var unresolvedCount = 0;
+            for (final var o : draggedObjects) {
                 if (o.getSceneGraphObject() != null) {
                     classes.add(o.getSceneGraphObject().getClass());
                 } else {
                     unresolvedCount++;
                 }
             }
-            final boolean homogeneous = (classes.size() == 1) && (unresolvedCount == 0);
+            final var homogeneous = (classes.size() == 1) && (unresolvedCount == 0);
             
             if (homogeneous) {
-                final Class<?> singleClass = classes.iterator().next();
+                final var singleClass = classes.iterator().next();
                 result = I18N.getString("drop.job.move.multiple.homogeneous",
                         draggedObjects.size(),
                         singleClass.getSimpleName());
@@ -345,9 +345,9 @@ public class DocumentDragSource extends AbstractDragSource {
      */
     
     private boolean checkForNodeOnly() {
-        int nonNodeCount = 0;
-        for (FXOMObject draggedObject : draggedObjects) {
-            if (draggedObject.isNode() == false) {
+        var nonNodeCount = 0;
+        for (final var draggedObject : draggedObjects) {
+            if (!draggedObject.isNode()) {
                 nonNodeCount++;
             }
         }

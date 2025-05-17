@@ -53,7 +53,7 @@ public class ErrorReportEntry {
     private final Type type;
     private final CSSParsingReport cssParsingReport; // relevant for INVALID_CSS_CONTENT
     
-    public ErrorReportEntry(FXOMNode fxomNode, Type type, CSSParsingReport cssParsingReport) {
+    public ErrorReportEntry(final FXOMNode fxomNode, final Type type, final CSSParsingReport cssParsingReport) {
         assert fxomNode != null;
         assert (type == Type.INVALID_CSS_CONTENT) == (cssParsingReport != null);
         
@@ -62,7 +62,7 @@ public class ErrorReportEntry {
         this.cssParsingReport = cssParsingReport;
     }
 
-    public ErrorReportEntry(FXOMNode fxomNode, Type type) {
+    public ErrorReportEntry(final FXOMNode fxomNode, final Type type) {
         this(fxomNode, type, null);
     }
 
@@ -84,7 +84,7 @@ public class ErrorReportEntry {
     
     @Override
     public String toString() {
-        final StringBuilder result = new StringBuilder();
+        final var result = new StringBuilder();
         
         result.append(getClass().getSimpleName());
         result.append("(fxomNode="); //NOI18N
@@ -108,10 +108,10 @@ public class ErrorReportEntry {
                 break;
         }
         if (fxomNode instanceof FXOMPropertyT) {
-            final FXOMPropertyT fxomProperty = (FXOMPropertyT) fxomNode;
+            final var fxomProperty = (FXOMPropertyT) fxomNode;
             result.append(fxomProperty.getValue());
         } else if (fxomNode instanceof FXOMIntrinsic) {
-            final FXOMIntrinsic fxomIntrinsic = (FXOMIntrinsic) fxomNode;
+            final var fxomIntrinsic = (FXOMIntrinsic) fxomNode;
             result.append(fxomIntrinsic.getSource());
         } else {
             result.append("?"); //NOI18N

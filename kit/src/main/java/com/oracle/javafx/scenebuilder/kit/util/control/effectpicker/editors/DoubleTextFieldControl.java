@@ -46,8 +46,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.value.ChangeListener;
@@ -68,26 +66,26 @@ public class DoubleTextFieldControl extends GridPane {
     private final int roundingFactor = 100; // 2 decimals rounding
 
     public DoubleTextFieldControl(
-            EffectPickerController effectPickerController,
-            String labelString,
-            double min,
-            double max,
-            double initVal,
-            double incDec) {
+            final EffectPickerController effectPickerController,
+            final String labelString,
+            final double min,
+            final double max,
+            final double initVal,
+            final double incDec) {
         this.effectPickerController = effectPickerController;
         initialize(labelString, min, max, initVal, incDec);
 
         editor_textfield.focusedProperty().addListener((ChangeListener<Boolean>) (ov, oldValue, newValue) -> {
             // Commit the value on focus lost
             if (newValue == false) {
-                double inputValue = Double.parseDouble(editor_textfield.getText());
+                final var inputValue = Double.parseDouble(editor_textfield.getText());
                 // First update the model
                 setValue(inputValue);
                 // Then notify the controller a change occured
                 effectPickerController.incrementRevision();
             }
         });
-        editor_textfield.setOnAction((ActionEvent event) -> {
+        editor_textfield.setOnAction((final ActionEvent event) -> {
             event.consume();
         });
     }
@@ -101,7 +99,7 @@ public class DoubleTextFieldControl extends GridPane {
     }
 
     @FXML
-    void textfieldTyped(KeyEvent e) {
+    void textfieldTyped(final KeyEvent e) {
         if (e.getCode() == KeyCode.UP) {
             // First update the model
             incOrDecValue(incDecValue);
@@ -115,7 +113,7 @@ public class DoubleTextFieldControl extends GridPane {
             effectPickerController.incrementRevision();
         }
         if (e.getCode() == KeyCode.ENTER) {
-            double inputValue = Double.parseDouble(editor_textfield.getText());
+            final var inputValue = Double.parseDouble(editor_textfield.getText());
             // First update the model
             setValue(inputValue);
             // Then notify the controller a change occured
@@ -124,7 +122,7 @@ public class DoubleTextFieldControl extends GridPane {
         }
     }
 
-    private void incOrDecValue(double delta) {
+    private void incOrDecValue(final double delta) {
         setValue(getValue() + delta);
 //        Platform.runLater(new Runnable() {
 //            @Override
@@ -135,25 +133,25 @@ public class DoubleTextFieldControl extends GridPane {
 //        });
     }
 
-    private void setValue(double d) {
-        double val = Utils.clamp(mini, d, maxi);
-        double rounded = EditorUtils.round(val, roundingFactor);
+    private void setValue(final double d) {
+        final var val = Utils.clamp(mini, d, maxi);
+        final var rounded = EditorUtils.round(val, roundingFactor);
         value.set(rounded);
         editor_textfield.setText(Double.toString(rounded));
     }
 
-    private void initialize(String labelString,
-            double min, double max, double initVal, double incDec) {
+    private void initialize(final String labelString,
+                            final double min, final double max, final double initVal, final double incDec) {
 
-        final URL layoutURL = DoubleTextFieldControl.class.getResource("NumFieldControl.fxml"); //NOI18N
-        try (InputStream is = layoutURL.openStream()) {
-            FXMLLoader loader = new FXMLLoader();
+        final var layoutURL = DoubleTextFieldControl.class.getResource("NumFieldControl.fxml"); //NOI18N
+        try (final var is = layoutURL.openStream()) {
+            final var loader = new FXMLLoader();
             loader.setController(this);
             loader.setRoot(this);
             loader.setLocation(layoutURL);
-            Parent p = (Parent) loader.load(is);
+            final var p = (Parent) loader.load(is);
             assert p == this;
-        } catch (IOException x) {
+        } catch (final IOException x) {
             throw new RuntimeException(x);
         }
 

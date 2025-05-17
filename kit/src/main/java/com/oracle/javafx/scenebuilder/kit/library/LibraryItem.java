@@ -53,7 +53,7 @@ public class LibraryItem {
     private final URL iconURL;
     private final Library library;
 
-    public LibraryItem(String name, String section, String fxmlText, URL iconURL, Library library) {
+    public LibraryItem(final String name, final String section, final String fxmlText, final URL iconURL, final Library library) {
         assert name != null;
         assert fxmlText != null;
         assert library != null;
@@ -90,7 +90,7 @@ public class LibraryItem {
         
         try {
             result = new FXOMDocument(fxmlText, null, library.getClassLoader(), null, FXOMDocumentSwitch.NORMALIZED);
-        } catch(Error|IOException e) {
+        } catch(final Error | IOException e) {
             Logger.getLogger(getClass().getName()).log(Level.WARNING, "Failed to instantiate a library item: ", e);
             result = null;
         }
@@ -101,7 +101,7 @@ public class LibraryItem {
     
     @Override
     public int hashCode() {
-        int hash = 7;
+        var hash = 7;
         hash = 67 * hash + Objects.hashCode(this.name);
         hash = 67 * hash + Objects.hashCode(this.section);
         hash = 67 * hash + Objects.hashCode(this.fxmlText);
@@ -111,7 +111,7 @@ public class LibraryItem {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (this == obj) {
             return true;
         }
@@ -121,7 +121,7 @@ public class LibraryItem {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final LibraryItem other = (LibraryItem) obj;
+        final var other = (LibraryItem) obj;
         if (!Objects.equals(this.name, other.name)) {
             return false;
         }
@@ -143,7 +143,7 @@ public class LibraryItem {
     
     @Override
     public String toString() {
-        final StringBuilder result = new StringBuilder();
+        final var result = new StringBuilder();
         
         result.append(getClass().getSimpleName());
         result.append('[');

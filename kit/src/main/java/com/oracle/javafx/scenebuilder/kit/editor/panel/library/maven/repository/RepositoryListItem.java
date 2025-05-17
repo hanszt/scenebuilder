@@ -36,7 +36,7 @@ public class RepositoryListItem {
     private final RepositoryManagerController repositoryManagerController;
     private final Repository repository;
 
-    public RepositoryListItem(RepositoryManagerController repositoryManagerController, Repository repository) {
+    public RepositoryListItem(final RepositoryManagerController repositoryManagerController, final Repository repository) {
         this.repositoryManagerController = repositoryManagerController;
         this.repository = repository;
     }

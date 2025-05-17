@@ -61,7 +61,7 @@ public class RegionRectangle extends Group {
         return region;
     }
     
-    public void setLayoutBounds(Bounds layoutBounds) {
+    public void setLayoutBounds(final Bounds layoutBounds) {
         
         // Setup layoutX/layoutY on the image view and the region (1)
         region.setLayoutX(layoutBounds.getMinX());

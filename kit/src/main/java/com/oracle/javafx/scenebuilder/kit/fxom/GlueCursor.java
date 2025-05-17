@@ -43,7 +43,7 @@ class GlueCursor {
     private final GlueDocument glueDocument;
     private GlueElement currentElement;
     
-    public GlueCursor(GlueDocument glueDocument) {
+    public GlueCursor(final GlueDocument glueDocument) {
         this.glueDocument = glueDocument;
         gotoFirstElement();
     }
@@ -60,14 +60,14 @@ class GlueCursor {
         assert currentElement != null;
         
         if (currentElement.getChildren().isEmpty()) {
-            GlueElement nextElement = currentElement.getNextSibling();
+            var nextElement = currentElement.getNextSibling();
             while ((nextElement == null) && (currentElement.getParent()!= null)) {
                 currentElement = currentElement.getParent();
                 nextElement = currentElement.getNextSibling();
             }
             currentElement = nextElement;
         } else {
-            currentElement = currentElement.getChildren().get(0);
+            currentElement = currentElement.getChildren().getFirst();
         }
     }
 }

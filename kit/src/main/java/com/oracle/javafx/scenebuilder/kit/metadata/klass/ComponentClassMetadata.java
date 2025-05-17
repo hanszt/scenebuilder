@@ -39,7 +39,6 @@ import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
@@ -54,7 +53,7 @@ public class ComponentClassMetadata extends ClassMetadata {
     private final boolean freeChildPositioning;
     private final ComponentClassMetadata parentMetadata;
 
-    public ComponentClassMetadata(Class<?> klass, ComponentClassMetadata parentMetadata) {
+    public ComponentClassMetadata(final Class<?> klass, final ComponentClassMetadata parentMetadata) {
         super(klass);
         this.parentMetadata = parentMetadata;
         this.freeChildPositioning = false; // TODO(elp)
@@ -66,7 +65,7 @@ public class ComponentClassMetadata extends ClassMetadata {
 
     public PropertyName getSubComponentProperty() {
         PropertyName result = null;
-        Class<?> componentClass = getKlass();
+        var componentClass = getKlass();
         
         if (componentClass == javafx.scene.layout.BorderPane.class) {
             // We consider that BorderPane has no subcomponents.
@@ -94,14 +93,14 @@ public class ComponentClassMetadata extends ClassMetadata {
         return parentMetadata;
     }
     
-    public PropertyMetadata lookupProperty(PropertyName propertyName) {
+    public PropertyMetadata lookupProperty(final PropertyName propertyName) {
         PropertyMetadata result = null;
         
         assert propertyName != null;
         
-        final Iterator<PropertyMetadata> it = properties.iterator();
+        final var it = properties.iterator();
         while ((result == null) && it.hasNext()) {
-            final PropertyMetadata pm = it.next();
+            final var pm = it.next();
             if (pm.getName().equals(propertyName)) {
                 result = pm;
             }
@@ -120,7 +119,7 @@ public class ComponentClassMetadata extends ClassMetadata {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         return super.equals(obj); // Only to please FindBugs
     }
     
@@ -129,7 +128,7 @@ public class ComponentClassMetadata extends ClassMetadata {
      * Private
      */
     
-    private static PropertyName getSubComponentProperty(Class<?> componentClass) {
+    private static PropertyName getSubComponentProperty(final Class<?> componentClass) {
         final PropertyName result;
         
         assert componentClass != javafx.scene.layout.BorderPane.class
@@ -215,9 +214,9 @@ public class ComponentClassMetadata extends ClassMetadata {
 
     private static final Collection<ExternalMetadataProvider> externalMetadataProviders = getExternalMetadataProviders();
 
-    private static Optional<PropertyName> getExternalSubComponentProperty(Class<?> componentClass) {
-        for (ExternalMetadataProvider provider : externalMetadataProviders) {
-            Optional<PropertyName> externalSubComponentProperty = provider.getExternalSubComponentProperty(componentClass);
+    private static Optional<PropertyName> getExternalSubComponentProperty(final Class<?> componentClass) {
+        for (final var provider : externalMetadataProviders) {
+            final var externalSubComponentProperty = provider.getExternalSubComponentProperty(componentClass);
             if (externalSubComponentProperty.isPresent()) {
                 return externalSubComponentProperty;
             }
@@ -226,8 +225,8 @@ public class ComponentClassMetadata extends ClassMetadata {
     }
 
     private static Collection<ExternalMetadataProvider> getExternalMetadataProviders() {
-        ServiceLoader<ExternalMetadataProvider> loader = ServiceLoader.load(ExternalMetadataProvider.class);
-        Collection<ExternalMetadataProvider> providers = new ArrayList<>();
+        final var loader = ServiceLoader.load(ExternalMetadataProvider.class);
+        final Collection<ExternalMetadataProvider> providers = new ArrayList<>();
         loader.iterator().forEachRemaining(providers::add);
         return providers;
     }

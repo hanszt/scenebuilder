@@ -54,7 +54,7 @@ public class ObjectSelectionGroup extends AbstractSelectionGroup {
     private final Object hitSceneGraphObject;
     private final Node hitNode;
     
-    ObjectSelectionGroup(FXOMObject fxomObject, Node hitNode) {
+    ObjectSelectionGroup(final FXOMObject fxomObject, final Node hitNode) {
         assert fxomObject != null;
         this.items.add(fxomObject);
         this.hitItem = fxomObject;
@@ -62,7 +62,7 @@ public class ObjectSelectionGroup extends AbstractSelectionGroup {
         this.hitNode = hitNode;
     }
     
-    public ObjectSelectionGroup(Collection<FXOMObject> fxomObjects, FXOMObject hitItem, Node hitNode) {
+    public ObjectSelectionGroup(final Collection<FXOMObject> fxomObjects, final FXOMObject hitItem, final Node hitNode) {
         assert fxomObjects != null;
         assert hitItem != null;
         assert fxomObjects.contains(hitItem);
@@ -106,7 +106,7 @@ public class ObjectSelectionGroup extends AbstractSelectionGroup {
         if (hitItem.isNode()) {
             result = (Node) hitItem.getSceneGraphObject();
         } else {
-            final FXOMObject closestNodeObject = hitItem.getClosestNode();
+            final var closestNodeObject = hitItem.getClosestNode();
             if (closestNodeObject != null) {
                 result = (Node) closestNodeObject.getSceneGraphObject();
             } else {
@@ -132,7 +132,7 @@ public class ObjectSelectionGroup extends AbstractSelectionGroup {
             result = true;
         } else {
             final Set<FXOMObject> parents = new HashSet<>();
-            for (FXOMObject i : items) {
+            for (final var i : items) {
                 parents.add(i.getParentObject());
             }
             result = parents.size() == 1;
@@ -149,7 +149,7 @@ public class ObjectSelectionGroup extends AbstractSelectionGroup {
     public FXOMObject getAncestor() {
         final FXOMObject result;
         
-        assert items.isEmpty() == false;
+        assert !items.isEmpty();
         
         switch(items.size()) {
 
@@ -163,10 +163,10 @@ public class ObjectSelectionGroup extends AbstractSelectionGroup {
 
             default:
                 DesignHierarchyPath commonPath = null;
-                for (FXOMObject i : items) {
-                    final FXOMObject parent = i.getParentObject();
+                for (final var i : items) {
+                    final var parent = i.getParentObject();
                     if (parent != null) {
-                        final DesignHierarchyPath dph = new DesignHierarchyPath(parent);
+                        final var dph = new DesignHierarchyPath(parent);
                         if (commonPath == null) {
                             commonPath = dph;
                         } else {
@@ -183,18 +183,18 @@ public class ObjectSelectionGroup extends AbstractSelectionGroup {
     }
 
     @Override
-    public boolean isValid(FXOMDocument fxomDocument) {
+    public boolean isValid(final FXOMDocument fxomDocument) {
         assert fxomDocument != null;
         
         boolean result;
-        final FXOMObject fxomRoot = fxomDocument.getFxomRoot();
+        final var fxomRoot = fxomDocument.getFxomRoot();
         if (fxomRoot == null) {
             result = false;
         } else {
             result = true;
-            for (FXOMObject i : items) {
-                final boolean ok = (i == fxomRoot) || i.isDescendantOf(fxomRoot);
-                if (ok == false) {
+            for (final var i : items) {
+                final var ok = (i == fxomRoot) || i.isDescendantOf(fxomRoot);
+                if (!ok) {
                     result = false;
                     break;
                 }
@@ -219,7 +219,7 @@ public class ObjectSelectionGroup extends AbstractSelectionGroup {
      */
     @Override
     public int hashCode() {
-        int hash = 3;
+        var hash = 3;
         hash = 41 * hash + Objects.hashCode(this.items);
         hash = 41 * hash + Objects.hashCode(this.hitItem);
         hash = 41 * hash + Objects.hashCode(this.hitNode);
@@ -227,14 +227,14 @@ public class ObjectSelectionGroup extends AbstractSelectionGroup {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         }
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final ObjectSelectionGroup other = (ObjectSelectionGroup) obj;
+        final var other = (ObjectSelectionGroup) obj;
         if (!Objects.equals(this.items, other.items)) {
             return false;
         }

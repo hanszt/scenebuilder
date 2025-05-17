@@ -79,8 +79,8 @@ public class RadialGradientPropertyMetadata extends ComplexPropertyMetadata<Radi
             = new StopListPropertyMetadata(new PropertyName("stops"),
             true, DEFAULT_STOPS, InspectorPath.UNUSED);
 
-    public RadialGradientPropertyMetadata(PropertyName name, boolean readWrite, 
-            RadialGradient defaultValue, InspectorPath inspectorPath) {
+    public RadialGradientPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                          final RadialGradient defaultValue, final InspectorPath inspectorPath) {
         super(name, RadialGradient.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -89,8 +89,8 @@ public class RadialGradientPropertyMetadata extends ComplexPropertyMetadata<Radi
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(RadialGradient value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, value.getClass());
+    public FXOMInstance makeFxomInstanceFromValue(final RadialGradient value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, value.getClass());
         
         focusAngleMetadata.setValue(result, value.getFocusAngle());
         focusDistanceMetadata.setValue(result, value.getFocusDistance());

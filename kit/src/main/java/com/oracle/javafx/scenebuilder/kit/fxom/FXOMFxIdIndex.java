@@ -45,7 +45,7 @@ public class FXOMFxIdIndex {
     private final FXOMDocument fxomDocument;
     private final Map<String, FXOMObject> fxIds;
     
-    public FXOMFxIdIndex(FXOMDocument fxomDocument) {
+    public FXOMFxIdIndex(final FXOMDocument fxomDocument) {
         assert fxomDocument != null;
         this.fxomDocument = fxomDocument;
         this.fxIds = fxomDocument.collectFxIds();
@@ -55,7 +55,7 @@ public class FXOMFxIdIndex {
         return fxomDocument;
     }
     
-    public FXOMObject lookup(String fxId) {
+    public FXOMObject lookup(final String fxId) {
         assert fxId != null;
         return fxIds.get(fxId);
     }
@@ -67,10 +67,10 @@ public class FXOMFxIdIndex {
     public List<FXOMInstance> collectToggleGroups() {
         final List<FXOMInstance> result = new ArrayList<>();
         
-        for (Map.Entry<String, FXOMObject> e : fxIds.entrySet()) {
-            final FXOMObject fxomObject = e.getValue();
+        for (final var e : fxIds.entrySet()) {
+            final var fxomObject = e.getValue();
             if (fxomObject instanceof FXOMInstance) {
-                final FXOMInstance fxomInstance = (FXOMInstance) fxomObject;
+                final var fxomInstance = (FXOMInstance) fxomObject;
                 if (fxomInstance.getDeclaredClass() == ToggleGroup.class) {
                     result.add(fxomInstance);
                 }
@@ -87,14 +87,14 @@ public class FXOMFxIdIndex {
      * @param fxomObject an fxom object (never null)
      * @return true if fxomObject subtree is self-contained
      */
-    public boolean isSelfContained(FXOMObject fxomObject) {
-        final List<FXOMIntrinsic> references = fxomObject.collectReferences(null);
-        int externalCount = 0;
-        for (FXOMIntrinsic reference : references) {
+    public boolean isSelfContained(final FXOMObject fxomObject) {
+        final var references = fxomObject.collectReferences(null);
+        var externalCount = 0;
+        for (final var reference : references) {
             assert reference.getSource() != null;
-            final FXOMObject target = fxIds.get(reference.getSource());
+            final var target = fxIds.get(reference.getSource());
             assert target != null;
-            if (target.isDescendantOf(fxomObject) == false) {
+            if (!target.isDescendantOf(fxomObject)) {
                 externalCount++;
             }
         }
@@ -110,8 +110,8 @@ public class FXOMFxIdIndex {
      * @param fxomObject an fxom object (cannot be null)
      * @return true if fxom object is self contained
      */
-    public static boolean isSelfContainedObject(FXOMObject fxomObject) {
-        final FXOMFxIdIndex fxomIndex = new FXOMFxIdIndex(fxomObject.getFxomDocument());
+    public static boolean isSelfContainedObject(final FXOMObject fxomObject) {
+        final var fxomIndex = new FXOMFxIdIndex(fxomObject.getFxomDocument());
         return fxomIndex.isSelfContained(fxomObject);
     }
 }

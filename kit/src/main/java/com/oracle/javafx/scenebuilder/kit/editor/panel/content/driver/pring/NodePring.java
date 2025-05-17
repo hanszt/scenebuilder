@@ -44,7 +44,7 @@ import javafx.scene.Node;
  */
 public class NodePring extends AbstractGenericPring<Node> {
 
-    public NodePring(ContentPanelController contentPanelController, FXOMInstance fxomInstance) {
+    public NodePring(final ContentPanelController contentPanelController, final FXOMInstance fxomInstance) {
         super(contentPanelController, fxomInstance, Node.class);
     }
     
@@ -80,7 +80,7 @@ public class NodePring extends AbstractGenericPring<Node> {
     }
 
     @Override
-    public AbstractGesture findGesture(Node node) {
+    public AbstractGesture findGesture(final Node node) {
         final AbstractGesture result;
         
         if (node == ringPath) {

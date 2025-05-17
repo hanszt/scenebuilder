@@ -34,9 +34,7 @@ package com.oracle.javafx.scenebuilder.kit.editor.job;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.ReIndexObjectJob;
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyC;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,19 +43,19 @@ import java.util.List;
  */
 public class SendToBackJob extends InlineDocumentJob {
 
-    public SendToBackJob(EditorController editorController) {
+    public SendToBackJob(final EditorController editorController) {
         super(editorController);
     }
 
     @Override
     public boolean isExecutable() {
-        final Selection selection = getEditorController().getSelection();
-        if (selection.getGroup() instanceof ObjectSelectionGroup == false) {
+        final var selection = getEditorController().getSelection();
+        if (!(selection.getGroup() instanceof ObjectSelectionGroup)) {
             return false;
         }
-        final ObjectSelectionGroup osg = (ObjectSelectionGroup) selection.getGroup();
-        for (FXOMObject item : osg.getSortedItems()) {
-            final FXOMObject previousSlibing = item.getPreviousSlibing();
+        final var osg = (ObjectSelectionGroup) selection.getGroup();
+        for (final var item : osg.getSortedItems()) {
+            final var previousSlibing = item.getPreviousSlibing();
             if (previousSlibing == null) {
                 return false;
             }
@@ -71,18 +69,18 @@ public class SendToBackJob extends InlineDocumentJob {
         assert isExecutable(); // (1)
         final List<Job> result = new ArrayList<>();
 
-        final Selection selection = getEditorController().getSelection();
+        final var selection = getEditorController().getSelection();
         assert selection.getGroup() instanceof ObjectSelectionGroup; // Because of (1)
-        final ObjectSelectionGroup osg = (ObjectSelectionGroup) selection.getGroup();
-        final List<FXOMObject> candidates = osg.getSortedItems();
+        final var osg = (ObjectSelectionGroup) selection.getGroup();
+        final var candidates = osg.getSortedItems();
 
-        for (int i = candidates.size() - 1; i >= 0; i--) {
-            final FXOMObject candidate = candidates.get(i);
-            final FXOMObject previousSlibing = candidate.getPreviousSlibing();
+        for (var i = candidates.size() - 1; i >= 0; i--) {
+            final var candidate = candidates.get(i);
+            final var previousSlibing = candidate.getPreviousSlibing();
             if (previousSlibing != null) {
-                final FXOMPropertyC parentProperty = candidate.getParentProperty();
-                final FXOMObject beforeChild = parentProperty.getValues().get(0);
-                final ReIndexObjectJob subJob = new ReIndexObjectJob(
+                final var parentProperty = candidate.getParentProperty();
+                final var beforeChild = parentProperty.getValues().getFirst();
+                final var subJob = new ReIndexObjectJob(
                         candidate, beforeChild, getEditorController());
                 if (subJob.isExecutable()) {
                     subJob.execute();
@@ -102,7 +100,7 @@ public class SendToBackJob extends InlineDocumentJob {
                 result = "Unexecutable Send To Back"; // NO18N
                 break;
             case 1: // one arrange Z order
-                result = getSubJobs().get(0).getDescription();
+                result = getSubJobs().getFirst().getDescription();
                 break;
             default:
                 result = makeMultipleSelectionDescription();
@@ -112,7 +110,7 @@ public class SendToBackJob extends InlineDocumentJob {
     }
 
     private String makeMultipleSelectionDescription() {
-        final StringBuilder result = new StringBuilder();
+        final var result = new StringBuilder();
         result.append("Send To Back ");
         result.append(getSubJobs().size());
         result.append(" Objects");

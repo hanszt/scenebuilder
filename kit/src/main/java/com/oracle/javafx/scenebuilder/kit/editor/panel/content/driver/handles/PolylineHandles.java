@@ -56,8 +56,8 @@ public class PolylineHandles extends AbstractCurveHandles<Polyline> {
     private final List<Circle> verticesHandle = new ArrayList<>();
     private final List<Line> linesHandle = new ArrayList<>();
     
-    public PolylineHandles(ContentPanelController contentPanelController,
-            FXOMInstance fxomInstance) {
+    public PolylineHandles(final ContentPanelController contentPanelController,
+                           final FXOMInstance fxomInstance) {
         super(contentPanelController, fxomInstance, Polyline.class);
         
         final List<Node> rootNodeChildren = getRootNode().getChildren();
@@ -74,8 +74,8 @@ public class PolylineHandles extends AbstractCurveHandles<Polyline> {
      */
     @Override
     protected void layoutDecoration() {
-        final Polyline l = getSceneGraphObject();
-        final boolean snapToPixel = true;
+        final var l = getSceneGraphObject();
+        final var snapToPixel = true;
         
         if (l.getPoints().size() != verticesHandle.size() * 2) {
             setupHandles(getRootNode().getChildren());
@@ -83,20 +83,20 @@ public class PolylineHandles extends AbstractCurveHandles<Polyline> {
         if (l.getPoints().size() % 2 != 0) {
             return;
         }
-        AtomicInteger counter = new AtomicInteger();
+        final var counter = new AtomicInteger();
         IntStream.range(0, l.getPoints().size() / 2)
             .mapToObj(i -> l.getPoints().subList(i * 2, 2 * (i + 1)))
-            .map(list -> sceneGraphObjectToDecoration(list.get(0), list.get(1), snapToPixel))
+            .map(list -> sceneGraphObjectToDecoration(list.getFirst(), list.get(1), snapToPixel))
             .forEach(p -> {
-                Circle c = verticesHandle.get(counter.getAndIncrement());
+                final var c = verticesHandle.get(counter.getAndIncrement());
                 c.setCenterX(p.getX());
                 c.setCenterY(p.getY());
             });
         IntStream.range(0, verticesHandle.size() - 1)
                 .forEach(i -> {
-                    Circle c1 = verticesHandle.get(i);
-                    Circle c2 = verticesHandle.get(i + 1);
-                    Line line = linesHandle.get(i);
+                    final var c1 = verticesHandle.get(i);
+                    final var c2 = verticesHandle.get(i + 1);
+                    final var line = linesHandle.get(i);
                     line.setStartX(c1.getCenterX());
                     line.setStartY(c1.getCenterY());
                     line.setEndX(c2.getCenterX());
@@ -109,7 +109,7 @@ public class PolylineHandles extends AbstractCurveHandles<Polyline> {
     protected void startListeningToSceneGraphObject() {
         super.startListeningToSceneGraphObject();
         
-        final Polyline l = getSceneGraphObject();
+        final var l = getSceneGraphObject();
         l.getPoints().addListener(pointsListener);
     }
 
@@ -117,12 +117,12 @@ public class PolylineHandles extends AbstractCurveHandles<Polyline> {
     protected void stopListeningToSceneGraphObject() {
         super.stopListeningToSceneGraphObject();
         
-        final Polyline l = getSceneGraphObject();
+        final var l = getSceneGraphObject();
         l.getPoints().removeListener(pointsListener);
     }
 
     @Override
-    public AbstractGesture findGesture(Node node) {
+    public AbstractGesture findGesture(final Node node) {
         final EditCurveGesture result;
         
         if (node instanceof Circle && verticesHandle.contains((Circle) node)) {
@@ -151,7 +151,7 @@ public class PolylineHandles extends AbstractCurveHandles<Polyline> {
         verticesHandle.clear();
         linesHandle.clear();
         rootNodeChildren.clear();
-        final Polyline l = getSceneGraphObject();
+        final var l = getSceneGraphObject();
         IntStream.range(0, l.getPoints().size() / 2 - 1)
                 .mapToObj(i -> new Line())
                 .forEach(line -> {
@@ -171,10 +171,10 @@ public class PolylineHandles extends AbstractCurveHandles<Polyline> {
                 });
     }
     
-    private void setupHandleState(Circle handleCircle) {
+    private void setupHandleState(final Circle handleCircle) {
         
-        final String styleClass = isEnabled() ? SELECTION_HANDLES : SELECTION_HANDLES_DIM;
-        final Cursor cursor = isEnabled() ? Cursor.OPEN_HAND : Cursor.DEFAULT;
+        final var styleClass = isEnabled() ? SELECTION_HANDLES : SELECTION_HANDLES_DIM;
+        final var cursor = isEnabled() ? Cursor.OPEN_HAND : Cursor.DEFAULT;
         
         handleCircle.getStyleClass().add(styleClass);
         handleCircle.setCursor(cursor);
@@ -184,7 +184,7 @@ public class PolylineHandles extends AbstractCurveHandles<Polyline> {
     /* 
      * Wraper to avoid the 'leaking this in constructor' warning emitted by NB.
      */
-    private void setupHandles(Node node) {
+    private void setupHandles(final Node node) {
         attachHandles(node, this);
     }
 }

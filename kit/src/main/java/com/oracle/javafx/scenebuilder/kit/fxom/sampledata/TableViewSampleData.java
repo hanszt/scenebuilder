@@ -46,12 +46,12 @@ class TableViewSampleData extends AbstractSampleData {
     private final List<SampleDataItem> sampleItems = new ArrayList<>();
 
     public TableViewSampleData() {
-        for (int i = 0; i < 20; i++) {
+        for (var i = 0; i < 20; i++) {
             sampleItems.add(new SampleDataItem(i));
         }
     }
 
-    public static boolean canApplyTo(TableView<?> tableView) {
+    public static boolean canApplyTo(final TableView<?> tableView) {
         final boolean result;
         
         /*
@@ -60,15 +60,15 @@ class TableViewSampleData extends AbstractSampleData {
          * 2) TableView columns have no cell factory set
          */
         
-        if (tableView.getItems().isEmpty() == false) {
+        if (!tableView.getItems().isEmpty()) {
             result = false;
         } else {
             final List<TableColumn<?, ?>> columns = new ArrayList<>();
             columns.addAll(tableView.getColumns());
-            while (columns.isEmpty() == false) {
-                final TableColumn<?,?> tc = columns.get(0);
+            while (!columns.isEmpty()) {
+                final var tc = columns.getFirst();
                 if (tc.getCellValueFactory() == null) {
-                    columns.remove(0);
+                    columns.removeFirst();
                     columns.addAll(tc.getColumns());
                 } else {
                     break;
@@ -88,28 +88,28 @@ class TableViewSampleData extends AbstractSampleData {
     
     
     @Override
-    public void applyTo(Object sceneGraphObject) {
+    public void applyTo(final Object sceneGraphObject) {
         assert sceneGraphObject instanceof TableView;
         
         @SuppressWarnings("unchecked")        
-        final TableView<SampleDataItem> tableView = (TableView<SampleDataItem>) sceneGraphObject;
+        final var tableView = (TableView<SampleDataItem>) sceneGraphObject;
         
         tableView.getItems().clear();
         tableView.getItems().addAll(sampleItems);
         
         final List<TableColumn<SampleDataItem, ?>> columns = new ArrayList<>(tableView.getColumns());
-        while (columns.isEmpty() == false) {
+        while (!columns.isEmpty()) {
             @SuppressWarnings("unchecked")        
-            final TableColumn<SampleDataItem,String> tc 
-                    = (TableColumn<SampleDataItem,String>)columns.get(0);
+            final var tc
+                    = (TableColumn<SampleDataItem,String>)columns.getFirst();
             tc.setCellValueFactory(SampleDataItem.FACTORY);
-            columns.remove(0);
+            columns.removeFirst();
             columns.addAll(tc.getColumns());
         }
     }
 
     @Override
-    public void removeFrom(Object sceneGraphObject) {
+    public void removeFrom(final Object sceneGraphObject) {
         assert sceneGraphObject instanceof TableView;
         
         @SuppressWarnings("unchecked")        
@@ -118,12 +118,12 @@ class TableViewSampleData extends AbstractSampleData {
         
         final List<TableColumn<SampleDataItem, ?>> columns = new ArrayList<>();
         columns.addAll(tableView.getColumns());
-        while (columns.isEmpty() == false) {
+        while (!columns.isEmpty()) {
             @SuppressWarnings("unchecked")        
-            final TableColumn<SampleDataItem,String> tc 
-                    = (TableColumn<SampleDataItem,String>)columns.get(0);
+            final var tc
+                    = (TableColumn<SampleDataItem,String>)columns.getFirst();
             tc.setCellValueFactory(null);
-            columns.remove(0);
+            columns.removeFirst();
             columns.addAll(tc.getColumns());
         }
     }
@@ -140,7 +140,7 @@ class TableViewSampleData extends AbstractSampleData {
         public final static PropertyValueFactory<SampleDataItem, String> FACTORY
                 = new PropertyValueFactory<>("prop"); //NOI18N
         
-        public SampleDataItem(int index) {
+        public SampleDataItem(final int index) {
             this.index = index;
         }
         

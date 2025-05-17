@@ -37,7 +37,6 @@ import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 
 /**
  *
@@ -48,7 +47,7 @@ public class TableColumnTring extends AbstractGenericTring<Object> {
     private final TableViewDesignInfoX tableViewDesignInfo
             = new TableViewDesignInfoX();
     
-    public TableColumnTring(ContentPanelController contentPanelController, FXOMInstance fxomInstance) {
+    public TableColumnTring(final ContentPanelController contentPanelController, final FXOMInstance fxomInstance) {
         super(contentPanelController, fxomInstance, Object.class);
         assert fxomInstance.getSceneGraphObject() instanceof TableColumn;
     }
@@ -74,14 +73,14 @@ public class TableColumnTring extends AbstractGenericTring<Object> {
 
     @Override
     protected void startListeningToSceneGraphObject() {
-        final TableView<?> tableView = getTableColumn().getTableView();
+        final var tableView = getTableColumn().getTableView();
         startListeningToLayoutBounds(tableView);
         startListeningToLocalToSceneTransform(tableView);
     }
 
     @Override
     protected void stopListeningToSceneGraphObject() {
-        final TableView<?> tableView = getTableColumn().getTableView();
+        final var tableView = getTableColumn().getTableView();
         stopListeningToLayoutBounds(tableView);
         stopListeningToLocalToSceneTransform(tableView);
     }

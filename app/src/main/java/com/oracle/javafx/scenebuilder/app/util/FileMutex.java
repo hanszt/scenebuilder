@@ -52,7 +52,7 @@ class FileMutex {
     private RandomAccessFile lockRAF;
     private FileLock lock;
     
-    public FileMutex(Path lockFile) {
+    public FileMutex(final Path lockFile) {
         assert lockFile != null;
         this.lockFile = lockFile;
     }
@@ -61,13 +61,13 @@ class FileMutex {
         return lockFile;
     }
     
-    public void lock(long timeout) throws IOException {
+    public void lock(final long timeout) throws IOException {
         assert lockRAF == null;
         assert lock == null;
         
         createFileChannel();
         assert lockRAF != null;
-        final Timer timer = new Timer();
+        final var timer = new Timer();
         timer.schedule(new InterruptTask(), timeout);
         lock = lockRAF.getChannel().lock();
         timer.cancel();
@@ -112,7 +112,7 @@ class FileMutex {
     private void createFileChannel() throws IOException {
         try {
             Files.createFile(lockFile);
-        } catch(FileAlreadyExistsException x) {
+        } catch(final FileAlreadyExistsException x) {
             // Someone else already created it
         }
         lockRAF = new RandomAccessFile(lockFile.toFile(), "rw"); //NOI18N

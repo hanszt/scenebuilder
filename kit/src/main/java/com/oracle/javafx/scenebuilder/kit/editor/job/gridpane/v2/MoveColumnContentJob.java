@@ -61,7 +61,7 @@ public class MoveColumnContentJob extends BatchDocumentJob {
     private final int movingColumnIndex;
     private final int columnIndexDelta;
 
-    public MoveColumnContentJob(FXOMObject gridPaneObject, int movingColumnIndex, int columnIndexDelta, EditorController editorController) {
+    public MoveColumnContentJob(final FXOMObject gridPaneObject, final int movingColumnIndex, final int columnIndexDelta, final EditorController editorController) {
         super(editorController);
         assert gridPaneObject instanceof FXOMInstance;
         assert gridPaneObject.getSceneGraphObject() instanceof GridPane;
@@ -83,15 +83,15 @@ public class MoveColumnContentJob extends BatchDocumentJob {
     protected List<Job> makeSubJobs() {
         final List<Job> result = new ArrayList<>();
         
-        final DesignHierarchyMask m = new DesignHierarchyMask(gridPaneObject);
+        final var m = new DesignHierarchyMask(gridPaneObject);
         assert m.isAcceptingSubComponent();
         
         for (int i = 0, count = m.getSubComponentCount(); i <  count; i++) {
             assert m.getSubComponentAtIndex(i) instanceof FXOMInstance; // Because children of GridPane are nodes
-            final FXOMInstance child = (FXOMInstance) m.getSubComponentAtIndex(i);
+            final var child = (FXOMInstance) m.getSubComponentAtIndex(i);
             if (columnIndexMeta.getValue(child) == movingColumnIndex) {
                 // child belongs to column at movingColumnIndex
-                final MoveCellContentJob subJob 
+                final var subJob
                         = new MoveCellContentJob(child, columnIndexDelta, 0, getEditorController());
                 result.add(subJob);
             }

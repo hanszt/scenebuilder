@@ -52,7 +52,7 @@ public class IndexEntry {
     private final Type type;
     private final FXOMObject fxomObject;
 
-    public IndexEntry(String key, Type type, FXOMObject fxomObject) {
+    public IndexEntry(final String key, final Type type, final FXOMObject fxomObject) {
         this.key = key;
         this.type = type;
         this.fxomObject = fxomObject;
@@ -75,7 +75,7 @@ public class IndexEntry {
      */
     @Override
     public int hashCode() {
-        int hash = 7;
+        var hash = 7;
         hash = 79 * hash + Objects.hashCode(this.key);
         hash = 79 * hash + Objects.hashCode(this.type);
         hash = 79 * hash + Objects.hashCode(this.fxomObject);
@@ -83,14 +83,14 @@ public class IndexEntry {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         }
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final IndexEntry other = (IndexEntry) obj;
+        final var other = (IndexEntry) obj;
         if (!Objects.equals(this.key, other.key)) {
             return false;
         }

@@ -36,7 +36,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javafx.geometry.Bounds;
 import javafx.scene.control.TableColumnBase;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.layout.Region;
@@ -60,7 +59,7 @@ public class TreeTableColumnResizer {
     private final ColumnSizing originalSizingNext; // Column at columnIndex+1 (if any)
     private final double x1, x2, x3;
 
-    public TreeTableColumnResizer(TreeTableColumn<?,?> treeTableColumn) {
+    public TreeTableColumnResizer(final TreeTableColumn<?,?> treeTableColumn) {
         assert treeTableColumn != null;
         assert treeTableColumn.getTreeTableView() != null;
         
@@ -73,7 +72,7 @@ public class TreeTableColumnResizer {
         } else {
             columns = this.treeTableColumn.getTreeTableView().getColumns();
         }
-        final int columnIndex = columns.indexOf(this.treeTableColumn);
+        final var columnIndex = columns.indexOf(this.treeTableColumn);
         if (columnIndex+1 < columns.size()) {
             this.treeTableColumnNext = (TreeTableColumn<?,?>)columns.get(columnIndex+1);
             this.originalSizingNext = new ColumnSizing(this.treeTableColumnNext);
@@ -116,22 +115,22 @@ public class TreeTableColumnResizer {
         //
         //
 
-        final TreeTableViewDesignInfoX di = new TreeTableViewDesignInfoX();
-        final Bounds columnBounds = di.getColumnBounds(treeTableColumn);
+        final var di = new TreeTableViewDesignInfoX();
+        final var columnBounds = di.getColumnBounds(treeTableColumn);
         x1 = columnBounds.getMinX();
         x2 = columnBounds.getMaxX();
         if (treeTableColumnNext != null) {
-            final Bounds nextBounds = di.getColumnBounds(treeTableColumnNext);
+            final var nextBounds = di.getColumnBounds(treeTableColumnNext);
             x3 = nextBounds.getMaxX();
         } else {
             if (treeTableColumn.getParentColumn() != null) {
-                final TableColumnBase<?,?> parentColumn 
+                final var parentColumn
                         = (TableColumnBase<?,?>) this.treeTableColumn.getParentColumn();
                 assert parentColumn instanceof TreeTableColumn<?,?>;
-                final Bounds parentBounds = di.getColumnBounds((TreeTableColumn<?,?>)parentColumn);
+                final var parentBounds = di.getColumnBounds((TreeTableColumn<?,?>)parentColumn);
                 x3 = parentBounds.getMaxX();
             } else {
-                final Bounds layoutBounds = treeTableColumn.getTreeTableView().getLayoutBounds();
+                final var layoutBounds = treeTableColumn.getTreeTableView().getLayoutBounds();
                 x3 = layoutBounds.getMaxX();
             }
         }
@@ -141,12 +140,12 @@ public class TreeTableColumnResizer {
         return treeTableColumn;
     }
     
-    public void updateWidth(double dx) {
+    public void updateWidth(final double dx) {
         
         // Clamp x2 + dx in [x1, x3]
-        final double newX2 = Math.max(x1, Math.min(x3, x2 + dx));
-        final double newWidth = newX2 - x1;
-        final double newWidthNext = x3 - newX2;
+        final var newX2 = Math.max(x1, Math.min(x3, x2 + dx));
+        final var newWidth = newX2 - x1;
+        final var newWidthNext = x3 - newX2;
         
 //        assert (newCellWidth+newNextWidth) == (downColWidths[colIndex]+downColWidths[colIndex+1]) :
 //                "newCellWidth+newNextWidth=" +  (newCellWidth+newNextWidth) + ", " +
@@ -193,13 +192,13 @@ public class TreeTableColumnResizer {
     public Map<PropertyName, Object> getChangeMap() {
         final Map<PropertyName, Object> result = new HashMap<>();
         
-        if (MathUtils.equals(treeTableColumn.getMinWidth(), originalSizing.getMinWidth()) == false) {
+        if (!MathUtils.equals(treeTableColumn.getMinWidth(), originalSizing.getMinWidth())) {
             result.put(minWidthName, treeTableColumn.getMinWidth());
         }
-        if (MathUtils.equals(treeTableColumn.getPrefWidth(), originalSizing.getPrefWidth()) == false) {
+        if (!MathUtils.equals(treeTableColumn.getPrefWidth(), originalSizing.getPrefWidth())) {
             result.put(prefWidthName, treeTableColumn.getPrefWidth());
         }
-        if (MathUtils.equals(treeTableColumn.getMaxWidth(), originalSizing.getMaxWidth()) == false) {
+        if (!MathUtils.equals(treeTableColumn.getMaxWidth(), originalSizing.getMaxWidth())) {
             result.put(maxWidthName, treeTableColumn.getMaxWidth());
         }
         return result;
@@ -210,13 +209,13 @@ public class TreeTableColumnResizer {
         final Map<PropertyName, Object> result = new HashMap<>();
         
         if (treeTableColumnNext != null) {
-            if (MathUtils.equals(treeTableColumnNext.getMinWidth(), originalSizingNext.getMinWidth()) == false) {
+            if (!MathUtils.equals(treeTableColumnNext.getMinWidth(), originalSizingNext.getMinWidth())) {
                 result.put(minWidthName, treeTableColumnNext.getMinWidth());
             }
-            if (MathUtils.equals(treeTableColumnNext.getPrefWidth(), originalSizingNext.getPrefWidth()) == false) {
+            if (!MathUtils.equals(treeTableColumnNext.getPrefWidth(), originalSizingNext.getPrefWidth())) {
                 result.put(prefWidthName, treeTableColumnNext.getPrefWidth());
             }
-            if (MathUtils.equals(treeTableColumnNext.getMaxWidth(), originalSizingNext.getMaxWidth()) == false) {
+            if (!MathUtils.equals(treeTableColumnNext.getMaxWidth(), originalSizingNext.getMaxWidth())) {
                 result.put(maxWidthName, treeTableColumnNext.getMaxWidth());
             }
         }
@@ -234,7 +233,7 @@ public class TreeTableColumnResizer {
         private final double maxWidth;
         private final double prefWidth;
         
-        public ColumnSizing(TreeTableColumn<?,?> tc) {
+        public ColumnSizing(final TreeTableColumn<?,?> tc) {
             this.minWidth = tc.getMinWidth();
             this.maxWidth = tc.getMaxWidth();
             this.prefWidth = tc.getPrefWidth();
@@ -252,7 +251,7 @@ public class TreeTableColumnResizer {
             return prefWidth;
         }
 
-        public void applyTo(TreeTableColumn<?,?> tc) {
+        public void applyTo(final TreeTableColumn<?,?> tc) {
             tc.setMinWidth(minWidth);
             tc.setMaxWidth(maxWidth);
             tc.setPrefWidth(prefWidth);

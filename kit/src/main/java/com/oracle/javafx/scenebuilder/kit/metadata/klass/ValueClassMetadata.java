@@ -40,7 +40,7 @@ public abstract class ValueClassMetadata extends ClassMetadata {
     // Typing additions : size, angle...
     // Null value treatment
     
-    public ValueClassMetadata(Class<?> klass) {
+    public ValueClassMetadata(final Class<?> klass) {
         super(klass);
     }
     
@@ -55,7 +55,7 @@ public abstract class ValueClassMetadata extends ClassMetadata {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         return super.equals(obj); // Only to please FindBugs
     }
 }

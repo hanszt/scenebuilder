@@ -68,7 +68,7 @@ public class FXOMObjectCourseComparator {
 
         ROW_BY_ROW, COL_BY_COL;
 
-        public double getMinX(Bounds b) {
+        public double getMinX(final Bounds b) {
             switch (this) {
                 case ROW_BY_ROW:
                     return b.getMinX();
@@ -78,7 +78,7 @@ public class FXOMObjectCourseComparator {
             throw new IllegalArgumentException(String.valueOf(this));
         }
 
-        public double getMaxX(Bounds b) {
+        public double getMaxX(final Bounds b) {
             switch (this) {
                 case ROW_BY_ROW:
                     return b.getMaxX();
@@ -88,7 +88,7 @@ public class FXOMObjectCourseComparator {
             throw new IllegalArgumentException(String.valueOf(this));
         }
 
-        public double getMinY(Bounds b) {
+        public double getMinY(final Bounds b) {
             switch (this) {
                 case ROW_BY_ROW:
                     return b.getMinY();
@@ -98,7 +98,7 @@ public class FXOMObjectCourseComparator {
             throw new IllegalArgumentException(String.valueOf(this));
         }
 
-        public double getMaxY(Bounds b) {
+        public double getMaxY(final Bounds b) {
             switch (this) {
                 case ROW_BY_ROW:
                     return b.getMaxY();
@@ -134,25 +134,25 @@ public class FXOMObjectCourseComparator {
         @SuppressWarnings("unused")
         private static final long serialVersionUID = 0;
 
-        public BidimensionalComparator(GridCourse course) {
+        public BidimensionalComparator(final GridCourse course) {
             this.course = course;
         }
 
         @Override
-        public int compare(FXOMObject o1, FXOMObject o2) {
+        public int compare(final FXOMObject o1, final FXOMObject o2) {
             assert o1.getSceneGraphObject() != null
                     && o1.getSceneGraphObject() instanceof Node;
             assert o2.getSceneGraphObject() != null
                     && o2.getSceneGraphObject() instanceof Node;
-            final Node n1 = (Node) o1.getSceneGraphObject();
-            final Node n2 = (Node) o2.getSceneGraphObject();
-            final Bounds b1 = n1.getBoundsInParent();
-            final Bounds b2 = n2.getBoundsInParent();
-            int test1 = compareBounds(b1, b2);
+            final var n1 = (Node) o1.getSceneGraphObject();
+            final var n2 = (Node) o2.getSceneGraphObject();
+            final var b1 = n1.getBoundsInParent();
+            final var b2 = n2.getBoundsInParent();
+            final var test1 = compareBounds(b1, b2);
             if (test1 != 0) {
                 return test1;
             }
-            int test2 = compareBounds(b2, b1);
+            final var test2 = compareBounds(b2, b1);
             if (test2 != 0) {
                 return -test2;
             }
@@ -161,7 +161,7 @@ public class FXOMObjectCourseComparator {
 
         // Used to order elements in natural western reading order:
         // begins at the top, and goes left to right, row by row.
-        private int compareBounds(Bounds b1, Bounds b2) {
+        private int compareBounds(final Bounds b1, final Bounds b2) {
             if (course.getMaxY(b2) - OVERLAP_FUZZ <= course.getMinY(b1)) {
                 return B1GREATER;
             }
@@ -189,11 +189,11 @@ public class FXOMObjectCourseComparator {
         @SuppressWarnings("unused")
         private static final long serialVersionUID = 0;
 
-        public UnidimensionalComparator(GridCourse course) {
+        public UnidimensionalComparator(final GridCourse course) {
             this.course = course;
         }
 
-        public static UnidimensionalComparator of(Orientation orientation) {
+        public static UnidimensionalComparator of(final Orientation orientation) {
             switch (orientation) {
                 case HORIZONTAL:
                     return new UnidimensionalComparator(GridCourse.ROW_BY_ROW);
@@ -204,21 +204,21 @@ public class FXOMObjectCourseComparator {
         }
 
         @Override
-        public int compare(FXOMObject o1, FXOMObject o2) {
+        public int compare(final FXOMObject o1, final FXOMObject o2) {
             assert o1.getSceneGraphObject() != null
                     && o1.getSceneGraphObject() instanceof Node;
             assert o2.getSceneGraphObject() != null
                     && o2.getSceneGraphObject() instanceof Node;
-            final Node n1 = (Node) o1.getSceneGraphObject();
-            final Node n2 = (Node) o2.getSceneGraphObject();
-            final Bounds b1 = n1.getBoundsInParent();
-            final Bounds b2 = n2.getBoundsInParent();
+            final var n1 = (Node) o1.getSceneGraphObject();
+            final var n2 = (Node) o2.getSceneGraphObject();
+            final var b1 = n1.getBoundsInParent();
+            final var b2 = n2.getBoundsInParent();
             return compareBounds(b1, b2);
         }
 
         // Used to order elements in natural western reading order:
         // begins at the top, and goes left to right, row by row.
-        private int compareBounds(Bounds b1, Bounds b2) {
+        private int compareBounds(final Bounds b1, final Bounds b2) {
             if (course.getMinX(b2) < course.getMinX(b1)) {
                 return B1GREATER;
             }

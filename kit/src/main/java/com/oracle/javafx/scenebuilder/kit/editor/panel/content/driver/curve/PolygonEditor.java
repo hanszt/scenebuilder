@@ -43,7 +43,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
-import javafx.collections.ObservableList;
 
 public class PolygonEditor extends AbstractCurveEditor<Polygon> {
 
@@ -53,31 +52,31 @@ public class PolygonEditor extends AbstractCurveEditor<Polygon> {
 
     private int vertexIndex = -1;
     
-    public PolygonEditor(Polygon sceneGraphObject) {
+    public PolygonEditor(final Polygon sceneGraphObject) {
         super(sceneGraphObject);
 
         originalPoints = new ArrayList<>(sceneGraphObject.getPoints());
     }
     
     @Override
-    public EditCurveGuideController createController(EnumMap<Tunable, Integer> tunableMap) {
-        final EditCurveGuideController result = new EditCurveGuideController();
+    public EditCurveGuideController createController(final EnumMap<Tunable, Integer> tunableMap) {
+        final var result = new EditCurveGuideController();
         vertexIndex = -1;
         if (tunableMap.containsKey(Tunable.VERTEX)) {
             vertexIndex = tunableMap.get(Tunable.VERTEX);
         }
-        final ObservableList<Double> points = sceneGraphObject.getPoints();
+        final var points = sceneGraphObject.getPoints();
         IntStream.range(0, points.size() / 2)
                 .filter(i -> i != vertexIndex)
                 .mapToObj(i -> points.subList(i * 2, 2 * (i + 1)))
-                .map(list -> sceneGraphObject.localToScene(list.get(0), list.get(1), true))
+                .map(list -> sceneGraphObject.localToScene(list.getFirst(), list.get(1), true))
                 .forEach(result::addCurvePoint);
         return result;
     }
     
     @Override
-    public void moveTunable(EnumMap<Tunable, Integer> tunableMap, double newX, double newY) {
-        Integer index = tunableMap.get(Tunable.VERTEX);
+    public void moveTunable(final EnumMap<Tunable, Integer> tunableMap, final double newX, final double newY) {
+        final var index = tunableMap.get(Tunable.VERTEX);
         if (index != null && index > -1 && index < sceneGraphObject.getPoints().size() / 2) {
             sceneGraphObject.getPoints().set(2 * index, newX);
             sceneGraphObject.getPoints().set(2 * index + 1, newY);
@@ -95,7 +94,7 @@ public class PolygonEditor extends AbstractCurveEditor<Polygon> {
     }
 
     @Override
-    public Object getValue(PropertyName propertyName) {
+    public Object getValue(final PropertyName propertyName) {
         assert propertyName != null;
         assert propertyNames.contains(propertyName);
         return null;
@@ -112,8 +111,8 @@ public class PolygonEditor extends AbstractCurveEditor<Polygon> {
     }
 
     @Override
-    public void addPoint(EnumMap<Tunable, Integer> tunableMap, double newX, double newY) {
-        Integer index = tunableMap.get(Tunable.SIDE);
+    public void addPoint(final EnumMap<Tunable, Integer> tunableMap, final double newX, final double newY) {
+        var index = tunableMap.get(Tunable.SIDE);
         if (index != null) {
             index += 1;
             if (index > -1 && index <= sceneGraphObject.getPoints().size() / 2) {
@@ -124,8 +123,8 @@ public class PolygonEditor extends AbstractCurveEditor<Polygon> {
     }
 
     @Override
-    public void removePoint(EnumMap<Tunable, Integer> tunableMap) {
-        Integer index = tunableMap.get(Tunable.VERTEX);
+    public void removePoint(final EnumMap<Tunable, Integer> tunableMap) {
+        final var index = tunableMap.get(Tunable.VERTEX);
         if (index != null && index > -1 && index < sceneGraphObject.getPoints().size() / 2) {
             sceneGraphObject.getPoints().remove(2 * index + 1);
             sceneGraphObject.getPoints().remove(2 * index);

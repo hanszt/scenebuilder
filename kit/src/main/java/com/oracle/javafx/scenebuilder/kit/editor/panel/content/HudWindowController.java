@@ -64,7 +64,7 @@ public class HudWindowController extends AbstractFxmlPopupController {
         return relativePosition;
     }
 
-    public void setRelativePosition(CardinalPoint relativePosition) {
+    public void setRelativePosition(final CardinalPoint relativePosition) {
         this.relativePosition = relativePosition;
     }
 
@@ -72,7 +72,7 @@ public class HudWindowController extends AbstractFxmlPopupController {
         return rowCount;
     }
 
-    public void setRowCount(int rowCount) {
+    public void setRowCount(final int rowCount) {
         // We force fxml to load so that we can call reconfigureGridPane().
         getRoot();
         assert gridPane != null;
@@ -81,21 +81,21 @@ public class HudWindowController extends AbstractFxmlPopupController {
         reconfigureGridPane();
     }
     
-    public void setNameAtRowIndex(String name, int rowIndex) {
+    public void setNameAtRowIndex(final String name, final int rowIndex) {
         assert (0 <= rowIndex);
         assert (rowIndex < gridPane.getRowConstraints().size());
         
-        final int nameChildIndex = rowIndex * 2;
-        final Label nameLabel = (Label) gridPane.getChildren().get(nameChildIndex);
+        final var nameChildIndex = rowIndex * 2;
+        final var nameLabel = (Label) gridPane.getChildren().get(nameChildIndex);
         nameLabel.setText(name);
     }
     
-    public void setValueAtRowIndex(String value, int rowIndex) {
+    public void setValueAtRowIndex(final String value, final int rowIndex) {
         assert (0 <= rowIndex);
         assert (rowIndex < gridPane.getRowConstraints().size());
         
-        final int valueChildIndex = rowIndex * 2+1;
-        final Label valueLabel = (Label) gridPane.getChildren().get(valueChildIndex);
+        final var valueChildIndex = rowIndex * 2 + 1;
+        final var valueLabel = (Label) gridPane.getChildren().get(valueChildIndex);
         valueLabel.setText(value);
     }
     
@@ -130,7 +130,7 @@ public class HudWindowController extends AbstractFxmlPopupController {
     }
     
     @Override
-    protected void onHidden(WindowEvent event) {
+    protected void onHidden(final WindowEvent event) {
     }
 
     @Override
@@ -155,7 +155,7 @@ public class HudWindowController extends AbstractFxmlPopupController {
         // scene. This looks like a bug in FX...
         // Anway we protect ourself by checking.
         if (getAnchor() != null && getAnchor().getScene() != null) {
-            final Point2D popupLocation = computePopupLocation();
+            final var popupLocation = computePopupLocation();
             getPopup().setX(popupLocation.getX());
             getPopup().setY(popupLocation.getY());
         }
@@ -191,23 +191,23 @@ public class HudWindowController extends AbstractFxmlPopupController {
          *       +-----+               +-----+               +-----+
          */
         
-        final Bounds anchorBounds = getAnchor().getLayoutBounds();
-        final Bounds usefulBounds = clampBounds(anchorBounds, 1.0, 1.0);
+        final var anchorBounds = getAnchor().getLayoutBounds();
+        final var usefulBounds = clampBounds(anchorBounds, 1.0, 1.0);
         assert usefulBounds.getWidth() > 0.0;
         assert usefulBounds.getHeight() > 0.0;
-        final Point2D p0 = relativePosition.getPosition(usefulBounds);
-        final Point2D p1 = relativePosition.getOpposite().getPosition(usefulBounds);
-        final Point2D sp0 = getAnchor().localToScreen(p0);
-        final Point2D sp1 = getAnchor().localToScreen(p1);
+        final var p0 = relativePosition.getPosition(usefulBounds);
+        final var p1 = relativePosition.getOpposite().getPosition(usefulBounds);
+        final var sp0 = getAnchor().localToScreen(p0);
+        final var sp1 = getAnchor().localToScreen(p1);
         assert sp0 != null;
         assert sp1 != null;
-        final LineEquation leq = new LineEquation(sp0, sp1);
+        final var leq = new LineEquation(sp0, sp1);
         
         
-        final Point2D k = leq.pointAtOffset(-30.0);
+        final var k = leq.pointAtOffset(-30.0);
         
         final double ox, oy; // Point O on the diagram above
-        final Bounds popupBounds = getRoot().getLayoutBounds();
+        final var popupBounds = getRoot().getLayoutBounds();
         switch(relativePosition) {
             case N:
                 ox = k.getX() - popupBounds.getWidth() / 2.0;
@@ -271,11 +271,11 @@ public class HudWindowController extends AbstractFxmlPopupController {
     
     
     private void appendRow() {
-        final int newRowIndex = gridPane.getRowConstraints().size();
+        final var newRowIndex = gridPane.getRowConstraints().size();
         
         // Add an entry to gridPane.rowConstraints.
         // We clone rowConstraint0 and add it to gridPane.
-        final RowConstraints rc = new RowConstraints();
+        final var rc = new RowConstraints();
         rc.setFillHeight(rowConstraint0.isFillHeight());
         rc.setMaxHeight(rowConstraint0.getMaxHeight());
         rc.setMinHeight(rowConstraint0.getMinHeight());
@@ -286,8 +286,8 @@ public class HudWindowController extends AbstractFxmlPopupController {
         gridPane.getRowConstraints().add(rc);
         
         // Add two Labels to gridPane.children
-        final Label nameLabel = new Label();
-        final Label valueLabel = new Label();
+        final var nameLabel = new Label();
+        final var valueLabel = new Label();
         nameLabel.getStyleClass().add("hud-property-label");
         valueLabel.getStyleClass().add("hud-value-label");
         gridPane.getChildren().add(nameLabel);
@@ -303,7 +303,7 @@ public class HudWindowController extends AbstractFxmlPopupController {
         assert gridPane.getRowConstraints().size() >= 1;
         assert gridPane.getChildren().size() >= 2;
         
-        final int lastRowIndex = gridPane.getRowConstraints().size()-1;
+        final var lastRowIndex = gridPane.getRowConstraints().size() - 1;
         gridPane.getRowConstraints().remove(lastRowIndex);
         gridPane.getChildren().remove(lastRowIndex * 2 + 1);
         gridPane.getChildren().remove(lastRowIndex * 2 + 0);
@@ -316,7 +316,7 @@ public class HudWindowController extends AbstractFxmlPopupController {
      * @param minHeight minimum height
      * @return b if its width/height are above minWidth/minHeight or new adjusted bounds
      */
-    private static Bounds clampBounds(Bounds b, double minWidth, double minHeight) {
+    private static Bounds clampBounds(final Bounds b, final double minWidth, final double minHeight) {
         assert b != null;
         assert minWidth > 0.0;
         assert minHeight > 0.0;

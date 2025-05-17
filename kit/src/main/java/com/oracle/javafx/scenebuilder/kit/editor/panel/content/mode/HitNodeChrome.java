@@ -38,7 +38,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.panel.content.util.RegionRectan
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
-import javafx.scene.transform.Transform;
 
 /**
  *
@@ -49,7 +48,7 @@ public class HitNodeChrome extends AbstractDecoration<Object> {
     private final RegionRectangle chrome = new RegionRectangle();
     private Node closestNode;
 
-    public HitNodeChrome(ContentPanelController contentPanelController, FXOMObject fxomObject, Node hitNode) {
+    public HitNodeChrome(final ContentPanelController contentPanelController, final FXOMObject fxomObject, final Node hitNode) {
         super(contentPanelController, fxomObject, Object.class);
         
         assert hitNode != null;
@@ -108,7 +107,7 @@ public class HitNodeChrome extends AbstractDecoration<Object> {
             assert hitNode.getScene() != null;
             assert hitNode.getScene() == closestNode.getScene();
             
-            final Transform t = getContentPanelController().computeSceneGraphToRudderLayerTransform(hitNode);
+            final var t = getContentPanelController().computeSceneGraphToRudderLayerTransform(hitNode);
             chrome.getTransforms().clear();
             chrome.getTransforms().add(t);
             chrome.setLayoutBounds(hitNode.getLayoutBounds());
@@ -119,10 +118,10 @@ public class HitNodeChrome extends AbstractDecoration<Object> {
 
     @Override
     public State getState() {
-        State result = super.getState();
+        var result = super.getState();
         
         if (result == State.CLEAN) {
-            final Node newClosestNode = findClosestNode();
+            final var newClosestNode = findClosestNode();
             if (closestNode != newClosestNode) {
                 result = State.NEEDS_RECONCILE;
             }
@@ -144,7 +143,7 @@ public class HitNodeChrome extends AbstractDecoration<Object> {
      */
     
     private Node findClosestNode() {
-        final FXOMObject nodeObject = getFxomObject().getClosestNode();
+        final var nodeObject = getFxomObject().getClosestNode();
         assert nodeObject != null; // At least the root is a Node
         assert nodeObject.getSceneGraphObject() instanceof Node;
         return (Node) nodeObject.getSceneGraphObject();

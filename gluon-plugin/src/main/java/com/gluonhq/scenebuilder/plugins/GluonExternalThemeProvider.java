@@ -58,16 +58,16 @@ public class GluonExternalThemeProvider implements ExternalThemeProvider {
     @Override
     public List<String> getExternalStylesheets() {
         // keep modena first, for user agent stylesheet
-        String modenaStylesheet = EditorPlatform.Theme.MODENA.getStylesheetURLs().getFirst();
-        String gluonStylesheet = GLUON_MOBILE.getStylesheetURLs().getFirst();
-        String gluonThemeStylesheet = GluonEditorController.getInstance().getGluonTheme().getStylesheetURLs().getFirst();
-        String gluonSwatchStylesheet = GluonEditorController.getInstance().getGluonSwatch().getStylesheetURLs().getFirst();
-        String gluonDocumentStylesheet = getGluonDocumentStylesheetURL();
+        final var modenaStylesheet = EditorPlatform.Theme.MODENA.getStylesheetURLs().getFirst();
+        final var gluonStylesheet = GLUON_MOBILE.getStylesheetURLs().getFirst();
+        final var gluonThemeStylesheet = GluonEditorController.getInstance().getGluonTheme().getStylesheetURLs().getFirst();
+        final var gluonSwatchStylesheet = GluonEditorController.getInstance().getGluonSwatch().getStylesheetURLs().getFirst();
+        final var gluonDocumentStylesheet = getGluonDocumentStylesheetURL();
         return List.of(modenaStylesheet, gluonStylesheet, gluonThemeStylesheet, gluonSwatchStylesheet, gluonDocumentStylesheet);
     }
 
     @Override
-    public boolean hasClassFromExternalPlugin(String text) {
+    public boolean hasClassFromExternalPlugin(final String text) {
         if (text == null || text.isEmpty()) {
             return false;
         }
@@ -78,12 +78,12 @@ public class GluonExternalThemeProvider implements ExternalThemeProvider {
     }
 
     @Override
-    public void showThemeAlert(Stage owner, EditorPlatform.Theme currentTheme, Consumer<EditorPlatform.Theme> onSuccess) {
+    public void showThemeAlert(final Stage owner, final EditorPlatform.Theme currentTheme, final Consumer<EditorPlatform.Theme> onSuccess) {
         WarnThemeAlert.showAlertIfRequired(owner, currentTheme, onSuccess);
     }
 
     @Override
-    public void showImportAlert(Stage owner) {
+    public void showImportAlert(final Stage owner) {
         new ImportingGluonControlsAlert(owner).showAndWait();
     }
 

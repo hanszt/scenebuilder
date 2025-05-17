@@ -39,10 +39,8 @@ import com.oracle.javafx.scenebuilder.app.util.AppSettings;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.util.AbstractFxmlWindowController;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -80,10 +78,10 @@ public final class AboutWindowController extends AbstractFxmlWindowController {
     public AboutWindowController() {
         super(AboutWindowController.class.getResource("About.fxml"), //NOI18N
                 I18N.getBundle());
-        try (InputStream in = getClass().getResourceAsStream("about.properties")) { //NOI18N
+        try (final var in = getClass().getResourceAsStream("about.properties")) { //NOI18N
 
             if (in != null) {
-                Properties sbProps = new Properties();
+                final var sbProps = new Properties();
                 sbProps.load(in);
                 sbBuildInfo = sbProps.getProperty("build.info", "UNSET"); //NOI18N
                 sbBuildVersion = sbProps.getProperty("build.version", "UNSET"); //NOI18N
@@ -93,20 +91,20 @@ public final class AboutWindowController extends AbstractFxmlWindowController {
                 sbBuildJavaFXVersion = sbProps.getProperty("build.javafx.version", "UNSET"); //NOI18N
                 sbAboutCopyrightKeyName = sbProps.getProperty("copyright.key.name", "UNSET"); //NOI18N
             }
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             // We go with default values
         }
     }
 
     @FXML
-    public void onMousePressed(MouseEvent event) {
+    public void onMousePressed(final MouseEvent event) {
         if ((event.getClickCount() == 2) && event.isAltDown()) {
             SceneBuilderApp.getSingleton().toggleDebugMenu();
         }
     }
 
     @Override
-    public void onCloseRequest(WindowEvent event) {
+    public void onCloseRequest(final WindowEvent event) {
         closeWindow();
     }
 
@@ -132,8 +130,8 @@ public final class AboutWindowController extends AbstractFxmlWindowController {
     }
 
     private String getAboutText() {
-        LocalDateTime buildDate = LocalDateTime.parse(sbBuildDate, DateTimeFormatter.ofPattern(sbBuildDateFormat));
-        StringBuilder text = getVersionParagraph()
+        final var buildDate = LocalDateTime.parse(sbBuildDate, DateTimeFormatter.ofPattern(sbBuildDateFormat));
+        final var text = getVersionParagraph()
                 .append(getBuildInfoParagraph())
                 .append(getLoggingParagraph())
                 .append(getJavaFXParagraph())
@@ -178,14 +176,14 @@ public final class AboutWindowController extends AbstractFxmlWindowController {
     }
 
     private StringBuilder getVersionParagraph() {
-        StringBuilder sb = new StringBuilder(I18N.getString("about.product.version"));
+        final var sb = new StringBuilder(I18N.getString("about.product.version"));
         sb.append("\nJavaFX Scene Builder ").append(sbBuildVersion) //NOI18N
                 .append("\n\n"); //NOI18N
         return sb;
     }
 
     private String getLogFilePath() {
-        StringBuilder sb = new StringBuilder(AppPlatform.getLogFolder());
+        final var sb = new StringBuilder(AppPlatform.getLogFolder());
         if (sb.charAt(sb.length() - 1) != File.separatorChar) {
             sb.append(File.separatorChar);
         }
@@ -194,7 +192,7 @@ public final class AboutWindowController extends AbstractFxmlWindowController {
     }
 
     private StringBuilder getBuildInfoParagraph() {
-        StringBuilder sb = new StringBuilder(I18N.getString("about.build.information"));
+        final var sb = new StringBuilder(I18N.getString("about.build.information"));
         sb.append("\n").append(sbBuildInfo).append("\n") //NOI18N
                 .append(I18N.getString("about.build.date", sbBuildDate)).append("\n")
                 .append(I18N.getString("about.build.javafx.version", sbBuildJavaFXVersion)).append("\n")
@@ -204,7 +202,7 @@ public final class AboutWindowController extends AbstractFxmlWindowController {
     }
 
     private StringBuilder getLoggingParagraph() {
-        StringBuilder sb = new StringBuilder(I18N.getString("about.logging.title"));
+        final var sb = new StringBuilder(I18N.getString("about.logging.title"));
         sb.append("\n") //NOI18N
                 .append(I18N.getString("about.logging.body.first", LOG_FILE_NAME))
                 .append("\n") //NOI18N
@@ -214,13 +212,13 @@ public final class AboutWindowController extends AbstractFxmlWindowController {
     }
 
     private StringBuilder getJavaFXParagraph() {
-        StringBuilder sb = new StringBuilder("JavaFX\n"); //NOI18N
+        final var sb = new StringBuilder("JavaFX\n"); //NOI18N
         sb.append(System.getProperty("javafx.version")).append("\n\n"); //NOI18N
         return sb;
     }
     
     private StringBuilder getJavaParagraph() {
-        StringBuilder sb = new StringBuilder("Java\n"); //NOI18N
+        final var sb = new StringBuilder("Java\n"); //NOI18N
         sb.append(System.getProperty("java.version")).append(", ") //NOI18N
                 .append(System.getProperty("java.runtime.name")) // NOI18N
                 .append("\n\n");
@@ -228,21 +226,21 @@ public final class AboutWindowController extends AbstractFxmlWindowController {
     }
     
     private StringBuilder getJavaLibraryPathParagraph() {
-        StringBuilder sb = new StringBuilder(I18N.getString("about.java.library.paths"))
+        final var sb = new StringBuilder(I18N.getString("about.java.library.paths"))
                 .append("\n"); //NOI18N
-        String libPaths = System.getProperty("java.library.path"); //NOI18N
-        List<String> invalidPaths = new ArrayList<>();
-        String separator = getPathSeparator();
-        for (String libPath : libPaths.split(separator)) {
+        final var libPaths = System.getProperty("java.library.path"); //NOI18N
+        final List<String> invalidPaths = new ArrayList<>();
+        final var separator = getPathSeparator();
+        for (final var libPath : libPaths.split(separator)) {
             try {
-                Path absolutePath = Paths.get(libPath).normalize().toAbsolutePath();
+                final var absolutePath = Paths.get(libPath).normalize().toAbsolutePath();
                 if (Files.exists(absolutePath)) {
-                    String path = absolutePath.toString();
+                    final var path = absolutePath.toString();
                     sb.append("\t").append(path).append("\n");
                 } else {
                     invalidPaths.add(libPath);
                 }
-            } catch (InvalidPathException error) {
+            } catch (final InvalidPathException error) {
                 invalidPaths.add(libPath);
             }
         }
@@ -257,7 +255,7 @@ public final class AboutWindowController extends AbstractFxmlWindowController {
     }
 
     private String getPathSeparator() {
-        String os = System.getProperty("os.name").toLowerCase();
+        final var os = System.getProperty("os.name").toLowerCase();
         if (os.indexOf("win") >= 0) {
             return ";";
         } else {
@@ -266,7 +264,7 @@ public final class AboutWindowController extends AbstractFxmlWindowController {
     }
 
     private StringBuilder getOsParagraph() {
-        StringBuilder sb = new StringBuilder(I18N.getString("about.operating.system"));
+        final var sb = new StringBuilder(I18N.getString("about.operating.system"));
         sb.append("\n").append(System.getProperty("os.name")).append(", ") //NOI18N
                 .append(System.getProperty("os.arch")).append(", ") //NOI18N
                 .append(System.getProperty("os.version")).append("\n\n"); //NOI18N

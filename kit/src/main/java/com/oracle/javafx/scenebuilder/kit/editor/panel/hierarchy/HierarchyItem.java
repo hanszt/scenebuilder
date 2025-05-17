@@ -80,14 +80,14 @@ public class HierarchyItem {
      * @return true if this object is the same as the obj argument, false otherwise.
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         }
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final HierarchyItem item = (HierarchyItem) obj;
+        final var item = (HierarchyItem) obj;
         // equals method is overidden in the place holder sub classes.
         assert getFxomObject() != null;
         return getFxomObject().equals(item.getFxomObject());
@@ -95,7 +95,7 @@ public class HierarchyItem {
 
     @Override
     public int hashCode() {
-        int hash = 5;
+        var hash = 5;
         hash = 79 * hash + Objects.hashCode(this.mask);
         return hash;
     }
@@ -165,7 +165,7 @@ public class HierarchyItem {
         if (mask == null) {
             return null;
         }
-        final Object sceneGraphObject = mask.getFxomObject().getSceneGraphObject();
+        final var sceneGraphObject = mask.getFxomObject().getSceneGraphObject();
         if (sceneGraphObject == null) {
             // For now, handle display label for scenegraph objects only
             return null;
@@ -221,7 +221,7 @@ public class HierarchyItem {
         return !isEmpty() && mask.isAcceptingSubComponent(fxomObjects);
     }
 
-    public boolean isAcceptingAccessory(Accessory accessory, FXOMObject fxomObject) {
+    public boolean isAcceptingAccessory(final Accessory accessory, final FXOMObject fxomObject) {
         return !isEmpty()
                 && mask.isAcceptingAccessory(accessory, fxomObject)
                 && mask.getAccessory(accessory) == null;

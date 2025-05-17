@@ -52,8 +52,8 @@ public class GaussianBlurPropertyMetadata extends ComplexPropertyMetadata<Gaussi
             = new DoublePropertyMetadata(new PropertyName("radius"), //NOI18N
             DoublePropertyMetadata.DoubleKind.COORDINATE, true /* readWrite */, 10.0, InspectorPath.UNUSED);
 
-    public GaussianBlurPropertyMetadata(PropertyName name, boolean readWrite, 
-            GaussianBlur defaultValue, InspectorPath inspectorPath) {
+    public GaussianBlurPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                        final GaussianBlur defaultValue, final InspectorPath inspectorPath) {
         super(name, GaussianBlur.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -62,8 +62,8 @@ public class GaussianBlurPropertyMetadata extends ComplexPropertyMetadata<Gaussi
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(GaussianBlur value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, value.getClass());
+    public FXOMInstance makeFxomInstanceFromValue(final GaussianBlur value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, value.getClass());
         
         inputMetadata.setValue(result, value.getInput());
         radiusMetadata.setValue(result, value.getRadius());

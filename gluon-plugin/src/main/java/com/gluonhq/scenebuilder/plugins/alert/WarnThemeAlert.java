@@ -51,15 +51,15 @@ public class WarnThemeAlert extends SBAlert {
 
     private static boolean hasBeenShown = false;
 
-    private WarnThemeAlert(Stage owner, Consumer<EditorPlatform.Theme> onSuccess) {
+    private WarnThemeAlert(final Stage owner, final Consumer<EditorPlatform.Theme> onSuccess) {
         super(AlertType.WARNING, owner);
 
         setTitle(I18N.getString("alert.theme.gluon.mobile.title"));
         setHeaderText(I18N.getString("alert.theme.gluon.mobile.headertext"));
         setContentText(I18N.getString("alert.theme.gluon.mobile.contenttext"));
 
-        ButtonType setGluonTheme = new ButtonType(I18N.getString("alert.theme.gluon.mobile.setgluontheme"), ButtonBar.ButtonData.OK_DONE);
-        ButtonType ignore = new ButtonType(I18N.getString("alert.theme.gluon.mobile.ignore"), ButtonBar.ButtonData.CANCEL_CLOSE);
+        final var setGluonTheme = new ButtonType(I18N.getString("alert.theme.gluon.mobile.setgluontheme"), ButtonBar.ButtonData.OK_DONE);
+        final var ignore = new ButtonType(I18N.getString("alert.theme.gluon.mobile.ignore"), ButtonBar.ButtonData.CANCEL_CLOSE);
 
         getButtonTypes().setAll(setGluonTheme, ignore);
 
@@ -72,7 +72,7 @@ public class WarnThemeAlert extends SBAlert {
         setOnShown(event -> hasBeenShown = true);
     }
 
-    public static void showAlertIfRequired(Stage owner, EditorPlatform.Theme currentTheme, Consumer<EditorPlatform.Theme> onSuccess) {
+    public static void showAlertIfRequired(final Stage owner, final EditorPlatform.Theme currentTheme, final Consumer<EditorPlatform.Theme> onSuccess) {
         if (!hasBeenShown &&
             (!GluonEditorPlatform.isGluonMobileLight(currentTheme) && !GluonEditorPlatform.isGluonMobileDark(currentTheme))) {
             new WarnThemeAlert(owner, onSuccess).showAndWait();

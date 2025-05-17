@@ -55,7 +55,7 @@ public class ResizingGuideController {
     private double suggestedWidth;
     private double suggestedHeight;
     
-    public ResizingGuideController(boolean matchWidth, boolean matchHeight, Paint guideColor) {
+    public ResizingGuideController(final boolean matchWidth, final boolean matchHeight, final Paint guideColor) {
         this.renderer = new ResizingGuideRenderer(guideColor, CHROME_SIDE_LENGTH);
         if (matchWidth) {
             widthIndex = new SegmentIndex();
@@ -69,16 +69,16 @@ public class ResizingGuideController {
         }
     }
     
-    public void addSampleBounds(Node node) {
+    public void addSampleBounds(final Node node) {
         assert node != null;
         assert node.getScene() != null;
         
-        final Bounds layoutBounds = node.getLayoutBounds();
-        final Bounds boundsInScene = node.localToScene(layoutBounds, true /* rootScene */);
-        final double minX = boundsInScene.getMinX();
-        final double minY = boundsInScene.getMinY();
-        final double maxX = boundsInScene.getMaxX();
-        final double maxY = boundsInScene.getMaxY();
+        final var layoutBounds = node.getLayoutBounds();
+        final var boundsInScene = node.localToScene(layoutBounds, true /* rootScene */);
+        final var minX = boundsInScene.getMinX();
+        final var minY = boundsInScene.getMinY();
+        final var maxX = boundsInScene.getMaxX();
+        final var maxY = boundsInScene.getMaxY();
 
         if ((widthIndex != null) && (minX < maxX)) {
             widthIndex.addSegment(new HorizontalSegment(minX, maxX, minY - DELTA));
@@ -92,33 +92,33 @@ public class ResizingGuideController {
         renderer.setSegments(Collections.emptyList());
     }
     
-    public void match(Bounds targetBounds) {
+    public void match(final Bounds targetBounds) {
         final List<AbstractSegment> matchingSegments = new ArrayList<>();
 
-        final double targetWidth = targetBounds.getWidth();
+        final var targetWidth = targetBounds.getWidth();
         if (widthIndex == null) {
             suggestedWidth = targetWidth;
         } else {
-            final List<AbstractSegment> matchingWidthSegments
+            final var matchingWidthSegments
                     = widthIndex.match(targetWidth, MATCH_DISTANCE);
             if (matchingWidthSegments.isEmpty()) {
                 suggestedWidth = targetWidth;
             } else {
-                suggestedWidth = matchingWidthSegments.get(0).getLength();
+                suggestedWidth = matchingWidthSegments.getFirst().getLength();
                 matchingSegments.addAll(matchingWidthSegments);
             }
         }
         
-        final double targetHeight = targetBounds.getHeight();
+        final var targetHeight = targetBounds.getHeight();
         if (heightIndex == null) {
             suggestedHeight = targetHeight;
         } else {
-            final List<AbstractSegment> matchingHeightSegments
+            final var matchingHeightSegments
                     = heightIndex.match(targetHeight, MATCH_DISTANCE);
             if (matchingHeightSegments.isEmpty()) {
                 suggestedHeight = targetHeight;
             } else {
-                suggestedHeight = matchingHeightSegments.get(0).getLength();
+                suggestedHeight = matchingHeightSegments.getFirst().getLength();
                 matchingSegments.addAll(matchingHeightSegments);
             }
         }

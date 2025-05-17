@@ -48,7 +48,7 @@ public class RemovePropertyValueJob extends Job {
     private int indexInParentProperty;
     private RemovePropertyJob removePropertyJob;
 
-    public RemovePropertyValueJob(FXOMObject value, EditorController editorController) {
+    public RemovePropertyValueJob(final FXOMObject value, final EditorController editorController) {
         super(editorController);
         this.targetValue = value;
     }

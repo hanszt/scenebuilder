@@ -33,12 +33,10 @@
 package com.oracle.javafx.scenebuilder.kit.fxom;
 
 import com.oracle.javafx.scenebuilder.kit.metadata.Metadata;
-import com.oracle.javafx.scenebuilder.kit.metadata.property.ValuePropertyMetadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.property.value.DoubleArrayPropertyMetadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.property.value.list.ListValuePropertyMetadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
 
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
@@ -47,8 +45,8 @@ import javafx.stage.Window;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Set;
 
 /**
  *
@@ -56,16 +54,16 @@ import java.util.Set;
  */
 class FXOMRefresher {
 
-    public void refresh(FXOMDocument document) {
+    public void refresh(final FXOMDocument document) {
         String fxmlText = null;
         try {
             fxmlText = document.getFxmlText(false);
-            final FXOMDocument newDocument
+            final var newDocument
                     = new FXOMDocument(fxmlText,
                     document.getLocation(),
                     document.getClassLoader(),
                     document.getResources());
-            final TransientStateBackup backup = new TransientStateBackup(document);
+            final var backup = new TransientStateBackup(document);
             // if the refresh should not take place (e.g. due to an error), remove a property from intrinsic
             if (newDocument.getSceneGraphRoot() == null && newDocument.getFxomRoot() == null) {
                 removeIntrinsicProperty(document);
@@ -74,19 +72,19 @@ class FXOMRefresher {
             }
             backup.restore();
             synchronizeDividerPositions(document);
-        } catch (RuntimeException | IOException x) {
-            final StringBuilder sb = new StringBuilder();
+        } catch (final RuntimeException | IOException x) {
+            final var sb = new StringBuilder();
             sb.append("Bug in ");
             sb.append(getClass().getSimpleName());
             if (fxmlText != null) {
                 try {
-                    final File fxmlFile = File.createTempFile("DTL-5996-", ".fxml");
-                    try (PrintWriter pw = new PrintWriter(fxmlFile, "UTF-8")) {
+                    final var fxmlFile = File.createTempFile("DTL-5996-", ".fxml");
+                    try (final var pw = new PrintWriter(fxmlFile, StandardCharsets.UTF_8)) {
                         pw.write(fxmlText);
                         sb.append(": FXML dumped in ");
                         sb.append(fxmlFile.getPath());
                     }
-                } catch (IOException xx) {
+                } catch (final IOException xx) {
                     sb.append(": no FXML dumped");
                 }
             } else {
@@ -96,12 +94,12 @@ class FXOMRefresher {
         }
     }
 
-    private void removeIntrinsicProperty(FXOMDocument document) {
-        FXOMInstance fxomRoot = (FXOMInstance) document.getFxomRoot();
+    private void removeIntrinsicProperty(final FXOMDocument document) {
+        final var fxomRoot = (FXOMInstance) document.getFxomRoot();
         if (fxomRoot != null) {
-            FXOMPropertyC propertyC = (FXOMPropertyC) fxomRoot.getProperties().get(new PropertyName("children"));
-            if (propertyC.getValues().get(0) instanceof FXOMIntrinsic) {
-                FXOMIntrinsic fxomIntrinsic = (FXOMIntrinsic) propertyC.getValues().get(0);
+            final var propertyC = (FXOMPropertyC) fxomRoot.getProperties().get(new PropertyName("children"));
+            if (propertyC.getValues().getFirst() instanceof FXOMIntrinsic) {
+                final var fxomIntrinsic = (FXOMIntrinsic) propertyC.getValues().getFirst();
                 fxomIntrinsic.removeCharsetProperty();
             }
         }
@@ -111,7 +109,7 @@ class FXOMRefresher {
      * Private (stylesheet)
      */
 
-    private void refreshDocument(FXOMDocument currentDocument, FXOMDocument newDocument) {
+    private void refreshDocument(final FXOMDocument currentDocument, final FXOMDocument newDocument) {
         // Transfers scene graph object from newDocument to currentDocument
         currentDocument.setSceneGraphRoot(newDocument.getSceneGraphRoot());
         // Transfers display node from newDocument to currentDocument
@@ -121,13 +119,13 @@ class FXOMRefresher {
         // Simulates Scene's behavior : automatically adds "root" styleclass if
         // if the scene graph root is a Parent instance or wraps a Parent instance
         if (currentDocument.getSceneGraphRoot() instanceof Parent) {
-            final Parent rootParent = (Parent) currentDocument.getSceneGraphRoot();
-            rootParent.getStyleClass().add(0, "root");
+            final var rootParent = (Parent) currentDocument.getSceneGraphRoot();
+            rootParent.getStyleClass().addFirst("root");
         } else if (currentDocument.getSceneGraphRoot() instanceof Scene
                 || currentDocument.getSceneGraphRoot() instanceof Window) {
-            Node displayNode = currentDocument.getDisplayNode();
+            final var displayNode = currentDocument.getDisplayNode();
             if (displayNode != null && displayNode instanceof Parent) {
-                displayNode.getStyleClass().add(0, "root");
+                displayNode.getStyleClass().addFirst("root");
             }
         }
         // Recurses
@@ -137,7 +135,7 @@ class FXOMRefresher {
     }
 
 
-    private void refreshFxomObject(FXOMObject currentObject, FXOMObject newObject) {
+    private void refreshFxomObject(final FXOMObject currentObject, final FXOMObject newObject) {
         assert currentObject != null;
         assert newObject != null;
         assert currentObject.getClass() == newObject.getClass();
@@ -157,29 +155,29 @@ class FXOMRefresher {
     }
 
 
-    private void refreshFxomInstance(FXOMInstance currentInstance, FXOMInstance newInstance) {
+    private void refreshFxomInstance(final FXOMInstance currentInstance, final FXOMInstance newInstance) {
         assert currentInstance != null;
         assert newInstance != null;
         assert currentInstance.getClass() == newInstance.getClass();
         currentInstance.setDeclaredClass(newInstance.getDeclaredClass());
-        final Set<PropertyName> currentNames = currentInstance.getProperties().keySet();
-        final Set<PropertyName> newNames = newInstance.getProperties().keySet();
+        final var currentNames = currentInstance.getProperties().keySet();
+        final var newNames = newInstance.getProperties().keySet();
         assert currentNames.equals(newNames);
-        for (PropertyName name : currentNames) {
-            final FXOMProperty currentProperty = currentInstance.getProperties().get(name);
-            final FXOMProperty newProperty = newInstance.getProperties().get(name);
+        for (final var name : currentNames) {
+            final var currentProperty = currentInstance.getProperties().get(name);
+            final var newProperty = newInstance.getProperties().get(name);
             refreshFxomProperty(currentProperty, newProperty);
         }
     }
 
-    private void refreshFxomCollection(FXOMCollection currentCollection, FXOMCollection newCollection) {
+    private void refreshFxomCollection(final FXOMCollection currentCollection, final FXOMCollection newCollection) {
         assert currentCollection != null;
         assert newCollection != null;
         currentCollection.setDeclaredClass(newCollection.getDeclaredClass());
         refreshFxomObjects(currentCollection.getItems(), newCollection.getItems());
     }
 
-    private void refreshFxomIntrinsic(FXOMIntrinsic currentIntrinsic, FXOMIntrinsic newIntrinsic) {
+    private void refreshFxomIntrinsic(final FXOMIntrinsic currentIntrinsic, final FXOMIntrinsic newIntrinsic) {
         assert currentIntrinsic != null;
         assert newIntrinsic != null;
         currentIntrinsic.setSourceSceneGraphObject(newIntrinsic.getSourceSceneGraphObject());
@@ -187,7 +185,7 @@ class FXOMRefresher {
         currentIntrinsic.fillProperties(newIntrinsic.getProperties());
     }
 
-    private void refreshFxomProperty(FXOMProperty currentProperty, FXOMProperty newProperty) {
+    private void refreshFxomProperty(final FXOMProperty currentProperty, final FXOMProperty newProperty) {
         assert currentProperty != null;
         assert newProperty != null;
         assert currentProperty.getName().equals(newProperty.getName());
@@ -197,20 +195,20 @@ class FXOMRefresher {
         } else {
             assert currentProperty instanceof FXOMPropertyC;
             assert newProperty instanceof FXOMPropertyC;
-            final FXOMPropertyC currentPC = (FXOMPropertyC) currentProperty;
-            final FXOMPropertyC newPC = (FXOMPropertyC) newProperty;
+            final var currentPC = (FXOMPropertyC) currentProperty;
+            final var newPC = (FXOMPropertyC) newProperty;
             refreshFxomObjects(currentPC.getValues(), newPC.getValues());
         }
     }
 
 
-    private void refreshFxomObjects(List<FXOMObject> currentObjects, List<FXOMObject> newObjects) {
+    private void refreshFxomObjects(final List<FXOMObject> currentObjects, final List<FXOMObject> newObjects) {
         assert currentObjects != null;
         assert newObjects != null;
         assert currentObjects.size() == newObjects.size();
         for (int i = 0, count = currentObjects.size(); i < count; i++) {
-            final FXOMObject currentObject = currentObjects.get(i);
-            final FXOMObject newObject = newObjects.get(i);
+            final var currentObject = currentObjects.get(i);
+            final var newObject = newObjects.get(i);
             if (currentObject instanceof FXOMIntrinsic || newObject instanceof FXOMIntrinsic) {
                 handleRefreshIntrinsic(currentObject, newObject);
             } else {
@@ -219,20 +217,20 @@ class FXOMRefresher {
         }
     }
 
-    private void handleRefreshIntrinsic(FXOMObject currentObject, FXOMObject newObject) {
+    private void handleRefreshIntrinsic(final FXOMObject currentObject, final FXOMObject newObject) {
         if (currentObject instanceof FXOMIntrinsic && newObject instanceof FXOMIntrinsic) {
             refreshFxomObject(currentObject, newObject);
         } else if (newObject instanceof FXOMIntrinsic) {
-            FXOMInstance fxomInstance = getFxomInstance((FXOMIntrinsic) newObject);
+            final var fxomInstance = getFxomInstance((FXOMIntrinsic) newObject);
             refreshFxomObject(currentObject, fxomInstance);
         } else if (currentObject instanceof FXOMIntrinsic) {
-            FXOMInstance fxomInstance = getFxomInstance((FXOMIntrinsic) currentObject);
+            final var fxomInstance = getFxomInstance((FXOMIntrinsic) currentObject);
             refreshFxomObject(fxomInstance, newObject);
         }
     }
 
-    private FXOMInstance getFxomInstance(FXOMIntrinsic intrinsic) {
-        FXOMInstance fxomInstance = new FXOMInstance(intrinsic.getFxomDocument(), intrinsic.getGlueElement());
+    private FXOMInstance getFxomInstance(final FXOMIntrinsic intrinsic) {
+        final var fxomInstance = new FXOMInstance(intrinsic.getFxomDocument(), intrinsic.getGlueElement());
         fxomInstance.setSceneGraphObject(intrinsic.getSourceSceneGraphObject());
         fxomInstance.setDeclaredClass(intrinsic.getClass());
         if (!intrinsic.getProperties().isEmpty()) {
@@ -257,28 +255,28 @@ class FXOMRefresher {
      * dividerPositions in FXOM.
      */
 
-    private void synchronizeDividerPositions(FXOMDocument document) {
-        final FXOMObject fxomRoot = document.getFxomRoot();
+    private void synchronizeDividerPositions(final FXOMDocument document) {
+        final var fxomRoot = document.getFxomRoot();
         if (fxomRoot != null) {
-            final Metadata metadata
+            final var metadata
                     = Metadata.getMetadata();
-            final PropertyName dividerPositionsName
+            final var dividerPositionsName
                     = new PropertyName("dividerPositions");
-            final List<FXOMObject> candidates
+            final var candidates
                     = fxomRoot.collectObjectWithSceneGraphObjectClass(SplitPane.class);
 
-            for (FXOMObject fxomObject : candidates) {
+            for (final var fxomObject : candidates) {
                 if (fxomObject instanceof FXOMInstance) {
-                    final FXOMInstance fxomInstance = (FXOMInstance) fxomObject;
+                    final var fxomInstance = (FXOMInstance) fxomObject;
                     assert fxomInstance.getSceneGraphObject() instanceof SplitPane;
-                    final SplitPane splitPane
+                    final var splitPane
                             = (SplitPane) fxomInstance.getSceneGraphObject();
                     splitPane.layout();
-                    final ValuePropertyMetadata vpm
+                    final var vpm
                             = metadata.queryValueProperty(fxomInstance, dividerPositionsName);
                     assert vpm instanceof ListValuePropertyMetadata
                             : "vpm.getClass()=" + vpm.getClass().getSimpleName();
-                    final DoubleArrayPropertyMetadata davpm
+                    final var davpm
                             = (DoubleArrayPropertyMetadata) vpm;
                     davpm.synchronizeWithSceneGraphObject(fxomInstance);
                 }

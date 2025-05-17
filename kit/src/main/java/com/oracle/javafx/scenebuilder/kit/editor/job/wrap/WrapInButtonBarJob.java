@@ -46,13 +46,13 @@ import javafx.scene.control.ButtonBar;
  */
 public class WrapInButtonBarJob extends AbstractWrapInSubComponentJob {
 
-    public WrapInButtonBarJob(EditorController editorController) {
+    public WrapInButtonBarJob(final EditorController editorController) {
         super(editorController);
         newContainerClass = ButtonBar.class;
     }
 
     @Override
-    protected Collection<FXOMObject> sortChildren(List<FXOMObject> children) {
+    protected Collection<FXOMObject> sortChildren(final List<FXOMObject> children) {
         final List<FXOMObject> sorted = new ArrayList<>(children);
         Collections.sort(sorted, UnidimensionalComparator.of(Orientation.HORIZONTAL));
         return sorted;

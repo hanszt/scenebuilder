@@ -46,7 +46,7 @@ public class CollectionDropTarget extends AbstractDropTarget {
     private final FXOMCollection targetCollection;
     private final int targetIndex;
 
-    public CollectionDropTarget(FXOMCollection targetCollection, int targetIndex) {
+    public CollectionDropTarget(final FXOMCollection targetCollection, final int targetIndex) {
         this.targetCollection = targetCollection;
         this.targetIndex = targetIndex;
     }
@@ -68,15 +68,15 @@ public class CollectionDropTarget extends AbstractDropTarget {
     }
 
     @Override
-    public boolean acceptDragSource(AbstractDragSource dragSource) {
+    public boolean acceptDragSource(final AbstractDragSource dragSource) {
         assert dragSource != null;
         
         // TODO(elp) : can we really put any kind of FXOMObject in a collection ?
-        return dragSource.getDraggedObjects().isEmpty() == false;
+        return !dragSource.getDraggedObjects().isEmpty();
     }
 
     @Override
-    public Job makeDropJob(AbstractDragSource dragSource, EditorController editorController) {
+    public Job makeDropJob(final AbstractDragSource dragSource, final EditorController editorController) {
         throw new UnsupportedOperationException("To be implemented"); //NOI18N
     }
     
@@ -90,21 +90,21 @@ public class CollectionDropTarget extends AbstractDropTarget {
      */
     @Override
     public int hashCode() {
-        int hash = 5;
+        var hash = 5;
         hash = 37 * hash + Objects.hashCode(this.targetCollection);
         hash = 37 * hash + this.targetIndex;
         return hash;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         }
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final CollectionDropTarget other = (CollectionDropTarget) obj;
+        final var other = (CollectionDropTarget) obj;
         if (!Objects.equals(this.targetCollection, other.targetCollection)) {
             return false;
         }

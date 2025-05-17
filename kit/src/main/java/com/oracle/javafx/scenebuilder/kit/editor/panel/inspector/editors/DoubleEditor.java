@@ -37,7 +37,6 @@ import com.oracle.javafx.scenebuilder.kit.metadata.property.value.DoubleProperty
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import javafx.event.ActionEvent;
@@ -53,20 +52,20 @@ public class DoubleEditor extends AutoSuggestEditor {
 
     private Map<String, Object> constants;
 
-    public DoubleEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses, Map<String, Object> constants) {
+    public DoubleEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses, final Map<String, Object> constants) {
         super(propMeta, selectedClasses, new ArrayList<>(constants.keySet()), AutoSuggestEditor.Type.DOUBLE);
         initialize(constants);
     }
     
-    private void initialize(Map<String, Object> constants) {
+    private void initialize(final Map<String, Object> constants) {
         this.constants = constants;
 
-        EventHandler<ActionEvent> onActionListener = event -> {
+        final EventHandler<ActionEvent> onActionListener = event -> {
             if (isHandlingError()) {
                 // Event received because of focus lost due to error dialog
                 return;
             }
-            Object value = getValue();
+            final var value = getValue();
             if ((value != null) && ((DoublePropertyMetadata) getPropertyMeta()).isValidValue((Double) value)) {
                 userUpdateValueProperty(value);
                 getTextField().selectAll();
@@ -80,19 +79,19 @@ public class DoubleEditor extends AutoSuggestEditor {
 
     @Override
     public Object getValue() {
-        String val = getTextField().getText();
+        var val = getTextField().getText();
         if (val.isEmpty()) {
             val = "0"; //NOI18N
             getTextField().setText(val);
             return Double.valueOf(val);
         }
-        Object constantValue = constants.get(val.toUpperCase(Locale.ROOT));
+        final var constantValue = constants.get(val.toUpperCase(Locale.ROOT));
         if (constantValue != null) {
             val = EditorUtils.valAsStr(constantValue);
         }
         try {
             return Double.parseDouble(val);
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             return null;
         }
     }
@@ -106,7 +105,7 @@ public class DoubleEditor extends AutoSuggestEditor {
 
         assert (value instanceof Double);
         // Get the corresponding constant if any
-        for (Entry<String, Object> entry : constants.entrySet()) {
+        for (final var entry : constants.entrySet()) {
             if (value.equals(entry.getValue())) {
                 value = entry.getKey();
             }
@@ -119,8 +118,8 @@ public class DoubleEditor extends AutoSuggestEditor {
         EditorUtils.doNextFrame(() -> getTextField().requestFocus());
     }
 
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses,
-            Map<String, Object> constants) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses,
+                      final Map<String, Object> constants) {
         super.reset(propMeta, selectedClasses, new ArrayList<>(constants.keySet()));
         this.constants = constants;
     }

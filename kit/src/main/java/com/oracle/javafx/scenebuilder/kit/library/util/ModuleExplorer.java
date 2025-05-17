@@ -34,7 +34,6 @@ package com.oracle.javafx.scenebuilder.kit.library.util;
 import com.oracle.javafx.scenebuilder.kit.library.util.JarReportEntry.Status;
 
 import java.io.IOException;
-import java.lang.module.ModuleReader;
 import java.lang.module.ModuleReference;
 import java.nio.file.Path;
 
@@ -43,20 +42,20 @@ public class ModuleExplorer extends ExplorerBase {
     private final ModuleReference moduleReference;
     private final Module module;
 
-    public ModuleExplorer(ModuleReference moduleReference) {
+    public ModuleExplorer(final ModuleReference moduleReference) {
         assert moduleReference != null;
         this.moduleReference = moduleReference;
         this.module = ModuleLayer.boot().findModule(moduleReference.descriptor().name()).orElseThrow();
     }
     
     public JarReport explore() throws IOException {
-        ClassLoader classLoader = module.getClassLoader();
-        final JarReport result = new JarReport(moduleReference.location().map(Path::of).orElse(null));
-        try (ModuleReader reader = moduleReference.open()) {
+        final var classLoader = module.getClassLoader();
+        final var result = new JarReport(moduleReference.location().map(Path::of).orElse(null));
+        try (final var reader = moduleReference.open()) {
             reader.list().forEach(cl -> {
                 if (cl.endsWith(".class")) {
-                    String className = cl.substring(0, cl.length() - ".class".length()).replaceAll("/", ".");
-                    JarReportEntry explored = super.exploreEntry(cl, classLoader, className);
+                    final var className = cl.substring(0, cl.length() - ".class".length()).replaceAll("/", ".");
+                    final var explored = super.exploreEntry(cl, classLoader, className);
                     if (explored.getStatus() != Status.IGNORED) {
                         result.getEntries().add(explored);
                     }

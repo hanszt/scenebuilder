@@ -46,8 +46,8 @@ import javafx.scene.Node;
  */
 public abstract class AbstractCurveHandles<T extends Node> extends AbstractHandles<T> {
 
-    public AbstractCurveHandles(ContentPanelController contentPanelController,
-            FXOMObject fxomObject, Class<T> sceneGraphClass) {
+    public AbstractCurveHandles(final ContentPanelController contentPanelController,
+                                final FXOMObject fxomObject, final Class<T> sceneGraphClass) {
         super(contentPanelController, fxomObject, sceneGraphClass);
     }
 

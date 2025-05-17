@@ -46,7 +46,7 @@ public class RemoveCollectionItemJob extends Job {
     private FXOMCollection parentCollection;
     private int indexInParentCollection;
 
-    public RemoveCollectionItemJob(FXOMObject value, EditorController editorController) {
+    public RemoveCollectionItemJob(final FXOMObject value, final EditorController editorController) {
         super(editorController);
         this.targetValue = value;
     }

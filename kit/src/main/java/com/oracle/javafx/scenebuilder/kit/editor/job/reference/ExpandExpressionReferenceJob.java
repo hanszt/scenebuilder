@@ -38,10 +38,7 @@ import com.oracle.javafx.scenebuilder.kit.editor.job.Job;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.AddPropertyJob;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.RemovePropertyJob;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMCloner;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMNodes;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyC;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyT;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PrefixedValue;
@@ -57,9 +54,9 @@ public class ExpandExpressionReferenceJob extends InlineDocumentJob {
     private final FXOMCloner cloner;
 
     public ExpandExpressionReferenceJob(
-            FXOMPropertyT reference, 
-            FXOMCloner cloner,
-            EditorController editorController) {
+            final FXOMPropertyT reference,
+            final FXOMCloner cloner,
+            final EditorController editorController) {
         super(editorController);
         
         assert reference != null;
@@ -78,19 +75,19 @@ public class ExpandExpressionReferenceJob extends InlineDocumentJob {
         final List<Job> result = new LinkedList<>();
         
         // 1) remove the reference
-        final FXOMInstance parentInstance = reference.getParentInstance();
+        final var parentInstance = reference.getParentInstance();
         final Job removeReference = new RemovePropertyJob(reference, getEditorController());
         removeReference.execute();
         result.add(removeReference);
         
         // 2.1) clone the referee 
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
-        final String fxId = FXOMNodes.extractReferenceSource(reference);
-        final FXOMObject referee = fxomDocument.searchWithFxId(fxId);
-        final FXOMObject refereeClone = cloner.clone(referee);
+        final var fxomDocument = getEditorController().getFxomDocument();
+        final var fxId = FXOMNodes.extractReferenceSource(reference);
+        final var referee = fxomDocument.searchWithFxId(fxId);
+        final var refereeClone = cloner.clone(referee);
         
         // 3) insert the clone in place of the reference
-        final FXOMPropertyC cloneProperty 
+        final var cloneProperty
                 = new FXOMPropertyC(fxomDocument, reference.getName(), refereeClone);
         final Job addCloneJob 
                 = new AddPropertyJob(cloneProperty, parentInstance, -1, getEditorController());
@@ -107,7 +104,7 @@ public class ExpandExpressionReferenceJob extends InlineDocumentJob {
 
     @Override
     public boolean isExecutable() {
-        final PrefixedValue pv = new PrefixedValue(reference.getValue());
+        final var pv = new PrefixedValue(reference.getValue());
         return pv.isExpression();
     }
     

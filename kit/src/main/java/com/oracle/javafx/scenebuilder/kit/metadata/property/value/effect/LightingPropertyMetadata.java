@@ -74,8 +74,8 @@ public class LightingPropertyMetadata extends ComplexPropertyMetadata<Lighting> 
             DoublePropertyMetadata.DoubleKind.COORDINATE, true /* readWrite */, 
             LIGHTING_DEFAULT.getSurfaceScale(), InspectorPath.UNUSED);
 
-    public LightingPropertyMetadata(PropertyName name, boolean readWrite, 
-            Lighting defaultValue, InspectorPath inspectorPath) {
+    public LightingPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                    final Lighting defaultValue, final InspectorPath inspectorPath) {
         super(name, Lighting.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -84,8 +84,8 @@ public class LightingPropertyMetadata extends ComplexPropertyMetadata<Lighting> 
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(Lighting value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, value.getClass());
+    public FXOMInstance makeFxomInstanceFromValue(final Lighting value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, value.getClass());
         
         bumpInputMetadata.setValue(result, value.getBumpInput());
         contentInputMetadata.setValue(result, value.getContentInput());

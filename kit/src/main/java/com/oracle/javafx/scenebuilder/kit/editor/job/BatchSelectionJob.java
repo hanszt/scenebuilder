@@ -33,7 +33,7 @@ package com.oracle.javafx.scenebuilder.kit.editor.job;
 
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.AbstractSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
+
 import java.util.List;
 
 /**
@@ -46,7 +46,7 @@ public abstract class BatchSelectionJob extends BatchDocumentJob {
     private AbstractSelectionGroup oldSelectionGroup;
     private AbstractSelectionGroup newSelectionGroup;
 
-    public BatchSelectionJob(EditorController editorController) {
+    public BatchSelectionJob(final EditorController editorController) {
         super(editorController);
     }
 
@@ -58,7 +58,7 @@ public abstract class BatchSelectionJob extends BatchDocumentJob {
 
     @Override
     public final void execute() {
-        final Selection selection = getEditorController().getSelection();
+        final var selection = getEditorController().getSelection();
         try {
             selection.beginUpdate();
             oldSelectionGroup = selection.getGroup() == null ? null
@@ -68,7 +68,7 @@ public abstract class BatchSelectionJob extends BatchDocumentJob {
             selection.select(newSelectionGroup);
             selection.endUpdate();
 
-        } catch (CloneNotSupportedException x) {
+        } catch (final CloneNotSupportedException x) {
             // Emergency code
             throw new RuntimeException(x);
         }
@@ -76,7 +76,7 @@ public abstract class BatchSelectionJob extends BatchDocumentJob {
 
     @Override
     public final void undo() {
-        final Selection selection = getEditorController().getSelection();
+        final var selection = getEditorController().getSelection();
         selection.beginUpdate();
         super.undo();
         selection.select(oldSelectionGroup);
@@ -85,7 +85,7 @@ public abstract class BatchSelectionJob extends BatchDocumentJob {
 
     @Override
     public final void redo() {
-        final Selection selection = getEditorController().getSelection();
+        final var selection = getEditorController().getSelection();
         selection.beginUpdate();
         super.redo();
         selection.select(newSelectionGroup);

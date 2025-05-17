@@ -47,15 +47,15 @@ public class StringListPropertyMetadata extends ListValuePropertyMetadata<String
             = new StringPropertyMetadata(new PropertyName("unused"), //NOI18N
                     true, null, InspectorPath.UNUSED, true /* detectFileURL */);
 
-    public StringListPropertyMetadata(PropertyName name, boolean readWrite, 
-            List<String> defaultValue, InspectorPath inspectorPath) {
+    public StringListPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                      final List<String> defaultValue, final InspectorPath inspectorPath) {
         super(name, String.class, itemMetadata, readWrite, defaultValue, inspectorPath);
     }
     
-    public static List<String> splitValue(String listValue) {
+    public static List<String> splitValue(final String listValue) {
         final List<String> result = new ArrayList<>();
         
-        final String[] values = listValue.split(FXMLLoader.ARRAY_COMPONENT_DELIMITER);
+        final var values = listValue.split(FXMLLoader.ARRAY_COMPONENT_DELIMITER);
         for (int i = 0, count = values.length; i < count; i++) {
             result.add(values[i]);
         }
@@ -63,11 +63,11 @@ public class StringListPropertyMetadata extends ListValuePropertyMetadata<String
         return result;
     }
     
-   public static String assembleValue(List<String> valueItems) {
+   public static String assembleValue(final List<String> valueItems) {
         assert FXMLLoader.ARRAY_COMPONENT_DELIMITER.length() == 1;
         
-        final StringBuilder result = new StringBuilder();
-        for (String s : valueItems) {
+        final var result = new StringBuilder();
+        for (final var s : valueItems) {
             assert s.indexOf(FXMLLoader.ARRAY_COMPONENT_DELIMITER.charAt(0)) == -1;
             if (result.length() >= 1) {
                 result.append(FXMLLoader.ARRAY_COMPONENT_DELIMITER);
@@ -83,18 +83,18 @@ public class StringListPropertyMetadata extends ListValuePropertyMetadata<String
      */
     
     @Override
-    protected boolean canMakeStringFromValue(List<String> value) {
+    protected boolean canMakeStringFromValue(final List<String> value) {
         return value.size() == 1;
     }
     
     @Override
-    protected String makeStringFromValue(List<String> value) {
+    protected String makeStringFromValue(final List<String> value) {
         assert canMakeStringFromValue(value);
-        return value.get(0);
+        return value.getFirst();
     }
     
     @Override
-    protected List<String> makeValueFromString(String string) {
+    protected List<String> makeValueFromString(final String string) {
         return splitValue(string);
     }
 }

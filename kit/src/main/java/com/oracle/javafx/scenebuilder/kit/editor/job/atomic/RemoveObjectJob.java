@@ -44,7 +44,7 @@ public class RemoveObjectJob extends Job {
     
     private final Job subJob;
     
-    public RemoveObjectJob(FXOMObject targetObject, EditorController editorController) {
+    public RemoveObjectJob(final FXOMObject targetObject, final EditorController editorController) {
         super(editorController);
         
         assert targetObject != null;

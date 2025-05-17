@@ -74,8 +74,8 @@ public class RowConstraintsPropertyMetadata extends ComplexPropertyMetadata<RowC
             = new EnumerationPropertyMetadata(new PropertyName("vgrow"),
             Priority.class, EnumerationPropertyMetadata.EQUIV_INHERITED, true, InspectorPath.UNUSED);
     
-    public RowConstraintsPropertyMetadata(PropertyName name, boolean readWrite, 
-            RowConstraints defaultValue, InspectorPath inspectorPath) {
+    public RowConstraintsPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                          final RowConstraints defaultValue, final InspectorPath inspectorPath) {
         super(name, RowConstraints.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -83,7 +83,7 @@ public class RowConstraintsPropertyMetadata extends ComplexPropertyMetadata<RowC
      * Utility
      */
     
-    public static boolean equals(RowConstraints r1, RowConstraints r2) {
+    public static boolean equals(final RowConstraints r1, final RowConstraints r2) {
         assert r1 != null;
         assert r2 != null;
 
@@ -107,8 +107,8 @@ public class RowConstraintsPropertyMetadata extends ComplexPropertyMetadata<RowC
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(RowConstraints value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, getValueClass());
+    public FXOMInstance makeFxomInstanceFromValue(final RowConstraints value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, getValueClass());
         
         fillHeightMetadata.setValue(result, value.isFillHeight());
         maxHeightMetadata.setValue(result, value.getMaxHeight());
@@ -116,13 +116,13 @@ public class RowConstraintsPropertyMetadata extends ComplexPropertyMetadata<RowC
         percentHeightMetadata.setValue(result, value.getPercentHeight());
         prefHeightMetadata.setValue(result, value.getPrefHeight());
         
-        final VPos valignment = value.getValignment();
+        final var valignment = value.getValignment();
         if (valignment == null) {
             valignmentMetadata.setValue(result, valignmentMetadata.getDefaultValue());
         } else {
             valignmentMetadata.setValue(result, valignment.toString());
         }
-        final Priority vgrow = value.getVgrow();
+        final var vgrow = value.getVgrow();
         if (vgrow == null) {
             vgrowMetadata.setValue(result, vgrowMetadata.getDefaultValue());
         } else {

@@ -36,7 +36,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -52,8 +51,8 @@ public class SkeletonFileNameProposalTest {
     @Test
     public void that_default_java_file_is_created_on_new_documents() {
         classUnderTest = new SkeletonFileNameProposal(LANGUAGE.JAVA);
-        File result = classUnderTest.create(null, null);
-        File expected = new File(System.getProperty("user.home"), "PleaseProvideControllerClassName.java");
+        final var result = classUnderTest.create(null, null);
+        final var expected = new File(System.getProperty("user.home"), "PleaseProvideControllerClassName.java");
 
         assertEquals(expected, result);
     }
@@ -61,8 +60,8 @@ public class SkeletonFileNameProposalTest {
     @Test
     public void that_default_kotlin_file_is_created_on_new_documents() {
         classUnderTest = new SkeletonFileNameProposal(LANGUAGE.KOTLIN);
-        File result = classUnderTest.create(null, null);
-        File expected = new File(System.getProperty("user.home"), "PleaseProvideControllerClassName.kt");
+        final var result = classUnderTest.create(null, null);
+        final var expected = new File(System.getProperty("user.home"), "PleaseProvideControllerClassName.kt");
 
         assertEquals(expected, result);
     }
@@ -70,9 +69,9 @@ public class SkeletonFileNameProposalTest {
     @Test
     public void that_controllerName_is_used_when_available() {
         classUnderTest = new SkeletonFileNameProposal(LANGUAGE.JAVA);
-        String fxControllerName = "com.oracle.javafx.scenebuilder.kit.skeleton.SkeletonTest$SkeletonTestController";
-        File result = classUnderTest.create(null, fxControllerName);
-        File expected = new File(System.getProperty("user.home"), "SkeletonTestController.java");
+        final var fxControllerName = "com.oracle.javafx.scenebuilder.kit.skeleton.SkeletonTest$SkeletonTestController";
+        final var result = classUnderTest.create(null, fxControllerName);
+        final var expected = new File(System.getProperty("user.home"), "SkeletonTestController.java");
 
         assertEquals(expected, result);
     }
@@ -80,11 +79,11 @@ public class SkeletonFileNameProposalTest {
     @Test
     public void that_controllerName_is_preferred_over_fxmlLocation_and_directory_is_used_from_fxml() throws Exception {
         classUnderTest = new SkeletonFileNameProposal(LANGUAGE.JAVA);
-        String fxControllerName = "com.oracle.javafx.scenebuilder.kit.skeleton.SkeletonTest$SkeletonTestController";
-        URL fxmlLocation = new File("src/test/resources/com/oracle/javafx/scenebuilder/kit/fxom/Empty.fxml").toURI()
+        final var fxControllerName = "com.oracle.javafx.scenebuilder.kit.skeleton.SkeletonTest$SkeletonTestController";
+        final var fxmlLocation = new File("src/test/resources/com/oracle/javafx/scenebuilder/kit/fxom/Empty.fxml").toURI()
                 .toURL();
-        File result = classUnderTest.create(fxmlLocation, fxControllerName);
-        File expected = new File("src/test/resources/com/oracle/javafx/scenebuilder/kit/fxom",
+        final var result = classUnderTest.create(fxmlLocation, fxControllerName);
+        final var expected = new File("src/test/resources/com/oracle/javafx/scenebuilder/kit/fxom",
                 "SkeletonTestController.java").getAbsoluteFile();
 
         assertEquals(expected, result);
@@ -93,31 +92,31 @@ public class SkeletonFileNameProposalTest {
     @Test
     public void that_fxmlLocation_in_resources_dir_is_changed_to_java_specific_directory() throws Exception {
         classUnderTest = new SkeletonFileNameProposal(LANGUAGE.JAVA);
-        String fxControllerName = "com.oracle.javafx.scenebuilder.kit.skeleton.SkeletonTest$SkeletonTestController";
-        URL fxmlLocation = new File("src/main/resources/com/oracle/javafx/scenebuilder/kit/skeleton/SkeletonWindow.fxml").toURI().toURL();
-        File result = classUnderTest.create(fxmlLocation, fxControllerName);
-        File expected = new File("src/main/java/com/oracle/javafx/scenebuilder/kit/skeleton",
+        final var fxControllerName = "com.oracle.javafx.scenebuilder.kit.skeleton.SkeletonTest$SkeletonTestController";
+        final var fxmlLocation = new File("src/main/resources/com/oracle/javafx/scenebuilder/kit/skeleton/SkeletonWindow.fxml").toURI().toURL();
+        final var result = classUnderTest.create(fxmlLocation, fxControllerName);
+        final var expected = new File("src/main/java/com/oracle/javafx/scenebuilder/kit/skeleton",
                 "SkeletonTestController.java").getAbsoluteFile();
 
         assertEquals(expected, result);
     }
 
     @Test
-    public void that_fxmlLocation_in_resources_dir_is_changed_to_kotlin_specific_directory(@TempDir Path temporaryDirectory) throws Exception {
+    public void that_fxmlLocation_in_resources_dir_is_changed_to_kotlin_specific_directory(@TempDir final Path temporaryDirectory) throws Exception {
 
-        String sourceFolder = "com/oracle/javafx/scenebuilder/kit/skeleton";
-        Path resourcesDir = temporaryDirectory.resolve("src/main/resources").resolve(sourceFolder);
-        Path kotlinDir = temporaryDirectory.resolve("src/main/kotlin").resolve(sourceFolder);
+        final var sourceFolder = "com/oracle/javafx/scenebuilder/kit/skeleton";
+        final var resourcesDir = temporaryDirectory.resolve("src/main/resources").resolve(sourceFolder);
+        final var kotlinDir = temporaryDirectory.resolve("src/main/kotlin").resolve(sourceFolder);
 
         Files.createDirectories(resourcesDir);
         Files.createDirectories(kotlinDir);
 
         classUnderTest = new SkeletonFileNameProposal(LANGUAGE.KOTLIN);
-        String fxControllerName = "com.oracle.javafx.scenebuilder.kit.skeleton.SkeletonTest$SkeletonTestController";
-        URL fxmlLocation = resourcesDir.resolve("SkeletonWindow.fxml").toFile().toURI().toURL();
+        final var fxControllerName = "com.oracle.javafx.scenebuilder.kit.skeleton.SkeletonTest$SkeletonTestController";
+        final var fxmlLocation = resourcesDir.resolve("SkeletonWindow.fxml").toFile().toURI().toURL();
 
-        File result = classUnderTest.create(fxmlLocation, fxControllerName);
-        File expected = kotlinDir.resolve("SkeletonTestController.kt").toFile();
+        final var result = classUnderTest.create(fxmlLocation, fxControllerName);
+        final var expected = kotlinDir.resolve("SkeletonTestController.kt").toFile();
 
         assertEquals(expected.toString(), result.toString());
     }
@@ -125,10 +124,10 @@ public class SkeletonFileNameProposalTest {
     @Test
     public void that_controllerName_is_preferred_over_fxmlLocation_in_user_directory() throws Exception {
         classUnderTest = new SkeletonFileNameProposal(LANGUAGE.JAVA);
-        String fxControllerName = "com.oracle.javafx.scenebuilder.kit.skeleton.SkeletonTest$SkeletonTestController";
-        URL fxmlLocation = new File("not-existing-location/Empty.fxml").toURI().toURL();
-        File result = classUnderTest.create(fxmlLocation, fxControllerName);
-        File expected = new File(System.getProperty("user.home"), "SkeletonTestController.java");
+        final var fxControllerName = "com.oracle.javafx.scenebuilder.kit.skeleton.SkeletonTest$SkeletonTestController";
+        final var fxmlLocation = new File("not-existing-location/Empty.fxml").toURI().toURL();
+        final var result = classUnderTest.create(fxmlLocation, fxControllerName);
+        final var expected = new File(System.getProperty("user.home"), "SkeletonTestController.java");
 
         assertEquals(expected, result);
     }
@@ -136,9 +135,9 @@ public class SkeletonFileNameProposalTest {
     @Test
     public void that_fxmlLocations_is_used_when_controllerName_not_exists() throws Exception {
         classUnderTest = new SkeletonFileNameProposal(LANGUAGE.JAVA);
-        URL fxmlLocation = new File("Empty.fxml").getAbsoluteFile().toURI().toURL();
-        File result = classUnderTest.create(fxmlLocation, null);
-        File expected = new File("EmptyController.java").getAbsoluteFile();
+        final var fxmlLocation = new File("Empty.fxml").getAbsoluteFile().toURI().toURL();
+        final var result = classUnderTest.create(fxmlLocation, null);
+        final var expected = new File("EmptyController.java").getAbsoluteFile();
 
         assertEquals(expected.getAbsolutePath(), result.getAbsolutePath());
     }
@@ -146,19 +145,19 @@ public class SkeletonFileNameProposalTest {
     @Test
     public void that_incorrectly_named_fxml_can_be_handled() throws Exception {
         classUnderTest = new SkeletonFileNameProposal(LANGUAGE.JAVA);
-        URL fxmlLocation = new File("EmptyFxml").getAbsoluteFile().toURI().toURL();
-        File result = classUnderTest.create(fxmlLocation, null);
-        File expected = new File("EmptyFxmlController.java").getAbsoluteFile();
+        final var fxmlLocation = new File("EmptyFxml").getAbsoluteFile().toURI().toURL();
+        final var result = classUnderTest.create(fxmlLocation, null);
+        final var expected = new File("EmptyFxmlController.java").getAbsoluteFile();
 
         assertEquals(expected.getAbsolutePath(), result.getAbsolutePath());
     }
 
     @Test
-    public void that_fxmllocation_is_used_when_language_specific_resource_dir_not_exists(@TempDir Path temporaryDirectory) throws Exception {
-        File resourcesDir = temporaryDirectory.resolve("src/main/resources").toFile();
-        File javaDir = temporaryDirectory.resolve("src/main/java").toFile();
-        File kotlinDir = temporaryDirectory.resolve("src/main/kotlin").toFile();
-        URL fxmlLocation = new File(resourcesDir.toString(), "SkeletonWindow.fxml").toURI().toURL();
+    public void that_fxmllocation_is_used_when_language_specific_resource_dir_not_exists(@TempDir final Path temporaryDirectory) throws Exception {
+        final var resourcesDir = temporaryDirectory.resolve("src/main/resources").toFile();
+        final var javaDir = temporaryDirectory.resolve("src/main/java").toFile();
+        final var kotlinDir = temporaryDirectory.resolve("src/main/kotlin").toFile();
+        final var fxmlLocation = new File(resourcesDir.toString(), "SkeletonWindow.fxml").toURI().toURL();
 
         Files.createDirectories(javaDir.toPath());
         assertTrue(javaDir.exists());
@@ -167,8 +166,8 @@ public class SkeletonFileNameProposalTest {
 
         // JAVA
         classUnderTest = new SkeletonFileNameProposal(LANGUAGE.JAVA);
-        File result = classUnderTest.create(fxmlLocation, null);
-        File expected = new File(javaDir, "SkeletonWindowController.java");
+        var result = classUnderTest.create(fxmlLocation, null);
+        var expected = new File(javaDir, "SkeletonWindowController.java");
         assertEquals(expected.toString(), result.toString());
 
         // KOTLIN - the kotlin folder does not exist, thus the originally used resource folder is returned

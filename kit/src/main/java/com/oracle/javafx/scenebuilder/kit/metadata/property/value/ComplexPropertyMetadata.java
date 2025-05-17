@@ -33,7 +33,6 @@ package com.oracle.javafx.scenebuilder.kit.metadata.property.value;
 
 
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyT;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.InspectorPath;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PrefixedValue;
@@ -45,8 +44,8 @@ import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
  */
 public abstract class ComplexPropertyMetadata<T> extends SingleValuePropertyMetadata<T> {
 
-    public ComplexPropertyMetadata(PropertyName name, Class<T> valueClass, 
-            boolean readWrite, T defaultValue, InspectorPath inspectorPath) {
+    public ComplexPropertyMetadata(final PropertyName name, final Class<T> valueClass,
+                                   final boolean readWrite, final T defaultValue, final InspectorPath inspectorPath) {
         super(name, valueClass, readWrite, defaultValue, inspectorPath);
     }
     
@@ -54,13 +53,13 @@ public abstract class ComplexPropertyMetadata<T> extends SingleValuePropertyMeta
      * SingleValuePropertyMetadata
      */  
     @Override
-    public T makeValueFromProperty(FXOMPropertyT fxomProperty) {
+    public T makeValueFromProperty(final FXOMPropertyT fxomProperty) {
         final T result;
         
-        final PrefixedValue pv = new PrefixedValue(fxomProperty.getValue());
+        final var pv = new PrefixedValue(fxomProperty.getValue());
         if (pv.isExpression()) {
-            final String fxId = pv.getSuffix();
-            final FXOMObject targetObject = fxomProperty.getFxomDocument().searchWithFxId(fxId);
+            final var fxId = pv.getSuffix();
+            final var targetObject = fxomProperty.getFxomDocument().searchWithFxId(fxId);
             if (targetObject == null) {
                 // Emergency code
                 result = getDefaultValue();
@@ -75,23 +74,23 @@ public abstract class ComplexPropertyMetadata<T> extends SingleValuePropertyMeta
     }
     
     @Override
-    public T makeValueFromString(String string) {
+    public T makeValueFromString(final String string) {
         throw new RuntimeException("Bug"); //NOI18N
     }
 
     @Override
-    public boolean canMakeStringFromValue(T value) {
+    public boolean canMakeStringFromValue(final T value) {
         return value == null;
     }
 
     @Override
-    public String makeStringFromValue(T value) {
+    public String makeStringFromValue(final T value) {
         assert value == null;
         return "$null"; //NOI18N
     }
 
     @Override
-    public T makeValueFromFxomInstance(FXOMInstance valueFxomInstance) {
+    public T makeValueFromFxomInstance(final FXOMInstance valueFxomInstance) {
         return getValueClass().cast(valueFxomInstance.getSceneGraphObject());
     }
 

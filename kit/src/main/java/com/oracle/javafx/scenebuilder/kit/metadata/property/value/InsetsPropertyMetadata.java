@@ -58,8 +58,8 @@ public class InsetsPropertyMetadata extends ComplexPropertyMetadata<Insets> {
             DoubleKind.COORDINATE, true, Insets.EMPTY.getRight(), InspectorPath.UNUSED);
 
     
-    public InsetsPropertyMetadata(PropertyName name, boolean readWrite, 
-            Insets defaultValue, InspectorPath inspectorPath) {
+    public InsetsPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                  final Insets defaultValue, final InspectorPath inspectorPath) {
         super(name, Insets.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -67,8 +67,8 @@ public class InsetsPropertyMetadata extends ComplexPropertyMetadata<Insets> {
      * ComplexValuePropertyMetadata
      */
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(Insets value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, getValueClass());
+    public FXOMInstance makeFxomInstanceFromValue(final Insets value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, getValueClass());
 
         topMetadata.setValue(result, value.getTop());
         bottomMetadata.setValue(result, value.getBottom());

@@ -40,7 +40,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.panel.inspector.popupeditors.Po
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.Metadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.klass.ComponentClassMetadata;
-import com.oracle.javafx.scenebuilder.kit.metadata.property.PropertyMetadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.property.ValuePropertyMetadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PrefixedValue;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
@@ -85,11 +84,11 @@ public class EditorUtils {
     }
 
     public static void makeWidthStretchable(final Node node) {
-        Parent p = node.getParent();
+        final var p = node.getParent();
         if (p == null) {
             node.parentProperty().addListener(new InvalidationListener() {
                 @Override
-                public void invalidated(Observable valueModel) {
+                public void invalidated(final Observable valueModel) {
                     if (node.getParent() != null) {
                         makeWidthStretchable(node, node.getParent());
                         node.parentProperty().removeListener(this);
@@ -101,7 +100,7 @@ public class EditorUtils {
         }
     }
 
-    private static void makeWidthStretchable(Node node, Parent p) {
+    private static void makeWidthStretchable(final Node node, final Parent p) {
         if (p != null) {
             if (p instanceof HBox) {
                 HBox.setHgrow(node, Priority.ALWAYS);
@@ -115,7 +114,7 @@ public class EditorUtils {
         }
     }
 
-    public static void makeUnstretchable(final Control node, double width, double height) {
+    public static void makeUnstretchable(final Control node, final double width, final double height) {
         node.setPrefWidth(width);
         node.setMinWidth(width);
         node.setMaxWidth(width);
@@ -126,17 +125,17 @@ public class EditorUtils {
 
     // Replace a node (wich is in the scene graph) with another node (which is NOT in the scene graph)
     // and adapt the layout if provided.
-    public static void replaceNode(Node node, Node newNode, LayoutFormat layoutFormat) {
-        Parent parent = node.getParent();
-        boolean hasGridPaneParent = parent instanceof GridPane;
+    public static void replaceNode(final Node node, final Node newNode, final LayoutFormat layoutFormat) {
+        final var parent = node.getParent();
+        final var hasGridPaneParent = parent instanceof GridPane;
         if (parent instanceof Pane) {
             // Supporting Pane only should be enough for now...
-            ObservableList<Node> children = ((Pane) parent).getChildren();
+            final var children = ((Pane) parent).getChildren();
 
             // Remove node
-            int childIndex = children.indexOf(node);
-            int columnIndex = -1;
-            int rowIndex = -1;
+            final var childIndex = children.indexOf(node);
+            var columnIndex = -1;
+            var rowIndex = -1;
             if (hasGridPaneParent) {
                 columnIndex = GridPane.getColumnIndex(node);
                 rowIndex = GridPane.getRowIndex(node);
@@ -153,7 +152,7 @@ public class EditorUtils {
             children.add(childIndex, newNode);
             // Add new row constraints if needed
             if (hasGridPaneParent && (layoutFormat != null)) {
-                RowConstraints rowConstraints = new RowConstraints();
+                final var rowConstraints = new RowConstraints();
                 if (layoutFormat == LayoutFormat.SIMPLE_LINE_CENTERED) {
                     rowConstraints.setValignment(VPos.CENTER);
                 } else if (layoutFormat == LayoutFormat.SIMPLE_LINE_TOP) {
@@ -167,11 +166,11 @@ public class EditorUtils {
         }
     }
 
-    public static String valAsStr(Object val) {
+    public static String valAsStr(final Object val) {
         if (val == null) {
             return null;
         }
-        String str = val.toString();
+        var str = val.toString();
         if ((val instanceof Double) && str.endsWith(".0")) { //NOI18N
             str = str.substring(0, str.length() - 2);
         }
@@ -217,12 +216,12 @@ public class EditorUtils {
         // space, then we will simply step past the space and capitalize the
         // following character.
         name = Character.toUpperCase(name.charAt(0)) + name.substring(1);
-        StringBuilder builder = new StringBuilder();
-        char ch = name.charAt(0);
+        final var builder = new StringBuilder();
+        var ch = name.charAt(0);
         builder.append(ch);
-        boolean previousWasDigit = Character.isDigit(ch);
-        boolean previousWasCapital = !previousWasDigit;
-        for (int i = 1; i < name.length(); i++) {
+        var previousWasDigit = Character.isDigit(ch);
+        var previousWasCapital = !previousWasDigit;
+        for (var i = 1; i < name.length(); i++) {
             ch = name.charAt(i);
             if ((Character.isUpperCase(ch) && !previousWasCapital)
                     || (Character.isUpperCase(ch) && previousWasDigit)) {
@@ -265,11 +264,11 @@ public class EditorUtils {
 
     // Check if this could be moved in the Metadata classes.
     // Get the component class metadata where a property is defined.
-    private static ComponentClassMetadata getDefiningClass(Class<?> clazz, PropertyName propName) {
-        Metadata metadata = Metadata.getMetadata();
-        ComponentClassMetadata classMeta = metadata.queryComponentMetadata(clazz);
+    private static ComponentClassMetadata getDefiningClass(final Class<?> clazz, final PropertyName propName) {
+        final var metadata = Metadata.getMetadata();
+        var classMeta = metadata.queryComponentMetadata(clazz);
         while (clazz != null) {
-            for (PropertyMetadata propMeta : classMeta.getProperties()) {
+            for (final var propMeta : classMeta.getProperties()) {
                 if (propMeta.getName().compareTo(propName) == 0) {
                     return classMeta;
                 }
@@ -286,18 +285,18 @@ public class EditorUtils {
         final int order;
         Runnable callback;
 
-        public NextFrameTimer(Runnable callback) {
+        public NextFrameTimer(final Runnable callback) {
             this(callback, 1);
         }
 
-        public NextFrameTimer(Runnable callback, int order) {
+        public NextFrameTimer(final Runnable callback, final int order) {
             assert order >= 0;
             this.callback = callback;
             this.order = order;
         }
 
         @Override
-        public void handle(long now) {
+        public void handle(final long now) {
             if (count.getAndIncrement() == this.order) {
                 try {
                     callback.run();
@@ -309,13 +308,13 @@ public class EditorUtils {
     }
 
     public static AnimationTimer doEndOfFrame(final Runnable callback) {
-        AnimationTimer timer = new NextFrameTimer(callback, 0);
+        final AnimationTimer timer = new NextFrameTimer(callback, 0);
         timer.start();
         return timer;
     }
 
     public static AnimationTimer doNextFrame(final Runnable callback) {
-        AnimationTimer timer = new NextFrameTimer(callback);
+        final AnimationTimer timer = new NextFrameTimer(callback);
         timer.start();
         return timer;
     }
@@ -324,54 +323,54 @@ public class EditorUtils {
      * Round a double value, number of decimals depends on the roundingFactor.
      * e.g. round(10.1233, 100) returns 10.12
      */
-    public static double round(double value, int roundingFactor) {
-        double doubleRounded = Math.round(value * roundingFactor);
+    public static double round(final double value, final int roundingFactor) {
+        final double doubleRounded = Math.round(value * roundingFactor);
         return doubleRounded / roundingFactor;
     }
 
-    public static double computeLeftAnchor(FXOMObject selectedInstance) {
-        Node node = getFxNode(selectedInstance);
+    public static double computeLeftAnchor(final FXOMObject selectedInstance) {
+        final var node = getFxNode(selectedInstance);
         return computeLeftAnchor(node, node.getLayoutBounds());
     }
 
-    public static double computeRightAnchor(FXOMObject selectedInstance) {
-        Node node = getFxNode(selectedInstance);
+    public static double computeRightAnchor(final FXOMObject selectedInstance) {
+        final var node = getFxNode(selectedInstance);
         return computeRightAnchor(node, node.getLayoutBounds());
     }
 
-    public static double computeTopAnchor(FXOMObject selectedInstance) {
-        Node node = getFxNode(selectedInstance);
+    public static double computeTopAnchor(final FXOMObject selectedInstance) {
+        final var node = getFxNode(selectedInstance);
         return computeTopAnchor(node, node.getLayoutBounds());
     }
 
-    public static double computeBottomAnchor(FXOMObject selectedInstance) {
-        Node node = getFxNode(selectedInstance);
+    public static double computeBottomAnchor(final FXOMObject selectedInstance) {
+        final var node = getFxNode(selectedInstance);
         return computeBottomAnchor(node, node.getLayoutBounds());
     }
 
-    private static double computeLeftAnchor(Node node, Bounds futureLayoutBounds) {
+    private static double computeLeftAnchor(final Node node, final Bounds futureLayoutBounds) {
         return node.getLayoutX() + futureLayoutBounds.getMinX() - node.getParent().getLayoutBounds().getMinX();
     }
 
-    private static double computeRightAnchor(Node node, Bounds futureLayoutBounds) {
+    private static double computeRightAnchor(final Node node, final Bounds futureLayoutBounds) {
         return node.getParent().getLayoutBounds().getMaxX() - node.getLayoutX() - futureLayoutBounds.getMaxX();
     }
 
-    private static double computeTopAnchor(Node node, Bounds futureLayoutBounds) {
+    private static double computeTopAnchor(final Node node, final Bounds futureLayoutBounds) {
         return node.getLayoutY() + futureLayoutBounds.getMinY() - node.getParent().getLayoutBounds().getMinY();
     }
 
-    private static double computeBottomAnchor(Node node, Bounds futureLayoutBounds) {
+    private static double computeBottomAnchor(final Node node, final Bounds futureLayoutBounds) {
         return node.getParent().getLayoutBounds().getMaxY() - node.getLayoutY() - futureLayoutBounds.getMaxY();
     }
 
-    private static Node getFxNode(FXOMObject selectedInstance) {
-        Object selectedObj = selectedInstance.getSceneGraphObject();
+    private static Node getFxNode(final FXOMObject selectedInstance) {
+        final var selectedObj = selectedInstance.getSceneGraphObject();
         assert selectedObj instanceof Node;
         return (Node) selectedObj;
     }
     
-    public static void handleFading(FadeTransition fadeTransition, Node fadingSource) {
+    public static void handleFading(final FadeTransition fadeTransition, final Node fadingSource) {
         handleFading(fadeTransition, fadingSource, null);
     }
 
@@ -379,9 +378,9 @@ public class EditorUtils {
      * Fade in / fade out a node from its FadeTransition.
      * Fading is activated from a fadingSource node.
      */
-    public static void handleFading(FadeTransition fadeTransition, Node fadingSource, BooleanProperty disableProperty) {
+    public static void handleFading(final FadeTransition fadeTransition, final Node fadingSource, final BooleanProperty disableProperty) {
         fadingSource.setOnMouseEntered(arg0 -> {
-            Node targetNode = fadeTransition.getNode();
+            final var targetNode = fadeTransition.getNode();
             if ((targetNode instanceof MenuButton) && ((MenuButton) targetNode).isShowing()) {
                 return;
             }
@@ -392,7 +391,7 @@ public class EditorUtils {
             fadeTo(fadeTransition, 1);
         });
         fadingSource.setOnMouseExited(arg0 -> {
-            Node targetNode = fadeTransition.getNode();
+            final var targetNode = fadeTransition.getNode();
             if ((targetNode instanceof MenuButton) && ((MenuButton) targetNode).isShowing()) {
                 return;
             }
@@ -404,32 +403,32 @@ public class EditorUtils {
         });
     }
 
-    public static void fadeTo(FadeTransition fadeTransition, double toValue) {
+    public static void fadeTo(final FadeTransition fadeTransition, final double toValue) {
         fadeTransition.stop();
         fadeTransition.setFromValue(fadeTransition.getNode().getOpacity());
         fadeTransition.setToValue(toValue);
         fadeTransition.play();
     }
 
-    protected static void openUrl(Set<Class<?>> selectedClasses, ValuePropertyMetadata propMeta) throws IOException {
+    protected static void openUrl(final Set<Class<?>> selectedClasses, final ValuePropertyMetadata propMeta) throws IOException {
         Class<?> clazz = null;
         // In case of static property, we don't care of the selectedClasses
         if (selectedClasses != null) {
-            for (Class<?> cl : selectedClasses) {
+            for (final var cl : selectedClasses) {
                 clazz = cl;
             }
         }
-        PropertyName propertyName = propMeta.getName();
+        final var propertyName = propMeta.getName();
         if (propMeta.isStaticProperty()) {
             clazz = propertyName.getResidenceClass();
         } else {
             clazz = getDefiningClass(clazz, propertyName).getKlass();
         }
-        String propNameStr = propertyName.getName();
+        var propNameStr = propertyName.getName();
         // First char in uppercase
         propNameStr = propNameStr.substring(0, 1).toUpperCase(Locale.ENGLISH) + propNameStr.substring(1);
-        String methodName;
-        String posfix;
+        final String methodName;
+        final String posfix;
         if (EditorPlatform.hasClassFromExternalPlugin(clazz.getName())) {
             posfix = "--";
         } else {
@@ -443,7 +442,7 @@ public class EditorUtils {
             methodName = "get" + propNameStr + posfix; //NOI18N
         }
 
-        String url = EditorPlatform.getExternalJavadocURL(clazz.getName())
+        var url = EditorPlatform.getExternalJavadocURL(clazz.getName())
             .orElse(DocumentationUrls.JAVADOC_HOME + clazz.getModule().getName() + "/");
         url += clazz.getName().replaceAll("\\.", "/") + ".html"; //NOI18N
         url += "#" + methodName; //NOI18N
@@ -452,8 +451,8 @@ public class EditorUtils {
 
     // Specific swap() function for an ObservableList:
     // Collections.swap() directly on the ObservableList generates a "duplicate children added" error
-    public static void swap(ObservableList<Node> list, int i, int j) {
-        ArrayList<Node> children = new ArrayList<>(list);
+    public static void swap(final ObservableList<Node> list, final int i, final int j) {
+        final var children = new ArrayList<Node>(list);
         Collections.swap(children, i, j);
         // Workaround for RT-31965: list re-arrangement is not detected...
         // list.setAll(children);
@@ -461,19 +460,19 @@ public class EditorUtils {
         list.addAll(children);
     }
 
-    public static Parent loadFxml(String fxmlFileName, Object controller) {
-        URL fxmlURL = EditorUtils.class.getResource(fxmlFileName);
+    public static Parent loadFxml(final String fxmlFileName, final Object controller) {
+        final var fxmlURL = EditorUtils.class.getResource(fxmlFileName);
         return loadFxml(fxmlURL, controller);
     }
 
-    public static Parent loadPopupFxml(String fxmlFileName, Object controller) {
-        URL fxmlURL = PopupEditor.class.getResource(fxmlFileName);
+    public static Parent loadPopupFxml(final String fxmlFileName, final Object controller) {
+        final var fxmlURL = PopupEditor.class.getResource(fxmlFileName);
         return loadFxml(fxmlURL, controller);
     }
 
     // To be used only for inspector editors (which are in the same classpath than this class)
-    public static Parent loadFxml(URL fxmlURL, Object controller) {
-        final FXMLLoader loader = new FXMLLoader();
+    public static Parent loadFxml(final URL fxmlURL, final Object controller) {
+        final var loader = new FXMLLoader();
         loader.setController(controller);
         loader.setLocation(fxmlURL);
         loader.setResources(I18N.getBundle());
@@ -481,29 +480,29 @@ public class EditorUtils {
         // setting ClassLoader for OSGi environments
         loader.setClassLoader(controller.getClass().getClassLoader());
 
-        Parent root;
+        final Parent root;
         try {
             root = (Parent) loader.load();
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             throw new RuntimeException("Failed to load " + fxmlURL.getFile(), ex); //NOI18N
         }
         return root;
     }
 
-    public static String getFileName(String urlStr) {
-        URL url;
+    public static String getFileName(final String urlStr) {
+        final URL url;
         try {
             url = new URL(urlStr);
-        } catch (MalformedURLException ex) {
+        } catch (final MalformedURLException ex) {
             System.err.println("Invalid URL: " + urlStr); //NOI18N
             assert false;
             return null;
         }
-        String[] urlParts = url.getPath().split("\\/");
+        final var urlParts = url.getPath().split("\\/");
         return urlParts[urlParts.length - 1];
     }
 
-    public static boolean areEqual(Object obj1, Object obj2) {
+    public static boolean areEqual(final Object obj1, final Object obj2) {
         if ((obj1 == null) || (obj2 == null)) {
             if (obj1 != obj2) {
                 return false;
@@ -514,8 +513,8 @@ public class EditorUtils {
         return true;
     }
 
-    public static URL getUrl(String suffix, PrefixedValue.Type type, URL fxmlFileLocation) {
-        String prefixedString;
+    public static URL getUrl(final String suffix, final PrefixedValue.Type type, final URL fxmlFileLocation) {
+        final String prefixedString;
         if (suffix.isEmpty()) {
             prefixedString = ""; //NOI18N
         } else {
@@ -526,15 +525,15 @@ public class EditorUtils {
     
     // Get the URL corresponding to a PrefixedValue string
 //    @SuppressWarnings("UseSpecificCatch")
-    public static URL getUrl(String prefixedString, URL fxmlFileLocation) {
-        PrefixedValue prefixedValue = new PrefixedValue(prefixedString);
+    public static URL getUrl(final String prefixedString, final URL fxmlFileLocation) {
+        final var prefixedValue = new PrefixedValue(prefixedString);
         URL url = null;
         if (prefixedValue.getType() == PrefixedValue.Type.DOCUMENT_RELATIVE_PATH) {
             url = prefixedValue.resolveDocumentRelativePath(fxmlFileLocation);
         } else if (prefixedValue.getType() == PrefixedValue.Type.PLAIN_STRING) {
             try {
                 url = new URI(prefixedValue.getSuffix()).toURL();
-            } catch (Throwable ex) {
+            } catch (final Throwable ex) {
                 // Catching *all* the exception is done on purpose.
                 // May happen. nothing to do.
             }
@@ -542,19 +541,19 @@ public class EditorUtils {
         return url;
     }
 
-    public static String getPlainString(String str) {
+    public static String getPlainString(final String str) {
         // Using PrefixedValue PLAIN_STRING allow to consider special characters (such as @, %,...)
         // as "standard" characters (i.e. to backslash them)
         return new PrefixedValue(PrefixedValue.Type.PLAIN_STRING, str).toString();
     }
     
     // From an url, returns the file name only (without the path)
-    public static String getSimpleFileName(String url) {
-        File file = new File(url);
+    public static String getSimpleFileName(final String url) {
+        final var file = new File(url);
         return file.getName();
     }
     
-    public static String toString(Object obj) {
+    public static String toString(final Object obj) {
         assert obj instanceof String;
         return (String) obj; 
     }

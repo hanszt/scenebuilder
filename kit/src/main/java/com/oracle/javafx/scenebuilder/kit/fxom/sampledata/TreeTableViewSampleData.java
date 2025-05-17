@@ -49,19 +49,19 @@ class TreeTableViewSampleData extends AbstractSampleData {
     private final TreeItem<SampleDataItem> sampleRoot;
 
     public TreeTableViewSampleData() {
-        int i = 0;
+        var i = 0;
         sampleRoot = new TreeItem<>(new SampleDataItem(i++));
         sampleRoot.setExpanded(true);
-        for (int j = 0; j<10; j++) {
-            final Rectangle r = new Rectangle(10, 10);
+        for (var j = 0; j < 10; j++) {
+            final var r = new Rectangle(10, 10);
             r.setFill(TreeTableViewSampleData.color(i));
-            TreeItem<SampleDataItem> child = new TreeItem<>(new SampleDataItem(i++));
+            final var child = new TreeItem<SampleDataItem>(new SampleDataItem(i++));
             child.setExpanded(true);
             child.setGraphic(r);
-            for (int k=0; k<3; k++) {
-                final TreeItem<SampleDataItem> child2 = new TreeItem<>(new SampleDataItem(i++));
+            for (var k = 0; k < 3; k++) {
+                final var child2 = new TreeItem<SampleDataItem>(new SampleDataItem(i++));
                 child2.setExpanded(true);
-                final Circle c = new Circle(5);
+                final var c = new Circle(5);
                 c.setFill(TreeTableViewSampleData.color(i));
                 child2.setGraphic(c);
                 child.getChildren().add(child2);
@@ -70,7 +70,7 @@ class TreeTableViewSampleData extends AbstractSampleData {
         }
     }
 
-    public static boolean canApplyTo(TreeTableView<?> treeTableView) {
+    public static boolean canApplyTo(final TreeTableView<?> treeTableView) {
         final boolean result;
         
         /*
@@ -84,10 +84,10 @@ class TreeTableViewSampleData extends AbstractSampleData {
         } else {
             final List<TreeTableColumn<?, ?>> columns = new ArrayList<>();
             columns.addAll(treeTableView.getColumns());
-            while (columns.isEmpty() == false) {
-                final TreeTableColumn<?,?> tc = columns.get(0);
+            while (!columns.isEmpty()) {
+                final var tc = columns.getFirst();
                 if (tc.getCellValueFactory() == null) {
-                    columns.remove(0);
+                    columns.removeFirst();
                     columns.addAll(tc.getColumns());
                 } else {
                     break;
@@ -107,27 +107,27 @@ class TreeTableViewSampleData extends AbstractSampleData {
     
     
     @Override
-    public void applyTo(Object sceneGraphObject) {
+    public void applyTo(final Object sceneGraphObject) {
         assert sceneGraphObject instanceof TreeTableView;
         
         @SuppressWarnings("unchecked")        
-        final TreeTableView<SampleDataItem> tableView = (TreeTableView<SampleDataItem>) sceneGraphObject;
+        final var tableView = (TreeTableView<SampleDataItem>) sceneGraphObject;
         
         tableView.setRoot(sampleRoot);
         
         final List<TreeTableColumn<SampleDataItem, ?>> columns = new ArrayList<>(tableView.getColumns());
-        while (columns.isEmpty() == false) {
+        while (!columns.isEmpty()) {
             @SuppressWarnings("unchecked")        
-            final TreeTableColumn<SampleDataItem,String> ttc 
-                    = (TreeTableColumn<SampleDataItem,String>)columns.get(0);
+            final var ttc
+                    = (TreeTableColumn<SampleDataItem,String>)columns.getFirst();
             ttc.setCellValueFactory(SampleDataItem.FACTORY);
-            columns.remove(0);
+            columns.removeFirst();
             columns.addAll(ttc.getColumns());
         }
     }
 
     @Override
-    public void removeFrom(Object sceneGraphObject) {
+    public void removeFrom(final Object sceneGraphObject) {
         assert sceneGraphObject instanceof TreeTableView;
         
         @SuppressWarnings("unchecked")        
@@ -136,12 +136,12 @@ class TreeTableViewSampleData extends AbstractSampleData {
         
         final List<TreeTableColumn<SampleDataItem, ?>> columns = new ArrayList<>();
         columns.addAll(tableView.getColumns());
-        while (columns.isEmpty() == false) {
+        while (!columns.isEmpty()) {
             @SuppressWarnings("unchecked")        
-            final TreeTableColumn<SampleDataItem,String> tc 
-                    = (TreeTableColumn<SampleDataItem,String>)columns.get(0);
+            final var tc
+                    = (TreeTableColumn<SampleDataItem,String>)columns.getFirst();
             tc.setCellValueFactory(null);
-            columns.remove(0);
+            columns.removeFirst();
             columns.addAll(tc.getColumns());
         }
     }
@@ -158,7 +158,7 @@ class TreeTableViewSampleData extends AbstractSampleData {
         public final static TreeItemPropertyValueFactory<SampleDataItem, String> FACTORY
                 = new TreeItemPropertyValueFactory<>("prop"); //NOI18N
         
-        public SampleDataItem(int index) {
+        public SampleDataItem(final int index) {
             this.index = index;
         }
         

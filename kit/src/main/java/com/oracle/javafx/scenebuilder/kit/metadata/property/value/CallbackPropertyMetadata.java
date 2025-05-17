@@ -31,9 +31,7 @@
  */
 package com.oracle.javafx.scenebuilder.kit.metadata.property.value;
 
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMProperty;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyC;
 import com.oracle.javafx.scenebuilder.kit.metadata.property.ValuePropertyMetadata;
@@ -50,7 +48,7 @@ public abstract class CallbackPropertyMetadata extends ValuePropertyMetadata {
 
     private final Object defaultValue;
 
-    public CallbackPropertyMetadata(PropertyName name, boolean readWrite, Object defaultValue, InspectorPath inspectorPath) {
+    public CallbackPropertyMetadata(final PropertyName name, final boolean readWrite, final Object defaultValue, final InspectorPath inspectorPath) {
         super(name, readWrite, inspectorPath);
         this.defaultValue = defaultValue;
     }
@@ -59,18 +57,18 @@ public abstract class CallbackPropertyMetadata extends ValuePropertyMetadata {
         return defaultValue;
     }
     
-    public Object getValue(FXOMInstance fxomInstance) {
+    public Object getValue(final FXOMInstance fxomInstance) {
         final Object result;
         
         if (isReadWrite()) {
-            final FXOMProperty fxomProperty = fxomInstance.getProperties().get(getName());
+            final var fxomProperty = fxomInstance.getProperties().get(getName());
             if (fxomProperty instanceof FXOMPropertyC) {
                 
-                final FXOMPropertyC fxomPropertyC = (FXOMPropertyC) fxomProperty;
+                final var fxomPropertyC = (FXOMPropertyC) fxomProperty;
                 assert fxomPropertyC.getValues().size() == 1;
 
-                final FXOMObject valueFxomObject = fxomPropertyC.getValues().get(0);
-                final Object sceneGraphObject = valueFxomObject.getSceneGraphObject();
+                final var valueFxomObject = fxomPropertyC.getValues().getFirst();
+                final var sceneGraphObject = valueFxomObject.getSceneGraphObject();
 
                 result = castValue(sceneGraphObject);
             } else {
@@ -88,10 +86,10 @@ public abstract class CallbackPropertyMetadata extends ValuePropertyMetadata {
         return result;
     }
 
-    public void setValue(FXOMInstance fxomInstance, Object value) {
+    public void setValue(final FXOMInstance fxomInstance, final Object value) {
         assert isReadWrite();
         
-        final FXOMProperty fxomProperty = fxomInstance.getProperties().get(getName());
+        final var fxomProperty = fxomInstance.getProperties().get(getName());
 
         if (Objects.equals(value, getDefaultValueObject())) {
             // We must remove the fxom property if any
@@ -102,7 +100,7 @@ public abstract class CallbackPropertyMetadata extends ValuePropertyMetadata {
             if (fxomProperty == null) {
                 // propertyName is not specified in the fxom instance.
                 // We insert a new fxom property
-                final FXOMProperty newProperty
+                final var newProperty
                         = makeFxomPropertyFromValue(fxomInstance, value);
                 newProperty.addToParentInstance(-1, fxomInstance);
             } else {
@@ -134,12 +132,12 @@ public abstract class CallbackPropertyMetadata extends ValuePropertyMetadata {
     }
 
     @Override
-    public Object getValueObject(FXOMInstance fxomInstance) {
+    public Object getValueObject(final FXOMInstance fxomInstance) {
         return getValue(fxomInstance);
     }
 
     @Override
-    public void setValueObject(FXOMInstance fxomInstance, Object valueObject) {
+    public void setValueObject(final FXOMInstance fxomInstance, final Object valueObject) {
         setValue(fxomInstance, castValue(valueObject));
     }
     
@@ -148,29 +146,29 @@ public abstract class CallbackPropertyMetadata extends ValuePropertyMetadata {
      * Private
      */
     
-    protected FXOMProperty makeFxomPropertyFromValue(FXOMInstance fxomInstance, Object value) {
+    protected FXOMProperty makeFxomPropertyFromValue(final FXOMInstance fxomInstance, final Object value) {
         assert fxomInstance != null;
         assert value != null;
         
-        final FXOMDocument fxomDocument = fxomInstance.getFxomDocument();
-        final FXOMInstance valueInstance = new FXOMInstance(fxomDocument, getFxConstantClass());
+        final var fxomDocument = fxomInstance.getFxomDocument();
+        final var valueInstance = new FXOMInstance(fxomDocument, getFxConstantClass());
         updateFxomInstanceWithValue(valueInstance, value);
         return new FXOMPropertyC(fxomDocument, getName(), valueInstance);
     }
 
-    protected void updateFxomPropertyWithValue(FXOMProperty fxomProperty, Object value) {
+    protected void updateFxomPropertyWithValue(final FXOMProperty fxomProperty, final Object value) {
         assert value != null;
         assert fxomProperty instanceof FXOMPropertyC; // Because Callback are expressed using fx:constant
         
-        final FXOMPropertyC fxomPropertyC = (FXOMPropertyC) fxomProperty;
+        final var fxomPropertyC = (FXOMPropertyC) fxomProperty;
         assert fxomPropertyC.getValues().size() == 1;
-        
-        FXOMObject valueObject = fxomPropertyC.getValues().get(0);
+
+        final var valueObject = fxomPropertyC.getValues().getFirst();
         if (valueObject instanceof FXOMInstance) {
             updateFxomInstanceWithValue((FXOMInstance) valueObject, value);
         } else {
-            final FXOMDocument fxomDocument = fxomProperty.getFxomDocument();
-            final FXOMInstance valueInstance = new FXOMInstance(fxomDocument, getFxConstantClass());
+            final var fxomDocument = fxomProperty.getFxomDocument();
+            final var valueInstance = new FXOMInstance(fxomDocument, getFxConstantClass());
             updateFxomInstanceWithValue(valueInstance, value);
             valueInstance.addToParentProperty(0, fxomPropertyC);
             valueObject.removeFromParentProperty();

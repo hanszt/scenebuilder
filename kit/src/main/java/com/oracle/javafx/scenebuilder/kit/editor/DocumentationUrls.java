@@ -71,7 +71,7 @@ public enum DocumentationUrls {
     
     private final String url;
     
-    private DocumentationUrls(String defaultValue) {
+    private DocumentationUrls(final String defaultValue) {
         url = defaultValue;
     }
     
@@ -90,8 +90,8 @@ public enum DocumentationUrls {
         return url;
     }
 
-    private static String resolveJavaFxVersion(String url, String majorFxVersion) {
-        String placeHolder = "{javafx.version.major}";
+    private static String resolveJavaFxVersion(final String url, final String majorFxVersion) {
+        final var placeHolder = "{javafx.version.major}";
         if (url.contains(placeHolder)) {
             return url.replace(placeHolder, majorFxVersion);
         }
@@ -112,8 +112,8 @@ public enum DocumentationUrls {
      * @param version JavaFX version string
      * @return Provides the major version of the given version String.
      */
-    static String getMajorJavaFxVersion(String version) {
-        int firstDot = version.indexOf('.');
+    static String getMajorJavaFxVersion(final String version) {
+        final var firstDot = version.indexOf('.');
         if (firstDot > 1) {
             return version.substring(0, firstDot);
         } else {

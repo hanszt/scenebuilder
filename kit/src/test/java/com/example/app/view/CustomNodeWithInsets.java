@@ -74,7 +74,7 @@ public class CustomNodeWithInsets extends StackPane {
         centerPane.setMaxSize(580, 570);
         centerPane.setPrefSize(580, 360);
 
-        Label label = new Label("Custom Control Insets Demo");
+        final var label = new Label("Custom Control Insets Demo");
         label.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(8), new BorderWidths(4))));
         label.paddingProperty().bind(textPaddingProperty());
         label.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(10), Insets.EMPTY)));
@@ -94,7 +94,7 @@ public class CustomNodeWithInsets extends StackPane {
 
     private ObjectProperty<Insets> outerFrame;
 
-    public void setOuterFrame(Insets value) {
+    public void setOuterFrame(final Insets value) {
         this.outerFrameProperty().setValue(value);
     }
 
@@ -112,7 +112,7 @@ public class CustomNodeWithInsets extends StackPane {
 
     private ObjectProperty<Insets> innerFrame;
 
-    public void setInnerFrame(Insets value) {
+    public void setInnerFrame(final Insets value) {
         this.innerFrameProperty().setValue(value);
     }
 
@@ -131,7 +131,7 @@ public class CustomNodeWithInsets extends StackPane {
     
     private ObjectProperty<Insets> textPadding;
 
-    public void setTextPadding(Insets value) {
+    public void setTextPadding(final Insets value) {
         this.textPaddingProperty().setValue(value);
     }
 

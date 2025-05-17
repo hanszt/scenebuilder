@@ -40,7 +40,6 @@ import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.SubScene;
 import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Transform;
 
@@ -65,8 +64,8 @@ public abstract class AbstractDecoration<T> {
     private T sceneGraphObject;
 
     
-    public AbstractDecoration(ContentPanelController contentPanelController,
-            FXOMObject fxomObject, Class<T> sceneGraphClass) {
+    public AbstractDecoration(final ContentPanelController contentPanelController,
+                              final FXOMObject fxomObject, final Class<T> sceneGraphClass) {
         assert contentPanelController != null;
         assert fxomObject != null;
         assert fxomObject.getSceneGraphObject() != null;
@@ -123,8 +122,8 @@ public abstract class AbstractDecoration<T> {
         layoutDecoration();
     }
     
-    public Point2D sceneGraphObjectToDecoration(double x, double y, boolean snapToPixel) {
-        Point2D result = sceneGraphObjectToDecoration(x, y);
+    public Point2D sceneGraphObjectToDecoration(final double x, final double y, final boolean snapToPixel) {
+        var result = sceneGraphObjectToDecoration(x, y);
         if (snapToPixel) {
             final double rx = Math.round(result.getX());
             final double ry = Math.round(result.getY());
@@ -134,17 +133,17 @@ public abstract class AbstractDecoration<T> {
     }
     
     public Transform getSceneGraphObjectToDecorationTransform() {
-        final Node proxy = getSceneGraphObjectProxy();
-        final SubScene contentSubScene = contentPanelController.getContentSubScene();
-        final Transform t0 = proxy.getLocalToSceneTransform();
-        final Transform t1 = contentSubScene.getLocalToSceneTransform();
-        final Transform t2 = getRootNode().getLocalToSceneTransform();
+        final var proxy = getSceneGraphObjectProxy();
+        final var contentSubScene = contentPanelController.getContentSubScene();
+        final var t0 = proxy.getLocalToSceneTransform();
+        final var t1 = contentSubScene.getLocalToSceneTransform();
+        final var t2 = getRootNode().getLocalToSceneTransform();
         final Transform result;
         
         try {
-            final Transform i2 = t2.createInverse();
+            final var i2 = t2.createInverse();
             result = i2.createConcatenation(t1).createConcatenation(t0);
-        } catch(NonInvertibleTransformException x) {
+        } catch(final NonInvertibleTransformException x) {
             throw new RuntimeException(x);
         }
         
@@ -162,44 +161,44 @@ public abstract class AbstractDecoration<T> {
      * Utilities for subclasses
      */
     
-    public Point2D sceneGraphObjectToDecoration(double x, double y) {
-        final Node proxy = getSceneGraphObjectProxy();
+    public Point2D sceneGraphObjectToDecoration(final double x, final double y) {
+        final var proxy = getSceneGraphObjectProxy();
         return Deprecation.localToLocal(proxy, x, y, getRootNode());
     }
             
-    protected void startListeningToLayoutBounds(Node node) {
+    protected void startListeningToLayoutBounds(final Node node) {
         assert node != null;
         node.layoutBoundsProperty().addListener(layoutBoundsListener);
     }
     
-    protected void stopListeningToLayoutBounds(Node node) {
+    protected void stopListeningToLayoutBounds(final Node node) {
         assert node != null;
         node.layoutBoundsProperty().removeListener(layoutBoundsListener);
     }
 
-    protected void startListeningToBoundsInParent(Node node) {
+    protected void startListeningToBoundsInParent(final Node node) {
         assert node != null;
         node.boundsInParentProperty().addListener(boundsInParentListener);
     }
     
-    protected void stopListeningToBoundsInParent(Node node) {
+    protected void stopListeningToBoundsInParent(final Node node) {
         assert node != null;
         node.boundsInParentProperty().removeListener(boundsInParentListener);
     }
 
-    protected void startListeningToLocalToSceneTransform(Node node) {
+    protected void startListeningToLocalToSceneTransform(final Node node) {
         assert node != null;
         node.localToSceneTransformProperty().addListener(localToSceneTransformListener);
         node.sceneProperty().addListener(sceneListener);
-        final SubScene contentSubScene = contentPanelController.getContentSubScene();
+        final var contentSubScene = contentPanelController.getContentSubScene();
         contentSubScene.localToSceneTransformProperty().addListener(localToSceneTransformListener);
     }
     
-    protected void stopListeningToLocalToSceneTransform(Node node) {
+    protected void stopListeningToLocalToSceneTransform(final Node node) {
         assert node != null;
         node.localToSceneTransformProperty().removeListener(localToSceneTransformListener);
         node.sceneProperty().removeListener(sceneListener);
-        final SubScene contentSubScene = contentPanelController.getContentSubScene();
+        final var contentSubScene = contentPanelController.getContentSubScene();
         contentSubScene.localToSceneTransformProperty().removeListener(localToSceneTransformListener);
     }
     

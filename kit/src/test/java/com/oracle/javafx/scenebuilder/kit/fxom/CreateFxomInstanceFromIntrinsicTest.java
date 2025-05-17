@@ -50,7 +50,7 @@ public class CreateFxomInstanceFromIntrinsicTest {
     }
 
     private static void prepareTestData() {
-        final String sourceFile = "test_include.fxml";
+        final var sourceFile = "test_include.fxml";
         fxomDocument = new FXOMDocument();
         fxomIntrinsic = new FXOMIntrinsic(fxomDocument, FXOMIntrinsic.Type.FX_INCLUDE, sourceFile);
     }
@@ -61,7 +61,7 @@ public class CreateFxomInstanceFromIntrinsicTest {
 
     @Test
     public void testCreateFxomInstance() {
-        FXOMInstance fxomInstance = callService();
+        final var fxomInstance = callService();
         assertThat(fxomInstance).isNotNull();
         assertThat(fxomInstance.getFxomDocument()).isEqualTo(fxomIntrinsic.getFxomDocument());
         assertThat(fxomInstance.getGlueElement()).isEqualTo(fxomIntrinsic.getGlueElement());
@@ -73,7 +73,7 @@ public class CreateFxomInstanceFromIntrinsicTest {
     public void testCreateFxomInstanceWithProperties() {
         // add at least one property (source)
         fxomIntrinsic.addIntrinsicProperty(fxomDocument);
-        FXOMInstance fxomInstance = callService();
+        final var fxomInstance = callService();
         assertThat(fxomInstance).isNotNull();
         assertThat(fxomInstance.getProperties()).isNotEmpty();
     }

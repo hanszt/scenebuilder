@@ -96,9 +96,9 @@ public abstract class HierarchyTreeViewUtils {
     public static TreeCell<?> getTreeCell(final Set<Node> treeCells, final TreeItem<?> treeItem) {
         assert treeCells != null;
         assert treeItem != null;
-        for (Node node : treeCells) {
+        for (final var node : treeCells) {
             assert node instanceof TreeCell;
-            final TreeCell<?> treeCell = (TreeCell<?>) node;
+            final var treeCell = (TreeCell<?>) node;
             if (treeItem.getValue() != null
                     && treeItem.getValue().equals(treeCell.getItem())) {
                 return treeCell;
@@ -116,9 +116,9 @@ public abstract class HierarchyTreeViewUtils {
      */
     public static TreeCell<?> getTreeCell(final Set<Node> treeCells, final int index) {
         assert treeCells != null;
-        for (Node node : treeCells) {
+        for (final var node : treeCells) {
             assert node instanceof TreeCell;
-            final TreeCell<?> treeCell = (TreeCell<?>) node;
+            final var treeCell = (TreeCell<?>) node;
             if (treeCell.getIndex() == index) {
                 return treeCell;
             }
@@ -140,8 +140,8 @@ public abstract class HierarchyTreeViewUtils {
         if (child == parent) {
             return false;
         }
-        int childLevel = Deprecation.getNodeLevel(child);
-        int parentLevel = Deprecation.getNodeLevel(parent);
+        final var childLevel = Deprecation.getNodeLevel(child);
+        var parentLevel = Deprecation.getNodeLevel(parent);
         while (parentLevel >= childLevel) {
             if (parent == child) {
                 return false;
@@ -166,7 +166,7 @@ public abstract class HierarchyTreeViewUtils {
 
         // TreeItems contains ROOT 
         // => return ROOT as the common parent
-        for (TreeItem<T> treeItem : treeItems) {
+        for (final var treeItem : treeItems) {
             if (Deprecation.getNodeLevel(treeItem) == 0) {
                 return treeItem;
             }
@@ -175,14 +175,14 @@ public abstract class HierarchyTreeViewUtils {
         // TreeItem single selection
         // => the common parent is the single TreeItem parent
         if (treeItems.size() == 1) {
-            return treeItems.get(0).getParent();
+            return treeItems.getFirst().getParent();
         } //
         // TreeItem multi selection
         else {
             assert treeItems.size() >= 2;
             TreeItem<T> parent = null;
-            TreeItem<T> child = treeItems.get(0);
-            for (int index = 1; index < treeItems.size(); index++) {
+            var child = treeItems.getFirst();
+            for (var index = 1; index < treeItems.size(); index++) {
                 parent = getCommonParentTreeItem(child, treeItems.get(index));
                 // We reached the ROOT level
                 // => common parent is ROOT TreeItem
@@ -202,13 +202,13 @@ public abstract class HierarchyTreeViewUtils {
 
         assert child1 != null && child2 != null;
 
-        int child1Level = Deprecation.getNodeLevel(child1);
-        int child2Level = Deprecation.getNodeLevel(child2);
+        var child1Level = Deprecation.getNodeLevel(child1);
+        var child2Level = Deprecation.getNodeLevel(child2);
         // Neither child1 nor child2 is ROOT TreeItem
         assert child1Level > 0 && child2Level > 0;
 
-        TreeItem<T> parent1 = child1.getParent();
-        TreeItem<T> parent2 = child2.getParent();
+        var parent1 = child1.getParent();
+        var parent2 = child2.getParent();
 
         if (child1Level < child2Level) {
             while (child1Level < child2Level) {

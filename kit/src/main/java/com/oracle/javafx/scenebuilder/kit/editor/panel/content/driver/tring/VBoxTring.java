@@ -34,8 +34,7 @@ package com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.tring;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.ContentPanelController;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import java.util.List;
-import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
+
 import javafx.scene.Node;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
@@ -49,15 +48,15 @@ public class VBoxTring extends AbstractNodeTring<VBox> {
     private final int targetIndex;
     private final Line crackLine = new Line();
 
-    public VBoxTring(ContentPanelController contentPanelController, 
-            FXOMInstance fxomInstance, int targetIndex) {
+    public VBoxTring(final ContentPanelController contentPanelController,
+                     final FXOMInstance fxomInstance, final int targetIndex) {
         super(contentPanelController, fxomInstance, VBox.class);
         assert targetIndex >= -1;
         this.targetIndex = targetIndex;
         
         crackLine.getStyleClass().add(TARGET_CRACK_CLASS);
         crackLine.setMouseTransparent(true);
-        getRootNode().getChildren().add(0, crackLine);
+        getRootNode().getChildren().addFirst(crackLine);
     }
     
     
@@ -70,8 +69,8 @@ public class VBoxTring extends AbstractNodeTring<VBox> {
         
         super.layoutDecoration();
         
-        final VBox vbox = getSceneGraphObject();
-        final int childCount = vbox.getChildren().size();
+        final var vbox = getSceneGraphObject();
+        final var childCount = vbox.getChildren().size();
         
         if (childCount == 0) {
             // No crack line
@@ -83,20 +82,20 @@ public class VBoxTring extends AbstractNodeTring<VBox> {
             final double crackY;
             final List<Node> children = vbox.getChildren();
             if (targetIndex == -1) {
-                final Node child = children.get(childCount-1);
-                final Bounds cb = child.localToParent(child.getLayoutBounds());
+                final var child = children.get(childCount - 1);
+                final var cb = child.localToParent(child.getLayoutBounds());
                 crackY = cb.getMaxY();
             } else {
-                final Node child = children.get(targetIndex);
-                final Bounds cb = child.localToParent(child.getLayoutBounds());
+                final var child = children.get(targetIndex);
+                final var cb = child.localToParent(child.getLayoutBounds());
                 crackY = cb.getMinY();
             }
 
             // Updates the crack line
-            final boolean snapToPixel = true;
-            final Bounds b = getSceneGraphObject().getLayoutBounds();
-            final Point2D p0 = sceneGraphObjectToDecoration(b.getMinX(), crackY, snapToPixel);
-            final Point2D p1 = sceneGraphObjectToDecoration(b.getMaxX(), crackY, snapToPixel);
+            final var snapToPixel = true;
+            final var b = getSceneGraphObject().getLayoutBounds();
+            final var p0 = sceneGraphObjectToDecoration(b.getMinX(), crackY, snapToPixel);
+            final var p1 = sceneGraphObjectToDecoration(b.getMaxX(), crackY, snapToPixel);
 
             crackLine.setVisible(true);
             crackLine.setStartX(p0.getX());

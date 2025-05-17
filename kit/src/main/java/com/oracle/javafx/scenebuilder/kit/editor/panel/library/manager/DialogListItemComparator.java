@@ -33,13 +33,12 @@
 package com.oracle.javafx.scenebuilder.kit.editor.panel.library.manager;
 
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Comparator;
 
 class DialogListItemComparator implements Comparator<DialogListItem> {
 
     @Override
-    public int compare(DialogListItem a, DialogListItem b) {
+    public int compare(final DialogListItem a, final DialogListItem b) {
 
         if (a instanceof ArtifactDialogListItem && b instanceof ArtifactDialogListItem) {            
             return compareUsingArtifactCoordinates((ArtifactDialogListItem) a, (ArtifactDialogListItem) b);
@@ -56,14 +55,14 @@ class DialogListItemComparator implements Comparator<DialogListItem> {
         }
     }
 
-    private int compareUsingArtifactCoordinates(ArtifactDialogListItem a, ArtifactDialogListItem b) {
+    private int compareUsingArtifactCoordinates(final ArtifactDialogListItem a, final ArtifactDialogListItem b) {
         return a.getCoordinates().compareTo(b.getCoordinates());
     }
 
-    private int compareUsingPaths(LibraryDialogListItem a, LibraryDialogListItem b) {
+    private int compareUsingPaths(final LibraryDialogListItem a, final LibraryDialogListItem b) {
 
-        Path first = a.getFilePath();
-        Path second = b.getFilePath();
+        final var first = a.getFilePath();
+        final var second = b.getFilePath();
 
         if (Files.isDirectory(first) && Files.isRegularFile(second)) {            
             return -1;

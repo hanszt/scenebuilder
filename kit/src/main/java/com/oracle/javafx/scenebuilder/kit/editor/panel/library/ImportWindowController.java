@@ -39,9 +39,7 @@ import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +69,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -159,12 +156,12 @@ public class ImportWindowController extends AbstractModalDialog {
     ToggleButton checkAllUncheckAllToggle;
 
     
-    public ImportWindowController(LibraryPanelController lpc, List<File> files, MavenPreferences mavenPreferences, Stage owner) {
+    public ImportWindowController(final LibraryPanelController lpc, final List<File> files, final MavenPreferences mavenPreferences, final Stage owner) {
         this(lpc, files, mavenPreferences, owner, true, new ArrayList<>());
     }
     
-    public ImportWindowController(LibraryPanelController lpc, List<File> files, MavenPreferences mavenPreferences, Stage owner,
-            boolean copyFilesToUserLibraryDir, List<String> artifactsFilter) {
+    public ImportWindowController(final LibraryPanelController lpc, final List<File> files, final MavenPreferences mavenPreferences, final Stage owner,
+                                  final boolean copyFilesToUserLibraryDir, final List<String> artifactsFilter) {
         super(ImportWindowController.class.getResource("ImportDialog.fxml"), I18N.getBundle(), owner); //NOI18N
         libPanelController = lpc;
         importFiles = new ArrayList<>(files);
@@ -213,7 +210,7 @@ public class ImportWindowController extends AbstractModalDialog {
      at java.lang.Thread.run(Thread.java:724)
      */
     @Override
-    protected void cancelButtonPressed(ActionEvent e) {
+    protected void cancelButtonPressed(final ActionEvent e) {
         if (exploringTask != null && exploringTask.isRunning()) {
             exploringTask.setOnCancelled(t -> getStage().close());
             exploringTask.cancel(true);
@@ -225,28 +222,28 @@ public class ImportWindowController extends AbstractModalDialog {
         
         try {
             closeClassLoader();
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             showErrorDialog(ex);
         }
     }
 
     @Override
-    protected void okButtonPressed(ActionEvent e) {
+    protected void okButtonPressed(final ActionEvent e) {
         exploringTask = null;
         getStage().close();
         
         try {
             closeClassLoader();
-            
-            UserLibrary userLib = ((UserLibrary) libPanelController.getEditorController().getLibrary());
+
+            final var userLib = ((UserLibrary) libPanelController.getEditorController().getLibrary());
 
             if (copyFilesToUserLibraryDir) {
                 // collect directories from importFiles and add to library.folders file
                 // for other filex (jar, fxml) copy them directly
-                List<File> folders = new ArrayList<>(importFiles.size());
-                List<File> files = new ArrayList<>(importFiles.size());
+                final List<File> folders = new ArrayList<>(importFiles.size());
+                final List<File> files = new ArrayList<>(importFiles.size());
 
-                for (File file : importFiles) {
+                for (final var file : importFiles) {
                     if (file.isDirectory())
                         folders.add(file);
                     else
@@ -256,12 +253,12 @@ public class ImportWindowController extends AbstractModalDialog {
                 if (!files.isEmpty())
                     libPanelController.copyFilesToUserLibraryDir(files);
 
-                Path foldersMarkerPath = Paths.get(userLib.getPath().toString(), LibraryUtil.FOLDERS_LIBRARY_FILENAME);
+                final var foldersMarkerPath = Paths.get(userLib.getPath().toString(), LibraryUtil.FOLDERS_LIBRARY_FILENAME);
 
                 if (!Files.exists(foldersMarkerPath))
                     Files.createFile(foldersMarkerPath);
 
-                Set<String> lines = new TreeSet<>(Files.readAllLines(foldersMarkerPath));
+                final Set<String> lines = new TreeSet<>(Files.readAllLines(foldersMarkerPath));
                 lines.addAll(folders.stream().map(f -> f.getAbsolutePath()).collect(Collectors.toList()));
 
                 Files.write(foldersMarkerPath, lines);
@@ -270,7 +267,7 @@ public class ImportWindowController extends AbstractModalDialog {
             if (copyFilesToUserLibraryDir) {
                 userLib.setFilter(getExcludedItems());
             }
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             showErrorDialog(ex);
         } finally {
             alreadyExcludedItems.clear();
@@ -278,7 +275,7 @@ public class ImportWindowController extends AbstractModalDialog {
     }
 
     @Override
-    protected void actionButtonPressed(ActionEvent e) {
+    protected void actionButtonPressed(final ActionEvent e) {
         // NOTHING TO DO (no ACTION button)
     }
 
@@ -286,7 +283,7 @@ public class ImportWindowController extends AbstractModalDialog {
      * AbstractFxmlWindowController
      */
     @Override
-    public void onCloseRequest(WindowEvent event) {
+    public void onCloseRequest(final WindowEvent event) {
         cancelButtonPressed(null);
     }
 
@@ -294,7 +291,7 @@ public class ImportWindowController extends AbstractModalDialog {
     public void controllerDidLoadContentFxml() {
         assert topSplitPane != null;
         // The SplitPane should not be visible from the beginning: only the progressing bar is initially visible.
-        assert topSplitPane.isVisible() == false;
+        assert !topSplitPane.isVisible();
         assert processingLabel != null;
         assert processingProgressIndicator != null;
         assert sizeLabel != null;
@@ -327,12 +324,12 @@ public class ImportWindowController extends AbstractModalDialog {
         // Initially all items are Selected.
         checkAllUncheckAllToggle.selectedProperty().addListener((ChangeListener<Boolean>) (ov, t, t1) -> {
             if (t1) {
-                for (ImportRow row1 : importList.getItems()) {
+                for (final var row1 : importList.getItems()) {
                     row1.setImportRequired(false);
                 }
                 checkAllUncheckAllToggle.setText(I18N.getString("import.toggle.checkall"));
             } else {
-                for (ImportRow row2 : importList.getItems()) {
+                for (final var row2 : importList.getItems()) {
                     row2.setImportRequired(true);
                 }
                 checkAllUncheckAllToggle.setText(I18N.getString("import.toggle.uncheckall"));
@@ -369,13 +366,13 @@ public class ImportWindowController extends AbstractModalDialog {
 
     // This method returns a new list of File made of the union of the provided
     // one and jar files found in the user library dir.
-    List<File> buildListOfAllFiles(List<File> importFiles) throws IOException {
+    List<File> buildListOfAllFiles(final List<File> importFiles) throws IOException {
         final List<File> res = new ArrayList<>(importFiles);
-        String userLibraryDir = ((UserLibrary) libPanelController.getEditorController().getLibrary()).getPath();
+        final var userLibraryDir = ((UserLibrary) libPanelController.getEditorController().getLibrary()).getPath();
         if (new File(userLibraryDir).exists()) {
-            Path userLibraryPath = new File(userLibraryDir).toPath();
-            try (DirectoryStream<Path> stream = Files.newDirectoryStream(userLibraryPath)) {
-                for (Path entry : stream) {
+            final var userLibraryPath = new File(userLibraryDir).toPath();
+            try (final var stream = Files.newDirectoryStream(userLibraryPath)) {
+                for (final var entry : stream) {
                     if (entry.toString().endsWith(".jar")) { //NOI18N
     //                    System.out.println("ImportWindowController::buildListOfAllFiles: Adding " + element); //NOI18N
                         res.add(entry.toFile());
@@ -398,10 +395,10 @@ public class ImportWindowController extends AbstractModalDialog {
                 numOfImportedJar = importFiles.size();
                 // The classloader takes in addition all already existing
                 // jar files stored in the user lib dir.
-                final List<File> allFiles = buildListOfAllFiles(importFiles);
-                final URLClassLoader classLoader = getClassLoaderForFiles(allFiles);
-                int index = 1;
-                for (File file : importFiles) {
+                final var allFiles = buildListOfAllFiles(importFiles);
+                final var classLoader = getClassLoaderForFiles(allFiles);
+                var index = 1;
+                for (final var file : importFiles) {
                     if (isCancelled()) {
                         updateMessage(I18N.getString("import.work.cancelled"));
                         break;
@@ -409,13 +406,13 @@ public class ImportWindowController extends AbstractModalDialog {
                     updateMessage(I18N.getString("import.work.exploring", file.getName()));
 //                    System.out.println("[" + index + "/" + max + "] Exploring file " + file.getName()); //NOI18N
                     if (file.isDirectory()) {
-                        final FolderExplorer explorer = new FolderExplorer(file.toPath());
-                        final JarReport jarReport = explorer.explore(classLoader);
+                        final var explorer = new FolderExplorer(file.toPath());
+                        final var jarReport = explorer.explore(classLoader);
                         res.add(jarReport);
                     }
                     else {
-                        final JarExplorer explorer = new JarExplorer(Paths.get(file.getAbsolutePath()));
-                        final JarReport jarReport = explorer.explore(classLoader);
+                        final var explorer = new JarExplorer(Paths.get(file.getAbsolutePath()));
+                        final var jarReport = explorer.explore(classLoader);
                         res.add(jarReport);
                     }
                     updateProgress(index, numOfImportedJar);
@@ -428,7 +425,7 @@ public class ImportWindowController extends AbstractModalDialog {
             }
         };
 
-        Thread th = new Thread(exploringTask);
+        final var th = new Thread(exploringTask);
         th.setDaemon(true);
         processingProgressIndicator.progressProperty().bind(exploringTask.progressProperty());
 
@@ -458,26 +455,26 @@ public class ImportWindowController extends AbstractModalDialog {
             
             try {
                 // We get the set of items which are already excluded prior to the current import.
-                UserLibrary userLib = ((UserLibrary) libPanelController.getEditorController().getLibrary());
+                final var userLib = ((UserLibrary) libPanelController.getEditorController().getLibrary());
                 alreadyExcludedItems = userLib.getFilter();
-                
-                List<JarReport> jarReportList = exploringTask.get(); // blocking call
+
+                final var jarReportList = exploringTask.get(); // blocking call
                 final Callback<ImportRow, ObservableValue<Boolean>> importRequired
                         = row -> row.importRequired();
                 importList.setCellFactory(CheckBoxListCell.forListView(importRequired));
 
-                boolean importingControlsFromExternalPlugin = false;
-                for (JarReport jarReport : jarReportList) {
-                    Path file = jarReport.getJar();
-                    String jarName = file.getName(file.getNameCount() - 1).toString();
-                    StringBuilder sb = new StringBuilder(
+                var importingControlsFromExternalPlugin = false;
+                for (final var jarReport : jarReportList) {
+                    final var file = jarReport.getJar();
+                    final var jarName = file.getName(file.getNameCount() - 1).toString();
+                    final var sb = new StringBuilder(
                             I18N.getString("log.info.explore." + (Files.isDirectory(file) ? "folder" : "jar") + ".results", jarName))
                             .append("\n");
-                    for (JarReportEntry e : jarReport.getEntries()) {
+                    for (final var e : jarReport.getEntries()) {
                         sb.append("> ").append(e.toString()).append("\n");
                         if ((e.getStatus() == JarReportEntry.Status.OK) && e.isNode()) {
-                            boolean checked = true;
-                            final String canonicalName = e.getKlass().getCanonicalName();
+                            var checked = true;
+                            final var canonicalName = e.getKlass().getCanonicalName();
                             // If the class we import is already listed as an excluded one
                             // then it must appear unchecked in the list.
                             if (alreadyExcludedItems.contains(canonicalName) || 
@@ -487,18 +484,18 @@ public class ImportWindowController extends AbstractModalDialog {
                                     alreadyExcludedItems.remove(canonicalName);
                                 }
                             }
-                            final ImportRow importRow = new ImportRow(checked, e, null);
+                            final var importRow = new ImportRow(checked, e, null);
                             importList.getItems().add(importRow);
                             importRow.importRequired().addListener((ChangeListener<Boolean>) (ov, oldValue,
                                     newValue) -> {
-                                        final int numOfComponentToImport = getNumOfComponentToImport(importList);
+                                        final var numOfComponentToImport = getNumOfComponentToImport(importList);
                                         updateOKButtonTitle(numOfComponentToImport);
                                         updateSelectionToggleText(numOfComponentToImport);
                                     });
                         } else {
                             if (e.getException() != null) {
-                                StringWriter sw = new StringWriter();
-                                PrintWriter pw = new PrintWriter(sw);
+                                final var sw = new StringWriter();
+                                final var pw = new PrintWriter(sw);
                                 e.getException().printStackTrace(pw);
                                 sb.append(">> ").append(sw);
                             }
@@ -518,12 +515,12 @@ public class ImportWindowController extends AbstractModalDialog {
                 // Sort based on the simple class name.
                 importList.getItems().sort(new ImportRowComparator());
 
-                final int numOfComponentToImport = getNumOfComponentToImport(importList);
+                final var numOfComponentToImport = getNumOfComponentToImport(importList);
                 updateOKButtonTitle(numOfComponentToImport);
                 updateOKCancelDefaultState(numOfComponentToImport);
                 updateSelectionToggleText(numOfComponentToImport);
                 updateNumOfItemsLabelAndSelectionToggleState();
-            } catch (InterruptedException | ExecutionException | IOException ex) {
+            } catch (final InterruptedException | ExecutionException | IOException ex) {
                 getStage().close();
                 showErrorDialog(ex);
             }
@@ -534,8 +531,8 @@ public class ImportWindowController extends AbstractModalDialog {
         th.start();
     }
     
-    private void showErrorDialog(Exception exception) {
-        final ErrorDialog errorDialog = new ErrorDialog(null);
+    private void showErrorDialog(final Exception exception) {
+        final var errorDialog = new ErrorDialog(null);
         errorDialog.setTitle(I18N.getString("import.error.title"));
         errorDialog.setMessage(I18N.getString("import.error.message"));
         errorDialog.setDetails(I18N.getString("import.error.details"));
@@ -543,7 +540,7 @@ public class ImportWindowController extends AbstractModalDialog {
         errorDialog.showAndWait();
     }
 
-    void updateImportClassLoader(URLClassLoader cl) {
+    void updateImportClassLoader(final URLClassLoader cl) {
         this.importClassLoader = cl;
     }
 
@@ -554,31 +551,31 @@ public class ImportWindowController extends AbstractModalDialog {
 
         importList.getSelectionModel().selectedItemProperty().addListener((ChangeListener<ImportRow>) (ov, t, t1) -> {
             previewGroup.getChildren().clear();
-            final String fxmlText = BuiltinLibrary.makeFxmlText(t1.getJarReportEntry().getKlass());
+            final var fxmlText = BuiltinLibrary.makeFxmlText(t1.getJarReportEntry().getKlass());
             try {
-                FXOMDocument fxomDoc = new FXOMDocument(fxmlText, null, importClassLoader, null,
+                final var fxomDoc = new FXOMDocument(fxmlText, null, importClassLoader, null,
                                            FXOMDocumentSwitch.NORMALIZED);
                 zeNode = (Node) fxomDoc.getSceneGraphRoot();
-            } catch (IOException ioe) {
+            } catch (final IOException ioe) {
                 showErrorDialog(ioe);
             }
             
             // In order to get valid bounds I need to put the node into a
             // scene and ask for full layout.
             try {
-                final Group visualGroup = new Group(zeNode);
-                final Scene hiddenScene = new Scene(visualGroup);
-                Stage hiddenStage = new Stage();
+                final var visualGroup = new Group(zeNode);
+                final var hiddenScene = new Scene(visualGroup);
+                final var hiddenStage = new Stage();
                 hiddenStage.setScene(hiddenScene);
                 visualGroup.applyCss();
                 visualGroup.layout();
-                final Bounds zeBounds = zeNode.getLayoutBounds();
+                final var zeBounds = zeNode.getLayoutBounds();
                 builtinPrefWidth = zeBounds.getWidth();
                 builtinPrefHeight = zeBounds.getHeight();
                 // Detach the scene !
                 hiddenScene.setRoot(new Group());
                 hiddenStage.close();
-            } catch (Error e) {
+            } catch (final Error e) {
                 // Experience shows that with rogue jar files (a jar file
                 // unlikely to contain FX controls) we can enter here.
                 // Anything better to do than setting pref size to 0 ?
@@ -607,16 +604,16 @@ public class ImportWindowController extends AbstractModalDialog {
         }
     }
 
-    private URLClassLoader getClassLoaderForFiles(List<File> files) {
+    private URLClassLoader getClassLoaderForFiles(final List<File> files) {
         return new URLClassLoader(makeURLArrayFromFiles(files));
     }
 
-    private URL[] makeURLArrayFromFiles(List<File> files) {
-        final URL[] result = new URL[files.size()];
+    private URL[] makeURLArrayFromFiles(final List<File> files) {
+        final var result = new URL[files.size()];
         try {
-            int index = 0;
-            for (File file : files) {
-                URL url = file.toURI().toURL();
+            var index = 0;
+            for (final var file : files) {
+                final var url = file.toURI().toURL();
                 if (url.toString().endsWith(".jar")) {
                     result[index] = new URL("jar", "", url + "!/"); // <-- jar:file/path/to/jar!/
                 } else {
@@ -625,7 +622,7 @@ public class ImportWindowController extends AbstractModalDialog {
 
                 index++;
             }
-        } catch (MalformedURLException x) {
+        } catch (final MalformedURLException x) {
             throw new RuntimeException("Bug in " + getClass().getSimpleName(), x); //NOI18N
         }
 
@@ -637,9 +634,9 @@ public class ImportWindowController extends AbstractModalDialog {
     }
 
     private int getNumOfComponentToImport(final ListView<ImportRow> list) {
-        int res = 0;
+        var res = 0;
         
-        for (final ImportRow row : list.getItems()) {
+        for (final var row : list.getItems()) {
             if (row.isImportRequired()) {
                 res++;
             }
@@ -649,9 +646,9 @@ public class ImportWindowController extends AbstractModalDialog {
     }
     
     private List<String> getExcludedItems() {
-        List<String> res = new ArrayList<>(alreadyExcludedItems);
+        final List<String> res = new ArrayList<>(alreadyExcludedItems);
         
-        for (ImportRow row : importList.getItems()) {
+        for (final var row : importList.getItems()) {
             if (! row.isImportRequired()) {
                 res.add(row.getCanonicalClassName());
             }
@@ -674,7 +671,7 @@ public class ImportWindowController extends AbstractModalDialog {
     // want to import the jar file anyway; it makes sense in ooder to resolve
     // dependencies other jars have onto it.
     // See DTL-6531 for details.
-    private void updateOKButtonTitle(int numOfComponentToImport) {
+    private void updateOKButtonTitle(final int numOfComponentToImport) {
         if (numOfComponentToImport == 0) {
             if (numOfImportedJar == 1) {
                 setOKButtonTitle(I18N.getString("import.button.import.jar"));
@@ -688,7 +685,7 @@ public class ImportWindowController extends AbstractModalDialog {
         }
     }
 
-    private void updateOKCancelDefaultState(int numOfComponentsToImport) {
+    private void updateOKCancelDefaultState(final int numOfComponentsToImport) {
         if (numOfComponentsToImport == 0) {
             cancelButton.setDefaultButton(true);
             cancelButton.requestFocus();
@@ -699,7 +696,7 @@ public class ImportWindowController extends AbstractModalDialog {
     }
     
     void updateNumOfItemsLabelAndSelectionToggleState() {
-        final int num = importList.getItems().size();
+        final var num = importList.getItems().size();
         if (num == 0 || num == 1) {
             numOfItemsLabel.setText(num + " " //NOI18N
                     + I18N.getString("import.num.item"));
@@ -713,7 +710,7 @@ public class ImportWindowController extends AbstractModalDialog {
         }
     }
 
-    private void updateSelectionToggleText(int numOfComponentToImport) {
+    private void updateSelectionToggleText(final int numOfComponentToImport) {
         if (numOfComponentToImport == 0) {
             checkAllUncheckAllToggle.setText(I18N.getString("import.toggle.checkall"));
         } else {
@@ -724,9 +721,9 @@ public class ImportWindowController extends AbstractModalDialog {
     // NOTE At the end of the day some tooling in metadata will supersedes the
     // use of this method that is only able to deal with a Region, ignoring all
     // other cases.
-    private void updateSize(Integer choice) {
+    private void updateSize(final Integer choice) {
         if (zeNode instanceof Region) {
-            PrefSize prefSize = PrefSize.values()[choice];
+            final var prefSize = PrefSize.values()[choice];
             switch (prefSize) {
                 case DEFAULT:
                     ((Region) zeNode).setPrefSize(builtinPrefWidth, builtinPrefHeight);
@@ -748,7 +745,7 @@ public class ImportWindowController extends AbstractModalDialog {
         }
     }
     
-    private void setSizeLabel(PrefSize ps) {
+    private void setSizeLabel(final PrefSize ps) {
         switch (ps) {
             case DEFAULT:
                 sizeLabel.setText(builtinPrefWidth + " x " + builtinPrefHeight); //NOI18N

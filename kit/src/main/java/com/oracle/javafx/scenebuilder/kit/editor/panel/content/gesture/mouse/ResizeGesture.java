@@ -31,10 +31,8 @@
  */
 package com.oracle.javafx.scenebuilder.kit.editor.panel.content.gesture.mouse;
 
-import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.ModifyObjectJob;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.ContentPanelController;
-import com.oracle.javafx.scenebuilder.kit.editor.panel.content.HudWindowController;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.relocater.AbstractRelocater;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.relocater.AnchorPaneRelocater;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.relocater.PaneRelocater;
@@ -51,19 +49,14 @@ import com.oracle.javafx.scenebuilder.kit.metadata.property.ValuePropertyMetadat
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import javafx.event.EventType;
+
 import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
-import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.transform.Transform;
 
 /**
  *
@@ -82,7 +75,7 @@ public class ResizeGesture extends AbstractMouseGesture {
     private boolean snapEnabled;
     private boolean guidesDisabled;
 
-    public ResizeGesture(ContentPanelController contentPanelController, FXOMInstance fxomInstance, CardinalPoint tunable) {
+    public ResizeGesture(final ContentPanelController contentPanelController, final FXOMInstance fxomInstance, final CardinalPoint tunable) {
         super(contentPanelController);
         assert contentPanelController.lookupDriver(fxomInstance) != null;
         assert fxomInstance.getSceneGraphObject() instanceof Node;
@@ -106,8 +99,8 @@ public class ResizeGesture extends AbstractMouseGesture {
         assert resizer != null;
         assert resizer.getSceneGraphObject() == fxomInstance.getSceneGraphObject();
         
-        final Node sceneGraphObject = resizer.getSceneGraphObject();
-        final Parent sceneGraphParent = sceneGraphObject.getParent();
+        final var sceneGraphObject = resizer.getSceneGraphObject();
+        final var sceneGraphParent = sceneGraphObject.getParent();
         assert sceneGraphParent != null;
         if (sceneGraphParent.getClass() == Pane.class) {
             relocater = new PaneRelocater(sceneGraphObject);
@@ -165,18 +158,18 @@ public class ResizeGesture extends AbstractMouseGesture {
         userDidCancel();
         
         // Step #3
-        final Metadata metadata = Metadata.getMetadata();
+        final var metadata = Metadata.getMetadata();
         final Map<ValuePropertyMetadata, Object> metaValueMap = new HashMap<>();
-        for (Map.Entry<PropertyName,Object> e : changeMap.entrySet()) {
-            final ValuePropertyMetadata vpm = metadata.queryValueProperty(fxomInstance, e.getKey());
+        for (final var e : changeMap.entrySet()) {
+            final var vpm = metadata.queryValueProperty(fxomInstance, e.getKey());
             assert vpm != null;
             metaValueMap.put(vpm, e.getValue());
         }
-        if (changeMap.isEmpty() == false) {
-            final EditorController editorController 
+        if (!changeMap.isEmpty()) {
+            final var editorController
                     = contentPanelController.getEditorController();
-            for (Map.Entry<ValuePropertyMetadata, Object> e : metaValueMap.entrySet()) {
-                final ModifyObjectJob job = new ModifyObjectJob(
+            for (final var e : metaValueMap.entrySet()) {
+                final var job = new ModifyObjectJob(
                         fxomInstance,
                         e.getKey(),
                         e.getValue(),
@@ -196,9 +189,9 @@ public class ResizeGesture extends AbstractMouseGesture {
     }
 
     @Override
-    protected void keyEvent(KeyEvent ke) {
+    protected void keyEvent(final KeyEvent ke) {
         if (ke.getCode() == KeyCode.SHIFT) {
-            final EventType<KeyEvent> eventType = ke.getEventType();
+            final var eventType = ke.getEventType();
             if (eventType == KeyEvent.KEY_PRESSED) {
                 snapEnabled = true;
             } else if (eventType == KeyEvent.KEY_RELEASED) {
@@ -208,7 +201,7 @@ public class ResizeGesture extends AbstractMouseGesture {
                 mouseDragged();
             }
         } else if (ke.getCode() == KeyCode.ALT) {
-            final EventType<KeyEvent> eventType = ke.getEventType();
+            final var eventType = ke.getEventType();
             if (eventType == KeyEvent.KEY_PRESSED) {
                 guidesDisabled = true;
             } else if (eventType == KeyEvent.KEY_RELEASED) {
@@ -250,16 +243,16 @@ public class ResizeGesture extends AbstractMouseGesture {
         if (relocater != null) {
             relocater.revertToOriginalLocation();
         }
-        final Node sceneGraphObject = resizer.getSceneGraphObject();
+        final var sceneGraphObject = resizer.getSceneGraphObject();
         sceneGraphObject.getParent().layout();
         
         // Compute mouse displacement in local coordinates of scene graph object
-        final double startSceneX = getMousePressedEvent().getSceneX();
-        final double startSceneY = getMousePressedEvent().getSceneY();
-        final double currentSceneX = getLastMouseEvent().getSceneX();
-        final double currentSceneY = getLastMouseEvent().getSceneY();
-        final Point2D start = sceneGraphObject.sceneToLocal(startSceneX, startSceneY, true /* rootScene */);
-        final Point2D current = sceneGraphObject.sceneToLocal(currentSceneX, currentSceneY, true /* rootScene */);
+        final var startSceneX = getMousePressedEvent().getSceneX();
+        final var startSceneY = getMousePressedEvent().getSceneY();
+        final var currentSceneX = getLastMouseEvent().getSceneX();
+        final var currentSceneY = getLastMouseEvent().getSceneY();
+        final var start = sceneGraphObject.sceneToLocal(startSceneX, startSceneY, true /* rootScene */);
+        final var current = sceneGraphObject.sceneToLocal(currentSceneX, currentSceneY, true /* rootScene */);
         final double rawDeltaX, rawDeltaY;
         if ((start != null) && (current != null)) {
             rawDeltaX = current.getX() - start.getX();
@@ -273,25 +266,25 @@ public class ResizeGesture extends AbstractMouseGesture {
         
         // Clamps deltaX/deltaY relatively to tunable.
         // Example: tunable == E => clampDeltaX = rawDeltaX, clampDeltaY = 0.0
-        final Point2D clampDelta = tunable.clampVector(rawDeltaX, rawDeltaY);
-        final double clampDeltaX = clampDelta.getX();
-        final double clampDeltaY = clampDelta.getY();
+        final var clampDelta = tunable.clampVector(rawDeltaX, rawDeltaY);
+        final var clampDeltaX = clampDelta.getX();
+        final var clampDeltaY = clampDelta.getY();
         
         // Compute candidateBounds
-        final Bounds layoutBounds = sceneGraphObject.getLayoutBounds();
-        final Bounds resizedBounds = tunable.getResizedBounds(layoutBounds, clampDeltaX, clampDeltaY);
+        final var layoutBounds = sceneGraphObject.getLayoutBounds();
+        final var resizedBounds = tunable.getResizedBounds(layoutBounds, clampDeltaX, clampDeltaY);
         final Bounds candidateBounds;
         if (isSnapRequired()) {
-            final double ratio = layoutBounds.getHeight() / layoutBounds.getWidth();
+            final var ratio = layoutBounds.getHeight() / layoutBounds.getWidth();
             candidateBounds = tunable.snapBounds(resizedBounds, ratio);
         } else {
             candidateBounds = resizedBounds;
         }
         
         // Computes new layout bounds from the candidate bounds
-        final double candidateWidth = candidateBounds.getWidth();
-        final double candidateHeight = candidateBounds.getHeight();
-        final Bounds newLayoutBounds = resizer.computeBounds(candidateWidth, candidateHeight);
+        final var candidateWidth = candidateBounds.getWidth();
+        final var candidateHeight = candidateBounds.getHeight();
+        final var newLayoutBounds = resizer.computeBounds(candidateWidth, candidateHeight);
         
         final Bounds guidedLayoutBounds;
         if (resizingGuideController == null) {
@@ -301,21 +294,21 @@ public class ResizeGesture extends AbstractMouseGesture {
             guidedLayoutBounds = newLayoutBounds;
         } else {
             resizingGuideController.match(newLayoutBounds);
-            final double suggestedWidth  = resizingGuideController.getSuggestedWidth();
-            final double suggestedHeight = resizingGuideController.getSuggestedHeight();
+            final var suggestedWidth  = resizingGuideController.getSuggestedWidth();
+            final var suggestedHeight = resizingGuideController.getSuggestedHeight();
             guidedLayoutBounds = resizer.computeBounds(suggestedWidth, suggestedHeight);
         }
 
         // Now computes the new location (in parent's local coordinate space)
-        final CardinalPoint fix = tunable.getOpposite();
-        final Point2D currentFixPos = fix.getPosition(layoutBounds);
-        final Point2D newFixPos = fix.getPosition(guidedLayoutBounds);
-        final Point2D currentParent = sceneGraphObject.localToParent(currentFixPos);
-        final Point2D newParent = sceneGraphObject.localToParent(newFixPos);
-        final double layoutDX = currentParent.getX() - newParent.getX();
-        final double layoutDY = currentParent.getY() - newParent.getY();
-        final double newLayoutX = sceneGraphObject.getLayoutX() + layoutDX;
-        final double newLayoutY = sceneGraphObject.getLayoutY() + layoutDY;
+        final var fix = tunable.getOpposite();
+        final var currentFixPos = fix.getPosition(layoutBounds);
+        final var newFixPos = fix.getPosition(guidedLayoutBounds);
+        final var currentParent = sceneGraphObject.localToParent(currentFixPos);
+        final var newParent = sceneGraphObject.localToParent(newFixPos);
+        final var layoutDX = currentParent.getX() - newParent.getX();
+        final var layoutDY = currentParent.getY() - newParent.getY();
+        final var newLayoutX = sceneGraphObject.getLayoutX() + layoutDX;
+        final var newLayoutY = sceneGraphObject.getLayoutY() + layoutDY;
         
         // Apply the new size and new location
         resizer.changeWidth(guidedLayoutBounds.getWidth());
@@ -335,11 +328,11 @@ public class ResizeGesture extends AbstractMouseGesture {
         return snapEnabled || (resizer.getFeature() == Feature.SCALING);
     }
     
-    private void setRudderVisible(boolean visible) {
-        final boolean alreadyVisible = rudder.getRootNode().getParent() != null;
+    private void setRudderVisible(final boolean visible) {
+        final var alreadyVisible = rudder.getRootNode().getParent() != null;
         
         if (alreadyVisible != visible) {
-            final Group rudderLayer = contentPanelController.getRudderLayer();
+            final var rudderLayer = contentPanelController.getRudderLayer();
             if (visible) {
                 assert rudder.getRootNode().getParent() == null;
                 rudderLayer.getChildren().add(rudder.getRootNode());
@@ -352,11 +345,11 @@ public class ResizeGesture extends AbstractMouseGesture {
     
     
     private void setupAndOpenHudWindow() {
-        final HudWindowController hudWindowController
+        final var hudWindowController
                 = contentPanelController.getHudWindowController();
         
         
-        final int sizeRowCount = resizer.getPropertyNames().size();
+        final var sizeRowCount = resizer.getPropertyNames().size();
         final int locationRowCount;
         if (relocater != null) {
             locationRowCount = relocater.getPropertyNames().size();
@@ -366,16 +359,16 @@ public class ResizeGesture extends AbstractMouseGesture {
         hudWindowController.setRowCount(sizeRowCount + locationRowCount);
         
         
-        final List<PropertyName> sizePropertyNames = resizer.getPropertyNames();
-        for (int i = 0; i < sizeRowCount; i++) {
-            final PropertyName pn = sizePropertyNames.get(i);
+        final var sizePropertyNames = resizer.getPropertyNames();
+        for (var i = 0; i < sizeRowCount; i++) {
+            final var pn = sizePropertyNames.get(i);
             hudWindowController.setNameAtRowIndex(makeNameString(pn), i);
         }
         
         if (relocater != null) {
-            final List<PropertyName> locationPropertyNames = relocater.getPropertyNames();
-            for (int i = 0; i < locationRowCount; i++) {
-                final PropertyName pn = locationPropertyNames.get(i);
+            final var locationPropertyNames = relocater.getPropertyNames();
+            for (var i = 0; i < locationRowCount; i++) {
+                final var pn = locationPropertyNames.get(i);
                 hudWindowController.setNameAtRowIndex(makeNameString(pn), sizeRowCount+i);
             }
         }
@@ -386,29 +379,29 @@ public class ResizeGesture extends AbstractMouseGesture {
         hudWindowController.openWindow(resizer.getSceneGraphObject());
     }
     
-    private String makeNameString(PropertyName pn) {
+    private String makeNameString(final PropertyName pn) {
         return pn.getName() + ":";
     }
     
     
     private void updateHudWindow() {
-        final HudWindowController hudWindowController
+        final var hudWindowController
                 = contentPanelController.getHudWindowController();
-        final List<PropertyName> sizePropertyNames = resizer.getPropertyNames();
-        final int sizeRowCount = sizePropertyNames.size();
+        final var sizePropertyNames = resizer.getPropertyNames();
+        final var sizeRowCount = sizePropertyNames.size();
 
-        for (int i = 0; i < sizeRowCount; i++) {
-            final PropertyName pn = sizePropertyNames.get(i);
-            final String value = String.valueOf(resizer.getValue(pn));
+        for (var i = 0; i < sizeRowCount; i++) {
+            final var pn = sizePropertyNames.get(i);
+            final var value = String.valueOf(resizer.getValue(pn));
             hudWindowController.setValueAtRowIndex(value, i);
         }
         
         if (relocater != null) {
-            final List<PropertyName> locationPropertyNames = relocater.getPropertyNames();
-            final int locationRowCount = locationPropertyNames.size();
-            for (int i = 0; i < locationRowCount; i++) {
-                final PropertyName pn = locationPropertyNames.get(i);
-                final String value = String.valueOf(relocater.getValue(pn));
+            final var locationPropertyNames = relocater.getPropertyNames();
+            final var locationRowCount = locationPropertyNames.size();
+            for (var i = 0; i < locationRowCount; i++) {
+                final var pn = locationPropertyNames.get(i);
+                final var value = String.valueOf(relocater.getValue(pn));
                 hudWindowController.setValueAtRowIndex(value, sizeRowCount+i);
             }
         }
@@ -429,9 +422,9 @@ public class ResizeGesture extends AbstractMouseGesture {
     private void updateShadow() {
         assert shadow != null;
         
-        final Node sceneGraphObject
+        final var sceneGraphObject
                 = resizer.getSceneGraphObject();
-        final Transform sceneGraphObjectTransform
+        final var sceneGraphObjectTransform
                 = contentPanelController.computeSceneGraphToRudderLayerTransform(sceneGraphObject);
         shadow.getTransforms().clear();
         shadow.getTransforms().add(sceneGraphObjectTransform);
@@ -473,23 +466,23 @@ public class ResizeGesture extends AbstractMouseGesture {
         
         addToResizingGuideController(fxomInstance.getFxomDocument().getFxomRoot());
         
-        final Group rudderLayer = contentPanelController.getRudderLayer();
-        final Group guideGroup = resizingGuideController.getGuideGroup();
+        final var rudderLayer = contentPanelController.getRudderLayer();
+        final var guideGroup = resizingGuideController.getGuideGroup();
         assert guideGroup.isMouseTransparent();
         rudderLayer.getChildren().add(guideGroup);
     }
     
     
-    private void addToResizingGuideController(FXOMObject fxomObject) {
+    private void addToResizingGuideController(final FXOMObject fxomObject) {
         assert fxomObject != null;
         
         if (fxomObject != fxomInstance) {
             if (fxomObject.getSceneGraphObject() instanceof Node) {
-                final Node sceneGraphNode = (Node) fxomObject.getSceneGraphObject();
+                final var sceneGraphNode = (Node) fxomObject.getSceneGraphObject();
                 resizingGuideController.addSampleBounds(sceneGraphNode);
             }
 
-            final DesignHierarchyMask m = new DesignHierarchyMask(fxomObject);
+            final var m = new DesignHierarchyMask(fxomObject);
             if (m.isAcceptingSubComponent()) {
                 for (int i = 0, count = m.getSubComponentCount(); i < count; i++) {
                     addToResizingGuideController(m.getSubComponentAtIndex(i));
@@ -501,8 +494,8 @@ public class ResizeGesture extends AbstractMouseGesture {
     
     private void dismantleResizingGuideController() {
         assert resizingGuideController != null;
-        final Group guideGroup = resizingGuideController.getGuideGroup();
-        final Group rudderLayer = contentPanelController.getRudderLayer();
+        final var guideGroup = resizingGuideController.getGuideGroup();
+        final var rudderLayer = contentPanelController.getRudderLayer();
         assert rudderLayer.getChildren().contains(guideGroup);
         rudderLayer.getChildren().remove(guideGroup);
         resizingGuideController = null;

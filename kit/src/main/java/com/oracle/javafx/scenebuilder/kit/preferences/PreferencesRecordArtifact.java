@@ -56,7 +56,7 @@ public class PreferencesRecordArtifact {
     private String version;
     private final MavenArtifact mavenArtifact;
     
-    public PreferencesRecordArtifact(Preferences artifactsRootPreferences, MavenArtifact mavenArtifact) {
+    public PreferencesRecordArtifact(final Preferences artifactsRootPreferences, final MavenArtifact mavenArtifact) {
         this.artifactsRootPreferences = artifactsRootPreferences;
         this.mavenArtifact = mavenArtifact;
     }
@@ -65,7 +65,7 @@ public class PreferencesRecordArtifact {
         return groupId;
     }
 
-    public void setGroupId(String groupId) {
+    public void setGroupId(final String groupId) {
         this.groupId = groupId;
     }
 
@@ -73,7 +73,7 @@ public class PreferencesRecordArtifact {
         return artifactId;
     }
 
-    public void setArtifactId(String artifactId) {
+    public void setArtifactId(final String artifactId) {
         this.artifactId = artifactId;
     }
 
@@ -81,7 +81,7 @@ public class PreferencesRecordArtifact {
         return version;
     }
 
-    public void setVersion(String version) {
+    public void setVersion(final String version) {
         this.version = version;
     }
 
@@ -101,13 +101,13 @@ public class PreferencesRecordArtifact {
         
         // Check if there are some preferences for this artifact
         try {
-            final String[] childrenNames = artifactsRootPreferences.childrenNames();
-            for (String child : childrenNames) {
+            final var childrenNames = artifactsRootPreferences.childrenNames();
+            for (final var child : childrenNames) {
                 if (child.equals(mavenArtifact.getCoordinates())) {
                     artifactPreferences = artifactsRootPreferences.node(child);
                 }
             }
-        } catch (BackingStoreException ex) {
+        } catch (final BackingStoreException ex) {
             Logger.getLogger(PreferencesRecordArtifact.class.getName()).log(Level.SEVERE, null, ex);
         }
             
@@ -132,17 +132,17 @@ public class PreferencesRecordArtifact {
         
         if (artifactPreferences == null) {
             try {
-                assert artifactsRootPreferences.nodeExists(mavenArtifact.getCoordinates()) == false;
+                assert !artifactsRootPreferences.nodeExists(mavenArtifact.getCoordinates());
                 // Create a new document preference node under the document root node
                 artifactPreferences = artifactsRootPreferences.node(mavenArtifact.getCoordinates());
-            } catch(BackingStoreException ex) {
+            } catch(final BackingStoreException ex) {
                 Logger.getLogger(PreferencesRecordArtifact.class.getName()).log(Level.SEVERE, null, ex);
                 return;
             }
         }
         assert artifactPreferences != null;
-            
-        String[] items = mavenArtifact.getCoordinates().split(":");
+
+        final var items = mavenArtifact.getCoordinates().split(":");
         artifactPreferences.put(GROUPID, items[0]);
         artifactPreferences.put(ARTIFACTID, items[1]);
         artifactPreferences.put(VERSION, items[2]);

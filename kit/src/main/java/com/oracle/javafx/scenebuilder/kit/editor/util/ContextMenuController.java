@@ -35,11 +35,8 @@ import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController.ControlAction;
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController.EditAction;
 import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.AbstractSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.GridSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableList;
@@ -117,14 +114,14 @@ public class ContextMenuController {
     private final EventHandler<Event> onShowingMenuEventHandler
             = t -> {
         assert t.getSource() instanceof Menu;
-        final Menu menu = (Menu) t.getSource();
+        final var menu = (Menu) t.getSource();
         handleOnShowing(menu.getItems());
     };
 
     private final EventHandler<WindowEvent> onShowingContextMenuEventHandler
             = t -> {
         assert t.getSource() instanceof ContextMenu;
-        final ContextMenu contextMenu = (ContextMenu) t.getSource();
+        final var contextMenu = (ContextMenu) t.getSource();
         handleOnShowing(contextMenu.getItems());
     };
 
@@ -163,9 +160,9 @@ public class ContextMenuController {
         }
         getContextMenu().getItems().clear();
 
-        final Selection selection = editorController.getSelection();
-        if (selection.isEmpty() == false) {
-            final AbstractSelectionGroup asg = selection.getGroup();
+        final var selection = editorController.getSelection();
+        if (!selection.isEmpty()) {
+            final var asg = selection.getGroup();
             if (asg instanceof ObjectSelectionGroup) {
 
                 // Common editing actions
@@ -218,11 +215,11 @@ public class ContextMenuController {
     }
 
     private void handleOnShowing(final ObservableList<MenuItem> menuItems) {
-        for (MenuItem menuItem : menuItems) {
+        for (final var menuItem : menuItems) {
             final boolean disable, selected;
             final String title;
             if (menuItem.getUserData() instanceof MenuItemController) {
-                final MenuItemController c = (MenuItemController) menuItem.getUserData();
+                final var c = (MenuItemController) menuItem.getUserData();
                 disable = !c.canPerform();
                 title = c.getTitle();
                 selected = c.isSelected();
@@ -242,15 +239,15 @@ public class ContextMenuController {
                 menuItem.setText(title);
             }
             if (menuItem instanceof RadioMenuItem) {
-                final RadioMenuItem ri = (RadioMenuItem) menuItem;
+                final var ri = (RadioMenuItem) menuItem;
                 ri.setSelected(selected);
             }
         }
     }
 
-    private void handleOnActionMenu(MenuItem i) {
+    private void handleOnActionMenu(final MenuItem i) {
         assert i.getUserData() instanceof MenuItemController;
-        final MenuItemController c = (MenuItemController) i.getUserData();
+        final var c = (MenuItemController) i.getUserData();
         c.perform();
     }
     
@@ -268,15 +265,15 @@ public class ContextMenuController {
      * @return
      */
     private boolean canPerformGridPaneActions() {
-        boolean result = false;
-        final Selection selection = editorController.getSelection();
-        final AbstractSelectionGroup asg = selection.getGroup();
+        var result = false;
+        final var selection = editorController.getSelection();
+        final var asg = selection.getGroup();
 
         if (asg instanceof ObjectSelectionGroup) {
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) asg;
+            final var osg = (ObjectSelectionGroup) asg;
             result = true;
-            for (FXOMObject obj : osg.getItems()) {
-                if ((obj.getSceneGraphObject() instanceof GridPane) == false) {
+            for (final var obj : osg.getItems()) {
+                if (!(obj.getSceneGraphObject() instanceof GridPane)) {
                     result = false;
                     break;
                 }
@@ -291,17 +288,17 @@ public class ContextMenuController {
      * @return
      */
     private boolean canPerformGridPaneChildActions() {
-        boolean result = false;
-        final Selection selection = editorController.getSelection();
-        final AbstractSelectionGroup asg = selection.getGroup();
+        var result = false;
+        final var selection = editorController.getSelection();
+        final var asg = selection.getGroup();
 
         if (asg instanceof ObjectSelectionGroup) {
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) asg;
+            final var osg = (ObjectSelectionGroup) asg;
             result = true;
-            for (FXOMObject obj : osg.getItems()) {
-                final FXOMObject parent = obj.getParentObject();
+            for (final var obj : osg.getItems()) {
+                final var parent = obj.getParentObject();
                 if (parent == null
-                        || (parent.getSceneGraphObject() instanceof GridPane) == false) {
+                    || !(parent.getSceneGraphObject() instanceof GridPane)) {
                     result = false;
                     break;
                 }
@@ -329,7 +326,7 @@ public class ContextMenuController {
         // Add actions on the GridPane row/column span
         if (canPerformGridPaneChildActions()) {
             // The selection is a GridPane child of another GridPane
-            if (gridPaneMenu.getItems().isEmpty() == false) {
+            if (!gridPaneMenu.getItems().isEmpty()) {
                 gridPaneMenu.getItems().add(new SeparatorMenuItem());
             }
             gridPaneMenu.getItems().addAll(
@@ -521,13 +518,13 @@ public class ContextMenuController {
 
         private final EditAction editAction;
 
-        public EditActionController(EditAction editAction) {
+        public EditActionController(final EditAction editAction) {
             this.editAction = editAction;
         }
 
         @Override
         public boolean canPerform() {
-            boolean result;
+            final boolean result;
             if (editorController.getFxomDocument() == null) {
                 result = false;
             } else {
@@ -547,13 +544,13 @@ public class ContextMenuController {
 
         private final ControlAction controlAction;
 
-        public ControlActionController(ControlAction controlAction) {
+        public ControlActionController(final ControlAction controlAction) {
             this.controlAction = controlAction;
         }
 
         @Override
         public boolean canPerform() {
-            boolean result;
+            final boolean result;
             if (editorController.getFxomDocument() == null) {
                 result = false;
             } else {

@@ -54,7 +54,7 @@ public class RepositoryManagerListCell extends ListCell<RepositoryListItem> {
     }
 
     @Override
-    public void updateItem(RepositoryListItem item, boolean empty) {
+    public void updateItem(final RepositoryListItem item, final boolean empty) {
         this.listItem = item;
 
         super.updateItem(item, empty);
@@ -67,28 +67,28 @@ public class RepositoryManagerListCell extends ListCell<RepositoryListItem> {
     }
 
     private HBox createCellContent() {
-        HBox cellContent = new HBox();
+        final var cellContent = new HBox();
         cellContent.setAlignment(Pos.CENTER_LEFT);
-        String name = listItem.getRepository().getId();
-        Label fileName = new Label(name);
+        final var name = listItem.getRepository().getId();
+        final var fileName = new Label(name);
         fileName.setTooltip(new Tooltip(name + " [" + listItem.getRepository().getURL() + "]"));
         HBox.setHgrow(fileName, Priority.ALWAYS);
-        HBox buttonContent = createButtonCellContent();
+        final var buttonContent = createButtonCellContent();
         HBox.setHgrow(buttonContent, Priority.ALWAYS);
         cellContent.getChildren().addAll(fileName, buttonContent);
         return cellContent;
     }
 
     private HBox createButtonCellContent() {
-        HBox buttonContent = new HBox();
+        final var buttonContent = new HBox();
         buttonContent.setAlignment(Pos.CENTER_RIGHT);
         buttonContent.setSpacing(5);
         if (listItem instanceof CustomRepositoryListItem) {
-            Button editButton = new Button("", new ImageView(ImageUtils.getEditIconImage()));
+            final var editButton = new Button("", new ImageView(ImageUtils.getEditIconImage()));
             editButton.getStyleClass().add("image-view-button");
             editButton.setOnMouseClicked(event -> listItem.getRepositoryManagerController().edit(listItem));
             editButton.setTooltip(new Tooltip(I18N.getString("repository.manager.button.edit.tooltip")));
-            Button deleteButton = new Button("", new ImageView(ImageUtils.getDeleteIconImage()));
+            final var deleteButton = new Button("", new ImageView(ImageUtils.getDeleteIconImage()));
             deleteButton.setOnMouseClicked(event -> listItem.getRepositoryManagerController().delete(listItem));
             deleteButton.getStyleClass().add("image-view-button");
             deleteButton.setTooltip(new Tooltip(I18N.getString("repository.manager.button.delete.tooltip")));

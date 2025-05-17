@@ -47,12 +47,12 @@ public class LocalSearch implements Search {
             
     private final String m2;
         
-    public LocalSearch(String userM2Repostory) {
+    public LocalSearch(final String userM2Repostory) {
         m2 = userM2Repostory + File.separator;
     }
     
     @Override
-    public List<DefaultArtifact> getCoordinates(String query) {
+    public List<DefaultArtifact> getCoordinates(final String query) {
         
         final Map<String, String> map = new HashMap<>();
         map.put("Repository", MavenPresets.LOCAL);
@@ -63,11 +63,11 @@ public class LocalSearch implements Search {
                     .map(p -> p.toAbsolutePath().toString())
                     .filter(s -> s.endsWith(".jar"))
                     .map(s -> {
-                        String d[] = s.substring(m2.length()).split("\\" + File.separator);
-                        int length = d.length;
+                        final String[] d = s.substring(m2.length()).split("\\" + File.separator);
+                        final var length = d.length;
                         if (length > 3) {
-                            String a = d[length - 3];
-                            String g = Stream.of(d)
+                            final var a = d[length - 3];
+                            final var g = Stream.of(d)
                                     .limit(length - 3)
                                     .collect(Collectors.joining("."));
                             return g + ":" + a + ":" + MIN_VERSION;
@@ -78,7 +78,7 @@ public class LocalSearch implements Search {
                     .distinct()
                     .map(gav -> new DefaultArtifact(gav, map))
                     .collect(Collectors.toList());
-        } catch (IOException ex) { }
+        } catch (final IOException ex) { }
         return null;
     }
     

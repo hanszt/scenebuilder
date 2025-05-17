@@ -57,7 +57,7 @@ public class TextViewDialog extends AbstractModalDialog {
      */
     
     
-    public TextViewDialog(Window owner) {
+    public TextViewDialog(final Window owner) {
         super(TextViewDialog.class.getResource("TextViewDialog.fxml"), null, owner); //NOI18N
         setOKButtonVisible(false);
         setActionButtonVisible(true);
@@ -65,7 +65,7 @@ public class TextViewDialog extends AbstractModalDialog {
         setActionButtonTitle(I18N.getString("label.copy"));
     }
     
-    public void setText(String text) {
+    public void setText(final String text) {
         textArea.setText(text);
     }
     
@@ -83,18 +83,18 @@ public class TextViewDialog extends AbstractModalDialog {
     }
     
     @Override
-    protected void okButtonPressed(ActionEvent e) {
+    protected void okButtonPressed(final ActionEvent e) {
         // Should not be called because ok button is hidden
         throw new IllegalStateException();
     }
     
     @Override
-    protected void cancelButtonPressed(ActionEvent e) {
+    protected void cancelButtonPressed(final ActionEvent e) {
         getStage().close();
     }
     
     @Override
-    protected void actionButtonPressed(ActionEvent e) {
+    protected void actionButtonPressed(final ActionEvent e) {
         final Map<DataFormat, Object> content = new HashMap<>();
         content.put(DataFormat.PLAIN_TEXT, getText());
         Clipboard.getSystemClipboard().setContent(content);

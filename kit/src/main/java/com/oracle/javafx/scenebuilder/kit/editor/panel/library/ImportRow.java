@@ -46,7 +46,7 @@ class ImportRow {
     private PrefSize prefSize;
     private final String canonicalClassName;
 
-    public ImportRow(boolean importRequired, JarReportEntry jre, PrefSize prefSize) {
+    public ImportRow(final boolean importRequired, final JarReportEntry jre, final PrefSize prefSize) {
         this.importRequired = new SimpleBooleanProperty(importRequired);
         this.jre = jre;
         this.canonicalClassName = jre.getKlass().getCanonicalName();
@@ -66,7 +66,7 @@ class ImportRow {
         return importRequired.get();
     }
 
-    public void setImportRequired(boolean v) {
+    public void setImportRequired(final boolean v) {
         importRequired().set(v);
     }
 
@@ -78,7 +78,7 @@ class ImportRow {
         return this.prefSize;
     }
 
-    public void setPrefSize(PrefSize value) {
+    public void setPrefSize(final PrefSize value) {
         this.prefSize = value;
     }
     

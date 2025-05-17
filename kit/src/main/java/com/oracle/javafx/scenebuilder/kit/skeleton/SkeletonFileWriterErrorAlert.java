@@ -65,15 +65,15 @@ final class SkeletonFileWriterErrorAlert implements BiConsumer<File, Exception> 
      *  
      * @param stageSupplier Reference to the parent JavaFX window
      */
-    SkeletonFileWriterErrorAlert(Supplier<Stage> stageSupplier) {
+    SkeletonFileWriterErrorAlert(final Supplier<Stage> stageSupplier) {
         this.stageSupplier = Objects.requireNonNull(stageSupplier);
     }
 
     @Override
-    public void accept(File skeletonFile, Exception error) {
-        SBAlert alert = prepareErrorAlert(skeletonFile, error);
-        String exceptionDetails = collectExceptionDetails(error);
-        TextArea textArea = new TextArea(exceptionDetails);
+    public void accept(final File skeletonFile, final Exception error) {
+        final var alert = prepareErrorAlert(skeletonFile, error);
+        final var exceptionDetails = collectExceptionDetails(error);
+        final var textArea = new TextArea(exceptionDetails);
         textArea.setEditable(false);
         textArea.setWrapText(true);
         textArea.setMaxWidth(Double.MAX_VALUE);
@@ -82,8 +82,8 @@ final class SkeletonFileWriterErrorAlert implements BiConsumer<File, Exception> 
         Platform.runLater(()->alert.showAndWait());
     }
 
-    private SBAlert prepareErrorAlert(File skeletonFile, Exception error) {
-        var alert = new SBAlert(AlertType.ERROR, stageSupplier.get());
+    private SBAlert prepareErrorAlert(final File skeletonFile, final Exception error) {
+        final var alert = new SBAlert(AlertType.ERROR, stageSupplier.get());
         alert.setTitle(I18N.getString("alert.skeleton.title"));
         alert.setHeaderText(I18N.getString("alert.skeleton.header.failed"));
         alert.setContentText(I18N.getString("alert.skeleton.saving.failed")+"\n"
@@ -92,9 +92,9 @@ final class SkeletonFileWriterErrorAlert implements BiConsumer<File, Exception> 
         return alert;
     }
 
-    private String collectExceptionDetails(Exception error) {
-        StringWriter stringWriter = new StringWriter();
-        PrintWriter printWriter = new PrintWriter(stringWriter);
+    private String collectExceptionDetails(final Exception error) {
+        final var stringWriter = new StringWriter();
+        final var printWriter = new PrintWriter(stringWriter);
         error.printStackTrace(printWriter);
         return stringWriter.toString();
     }

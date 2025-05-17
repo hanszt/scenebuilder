@@ -37,7 +37,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.panel.util.AbstractPopupControl
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PrefixedValue;
 
 import javafx.beans.value.ChangeListener;
-import javafx.geometry.Bounds;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
@@ -50,7 +49,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.stage.Popup;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 
@@ -114,7 +112,7 @@ public class InlineEditController {
                 editor = new TextField(initialValue);
                 minHeight = TEXT_FIELD_MIN_HEIGHT;
                 // Update some properties specific to TextField
-                final Pos alignment = getAlignment(target);
+                final var alignment = getAlignment(target);
                 ((TextField) editor).setAlignment(alignment);
                 break;
             default:
@@ -125,20 +123,20 @@ public class InlineEditController {
         assert editor != null;
 
         // Update editor size
-        final Bounds targetBounds = target.getLayoutBounds();
-        double targetWidth = target.getScaleX() * targetBounds.getWidth();
-        double targetHeight = target.getScaleY() * targetBounds.getHeight();
-        double editorWidth = Math.max(targetWidth, TEXT_INPUT_CONTROL_MIN_WIDTH);
-        double editorHeight = Math.max(targetHeight, minHeight);
+        final var targetBounds = target.getLayoutBounds();
+        final var targetWidth = target.getScaleX() * targetBounds.getWidth();
+        final var targetHeight = target.getScaleY() * targetBounds.getHeight();
+        final var editorWidth = Math.max(targetWidth, TEXT_INPUT_CONTROL_MIN_WIDTH);
+        final var editorHeight = Math.max(targetHeight, minHeight);
         editor.setMaxSize(editorWidth, editorHeight);
         editor.setMinSize(editorWidth, editorHeight);
         editor.setPrefSize(editorWidth, editorHeight);
         editor.setId(NID_INLINE_EDITOR);
 
         // Update some properties with the target properties values
-        final Insets padding = getPadding(target);
+        final var padding = getPadding(target);
         editor.setPadding(padding);
-        final Font font = getFont(target);
+        final var font = getFont(target);
         editor.setFont(font);
 
         return editor;
@@ -158,7 +156,7 @@ public class InlineEditController {
             final Callback<Void, Boolean> requestRevert) {
 
         assert editor != null && anchor != null && requestCommit != null;
-        assert getEditorController().isTextEditingSessionOnGoing() == false;
+        assert !getEditorController().isTextEditingSessionOnGoing();
 
         popupController = new InlineEditPopupController(editor, requestCommit);
 
@@ -217,8 +215,8 @@ public class InlineEditController {
 
         // Using PrefixedValue PLAIN_STRING allow to consider special characters (such as @, %,...)
         // as "standard" characters (i.e. to backslash them)
-        final String newPlainValue = new PrefixedValue(PrefixedValue.Type.PLAIN_STRING, newValue).toString();
-        boolean commitSucceeded = requestCommit.call(newPlainValue);
+        final var newPlainValue = new PrefixedValue(PrefixedValue.Type.PLAIN_STRING, newValue).toString();
+        final boolean commitSucceeded = requestCommit.call(newPlainValue);
         // If the commit succeeded, stop the editing session,
         // otherwise keeps the editing session on-going
         if (commitSucceeded) {
@@ -233,7 +231,7 @@ public class InlineEditController {
     private boolean requestRevertAndClose(
             final Callback<Void, Boolean> requestRevert) {
 
-        boolean revertSucceeded = requestRevert == null ? true : requestRevert.call(null);
+        final var revertSucceeded = requestRevert == null ? true : requestRevert.call(null);
         // If the revert succeeded, stop the editing session,
         // otherwise keeps the editing session on-going
         if (revertSucceeded) {
@@ -245,7 +243,7 @@ public class InlineEditController {
         return revertSucceeded;
     }
 
-    private boolean isModifierDown(KeyEvent ke) {
+    private boolean isModifierDown(final KeyEvent ke) {
         if (EditorPlatform.IS_MAC) {
             return ke.isMetaDown();
         } else {
@@ -254,7 +252,7 @@ public class InlineEditController {
         }
     }
 
-    private Pos getAlignment(Node node) {
+    private Pos getAlignment(final Node node) {
         final Pos result;
         if (node instanceof Labeled) {
             result = ((Labeled) node).getAlignment();
@@ -266,7 +264,7 @@ public class InlineEditController {
         return result;
     }
 
-    private Font getFont(Node node) {
+    private Font getFont(final Node node) {
         final Font result;
         if (node instanceof Labeled) {
             result = ((Labeled) node).getFont();
@@ -280,7 +278,7 @@ public class InlineEditController {
         return result;
     }
 
-    private Insets getPadding(Node node) {
+    private Insets getPadding(final Node node) {
         final Insets result;
         if (node instanceof Region) {
             result = ((Region) node).getPadding();
@@ -290,7 +288,7 @@ public class InlineEditController {
         return result;
     }
 
-    private boolean isWrapText(Node node) {
+    private boolean isWrapText(final Node node) {
         final boolean result;
         if (node instanceof TextArea) {
             result = ((TextArea) node).isWrapText();
@@ -338,7 +336,7 @@ public class InlineEditController {
         }
 
         @Override
-        protected void onHidden(WindowEvent event) {
+        protected void onHidden(final WindowEvent event) {
         }
 
         @Override
@@ -363,7 +361,7 @@ public class InlineEditController {
             // When resizing the window, the inline editor remains focused :
             // need to commit inline editing on X/Y change
             if (getEditorController().isTextEditingSessionOnGoing() // Editing session has not been ended by ENTER key
-                    && initialValue.equals(editor.getText()) == false) {
+                && !initialValue.equals(editor.getText())) {
                 requestCommitAndClose(requestCommit, editor.getText());
             }
         }
@@ -379,14 +377,14 @@ public class InlineEditController {
          */
         @Override
         protected void updatePopupLocation() {
-            final Node anchor = getAnchor();
-            final Popup popup = getPopup();
+            final var anchor = getAnchor();
+            final var popup = getPopup();
             assert anchor != null && popup != null;
 
-            final Bounds anchorBounds = anchor.getLayoutBounds();
+            final var anchorBounds = anchor.getLayoutBounds();
             assert anchorBounds != null;
 
-            Point2D popupLocation;
+            final Point2D popupLocation;
 
             // At exit time, closeRequestHandler() is not always called.
             // So this method can be invoked after the anchor has been removed the
@@ -415,8 +413,8 @@ public class InlineEditController {
         }
 
         @Override
-        public Boolean call(Void p) {
-            final InlineEditPopupController popupController
+        public Boolean call(final Void p) {
+            final var popupController
                     = inlineEditController.getPopupController();
             return inlineEditController.requestCommitAndClose(
                     popupController.requestCommit,

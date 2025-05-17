@@ -40,7 +40,7 @@ public abstract class Job {
     
     private final EditorController editorController;
     
-    public Job(EditorController editorController) {
+    public Job(final EditorController editorController) {
         this.editorController = editorController;
     }
     

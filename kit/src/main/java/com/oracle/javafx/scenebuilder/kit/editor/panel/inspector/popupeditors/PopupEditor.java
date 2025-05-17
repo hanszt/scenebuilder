@@ -62,7 +62,7 @@ public abstract class PopupEditor extends PropertyEditor implements PopupEditorV
     private Object value;
     private boolean initialized = false;
 
-    public PopupEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public PopupEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super(propMeta, selectedClasses);
         initializeEditor();
     }
@@ -99,7 +99,7 @@ public abstract class PopupEditor extends PropertyEditor implements PopupEditorV
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(final Object value) {
 //        System.out.println(getPropertyNameText() + " - setValue() : " + value);
         setValueGeneric(value);
         if (isSetValueDone()) {
@@ -123,7 +123,7 @@ public abstract class PopupEditor extends PropertyEditor implements PopupEditorV
     }
 
     @Override
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
 //        System.out.println(getPropertyNameText() + " : resetPopupContent()");
         super.reset(propMeta, selectedClasses);
 
@@ -145,19 +145,19 @@ public abstract class PopupEditor extends PropertyEditor implements PopupEditorV
      * Methods to be used by concrete popup editors
      */
     @Override
-    public void commitValue(Object value) {
+    public void commitValue(final Object value) {
         userUpdateValueProperty(value);
         popupMb.setText(getPreviewString(value));
         this.value = value;
     }
 
     @Override
-    public void transientValue(Object value) {
+    public void transientValue(final Object value) {
         userUpdateTransientValueProperty(value);
     }
 
     @Override
-    public void invalidValue(Object value) {
+    public void invalidValue(final Object value) {
         // TBD
     }
 

@@ -35,7 +35,6 @@ package com.oracle.javafx.scenebuilder.kit.editor.job.atomic;
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.editor.EditorPlatform;
 import com.oracle.javafx.scenebuilder.kit.editor.job.Job;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 
 /**
@@ -45,7 +44,7 @@ public class SetFxomRootJob extends Job {
     private final FXOMObject newRoot;
     private FXOMObject oldRoot;
 
-    public SetFxomRootJob(FXOMObject newRoot, EditorController editorController) {
+    public SetFxomRootJob(final FXOMObject newRoot, final EditorController editorController) {
         super(editorController);
 
         assert editorController.getFxomDocument() != null;
@@ -67,8 +66,8 @@ public class SetFxomRootJob extends Job {
         assert oldRoot == null;
 
         // Saves the current root
-        EditorController editorController = getEditorController();
-        final FXOMDocument fxomDocument = editorController.getFxomDocument();
+        final var editorController = getEditorController();
+        final var fxomDocument = editorController.getFxomDocument();
         oldRoot = fxomDocument.getFxomRoot();
 
         fxomDocument.beginUpdate();
@@ -82,7 +81,7 @@ public class SetFxomRootJob extends Job {
 
     @Override
     public void undo() {
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
+        final var fxomDocument = getEditorController().getFxomDocument();
         assert fxomDocument.getFxomRoot() == newRoot;
 
         fxomDocument.beginUpdate();
@@ -94,7 +93,7 @@ public class SetFxomRootJob extends Job {
 
     @Override
     public void redo() {
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
+        final var fxomDocument = getEditorController().getFxomDocument();
         assert fxomDocument.getFxomRoot() == oldRoot;
 
         fxomDocument.beginUpdate();

@@ -41,7 +41,7 @@ import javafx.scene.Node;
  */
 public class NodeTring extends AbstractNodeTring<Node> {
 
-    public NodeTring(ContentPanelController contentPanelController, FXOMInstance fxomInstance) {
+    public NodeTring(final ContentPanelController contentPanelController, final FXOMInstance fxomInstance) {
         super(contentPanelController, fxomInstance, Node.class);
     }
 }

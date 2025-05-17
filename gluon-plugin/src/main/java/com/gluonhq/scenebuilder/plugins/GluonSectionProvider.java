@@ -52,7 +52,7 @@ public class GluonSectionProvider implements ExternalSectionProvider {
 
     @Override
     public List<Class<?>> getExternalSectionItems() {
-        List<Class<?>> items = new ArrayList<>();
+        final List<Class<?>> items = new ArrayList<>();
         items.add(com.gluonhq.charm.glisten.control.AppBar.class);
         items.add(com.gluonhq.charm.glisten.control.AutoCompleteTextField.class);
         items.add(com.gluonhq.charm.glisten.control.Avatar.class);

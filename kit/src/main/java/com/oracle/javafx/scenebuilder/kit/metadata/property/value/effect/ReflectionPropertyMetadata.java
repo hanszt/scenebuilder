@@ -61,8 +61,8 @@ public class ReflectionPropertyMetadata extends ComplexPropertyMetadata<Reflecti
             = new DoublePropertyMetadata(new PropertyName("topOpacity"), //NOI18N
             DoublePropertyMetadata.DoubleKind.OPACITY, true /* readWrite */, 0.5, InspectorPath.UNUSED);
 
-    public ReflectionPropertyMetadata(PropertyName name, boolean readWrite, 
-            Reflection defaultValue, InspectorPath inspectorPath) {
+    public ReflectionPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                      final Reflection defaultValue, final InspectorPath inspectorPath) {
         super(name, Reflection.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -71,8 +71,8 @@ public class ReflectionPropertyMetadata extends ComplexPropertyMetadata<Reflecti
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(Reflection value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, value.getClass());
+    public FXOMInstance makeFxomInstanceFromValue(final Reflection value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, value.getClass());
         
         bottomOpacityMetadata.setValue(result, value.getBottomOpacity());
         fractionMetadata.setValue(result, value.getFraction());

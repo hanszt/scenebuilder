@@ -51,8 +51,8 @@ public class FloatMapPropertyMetadata extends ComplexPropertyMetadata<FloatMap> 
             = new IntegerPropertyMetadata(new PropertyName("height"), //NOI18N
             true, 1, InspectorPath.UNUSED);
     
-    public FloatMapPropertyMetadata(PropertyName name, boolean readWrite, 
-            FloatMap defaultValue, InspectorPath inspectorPath) {
+    public FloatMapPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                    final FloatMap defaultValue, final InspectorPath inspectorPath) {
         super(name, FloatMap.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -61,8 +61,8 @@ public class FloatMapPropertyMetadata extends ComplexPropertyMetadata<FloatMap> 
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(FloatMap value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, getValueClass());
+    public FXOMInstance makeFxomInstanceFromValue(final FloatMap value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, getValueClass());
         
         widthMetadata.setValue(result, value.getWidth());
         heightMetadata.setValue(result, value.getHeight());

@@ -45,13 +45,13 @@ public abstract class AbstractResilientHandles<T> extends AbstractGenericHandles
 
     private boolean ready;
     
-    public AbstractResilientHandles(ContentPanelController contentPanelController, 
-            FXOMObject fxomObject, Class<T> sceneGraphClass) {
+    public AbstractResilientHandles(final ContentPanelController contentPanelController,
+                                    final FXOMObject fxomObject, final Class<T> sceneGraphClass) {
         super(contentPanelController, fxomObject, sceneGraphClass);
         getRootNode().setVisible(false);
     }
     
-    public void setReady(boolean ready) {
+    public void setReady(final boolean ready) {
         if (this.ready != ready) {
             this.ready = ready;
             readyDidChange();
@@ -82,7 +82,7 @@ public abstract class AbstractResilientHandles<T> extends AbstractGenericHandles
     }
     
     @Override
-    public Point2D sceneGraphObjectToDecoration(double x, double y, boolean snapToPixel) {
+    public Point2D sceneGraphObjectToDecoration(final double x, final double y, final boolean snapToPixel) {
         assert ready;
         return super.sceneGraphObjectToDecoration(x, y, snapToPixel);
     }

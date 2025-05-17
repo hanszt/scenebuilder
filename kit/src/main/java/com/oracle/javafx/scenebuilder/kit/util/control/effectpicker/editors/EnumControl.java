@@ -34,8 +34,6 @@ package com.oracle.javafx.scenebuilder.kit.util.control.effectpicker.editors;
 import com.oracle.javafx.scenebuilder.kit.util.control.effectpicker.EffectPickerController;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -59,8 +57,8 @@ public class EnumControl<T> extends GridPane {
     private final ObjectProperty<T> value = new SimpleObjectProperty<>();
     private final EffectPickerController effectPickerController;
 
-    public EnumControl(EffectPickerController effectPickerController,
-            String label, T[] values, T initValue) {
+    public EnumControl(final EffectPickerController effectPickerController,
+                       final String label, final T[] values, final T initValue) {
         this.effectPickerController = effectPickerController;
         initialize(label, values, initValue);
     }
@@ -73,21 +71,21 @@ public class EnumControl<T> extends GridPane {
         return value.get();
     }
 
-    public void setValue(T v) {
+    public void setValue(final T v) {
         value.set(v);
     }
 
-    private void initialize(String label, T[] values, T initValue) {
+    private void initialize(final String label, final T[] values, final T initValue) {
 
-        final URL layoutURL = EnumControl.class.getResource("EnumControl.fxml"); //NOI18N
-        try (InputStream is = layoutURL.openStream()) {
-            final FXMLLoader loader = new FXMLLoader();
+        final var layoutURL = EnumControl.class.getResource("EnumControl.fxml"); //NOI18N
+        try (final var is = layoutURL.openStream()) {
+            final var loader = new FXMLLoader();
             loader.setController(this);
             loader.setRoot(this);
             loader.setLocation(layoutURL);
-            final Parent p = (Parent) loader.load(is);
+            final var p = (Parent) loader.load(is);
             assert p == this;
-        } catch (IOException x) {
+        } catch (final IOException x) {
             throw new RuntimeException(x);
         }
 
@@ -103,7 +101,7 @@ public class EnumControl<T> extends GridPane {
         
         setValue(initValue);
         
-        editor_choicebox.addEventHandler(ActionEvent.ACTION, (Event event) -> {
+        editor_choicebox.addEventHandler(ActionEvent.ACTION, (final Event event) -> {
             event.consume();
         });
     }

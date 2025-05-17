@@ -50,10 +50,10 @@ public class SetDocumentRootJob extends BatchSelectionJob {
     private final boolean usePredefinedSize;
     private final String description;
 
-    public SetDocumentRootJob(FXOMObject newRoot, 
-            boolean usePredefinedSize, 
-            String description,
-            EditorController editorController) {
+    public SetDocumentRootJob(final FXOMObject newRoot,
+                              final boolean usePredefinedSize,
+                              final String description,
+                              final EditorController editorController) {
         super(editorController);
 
         assert editorController.getFxomDocument() != null;
@@ -65,7 +65,7 @@ public class SetDocumentRootJob extends BatchSelectionJob {
         this.description = description;
     }
     
-    public SetDocumentRootJob(FXOMObject newRoot, EditorController editorController) {
+    public SetDocumentRootJob(final FXOMObject newRoot, final EditorController editorController) {
         this(newRoot, false /* usePredefinedSize */, 
                 SetDocumentRootJob.class.getSimpleName(), editorController);
     }
@@ -90,7 +90,7 @@ public class SetDocumentRootJob extends BatchSelectionJob {
             
             // If needed, we add a job for resizing the root object
             if ((newRoot != null) && usePredefinedSize) {
-                final DesignHierarchyMask mask = new DesignHierarchyMask(newRoot);
+                final var mask = new DesignHierarchyMask(newRoot);
                 if (mask.needResizeWhenTopElement()) {
                     result.add(new UsePredefinedSizeJob(getEditorController(), 
                             EditorController.Size.SIZE_DEFAULT, newRoot));
@@ -110,7 +110,7 @@ public class SetDocumentRootJob extends BatchSelectionJob {
         if (newRoot == null) {
             return null;
         }
-        List<FXOMObject> newObjects = new ArrayList<>();
+        final List<FXOMObject> newObjects = new ArrayList<>();
         newObjects.add(newRoot);
         return new ObjectSelectionGroup(newObjects, newRoot, null);
     }

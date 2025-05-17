@@ -68,7 +68,7 @@ public class InsetsEditor extends PropertyEditor {
     TextField[] textFields = new TextField[4];
     TextField errorTf;
 
-    public InsetsEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public InsetsEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super(propMeta, selectedClasses);
         initialize();
     }
@@ -80,8 +80,8 @@ public class InsetsEditor extends PropertyEditor {
         textFields[1] = rightTf;
         textFields[2] = bottomTf;
         textFields[3] = leftTf;
-        for (TextField tf : textFields) {
-            EventHandler<ActionEvent> valueListener = event -> {
+        for (final var tf : textFields) {
+            final EventHandler<ActionEvent> valueListener = event -> {
                 if (isHandlingError()) {
                     // Event received because of focus lost due to error dialog
                     return;
@@ -109,16 +109,16 @@ public class InsetsEditor extends PropertyEditor {
 
     @Override
     public Object getValue() {
-        Double[] values = new Double[4];
-        int index = 0;
-        for (TextField tf : textFields) {
-            String val = tf.getText();
+        final var values = new Double[4];
+        var index = 0;
+        for (final var tf : textFields) {
+            var val = tf.getText();
             if (val == null || val.isEmpty()) {
                 val = "0"; //NOI18N
             }
             try {
                 Double.parseDouble(val);
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
                 errorTf = tf;
                 handleInvalidValue(val);
                 return null;
@@ -139,7 +139,7 @@ public class InsetsEditor extends PropertyEditor {
         if (value == null) {
             value = Insets.EMPTY;
         }
-        Insets insets = (Insets) value;
+        final var insets = (Insets) value;
         topTf.setText(EditorUtils.valAsStr(insets.getTop()));
         rightTf.setText(EditorUtils.valAsStr(insets.getRight()));
         bottomTf.setText(EditorUtils.valAsStr(insets.getBottom()));
@@ -147,14 +147,14 @@ public class InsetsEditor extends PropertyEditor {
     }
 
     @Override
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super.reset(propMeta, selectedClasses);
         setLayoutFormat(LayoutFormat.SIMPLE_LINE_BOTTOM);
     }
 
     @Override
     protected void valueIsIndeterminate() {
-        for (TextField tf : textFields) {
+        for (final var tf : textFields) {
             handleIndeterminate(tf);
         }
     }
@@ -163,19 +163,19 @@ public class InsetsEditor extends PropertyEditor {
     // FXML methods
     //
     @FXML
-    void linkValuesAction(ActionEvent event) {
+    void linkValuesAction(final ActionEvent event) {
         linkValues();
     }
 
     @FXML
-    void linkValuesKeypressed(KeyEvent event) {
+    void linkValuesKeypressed(final KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER) {
             linkValues();
         }
     }
 
     private void linkValues() {
-        String t = topTf.getText();
+        final var t = topTf.getText();
         rightTf.setText(t);
         bottomTf.setText(t);
         leftTf.setText(t);

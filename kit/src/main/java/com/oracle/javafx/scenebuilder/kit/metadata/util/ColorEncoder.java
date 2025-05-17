@@ -50,8 +50,8 @@ public class ColorEncoder {
         // no-op
     }
 
-    public static String encodeColor(Color color) {
-        final String colorName = getStandardColorNames().get(color);
+    public static String encodeColor(final Color color) {
+        final var colorName = getStandardColorNames().get(color);
         final String result;
         
         if (colorName != null) {
@@ -227,7 +227,7 @@ public class ColorEncoder {
         
         if (standardColorNames == null) {
             standardColorNames = new HashMap<>();
-            for (Map.Entry<String, Color> e : getStandardColors().entrySet()) {
+            for (final var e : getStandardColors().entrySet()) {
                 standardColorNames.put(e.getValue(), e.getKey());
             }
             standardColorNames = Collections.unmodifiableMap(standardColorNames);
@@ -237,14 +237,14 @@ public class ColorEncoder {
     }
     
     
-    public static String encodeColorToRGBA(Color color) {
+    public static String encodeColorToRGBA(final Color color) {
         final String result;
         if (color == null) {
             result = "null";//NOI18N
         } else {
-            final int red = (int) (color.getRed() * 255);
-            final int green = (int) (color.getGreen() * 255);
-            final int blue = (int) (color.getBlue() * 255);
+            final var red = (int) (color.getRed() * 255);
+            final var green = (int) (color.getGreen() * 255);
+            final var blue = (int) (color.getBlue() * 255);
             result = "rgba("+red+","+green+","+blue +","+color.getOpacity()+")";//NOI18N
         }
         return result;    
@@ -253,7 +253,7 @@ public class ColorEncoder {
     /*
      * Private
      */
-    private static String makeColorEncoding(Color c) {
+    private static String makeColorEncoding(final Color c) {
         final int red, green, blue, alpha;
         final String result;
         

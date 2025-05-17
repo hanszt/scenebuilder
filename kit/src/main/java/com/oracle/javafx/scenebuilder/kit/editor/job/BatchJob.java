@@ -32,8 +32,7 @@
 package com.oracle.javafx.scenebuilder.kit.editor.job;
 
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -48,51 +47,51 @@ public class BatchJob extends Job {
     private final boolean shouldUpdateSelection;
     private final String description;
 
-    public BatchJob(EditorController editorController, 
-            boolean shouldRefreshSceneGraph, 
-            boolean shouldUpdateSelection,
-            String description) {
+    public BatchJob(final EditorController editorController,
+                    final boolean shouldRefreshSceneGraph,
+                    final boolean shouldUpdateSelection,
+                    final String description) {
         super(editorController);
         this.description = description;
         this.shouldRefreshSceneGraph = shouldRefreshSceneGraph;
         this.shouldUpdateSelection = shouldUpdateSelection;
     }
     
-    public BatchJob(EditorController editorController, 
-            boolean shouldRefreshSceneGraph, String description) {
+    public BatchJob(final EditorController editorController,
+                    final boolean shouldRefreshSceneGraph, final String description) {
         super(editorController);
         this.description = description;
         this.shouldRefreshSceneGraph = shouldRefreshSceneGraph;
         this.shouldUpdateSelection = true;
     }
     
-     public BatchJob(EditorController editorController, String description) {
+     public BatchJob(final EditorController editorController, final String description) {
          super(editorController);
          this.description = description;
          this.shouldRefreshSceneGraph = true;
          this.shouldUpdateSelection = true;
     }
     
-   public BatchJob(EditorController editorController) {
+   public BatchJob(final EditorController editorController) {
         super(editorController);
         this.description = getClass().getSimpleName();
         this.shouldRefreshSceneGraph = true;
         this.shouldUpdateSelection = true;
     }
     
-    public void addSubJob(Job subJob) {
+    public void addSubJob(final Job subJob) {
         assert subJob != null;
         this.subJobs.add(subJob);
     }
 
-    public void addSubJobs(List<Job> subJobs) {
+    public void addSubJobs(final List<Job> subJobs) {
         assert subJobs != null;
         this.subJobs.addAll(subJobs);
     }
 
-    public void prependSubJob(Job subJob) {
+    public void prependSubJob(final Job subJob) {
         assert subJob != null;
-        this.subJobs.add(0, subJob);
+        this.subJobs.addFirst(subJob);
     }
 
     public List<Job> getSubJobs() {
@@ -105,20 +104,20 @@ public class BatchJob extends Job {
     
     @Override
     public boolean isExecutable() {
-        return subJobs.isEmpty() == false;
+        return !subJobs.isEmpty();
     }
 
     @Override
     public void execute() {
-        final Selection selection = getEditorController().getSelection();
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
+        final var selection = getEditorController().getSelection();
+        final var fxomDocument = getEditorController().getFxomDocument();
         if (shouldUpdateSelection) {
             selection.beginUpdate();
         }
         if (shouldRefreshSceneGraph) {
             fxomDocument.beginUpdate();
         }
-        for (Job subJob : subJobs) {
+        for (final var subJob : subJobs) {
             subJob.execute();
         }
         if (shouldRefreshSceneGraph) {
@@ -131,15 +130,15 @@ public class BatchJob extends Job {
 
     @Override
     public void undo() {
-        final Selection selection = getEditorController().getSelection();
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
+        final var selection = getEditorController().getSelection();
+        final var fxomDocument = getEditorController().getFxomDocument();
         if (shouldUpdateSelection) {
             selection.beginUpdate();
         }
         if (shouldRefreshSceneGraph) {
             fxomDocument.beginUpdate();
         }
-        for (int i = subJobs.size()-1; i >= 0; i--) {
+        for (var i = subJobs.size() - 1; i >= 0; i--) {
             subJobs.get(i).undo();
         }
         if (shouldRefreshSceneGraph) {
@@ -152,8 +151,8 @@ public class BatchJob extends Job {
 
     @Override
     public void redo() {
-        final Selection selection = getEditorController().getSelection();
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
+        final var selection = getEditorController().getSelection();
+        final var fxomDocument = getEditorController().getFxomDocument();
         
         if (shouldUpdateSelection) {
             selection.beginUpdate();
@@ -161,7 +160,7 @@ public class BatchJob extends Job {
         if (shouldRefreshSceneGraph) {
             fxomDocument.beginUpdate();
         }
-        for (Job subJob : subJobs) {
+        for (final var subJob : subJobs) {
             subJob.redo();
         }
         if (shouldRefreshSceneGraph) {

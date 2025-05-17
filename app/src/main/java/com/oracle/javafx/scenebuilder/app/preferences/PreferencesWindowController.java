@@ -154,7 +154,7 @@ public class PreferencesWindowController extends AbstractFxmlWindowController {
 
     private Stage ownerWindow;
 
-    public PreferencesWindowController(Stage ownerWindow) {
+    public PreferencesWindowController(final Stage ownerWindow) {
         super(PreferencesWindowController.class.getResource("Preferences.fxml"), //NOI18N
                 I18N.getBundle(), ownerWindow);
         this.ownerWindow = ownerWindow;
@@ -167,15 +167,15 @@ public class PreferencesWindowController extends AbstractFxmlWindowController {
     protected void controllerDidLoadFxml() {
         super.controllerDidLoadFxml();
 
-        final PreferencesController preferencesController
+        final var preferencesController
                 = PreferencesController.getSingleton();
-        final PreferencesRecordGlobal recordGlobal
+        final var recordGlobal
                 = preferencesController.getRecordGlobal();
 
         // Root container size
         rootContainerHeight.setText(String.valueOf(recordGlobal.getRootContainerHeight()));
         rootContainerHeight.setOnAction(t -> {
-            final String value = rootContainerHeight.getText();
+            final var value = rootContainerHeight.getText();
             recordGlobal.setRootContainerHeight(Double.valueOf(value));
             rootContainerHeight.selectAll();
             // Update preferences
@@ -186,7 +186,7 @@ public class PreferencesWindowController extends AbstractFxmlWindowController {
         });
         rootContainerWidth.setText(String.valueOf(recordGlobal.getRootContainerWidth()));
         rootContainerWidth.setOnAction(t -> {
-            final String value = rootContainerWidth.getText();
+            final var value = rootContainerWidth.getText();
             recordGlobal.setRootContainerWidth(Double.valueOf(value));
             rootContainerWidth.selectAll();
             // Update preferences
@@ -205,7 +205,7 @@ public class PreferencesWindowController extends AbstractFxmlWindowController {
         final PaintPicker.Delegate delegate = new PaintPickerDelegate();
 
         // Alignment guides color
-        final Color alignmentColor = recordGlobal.getAlignmentGuidesColor();
+        final var alignmentColor = recordGlobal.getAlignmentGuidesColor();
         alignmentColorPicker = new PaintPicker(delegate, Mode.COLOR);
         alignmentGuidesGraphic.setFill(alignmentColor);
         alignmentGuidesMenuItem.setContent(alignmentColorPicker);
@@ -214,7 +214,7 @@ public class PreferencesWindowController extends AbstractFxmlWindowController {
                 new AlignmentGuidesColorListener(alignmentGuidesGraphic));
 
         // Parent ring color
-        final Color parentRingColor = recordGlobal.getParentRingColor();
+        final var parentRingColor = recordGlobal.getParentRingColor();
         parentRingColorPicker = new PaintPicker(delegate, Mode.COLOR);
         parentRingGraphic.setFill(parentRingColor);
         parentRingMenuItem.setContent(parentRingColorPicker);
@@ -294,15 +294,15 @@ public class PreferencesWindowController extends AbstractFxmlWindowController {
     }
 
     @Override
-    public void onCloseRequest(WindowEvent event) {
+    public void onCloseRequest(final WindowEvent event) {
         super.closeWindow();
     }
 
     @FXML
-    void resetToDefaultAction(ActionEvent event) {
-        final PreferencesController preferencesController
+    void resetToDefaultAction(final ActionEvent event) {
+        final var preferencesController
                 = PreferencesController.getSingleton();
-        final PreferencesRecordGlobal recordGlobal
+        final var recordGlobal
                 = preferencesController.getRecordGlobal();
 
         // Root container size
@@ -356,11 +356,11 @@ public class PreferencesWindowController extends AbstractFxmlWindowController {
     private static class BackgroundImageListener implements ChangeListener<BackgroundImage> {
 
         @Override
-        public void changed(ObservableValue<? extends BackgroundImage> observable,
-                BackgroundImage oldValue, BackgroundImage newValue) {
-            final PreferencesController preferencesController
+        public void changed(final ObservableValue<? extends BackgroundImage> observable,
+                            final BackgroundImage oldValue, final BackgroundImage newValue) {
+            final var preferencesController
                     = PreferencesController.getSingleton();
-            final PreferencesRecordGlobal recordGlobal
+            final var recordGlobal
                     = preferencesController.getRecordGlobal();
             // Update preferences
             recordGlobal.setBackgroundImage(newValue);
@@ -374,11 +374,11 @@ public class PreferencesWindowController extends AbstractFxmlWindowController {
     private static class ToolThemeListener implements ChangeListener<ToolTheme> {
 
         @Override
-        public void changed(ObservableValue<? extends ToolTheme> observable,
-                ToolTheme oldValue, ToolTheme newValue) {
-            final PreferencesController preferencesController
+        public void changed(final ObservableValue<? extends ToolTheme> observable,
+                            final ToolTheme oldValue, final ToolTheme newValue) {
+            final var preferencesController
                     = PreferencesController.getSingleton();
-            final PreferencesRecordGlobal recordGlobal
+            final var recordGlobal
                     = preferencesController.getRecordGlobal();
             // Update preferences
             recordGlobal.setToolTheme(newValue);
@@ -392,10 +392,10 @@ public class PreferencesWindowController extends AbstractFxmlWindowController {
     private static class LibraryOptionListener implements ChangeListener<DISPLAY_MODE> {
 
         @Override
-        public void changed(ObservableValue<? extends DISPLAY_MODE> ov, DISPLAY_MODE oldValue, DISPLAY_MODE newValue) {
-            final PreferencesController preferencesController
+        public void changed(final ObservableValue<? extends DISPLAY_MODE> ov, final DISPLAY_MODE oldValue, final DISPLAY_MODE newValue) {
+            final var preferencesController
                     = PreferencesController.getSingleton();
-            final PreferencesRecordGlobal recordGlobal
+            final var recordGlobal
                     = preferencesController.getRecordGlobal();
             // Update preferences
             recordGlobal.setLibraryDisplayOption(newValue);
@@ -409,11 +409,11 @@ public class PreferencesWindowController extends AbstractFxmlWindowController {
     private static class DisplayOptionListener implements ChangeListener<DisplayOption> {
 
         @Override
-        public void changed(ObservableValue<? extends DisplayOption> observable,
-                DisplayOption oldValue, DisplayOption newValue) {
-            final PreferencesController preferencesController
+        public void changed(final ObservableValue<? extends DisplayOption> observable,
+                            final DisplayOption oldValue, final DisplayOption newValue) {
+            final var preferencesController
                     = PreferencesController.getSingleton();
-            final PreferencesRecordGlobal recordGlobal
+            final var recordGlobal
                     = preferencesController.getRecordGlobal();
             // Update preferences
             recordGlobal.setHierarchyDisplayOption(newValue);
@@ -427,11 +427,11 @@ public class PreferencesWindowController extends AbstractFxmlWindowController {
     private static class ColumnOrderListener implements ChangeListener<CSSAnalyzerColumnsOrder> {
 
         @Override
-        public void changed(ObservableValue<? extends CSSAnalyzerColumnsOrder> observable,
-                CSSAnalyzerColumnsOrder oldValue, CSSAnalyzerColumnsOrder newValue) {
-            final PreferencesController preferencesController
+        public void changed(final ObservableValue<? extends CSSAnalyzerColumnsOrder> observable,
+                            final CSSAnalyzerColumnsOrder oldValue, final CSSAnalyzerColumnsOrder newValue) {
+            final var preferencesController
                     = PreferencesController.getSingleton();
-            final PreferencesRecordGlobal recordGlobal
+            final var recordGlobal
                     = preferencesController.getRecordGlobal();
             // Update preferences
             recordGlobal.setCSSAnalyzerColumnsOrder(newValue);
@@ -444,10 +444,10 @@ public class PreferencesWindowController extends AbstractFxmlWindowController {
 
     private static class ThemesListener implements ChangeListener<EditorPlatform.Theme> {
         @Override
-        public void changed(ObservableValue<? extends EditorPlatform.Theme> observable, EditorPlatform.Theme oldValue, EditorPlatform.Theme newValue) {
-            final PreferencesController preferencesController
+        public void changed(final ObservableValue<? extends EditorPlatform.Theme> observable, final EditorPlatform.Theme oldValue, final EditorPlatform.Theme newValue) {
+            final var preferencesController
                     = PreferencesController.getSingleton();
-            final PreferencesRecordGlobal recordGlobal
+            final var recordGlobal
                     = preferencesController.getRecordGlobal();
             // Update preferences
             recordGlobal.setTheme(newValue);
@@ -460,10 +460,10 @@ public class PreferencesWindowController extends AbstractFxmlWindowController {
 
     private static class SwatchListener implements ChangeListener<EditorPlatform.Theme> {
         @Override
-        public void changed(ObservableValue<? extends EditorPlatform.Theme> observable, EditorPlatform.Theme oldValue, EditorPlatform.Theme newValue) {
-            final PreferencesController preferencesController
+        public void changed(final ObservableValue<? extends EditorPlatform.Theme> observable, final EditorPlatform.Theme oldValue, final EditorPlatform.Theme newValue) {
+            final var preferencesController
                     = PreferencesController.getSingleton();
-            final PreferencesRecordGlobal recordGlobal
+            final var recordGlobal
                     = preferencesController.getRecordGlobal();
             // Update preferences
             recordGlobal.setSwatch(newValue);
@@ -476,10 +476,10 @@ public class PreferencesWindowController extends AbstractFxmlWindowController {
 
     private static class GluonThemeListener implements ChangeListener<EditorPlatform.Theme> {
         @Override
-        public void changed(ObservableValue<? extends EditorPlatform.Theme> observable, EditorPlatform.Theme oldValue, EditorPlatform.Theme newValue) {
-            final PreferencesController preferencesController
+        public void changed(final ObservableValue<? extends EditorPlatform.Theme> observable, final EditorPlatform.Theme oldValue, final EditorPlatform.Theme newValue) {
+            final var preferencesController
                     = PreferencesController.getSingleton();
-            final PreferencesRecordGlobal recordGlobal
+            final var recordGlobal
                     = preferencesController.getRecordGlobal();
             // Update preferences
             recordGlobal.setGluonTheme(newValue);
@@ -493,11 +493,11 @@ public class PreferencesWindowController extends AbstractFxmlWindowController {
     private static class RecentItemsSizeListener implements ChangeListener<Integer> {
 
         @Override
-        public void changed(ObservableValue<? extends Integer> observable,
-                Integer oldValue, Integer newValue) {
-            final PreferencesController preferencesController
+        public void changed(final ObservableValue<? extends Integer> observable,
+                            final Integer oldValue, final Integer newValue) {
+            final var preferencesController
                     = PreferencesController.getSingleton();
-            final PreferencesRecordGlobal recordGlobal
+            final var recordGlobal
                     = preferencesController.getRecordGlobal();
             // Update preferences
             recordGlobal.setRecentItemsSize(newValue);
@@ -510,16 +510,16 @@ public class PreferencesWindowController extends AbstractFxmlWindowController {
 
         private final Rectangle graphic;
 
-        public AlignmentGuidesColorListener(Rectangle graphic) {
+        public AlignmentGuidesColorListener(final Rectangle graphic) {
             this.graphic = graphic;
         }
 
         @Override
-        public void changed(ObservableValue<? extends Paint> ov, Paint oldValue, Paint newValue) {
+        public void changed(final ObservableValue<? extends Paint> ov, final Paint oldValue, final Paint newValue) {
             assert newValue instanceof Color;
-            final PreferencesController preferencesController
+            final var preferencesController
                     = PreferencesController.getSingleton();
-            final PreferencesRecordGlobal recordGlobal
+            final var recordGlobal
                     = preferencesController.getRecordGlobal();
             // Update preferences
             recordGlobal.setAlignmentGuidesColor((Color) newValue);
@@ -535,16 +535,16 @@ public class PreferencesWindowController extends AbstractFxmlWindowController {
 
         private final Rectangle graphic;
 
-        public ParentRingColorListener(Rectangle graphic) {
+        public ParentRingColorListener(final Rectangle graphic) {
             this.graphic = graphic;
         }
 
         @Override
-        public void changed(ObservableValue<? extends Paint> ov, Paint oldValue, Paint newValue) {
+        public void changed(final ObservableValue<? extends Paint> ov, final Paint oldValue, final Paint newValue) {
             assert newValue instanceof Color;
-            final PreferencesController preferencesController
+            final var preferencesController
                     = PreferencesController.getSingleton();
-            final PreferencesRecordGlobal recordGlobal
+            final var recordGlobal
                     = preferencesController.getRecordGlobal();
             // Update preferences
             recordGlobal.setParentRingColor((Color) newValue);
@@ -559,7 +559,7 @@ public class PreferencesWindowController extends AbstractFxmlWindowController {
     private static class PaintPickerDelegate implements PaintPicker.Delegate {
 
         @Override
-        public void handleError(String warningKey, Object... arguments) {
+        public void handleError(final String warningKey, final Object... arguments) {
             // Log a warning in message bar
         }
     }
@@ -567,10 +567,10 @@ public class PreferencesWindowController extends AbstractFxmlWindowController {
     private static class AnimationListener implements ChangeListener<Boolean> {
 
         @Override
-        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-            final PreferencesController preferencesController
+        public void changed(final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) {
+            final var preferencesController
                     = PreferencesController.getSingleton();
-            final PreferencesRecordGlobal recordGlobal
+            final var recordGlobal
                     = preferencesController.getRecordGlobal();
             // Update preferences
             recordGlobal.setAccordionAnimation(newValue);
@@ -583,10 +583,10 @@ public class PreferencesWindowController extends AbstractFxmlWindowController {
     private static class WildcardImportListener implements ChangeListener<Boolean> {
 
         @Override
-        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-            final PreferencesController preferencesController
+        public void changed(final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) {
+            final var preferencesController
                     = PreferencesController.getSingleton();
-            final PreferencesRecordGlobal recordGlobal
+            final var recordGlobal
                     = preferencesController.getRecordGlobal();
             // Update preferences
             recordGlobal.setWildcardImports(newValue);
@@ -597,10 +597,10 @@ public class PreferencesWindowController extends AbstractFxmlWindowController {
     private static class AlternatePasteListener implements ChangeListener<Boolean> {
 
         @Override
-        public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-            final PreferencesController preferencesController
+        public void changed(final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) {
+            final var preferencesController
                     = PreferencesController.getSingleton();
-            final PreferencesRecordGlobal recordGlobal
+            final var recordGlobal
                     = preferencesController.getRecordGlobal();
             // Update preferences
             recordGlobal.setAlternateTextInputControlPaste(newValue);

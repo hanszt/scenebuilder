@@ -49,7 +49,7 @@ public class CssValuePresenterFactory {
 
         private final T value;
         private Node node;
-        protected CssValuePresenter(T value) {
+        protected CssValuePresenter(final T value) {
             this.value = value;
         }
 
@@ -80,7 +80,7 @@ public class CssValuePresenterFactory {
         return singleton;
     }
 
-    public <T> CssValuePresenter<T> newValuePresenter(T value) {
+    public <T> CssValuePresenter<T> newValuePresenter(final T value) {
         final CssValuePresenter<?> ret;
         if(Paint.class.isAssignableFrom(value.getClass())){
             ret = new PaintValuePresenter((Paint)value);
@@ -92,18 +92,18 @@ public class CssValuePresenterFactory {
             }
         }
         @SuppressWarnings("unchecked")
-        final CssValuePresenter<T> castedRet = (CssValuePresenter<T>)ret;
+        final var castedRet = (CssValuePresenter<T>)ret;
         return castedRet;
     }
     
     private class PaintValuePresenter extends CssValuePresenter<Paint> {
-        private PaintValuePresenter(Paint p){
+        private PaintValuePresenter(final Paint p){
             super(p);
         }
         
         @Override
         protected Node doGetPresenter() {
-            Rectangle rect = new Rectangle(10, 10);
+            final var rect = new Rectangle(10, 10);
             rect.setStroke(Color.BLACK);
             rect.setFill(getValue());
             return rect;
@@ -111,13 +111,13 @@ public class CssValuePresenterFactory {
     }
     
     private class ImageValuePresenter extends CssValuePresenter<Image> {
-        private ImageValuePresenter(Image img){
+        private ImageValuePresenter(final Image img){
             super(img);
         }
         
         @Override
         protected Node doGetPresenter() {
-            ImageView imgView = new ImageView((getValue()));
+            final var imgView = new ImageView((getValue()));
             imgView.setFitWidth(15);
             imgView.setPreserveRatio(true);
             return imgView;
@@ -125,7 +125,7 @@ public class CssValuePresenterFactory {
     }
     
     private class DefaultValuePresenter extends CssValuePresenter<Object> {
-        private DefaultValuePresenter(Object val){
+        private DefaultValuePresenter(final Object val){
             super(val);
         }
         @Override

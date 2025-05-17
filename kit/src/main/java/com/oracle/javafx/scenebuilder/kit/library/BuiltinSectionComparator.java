@@ -67,12 +67,12 @@ public class BuiltinSectionComparator implements Comparator<String> {
      */
 
     @Override
-    public int compare(String section1, String section2) {
+    public int compare(final String section1, final String section2) {
         assert section1 != null;
         assert section2 != null;
         
-        final int index1 = orderedSections.indexOf(section1);
-        final int index2 = orderedSections.indexOf(section2);
+        final var index1 = orderedSections.indexOf(section1);
+        final var index2 = orderedSections.indexOf(section2);
         final int result;
         
         if ((index1 != -1) && (index2 != -1)) {

@@ -39,11 +39,9 @@ import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.AddPropertyValueJob;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.RemoveObjectJob;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.AbstractSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.GridSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMProperty;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyC;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
@@ -76,10 +74,10 @@ public class MoveRowJob extends BatchSelectionJob {
         if (GridPaneJobUtils.canPerformMove(getEditorController(), position)) {
 
             // Retrieve the target GridPane
-            final Selection selection = getEditorController().getSelection();
-            final AbstractSelectionGroup asg = selection.getGroup();
+            final var selection = getEditorController().getSelection();
+            final var asg = selection.getGroup();
             assert asg instanceof GridSelectionGroup; // Because of (1)
-            final GridSelectionGroup gsg = (GridSelectionGroup) asg;
+            final var gsg = (GridSelectionGroup) asg;
 
             targetGridPane = gsg.getParentObject();
             targetIndexes.addAll(gsg.getIndexes());
@@ -101,8 +99,8 @@ public class MoveRowJob extends BatchSelectionJob {
     @Override
     protected AbstractSelectionGroup getNewSelectionGroup() {
         final Set<Integer> movedIndexes = new HashSet<>();
-        for (int targetIndex : targetIndexes) {
-            int movedIndex = position == Position.ABOVE
+        for (final int targetIndex : targetIndexes) {
+            final var movedIndex = position == Position.ABOVE
                     ? targetIndex - 1 : targetIndex + 1;
             movedIndexes.add(movedIndex);
         }
@@ -114,17 +112,17 @@ public class MoveRowJob extends BatchSelectionJob {
         final List<Job> result = new ArrayList<>();
 
         // Retrieve the constraints property for the specified target GridPane
-        final PropertyName propertyName = new PropertyName("rowConstraints"); //NOI18N
+        final var propertyName = new PropertyName("rowConstraints"); //NOI18N
         assert targetGridPane instanceof FXOMInstance;
-        FXOMProperty constraintsProperty
+        final var constraintsProperty
                 = ((FXOMInstance) targetGridPane).getProperties().get(propertyName);
         // GridPane has no constraints property => no constraints to move
         if (constraintsProperty == null) {
             return result;
         }
 
-        final DesignHierarchyMask mask = new DesignHierarchyMask(targetGridPane);
-        for (int targetIndex : targetIndexes) {
+        final var mask = new DesignHierarchyMask(targetGridPane);
+        for (final int targetIndex : targetIndexes) {
 
             final int positionIndex;
             switch (position) {
@@ -140,7 +138,7 @@ public class MoveRowJob extends BatchSelectionJob {
             }
 
             // Retrieve the target constraints
-            final FXOMObject targetConstraints
+            final var targetConstraints
                     = mask.getRowConstraintsAtIndex(targetIndex);
 
             // If the target index is associated to an existing constraints value :
@@ -165,14 +163,14 @@ public class MoveRowJob extends BatchSelectionJob {
             // we may need to move the constraints above the target one if any
             else if (position == Position.ABOVE) {
                 // Retrieve the constraints above the target one
-                final FXOMObject aboveConstraints
+                final var aboveConstraints
                         = mask.getRowConstraintsAtIndex(targetIndex - 1);
 
                 // The index above is associated to an existing constraints value :
                 // we insert a new constraints with default values at the position index
                 if (aboveConstraints != null) {
                     // Create new empty constraints for the target row
-                    final FXOMInstance addedConstraints = makeRowConstraintsInstance();
+                    final var addedConstraints = makeRowConstraintsInstance();
                     final Job addValueJob = new AddPropertyValueJob(
                             addedConstraints,
                             (FXOMPropertyC) constraintsProperty,
@@ -188,7 +186,7 @@ public class MoveRowJob extends BatchSelectionJob {
 
         final List<Job> result = new ArrayList<>();
 
-        for (int targetIndex : targetIndexes) {
+        for (final int targetIndex : targetIndexes) {
 
             switch (position) {
                 case ABOVE:
@@ -196,12 +194,12 @@ public class MoveRowJob extends BatchSelectionJob {
                     result.add(new ReIndexRowContentJob(
                             getEditorController(),
                             -1, targetGridPane, targetIndex));
-                    int aboveIndex = targetIndex - 1;
+                    final var aboveIndex = targetIndex - 1;
                     // Then move the content of the row above the target one
                     // If the index above is not part of the target indexes (selected indexes),
                     // we move the row content as many times as consecutive target indexes
-                    if (targetIndexes.contains(aboveIndex) == false) {
-                        int shiftIndex = 1;
+                    if (!targetIndexes.contains(aboveIndex)) {
+                        var shiftIndex = 1;
                         while (targetIndexes.contains(targetIndex + shiftIndex)) {
                             shiftIndex++;
                         }
@@ -215,12 +213,12 @@ public class MoveRowJob extends BatchSelectionJob {
                     result.add(new ReIndexRowContentJob(
                             getEditorController(),
                             +1, targetGridPane, targetIndex));
-                    int belowIndex = targetIndex + 1;
+                    final var belowIndex = targetIndex + 1;
                     // Then move the content of the row below the target one
                     // If the index below is not part of the target indexes (selected indexes),
                     // we move the row content as many times as consecutive target indexes
-                    if (targetIndexes.contains(belowIndex) == false) {
-                        int shiftIndex = -1;
+                    if (!targetIndexes.contains(belowIndex)) {
+                        var shiftIndex = -1;
                         while (targetIndexes.contains(targetIndex + shiftIndex)) {
                             shiftIndex--;
                         }
@@ -239,8 +237,8 @@ public class MoveRowJob extends BatchSelectionJob {
     private FXOMInstance makeRowConstraintsInstance() {
 
         // Create new constraints instance
-        final FXOMDocument newDocument = new FXOMDocument();
-        final FXOMInstance result
+        final var newDocument = new FXOMDocument();
+        final var result
                 = new FXOMInstance(newDocument, RowConstraints.class);
         newDocument.setFxomRoot(result);
         result.moveToFxomDocument(getEditorController().getFxomDocument());

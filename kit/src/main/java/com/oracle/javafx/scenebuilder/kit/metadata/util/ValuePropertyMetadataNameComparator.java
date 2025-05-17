@@ -45,9 +45,9 @@ public class ValuePropertyMetadataNameComparator implements Comparator<ValueProp
     }
 
     @Override
-    public int compare(ValuePropertyMetadata propMeta1, ValuePropertyMetadata propMeta2) {
-        String name1 = propMeta1.getName().getName();
-        String name2 = propMeta2.getName().getName();
+    public int compare(final ValuePropertyMetadata propMeta1, final ValuePropertyMetadata propMeta2) {
+        final var name1 = propMeta1.getName().getName();
+        final var name2 = propMeta2.getName().getName();
         return name1.compareTo(name2);
     }
 }

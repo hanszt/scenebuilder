@@ -41,7 +41,7 @@ import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
  */
 public abstract class AbstractRudder<T> extends AbstractDecoration<T> {
 
-    public AbstractRudder(ContentPanelController contentPanelController, FXOMObject fxomObject, Class<T> sceneGraphClass) {
+    public AbstractRudder(final ContentPanelController contentPanelController, final FXOMObject fxomObject, final Class<T> sceneGraphClass) {
         super(contentPanelController, fxomObject, sceneGraphClass);
     }
     

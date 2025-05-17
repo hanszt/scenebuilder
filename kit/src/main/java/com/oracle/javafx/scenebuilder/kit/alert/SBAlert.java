@@ -39,7 +39,7 @@ import javafx.stage.Stage;
  */
 public class SBAlert extends Alert {
 
-    public SBAlert(AlertType alertType, Stage owner) {
+    public SBAlert(final AlertType alertType, final Stage owner) {
         super(alertType);
 
         initOwner(owner);
@@ -48,8 +48,8 @@ public class SBAlert extends Alert {
         setIcons(owner);
     }
 
-    private void setIcons(Stage owner) {
-        Stage alertStage = (Stage) getDialogPane().getScene().getWindow();
+    private void setIcons(final Stage owner) {
+        final var alertStage = (Stage) getDialogPane().getScene().getWindow();
         alertStage.getIcons().setAll(owner.getIcons());
     }
 }

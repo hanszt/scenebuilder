@@ -40,17 +40,14 @@ import com.oracle.javafx.scenebuilder.kit.editor.panel.inspector.editors.Control
 import com.oracle.javafx.scenebuilder.kit.editor.panel.util.AbstractFxmlPanelController;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.GridSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
-import com.oracle.javafx.scenebuilder.kit.glossary.Glossary;
 
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javafx.application.Platform;
@@ -62,7 +59,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
@@ -84,7 +80,7 @@ public class InfoPanelController extends AbstractFxmlPanelController {
     private ControllerClassEditor controllerClassEditor;
     private boolean controllerDidLoadFxmlOver = false;
     
-    public InfoPanelController(EditorController editorController) {
+    public InfoPanelController(final EditorController editorController) {
         super(InfoPanelController.class.getResource("InfoPanel.fxml"), I18N.getBundle(), editorController); //NOI18N
     }
 
@@ -92,7 +88,7 @@ public class InfoPanelController extends AbstractFxmlPanelController {
         return entryType;
     }
 
-    public void setEntryType(IndexEntry.Type entryType) {
+    public void setEntryType(final IndexEntry.Type entryType) {
         this.entryType = entryType;
         updateEntriesNow();
     }
@@ -102,7 +98,7 @@ public class InfoPanelController extends AbstractFxmlPanelController {
      */
 
     @Override
-    protected void fxomDocumentDidChange(FXOMDocument oldDocument) {
+    protected void fxomDocumentDidChange(final FXOMDocument oldDocument) {
         requestEntriesUpdate();
         updateAsPerRootNodeStatus();
         updateControllerAndControllerClassEditor();
@@ -137,21 +133,21 @@ public class InfoPanelController extends AbstractFxmlPanelController {
     
     @Override
     protected void editorSelectionDidChange() {
-        final Selection selection = getEditorController().getSelection();
+        final var selection = getEditorController().getSelection();
         
         final Set<IndexEntry> selectedEntries = new HashSet<>();
         if (selection.getGroup() instanceof ObjectSelectionGroup) {
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) selection.getGroup();
+            final var osg = (ObjectSelectionGroup) selection.getGroup();
             selectedEntries.addAll(searchIndexEntries(osg.getItems()));
         } else if (selection.getGroup() instanceof GridSelectionGroup) {
-            final GridSelectionGroup gsg = (GridSelectionGroup) selection.getGroup();
+            final var gsg = (GridSelectionGroup) selection.getGroup();
             selectedEntries.addAll(searchIndexEntries(Collections.singleton(gsg.getParentObject())));
         }
         
-        final TableView<IndexEntry> tableView = leftTableColumn.getTableView();
+        final var tableView = leftTableColumn.getTableView();
         stopListeningToTableViewSelection();
         tableView.getSelectionModel().clearSelection();
-        for (IndexEntry e : selectedEntries) {
+        for (final var e : selectedEntries) {
             tableView.getSelectionModel().select(e);
         }
         startListeningToTableViewSelection();
@@ -188,11 +184,11 @@ public class InfoPanelController extends AbstractFxmlPanelController {
             controllerClassEditor = new ControllerClassEditor(getSuggestedControllerClasses(null));
         }
 
-        HBox propNameNode = controllerClassEditor.getPropNameNode();
+        final var propNameNode = controllerClassEditor.getPropNameNode();
 
         // Make so that the property name appears left justified in the VBox
         propNameNode.setAlignment(Pos.CENTER_LEFT);
-        controllerClassVBox.getChildren().add(0, propNameNode);
+        controllerClassVBox.getChildren().addFirst(propNameNode);
 
         // Initialize field with current value, if defined.
         controllerAndCogHBox.getChildren().add(controllerClassEditor.getValueEditor());
@@ -241,13 +237,13 @@ public class InfoPanelController extends AbstractFxmlPanelController {
         updateControllerAndControllerClassEditor(IGNORED);
     }
     
-    private synchronized void updateControllerAndControllerClassEditor(String className) {
+    private synchronized void updateControllerAndControllerClassEditor(final String className) {
         if (getEditorController().getFxomDocument() != null) {
-            FXOMObject root = getEditorController().getFxomDocument().getFxomRoot();
+            final var root = getEditorController().getFxomDocument().getFxomRoot();
             if (root != null) {
-                String zeClassName = computeProperClassName(className, root);
+                final var zeClassName = computeProperClassName(className, root);
 
-                final ModifyFxControllerJob job
+                final var job
                         = new ModifyFxControllerJob(root, zeClassName, getEditorController());
 
                 if (job.isExecutable()) {
@@ -263,11 +259,11 @@ public class InfoPanelController extends AbstractFxmlPanelController {
         updateControllerClassEditor(IGNORED);
     }
     
-    private void updateControllerClassEditor(String className) {
+    private void updateControllerClassEditor(final String className) {
         if (getEditorController().getFxomDocument() != null) {
-            FXOMObject root = getEditorController().getFxomDocument().getFxomRoot();
+            final var root = getEditorController().getFxomDocument().getFxomRoot();
             if (root != null) {
-                String zeClassName = computeProperClassName(className, root);
+                final var zeClassName = computeProperClassName(className, root);
                 
                 if (controllerClassEditor != null) {
                     controllerClassEditor.setUpdateFromModel(true);
@@ -278,8 +274,8 @@ public class InfoPanelController extends AbstractFxmlPanelController {
         }
     }
     
-    private String computeProperClassName(String className, FXOMObject root) {
-        String res = className;
+    private String computeProperClassName(final String className, final FXOMObject root) {
+        var res = className;
         
         if (className != null && className.equals(IGNORED)) {
             res = root.getFxController();
@@ -304,15 +300,15 @@ public class InfoPanelController extends AbstractFxmlPanelController {
         if (leftTableColumn != null) {
             final List<IndexEntry> newEntries = FXCollections.observableArrayList();
 
-            final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
+            final var fxomDocument = getEditorController().getFxomDocument();
             if (fxomDocument != null) {
                 switch(entryType) {
                     case FX_ID: {
-                        final Map<String, FXOMObject> fxIds
+                        final var fxIds
                                 = fxomDocument.collectFxIds();
-                        for (Map.Entry<String, FXOMObject> e : fxIds.entrySet()) {
-                            final String fxId = e.getKey();
-                            final FXOMObject fxomObject = e.getValue();
+                        for (final var e : fxIds.entrySet()) {
+                            final var fxId = e.getKey();
+                            final var fxomObject = e.getValue();
                             newEntries.add(new IndexEntry(fxId, entryType, fxomObject));
                         }
                         break;
@@ -336,14 +332,14 @@ public class InfoPanelController extends AbstractFxmlPanelController {
 
 
             // Update items in table view
-            final TableView<IndexEntry> tableView = leftTableColumn.getTableView();
+            final var tableView = leftTableColumn.getTableView();
             stopListeningToTableViewSelection();
             tableView.getItems().clear();
             tableView.getItems().addAll(newEntries);
             startListeningToTableViewSelection();
             
             // Update bottom label
-            final int count = newEntries.size();
+            final var count = newEntries.size();
             final String labelText;
             switch(count) {
                 case 0:
@@ -368,13 +364,13 @@ public class InfoPanelController extends AbstractFxmlPanelController {
     
     private void startListeningToTableViewSelection() {
         assert leftTableColumn != null;
-        final TableView<IndexEntry> tableView = leftTableColumn.getTableView();
+        final var tableView = leftTableColumn.getTableView();
         tableView.getSelectionModel().getSelectedItems().addListener(tableViewSelectionListener);
     }
     
     private void stopListeningToTableViewSelection() {
         assert leftTableColumn != null;
-        final TableView<IndexEntry> tableView = leftTableColumn.getTableView();
+        final var tableView = leftTableColumn.getTableView();
         tableView.getSelectionModel().getSelectedItems().removeListener(tableViewSelectionListener);
     }
     
@@ -382,12 +378,12 @@ public class InfoPanelController extends AbstractFxmlPanelController {
         = change -> tableSelectionDidChange();
     
     private void tableSelectionDidChange() {
-        final TableView<IndexEntry> tableView = leftTableColumn.getTableView();
+        final var tableView = leftTableColumn.getTableView();
         final List<IndexEntry> selectedItems =
                 tableView.getSelectionModel().getSelectedItems();
-        Set<FXOMObject> selectedFxomObjects = new HashSet<>();
+        final Set<FXOMObject> selectedFxomObjects = new HashSet<>();
 
-        for (IndexEntry i : selectedItems) {
+        for (final var i : selectedItems) {
             selectedFxomObjects.add(i.getFxomObject());
         }
 
@@ -397,12 +393,12 @@ public class InfoPanelController extends AbstractFxmlPanelController {
     }
     
     
-    private Set<IndexEntry> searchIndexEntries(Set<FXOMObject> fxomObjects) {
+    private Set<IndexEntry> searchIndexEntries(final Set<FXOMObject> fxomObjects) {
         assert fxomObjects != null;
         
-        final TableView<IndexEntry> tableView = leftTableColumn.getTableView();
+        final var tableView = leftTableColumn.getTableView();
         final Set<IndexEntry> result = new HashSet<>();
-        for (IndexEntry e : tableView.getItems()) {
+        for (final var e : tableView.getItems()) {
             if (fxomObjects.contains(e.getFxomObject())) {
                 result.add(e);
             }
@@ -413,7 +409,7 @@ public class InfoPanelController extends AbstractFxmlPanelController {
     
     
     private List<String> getSuggestedControllerClasses(URL location) {
-        Glossary glossary = getEditorController().getGlossary();
+        final var glossary = getEditorController().getGlossary();
         
         if (location == null && getEditorController().getFxomDocument() != null) {
             location = getEditorController().getFxomDocument().getLocation();
@@ -435,7 +431,7 @@ public class InfoPanelController extends AbstractFxmlPanelController {
                 controllerClassEditor.setUpdateFromModel(false);
             } else {
                 fxrootCheckBox.setDisable(false);
-                String topClassName = getEditorController().getFxomDocument().getGlue().getRootElement().getTagName();
+                final var topClassName = getEditorController().getFxomDocument().getGlue().getRootElement().getTagName();
                 fxrootCheckBox.setTooltip(new Tooltip(I18N.getString("info.tooltip.controller", topClassName)));
                 controllerClassEditor.setDisable(false);
             }
@@ -444,9 +440,9 @@ public class InfoPanelController extends AbstractFxmlPanelController {
     
     private void toggleFxRoot() {
         if (getEditorController().getFxomDocument() != null) {
-            final FXOMObject root = getEditorController().getFxomDocument().getFxomRoot();
+            final var root = getEditorController().getFxomDocument().getFxomRoot();
             if (root instanceof FXOMInstance) {
-                final ToggleFxRootJob job = new ToggleFxRootJob(getEditorController());
+                final var job = new ToggleFxRootJob(getEditorController());
                 if (job.isExecutable()) {
                     stopListeningToJobManagerRevision();
                     getEditorController().getJobManager().push(job);
@@ -458,7 +454,7 @@ public class InfoPanelController extends AbstractFxmlPanelController {
     
     private boolean isFxRoot() {
         if (getEditorController().getFxomDocument() != null) {
-            final FXOMObject root = getEditorController().getFxomDocument().getFxomRoot();
+            final var root = getEditorController().getFxomDocument().getFxomRoot();
             if (root instanceof FXOMInstance) {
                 return ((FXOMInstance)root).isFxRoot();
             }
@@ -469,7 +465,7 @@ public class InfoPanelController extends AbstractFxmlPanelController {
     
     private final ChangeListener<Boolean> checkBoxListener = (ov, t, t1) -> toggleFxRoot();
 
-    private void resetSuggestedControllerClasses(URL location) {
+    private void resetSuggestedControllerClasses(final URL location) {
         if (controllerClassEditor != null) {
             // The listener on fxmlLocationProperty is called before the file
             // denoted by the location is created on disk, hence the runLater.

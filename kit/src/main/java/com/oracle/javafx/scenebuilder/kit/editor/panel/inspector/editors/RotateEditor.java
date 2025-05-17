@@ -40,8 +40,6 @@ import java.util.Set;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -68,7 +66,7 @@ public class RotateEditor extends PropertyEditor {
     private int roundingFactor = 10; // 1 decimal
     private boolean updateFromRotator = false;
 
-    public RotateEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public RotateEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super(propMeta, selectedClasses);
         initialize();
     }
@@ -80,16 +78,16 @@ public class RotateEditor extends PropertyEditor {
         //
         // Text field
         //
-        EventHandler<ActionEvent> valueListener = event -> {
+        final EventHandler<ActionEvent> valueListener = event -> {
             if (isHandlingError()) {
                 // Event received because of focus lost due to error dialog
                 return;
             }
-            String valStr = rotateTf.getText();
-            double valDouble;
+            final var valStr = rotateTf.getText();
+            final double valDouble;
             try {
                 valDouble = Double.parseDouble(valStr);
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
                 handleInvalidValue(valStr);
                 return;
             }
@@ -124,7 +122,7 @@ public class RotateEditor extends PropertyEditor {
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(final Object value) {
         setValueGeneric(value);
         if (isSetValueDone()) {
             return;
@@ -135,7 +133,7 @@ public class RotateEditor extends PropertyEditor {
     }
 
     @Override
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super.reset(propMeta, selectedClasses);
 //        setValueGeneric(propMeta.getDefaultValueObject());
     }
@@ -146,34 +144,34 @@ public class RotateEditor extends PropertyEditor {
     }
 
     @FXML
-    void rotatorPressed(MouseEvent e) {
+    void rotatorPressed(final MouseEvent e) {
         rotatorDragged(e);
     }
 
     @FXML
-    void rotatorReleased(MouseEvent e) {
+    void rotatorReleased(final MouseEvent e) {
         userUpdateValueProperty(getValue());
     }
 
     @FXML
-    public void rotatorDragged(MouseEvent e) {
+    public void rotatorDragged(final MouseEvent e) {
 //        System.out.println("in RotateEditor.rotatorDragged");
         updateFromRotator = true;
-        Parent p = rotatorDial.getParent();
-        Bounds b = rotatorDial.getLayoutBounds();
-        Double centerX = b.getMinX() + (b.getWidth() / 2);
-        Double centerY = b.getMinY() + (b.getHeight() / 2);
-        Point2D center = p.localToParent(centerX, centerY);
-        Point2D mouse = p.localToParent(e.getX(), e.getY());
-        Double deltaX = mouse.getX() - center.getX();
-        Double deltaY = mouse.getY() - center.getY();
-        Double radians = Math.atan2(deltaY, deltaX);
+        final var p = rotatorDial.getParent();
+        final var b = rotatorDial.getLayoutBounds();
+        final Double centerX = b.getMinX() + (b.getWidth() / 2);
+        final Double centerY = b.getMinY() + (b.getHeight() / 2);
+        final var center = p.localToParent(centerX, centerY);
+        final var mouse = p.localToParent(e.getX(), e.getY());
+        final Double deltaX = mouse.getX() - center.getX();
+        final Double deltaY = mouse.getY() - center.getY();
+        final Double radians = Math.atan2(deltaY, deltaX);
         rotate(Math.toDegrees(radians));
         userUpdateTransientValueProperty(getValue());
         updateFromRotator = false;
     }
 
-    private void rotate(Double degrees) {
+    private void rotate(final Double degrees) {
         rotatorHandle.setRotate(degrees);
         if (updateFromRotator) {
             // Round the value

@@ -36,7 +36,7 @@ import com.oracle.javafx.scenebuilder.kit.metadata.property.value.list.StringLis
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PrefixedValue;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
 import com.oracle.javafx.scenebuilder.kit.util.URLUtils;
-import java.io.File;
+
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.FileSystemNotFoundException;
@@ -55,7 +55,7 @@ public class FXOMAssetIndex {
     private final FXOMDocument fxomDocument;
     private final Map<Path, FXOMNode> fileAssets;
     
-    public FXOMAssetIndex(FXOMDocument fxomDocument) {
+    public FXOMAssetIndex(final FXOMDocument fxomDocument) {
         assert fxomDocument != null;
         this.fxomDocument = fxomDocument;
         this.fileAssets = Collections.unmodifiableMap(collectAssets());
@@ -75,14 +75,14 @@ public class FXOMAssetIndex {
         final Map<Path, FXOMNode> result = new HashMap<>();
         
         if (fxomDocument.getFxomRoot() != null) {
-            final FXOMObject fxomRoot = fxomDocument.getFxomRoot();
+            final var fxomRoot = fxomDocument.getFxomRoot();
             
             /*
              * Collects properties containing prefixed values (ie @ expression).
              */
-            for (FXOMPropertyT p : fxomRoot.collectPropertiesT()) {
-                for (String s : StringListPropertyMetadata.splitValue(p.getValue())) {
-                    final Path path = extractPath(s);
+            for (final var p : fxomRoot.collectPropertiesT()) {
+                for (final var s : StringListPropertyMetadata.splitValue(p.getValue())) {
+                    final var path = extractPath(s);
                     if (path != null) {
                         result.put(path, p);
                     }
@@ -93,13 +93,13 @@ public class FXOMAssetIndex {
             /*
              * Collects URL instances.
              */
-            for (FXOMObject fxomObject : fxomRoot.collectObjectWithSceneGraphObjectClass(URL.class)) {
+            for (final var fxomObject : fxomRoot.collectObjectWithSceneGraphObjectClass(URL.class)) {
                 if (fxomObject instanceof FXOMInstance) {
-                    final FXOMInstance urlInstance = (FXOMInstance) fxomObject;
-                    final FXOMProperty valueProperty = urlInstance.getProperties().get(valueName);
+                    final var urlInstance = (FXOMInstance) fxomObject;
+                    final var valueProperty = urlInstance.getProperties().get(valueName);
                     if (valueProperty instanceof FXOMPropertyT) {
-                        FXOMPropertyT valuePropertyT = (FXOMPropertyT) valueProperty;
-                        final Path path = extractPath(valuePropertyT.getValue());
+                        final var valuePropertyT = (FXOMPropertyT) valueProperty;
+                        final var path = extractPath(valuePropertyT.getValue());
                         if (path != null) {
                             result.put(path, valuePropertyT);
                         }
@@ -112,10 +112,10 @@ public class FXOMAssetIndex {
             /*
              * Collects fx:include
              */
-            for (FXOMIntrinsic fxomInclude : fxomRoot.collectIncludes(null)) {
-                final String equivalentValue 
+            for (final var fxomInclude : fxomRoot.collectIncludes(null)) {
+                final var equivalentValue
                         = FXMLLoader.RELATIVE_PATH_PREFIX + fxomInclude.getSource();
-                final Path path 
+                final var path
                         = extractPath(equivalentValue);
                 if (path != null) {
                     result.put(path, fxomInclude);
@@ -127,54 +127,54 @@ public class FXOMAssetIndex {
     }
     
     
-    private Path extractPath(String stringValue) {
+    private Path extractPath(final String stringValue) {
         Path result;
         
-        final PrefixedValue pv = new PrefixedValue(stringValue);
+        final var pv = new PrefixedValue(stringValue);
         if (pv.isPlainString()) {
             try {
-                final File file = URLUtils.getFile(pv.getSuffix());
+                final var file = URLUtils.getFile(pv.getSuffix());
                 if (file == null) { // Not a file URL
                     result = null;
                 } else {
                     result = file.toPath();
                 }
-            } catch(URISyntaxException x) {
+            } catch(final URISyntaxException x) {
                 result = null;
             }
         } else if (pv.isDocumentRelativePath()) {
-            final URL documentLocation = fxomDocument.getLocation();
+            final var documentLocation = fxomDocument.getLocation();
             if (documentLocation == null) {
                 result = null;
             } else {
-                final URL url = pv.resolveDocumentRelativePath(documentLocation);
+                final var url = pv.resolveDocumentRelativePath(documentLocation);
                 if (url == null) {
                     result = null;
                 } else {
                     try {
                         result = Paths.get(url.toURI());
-                    } catch(FileSystemNotFoundException|URISyntaxException x) {
+                    } catch(final FileSystemNotFoundException | URISyntaxException x) {
                         result = null;
                     }
                 }
             }
         } else if (pv.isClassLoaderRelativePath()) {
-            final ClassLoader classLoader = fxomDocument.getClassLoader();
+            final var classLoader = fxomDocument.getClassLoader();
             if (classLoader == null) {
                 result = null;
             } else {
-                final URL url = pv.resolveClassLoaderRelativePath(classLoader);
+                final var url = pv.resolveClassLoaderRelativePath(classLoader);
                 if (url == null) {
                     result = null;
                 } else {
                     try {
-                        final File file = URLUtils.getFile(url);
+                        final var file = URLUtils.getFile(url);
                         if (file == null) { // Not a file URL
                             result = null;
                         } else {
                             result = file.toPath();
                         }
-                    } catch(URISyntaxException x) {
+                    } catch(final URISyntaxException x) {
                         result = null;
                     }
                 }

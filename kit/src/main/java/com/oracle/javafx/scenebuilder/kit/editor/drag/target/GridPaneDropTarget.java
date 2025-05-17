@@ -48,8 +48,6 @@ import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
 import com.oracle.javafx.scenebuilder.kit.util.Deprecation;
-import com.oracle.javafx.scenebuilder.kit.util.GridBounds;
-import java.util.List;
 import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
 
@@ -73,9 +71,9 @@ public class GridPaneDropTarget extends AbstractDropTarget {
     private final ColumnArea targetColumnArea;
     private final RowArea targetRowArea;
 
-    public GridPaneDropTarget(FXOMObject targetGridPane, 
-            int columnIndex, int rowIndex, 
-            ColumnArea targetColumnArea, RowArea targetRowArea) {
+    public GridPaneDropTarget(final FXOMObject targetGridPane,
+                              final int columnIndex, final int rowIndex,
+                              final ColumnArea targetColumnArea, final RowArea targetRowArea) {
         assert targetGridPane != null;
         assert targetGridPane.getSceneGraphObject() instanceof GridPane;
         assert columnIndex >= 0;
@@ -89,7 +87,7 @@ public class GridPaneDropTarget extends AbstractDropTarget {
         this.targetRowArea = targetRowArea;
     }
 
-    public GridPaneDropTarget(FXOMObject targetGridPane, int targetIndex) {
+    public GridPaneDropTarget(final FXOMObject targetGridPane, final int targetIndex) {
         assert targetGridPane != null;
         assert targetGridPane.getSceneGraphObject() instanceof GridPane;
         assert targetIndex >= -1;
@@ -99,7 +97,7 @@ public class GridPaneDropTarget extends AbstractDropTarget {
         this.targetColumnIndex = 0;
         this.targetRowIndex = 0;
         
-        final GridPane gridPane = (GridPane) targetGridPane.getSceneGraphObject();
+        final var gridPane = (GridPane) targetGridPane.getSceneGraphObject();
         if (Deprecation.getGridPaneColumnCount(gridPane) == 0) {
             this.targetColumnArea = ColumnArea.LEFT;
         } else {
@@ -137,38 +135,38 @@ public class GridPaneDropTarget extends AbstractDropTarget {
     }
 
     @Override
-    public boolean acceptDragSource(AbstractDragSource dragSource) {
+    public boolean acceptDragSource(final AbstractDragSource dragSource) {
         assert dragSource != null;
         
         final boolean result;
         if (dragSource.getDraggedObjects().isEmpty()) {
             result = false;
         } else {
-            final DesignHierarchyMask m = new DesignHierarchyMask(targetGridPane);
+            final var m = new DesignHierarchyMask(targetGridPane);
             if (m.isAcceptingSubComponent(dragSource.getDraggedObjects())) {
-                final FXOMObject draggedObject0 = dragSource.getDraggedObjects().get(0);
+                final var draggedObject0 = dragSource.getDraggedObjects().getFirst();
                 assert draggedObject0.getSceneGraphObject() instanceof Node;
                 
-                final Node draggedNode0 = (Node) draggedObject0.getSceneGraphObject();
-                final Integer columIndexObj = GridPane.getColumnIndex(draggedNode0);
-                final Integer rowIndexObj = GridPane.getRowIndex(draggedNode0);
-                final int currentColumnIndex = (columIndexObj == null) ? 0 : columIndexObj;
-                final int currentRowIndex = (rowIndexObj == null) ? 0 : rowIndexObj;
+                final var draggedNode0 = (Node) draggedObject0.getSceneGraphObject();
+                final var columIndexObj = GridPane.getColumnIndex(draggedNode0);
+                final var rowIndexObj = GridPane.getRowIndex(draggedNode0);
+                final var currentColumnIndex = (columIndexObj == null) ? 0 : columIndexObj;
+                final var currentRowIndex = (rowIndexObj == null) ? 0 : rowIndexObj;
                 
-                final boolean sameContainer 
+                final var sameContainer
                         = targetGridPane == draggedObject0.getParentObject();
-                final boolean sameColumnIndex
+                final var sameColumnIndex
                         = targetColumnIndex == currentColumnIndex;
-                final boolean sameRowIndex
+                final var sameRowIndex
                         = targetRowIndex == currentRowIndex;
-                final boolean sameArea
+                final var sameArea
                         = (targetColumnArea == ColumnArea.CENTER)
                         && (targetRowArea == RowArea.CENTER);
                         
-                result = (sameContainer == false) 
-                        || (sameColumnIndex == false)
-                        || (sameRowIndex == false)
-                        || (sameArea == false);
+                result = (!sameContainer)
+                        || (!sameColumnIndex)
+                        || (!sameRowIndex)
+                        || (!sameArea);
             } else {
                 result = false;
             }
@@ -178,19 +176,19 @@ public class GridPaneDropTarget extends AbstractDropTarget {
     }
 
     @Override
-    public Job makeDropJob(AbstractDragSource dragSource, EditorController editorController) {
+    public Job makeDropJob(final AbstractDragSource dragSource, final EditorController editorController) {
         assert acceptDragSource(dragSource); // (1)
         assert editorController != null;
         
-        final boolean shouldRefreshSceneGraph = true;
-        final BatchJob result = new BatchJob(editorController,
+        final var shouldRefreshSceneGraph = true;
+        final var result = new BatchJob(editorController,
                 shouldRefreshSceneGraph, dragSource.makeDropJobDescription());
         
-        final List<FXOMObject> draggedObjects = dragSource.getDraggedObjects();
-        final FXOMObject hitObject = dragSource.getHitObject();
-        final FXOMObject currentParent = hitObject.getParentObject();
-        final boolean reparenting = (currentParent != targetGridPane);
-        final GridPane gridPane = (GridPane) targetGridPane.getSceneGraphObject();
+        final var draggedObjects = dragSource.getDraggedObjects();
+        final var hitObject = dragSource.getHitObject();
+        final var currentParent = hitObject.getParentObject();
+        final var reparenting = (currentParent != targetGridPane);
+        final var gridPane = (GridPane) targetGridPane.getSceneGraphObject();
 
         //  Steps:
         //
@@ -221,7 +219,7 @@ public class GridPaneDropTarget extends AbstractDropTarget {
             
             // Step #3
             if (currentParent != null) {
-                for (FXOMObject draggedObject : draggedObjects) {
+                for (final var draggedObject : draggedObjects) {
                     result.addSubJob(new RemoveObjectJob(draggedObject,
                             editorController));
                 }
@@ -229,33 +227,33 @@ public class GridPaneDropTarget extends AbstractDropTarget {
         }
         
         // Step #4
-        final GridBounds snapshotBounds = gridSnapshot.getBounds();
-        final int hitColumnIndex = gridSnapshot.getColumnIndex(hitObject);
-        final int hitRowIndex = gridSnapshot.getRowIndex(hitObject);
-        final int destColumnIndex = (targetColumnArea == ColumnArea.RIGHT) ? targetColumnIndex+1 : targetColumnIndex;
-        final int destRowIndex = (targetRowArea == RowArea.BOTTOM) ? targetRowIndex+1 : targetRowIndex;
-        final int columnDelta = destColumnIndex - hitColumnIndex;
-        final int rowDelta = destRowIndex - hitRowIndex;
-        final GridBounds adjustedBounds = snapshotBounds.move(columnDelta, rowDelta);
+        final var snapshotBounds = gridSnapshot.getBounds();
+        final var hitColumnIndex = gridSnapshot.getColumnIndex(hitObject);
+        final var hitRowIndex = gridSnapshot.getRowIndex(hitObject);
+        final var destColumnIndex = (targetColumnArea == ColumnArea.RIGHT) ? targetColumnIndex + 1 : targetColumnIndex;
+        final var destRowIndex = (targetRowArea == RowArea.BOTTOM) ? targetRowIndex + 1 : targetRowIndex;
+        final var columnDelta = destColumnIndex - hitColumnIndex;
+        final var rowDelta = destRowIndex - hitRowIndex;
+        final var adjustedBounds = snapshotBounds.move(columnDelta, rowDelta);
         
         // Step #4.1 : columns
         switch(targetColumnArea) {
             case LEFT: 
             case RIGHT: { // Insert columns at destColumnIndex
-                final int insertCount = snapshotBounds.getColumnSpan();
+                final var insertCount = snapshotBounds.getColumnSpan();
                 result.addSubJob(new InsertColumnJob(targetGridPane, 
                         destColumnIndex, insertCount, editorController));
                 break;
             }
             case CENTER: {// Insert columns at right (first) and left ends if needed
-                final int targetColumnCount = Deprecation.getGridPaneColumnCount(gridPane);
+                final var targetColumnCount = Deprecation.getGridPaneColumnCount(gridPane);
                 if (adjustedBounds.getMaxColumnIndex() > targetColumnCount) {
-                    final int insertCount = adjustedBounds.getMaxColumnIndex() - targetColumnCount;
+                    final var insertCount = adjustedBounds.getMaxColumnIndex() - targetColumnCount;
                     result.addSubJob(new InsertColumnJob(targetGridPane, 
                             targetColumnCount, insertCount, editorController));
                 }
                 if (adjustedBounds.getMinColumnIndex() < 0) {
-                    final int insertCount = -adjustedBounds.getMinColumnIndex();
+                    final var insertCount = -adjustedBounds.getMinColumnIndex();
                     result.addSubJob(new InsertColumnJob(targetGridPane, 
                             0, insertCount, editorController));
                 }
@@ -267,20 +265,20 @@ public class GridPaneDropTarget extends AbstractDropTarget {
         switch(targetRowArea) {
             case TOP: 
             case BOTTOM: { // Insert rows at destRowIndex
-                final int insertCount = snapshotBounds.getRowSpan();
+                final var insertCount = snapshotBounds.getRowSpan();
                 result.addSubJob(new InsertRowJob(targetGridPane, 
                         destRowIndex, insertCount, editorController));
                 break;
             }
             case CENTER: { // Insert rows at bottom (first) and top ends if needed
-                final int targetRowCount = Deprecation.getGridPaneRowCount(gridPane);
+                final var targetRowCount = Deprecation.getGridPaneRowCount(gridPane);
                 if (adjustedBounds.getMaxRowIndex() > targetRowCount) {
-                    final int insertCount = adjustedBounds.getMaxRowIndex() - targetRowCount;
+                    final var insertCount = adjustedBounds.getMaxRowIndex() - targetRowCount;
                     result.addSubJob(new InsertRowJob(targetGridPane, 
                             targetRowCount, insertCount, editorController));
                 }
                 if (adjustedBounds.getMinRowIndex() < 0) {
-                    final int insertCount = -adjustedBounds.getMinRowIndex();
+                    final var insertCount = -adjustedBounds.getMinRowIndex();
                     result.addSubJob(new InsertRowJob(targetGridPane, 
                             0, insertCount, editorController));
                 }
@@ -291,7 +289,7 @@ public class GridPaneDropTarget extends AbstractDropTarget {
         if (reparenting) {
             
             // Step #5
-            for (FXOMObject draggedObject : draggedObjects) {
+            for (final var draggedObject : draggedObjects) {
                 final Job j = new InsertAsSubComponentJob(draggedObject, 
                         targetGridPane, targetIndex, editorController);
                 result.addSubJob(j);
@@ -299,7 +297,7 @@ public class GridPaneDropTarget extends AbstractDropTarget {
         }
         
         // Step #6
-        for (FXOMObject draggedObject : draggedObjects) {
+        for (final var draggedObject : draggedObjects) {
             assert draggedObject instanceof FXOMInstance; // Because (1)
             result.addSubJob(new MoveCellContentJob((FXOMInstance) draggedObject,
                     columnDelta, rowDelta, editorController));

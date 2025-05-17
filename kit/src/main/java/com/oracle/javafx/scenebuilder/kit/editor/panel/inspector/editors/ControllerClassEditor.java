@@ -46,20 +46,20 @@ public class ControllerClassEditor extends AutoSuggestEditor {
     private static final String PROPERTY_NAME = "Controller class"; //NOI18N
     private static final String DEFAULT_VALUE = null;
 
-    public ControllerClassEditor(List<String> suggestedClasses) {
+    public ControllerClassEditor(final List<String> suggestedClasses) {
         super(PROPERTY_NAME, DEFAULT_VALUE, suggestedClasses);
         initialize();
     }
     
     private void initialize() {
         // text field events handling
-        EventHandler<ActionEvent> onActionListener = event -> {
+        final EventHandler<ActionEvent> onActionListener = event -> {
             if (isHandlingError()) {
                 // Event received because of focus lost due to error dialog
                 return;
             }
-            
-            String value = textField.getText();
+
+            final var value = textField.getText();
             
             if (value != null && !value.isEmpty()) {
                 if (!JavaLanguage.isClassName(value)) {
@@ -74,13 +74,13 @@ public class ControllerClassEditor extends AutoSuggestEditor {
         setTextEditorBehavior(this, textField, onActionListener);
     }
 
-    public void reset(List<String> suggestedClasses) {
+    public void reset(final List<String> suggestedClasses) {
         super.reset(PROPERTY_NAME, DEFAULT_VALUE, suggestedClasses);
     }
 
     // DTL-6625. Compared to super implementation we do not call isSetValueDone.
     @Override
-    public void setValue(Object value) {
+    public void setValue(final Object value) {
         setValueGeneric(value);
 
         if (value == null) {

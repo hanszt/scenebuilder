@@ -39,18 +39,18 @@ public class I18N {
 
     private static ResourceBundle bundle;
 
-    public static String getString(String key) {
+    public static String getString(final String key) {
         return getBundle().getString(key);
     }
 
-    public static String getString(String key, Object... arguments) {
-        final String pattern = getString(key);
+    public static String getString(final String key, final Object... arguments) {
+        final var pattern = getString(key);
         return MessageFormat.format(pattern, arguments);
     }
 
     public static synchronized ResourceBundle getBundle() {
         if (bundle == null) {
-            final String packageName = I18N.class.getPackage().getName();
+            final var packageName = I18N.class.getPackage().getName();
             bundle = ResourceBundle.getBundle(packageName + ".SceneBuilderApp"); //NOI18N
         }
 

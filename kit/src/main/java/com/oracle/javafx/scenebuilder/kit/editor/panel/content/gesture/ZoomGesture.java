@@ -45,7 +45,7 @@ public class ZoomGesture extends AbstractGesture {
     
     private Observer observer;
 
-    public ZoomGesture(ContentPanelController contentPanelController) {
+    public ZoomGesture(final ContentPanelController contentPanelController) {
         super(contentPanelController);
     }
 
@@ -54,7 +54,7 @@ public class ZoomGesture extends AbstractGesture {
      */
     
     @Override
-    public void start(InputEvent e, Observer observer) {
+    public void start(final InputEvent e, final Observer observer) {
         
         assert e != null;
         assert e.getEventType() == ZoomEvent.ZOOM_STARTED;
@@ -75,9 +75,9 @@ public class ZoomGesture extends AbstractGesture {
      * Private
      */
     
-    private void updateContentPanelScaling(ZoomEvent e) {
-        assert Double.isNaN(e.getZoomFactor()) == false;
-        final double scaling = contentPanelController.getScaling();
+    private void updateContentPanelScaling(final ZoomEvent e) {
+        assert !Double.isNaN(e.getZoomFactor());
+        final var scaling = contentPanelController.getScaling();
         contentPanelController.setScaling(Math.min(5, scaling * e.getZoomFactor()));
     }
     

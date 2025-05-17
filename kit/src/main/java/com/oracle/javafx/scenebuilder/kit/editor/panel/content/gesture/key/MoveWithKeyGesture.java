@@ -32,13 +32,9 @@
 
 package com.oracle.javafx.scenebuilder.kit.editor.panel.content.gesture.key;
 
-import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
-import com.oracle.javafx.scenebuilder.kit.editor.JobManager;
-import com.oracle.javafx.scenebuilder.kit.editor.job.Job;
 import com.oracle.javafx.scenebuilder.kit.editor.job.RelocateSelectionJob;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.ContentPanelController;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import java.util.HashMap;
@@ -55,7 +51,7 @@ public class MoveWithKeyGesture extends AbstractKeyGesture {
     private double vectorX;
     private double vectorY;
 
-    public MoveWithKeyGesture(ContentPanelController contentPanelController) {
+    public MoveWithKeyGesture(final ContentPanelController contentPanelController) {
         super(contentPanelController);
         assert RelocateSelectionJob.isSelectionMovable(contentPanelController.getEditorController()); // (1)
     }
@@ -67,22 +63,22 @@ public class MoveWithKeyGesture extends AbstractKeyGesture {
     @Override
     protected void keyPressed() {
         
-        final double extend = getLastKeyEvent().isShiftDown() ? 10.0 : 1.0;
-        final double moveX = extend * vectorX;
-        final double moveY = extend * vectorY;
+        final var extend = getLastKeyEvent().isShiftDown() ? 10.0 : 1.0;
+        final var moveX = extend * vectorX;
+        final var moveY = extend * vectorY;
 
-        final Selection selection 
+        final var selection
                 = contentPanelController.getEditorController().getSelection();
         assert selection.getGroup() instanceof ObjectSelectionGroup; // Because (1)
-        final ObjectSelectionGroup osg
+        final var osg
                 = (ObjectSelectionGroup) selection.getGroup();
         
         /*
          * Updates layoutX/layoutY of the selected scene graph objects.
          */
-        for (FXOMObject selectedObject : osg.getFlattenItems()) {
+        for (final var selectedObject : osg.getFlattenItems()) {
             assert selectedObject.isNode(); // Because (1)
-            final Node node = (Node) selectedObject.getSceneGraphObject();
+            final var node = (Node) selectedObject.getSceneGraphObject();
             node.setLayoutX(node.getLayoutX() + moveX);
             node.setLayoutY(node.getLayoutY() + moveY);
         }
@@ -92,35 +88,35 @@ public class MoveWithKeyGesture extends AbstractKeyGesture {
     protected void keyReleased() {
         keyPressed();
         
-        final EditorController editorController
+        final var editorController
                 = contentPanelController.getEditorController();
-        final Selection selection 
+        final var selection
                 = editorController.getSelection();
         assert selection.getGroup() instanceof ObjectSelectionGroup; // Because (1)
         
-        final ObjectSelectionGroup osg
+        final var osg
                 = (ObjectSelectionGroup) selection.getGroup();
         
         // Builds a RelocateSelectionJob
         final Map<FXOMObject, Point2D> locationMap = new HashMap<>();
-        for (FXOMObject selectedObject : osg.getItems()) {
+        for (final var selectedObject : osg.getItems()) {
             assert selectedObject.isNode(); // Because (1)
             assert selectedObject instanceof FXOMInstance;
             
-            final Node node = (Node) selectedObject.getSceneGraphObject();
-            final Point2D layoutXY = new Point2D(node.getLayoutX(), node.getLayoutY());
+            final var node = (Node) selectedObject.getSceneGraphObject();
+            final var layoutXY = new Point2D(node.getLayoutX(), node.getLayoutY());
             locationMap.put(selectedObject, layoutXY);
         }
-        final RelocateSelectionJob newRelocateJob
+        final var newRelocateJob
                 = new RelocateSelectionJob(locationMap, editorController);
         
         // ... and pushes it
         // If the current job is already a RelocateSelectionJob,
         // then we see if the new job can be merged with it.
-        final JobManager jobManager = editorController.getJobManager();
-        final Job currentJob = jobManager.getCurrentJob();
+        final var jobManager = editorController.getJobManager();
+        final var currentJob = jobManager.getCurrentJob();
         if (currentJob instanceof RelocateSelectionJob) {
-            final RelocateSelectionJob currentRelocateJob = (RelocateSelectionJob) currentJob;
+            final var currentRelocateJob = (RelocateSelectionJob) currentJob;
             if (currentRelocateJob.canBeMergedWith(newRelocateJob)) {
                 newRelocateJob.execute();
                 currentRelocateJob.mergeWith(newRelocateJob);
@@ -136,7 +132,7 @@ public class MoveWithKeyGesture extends AbstractKeyGesture {
      * AbstractGesture
      */
     @Override
-    public void start(InputEvent e, Observer observer) {
+    public void start(final InputEvent e, final Observer observer) {
         super.start(e, observer);
 
         switch(getFirstKeyPressedEvent().getCode()) {

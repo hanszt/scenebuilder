@@ -37,7 +37,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import javafx.geometry.Point2D;
+
 import javafx.scene.Group;
 import javafx.scene.paint.Paint;
 
@@ -54,17 +54,17 @@ public class ResizingGuideRenderer {
     private final Paint chromeColor;
     private final double chromeSideLength;
     
-    public ResizingGuideRenderer(Paint chromeColor, double chromeSideLength) {
+    public ResizingGuideRenderer(final Paint chromeColor, final double chromeSideLength) {
         this.chromeColor = chromeColor;
         this.chromeSideLength = chromeSideLength;
         guideGroup.setMouseTransparent(true);
     }
     
-    public void setSegments(List<AbstractSegment> segments) {
+    public void setSegments(final List<AbstractSegment> segments) {
         assert segments != null;
         assert guideGroup.getScene() != null;
         
-        final Set<AbstractSegment> currentSegments = chromeMap.keySet();
+        final var currentSegments = chromeMap.keySet();
         
         final Set<AbstractSegment> newSegments = new HashSet<>();
         newSegments.addAll(segments);
@@ -74,15 +74,15 @@ public class ResizingGuideRenderer {
         obsoleteSegments.addAll(currentSegments);
         obsoleteSegments.removeAll(segments);
         
-        for (AbstractSegment s : obsoleteSegments) {
-            final ResizingGuideChrome chrome = chromeMap.get(s);
+        for (final var s : obsoleteSegments) {
+            final var chrome = chromeMap.get(s);
             assert chrome != null;
             reusableChromes.add(chrome);
             chromeMap.remove(s);
             chrome.setVisible(false);
         }
         
-        for (AbstractSegment s : newSegments) {
+        for (final var s : newSegments) {
             final ResizingGuideChrome chrome;
             if (reusableChromes.isEmpty()) {
                 chrome = new ResizingGuideChrome(chromeSideLength);
@@ -94,8 +94,8 @@ public class ResizingGuideRenderer {
                 reusableChromes.remove(chrome);
                 chrome.setVisible(true);
             }
-            final Point2D p1 = guideGroup.sceneToLocal(s.getX1(), s.getY1(), true /* rootScene */);
-            final Point2D p2 = guideGroup.sceneToLocal(s.getX2(), s.getY2(), true /* rootScene */);
+            final var p1 = guideGroup.sceneToLocal(s.getX1(), s.getY1(), true /* rootScene */);
+            final var p2 = guideGroup.sceneToLocal(s.getX2(), s.getY2(), true /* rootScene */);
             chrome.setup(p1.getX(), p1.getY(), p2.getX(), p2.getY());
             chromeMap.put(s, chrome);
         }

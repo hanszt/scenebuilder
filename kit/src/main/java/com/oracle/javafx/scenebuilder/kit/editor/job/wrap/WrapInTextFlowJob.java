@@ -39,7 +39,7 @@ import javafx.scene.text.TextFlow;
  */
 public class WrapInTextFlowJob extends AbstractWrapInSubComponentJob {
 
-    public WrapInTextFlowJob(EditorController editorController) {
+    public WrapInTextFlowJob(final EditorController editorController) {
         super(editorController);
         newContainerClass = TextFlow.class;
     }

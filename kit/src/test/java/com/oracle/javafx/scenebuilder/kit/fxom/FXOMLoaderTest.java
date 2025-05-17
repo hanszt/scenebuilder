@@ -34,7 +34,6 @@ package com.oracle.javafx.scenebuilder.kit.fxom;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -54,24 +53,24 @@ public class FXOMLoaderTest {
 
     @Test
     public void that_LoadException_caused_by_XMLStreamException_is_handled() throws Exception {
-        String invalidXmlText = FXOMDocument.readContentFromURL(getClass().getResource("IncompleteXml.fxml"));
-        URL validResource = getClass().getResource("CompleteFxml.fxml");
-        String validFxmlText = FXOMDocument.readContentFromURL(validResource);
-        FXOMDocument document = new FXOMDocument(validFxmlText, validResource, null, null);
+        final var invalidXmlText = FXOMDocument.readContentFromURL(getClass().getResource("IncompleteXml.fxml"));
+        final var validResource = getClass().getResource("CompleteFxml.fxml");
+        final var validFxmlText = FXOMDocument.readContentFromURL(validResource);
+        final var document = new FXOMDocument(validFxmlText, validResource, null, null);
 
         // When there are exceptions, then the error handler should store these here
-        Map<Class<?>, Throwable> handledErrors = new HashMap<>();
+        final Map<Class<?>, Throwable> handledErrors = new HashMap<>();
         
         // In Scene Builder, the error is displayed in an error dialog.
         // For testing, this custom error handler replaces the dialog.
-        Consumer<Exception> errorHandler = ex -> {
+        final Consumer<Exception> errorHandler = ex -> {
             handledErrors.put(ex.getClass(), ex);
             if (ex.getCause() != null) {
                 handledErrors.put(ex.getCause().getClass(), ex.getCause());
             }
         };
 
-        FXOMLoader classUnderTest = new FXOMLoader(document, errorHandler);
+        final var classUnderTest = new FXOMLoader(document, errorHandler);
         assertDoesNotThrow(()->classUnderTest.load(invalidXmlText));
 
         assertTrue(handledErrors.values().stream().anyMatch(v -> v instanceof XMLStreamException));

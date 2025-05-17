@@ -81,7 +81,7 @@ public enum CardinalPoint {
     }
     
     
-    public Point2D getPosition(Bounds bounds) {
+    public Point2D getPosition(final Bounds bounds) {
         final double x, y;
         
         switch(this) {
@@ -128,7 +128,7 @@ public enum CardinalPoint {
     }
     
     
-    public Bounds getResizedBounds(Bounds currentBounds, double dx, double dy) {
+    public Bounds getResizedBounds(final Bounds currentBounds, final double dx, final double dy) {
         /*
          * 
          *        NW                N                NE
@@ -147,8 +147,8 @@ public enum CardinalPoint {
          */
 
         // x axis
-        final double minX = currentBounds.getMinX();
-        final double maxX = currentBounds.getMaxX();
+        final var minX = currentBounds.getMinX();
+        final var maxX = currentBounds.getMaxX();
         final double newMinX, newMaxX;
         switch(this) {
             case NW:
@@ -177,8 +177,8 @@ public enum CardinalPoint {
         }
         
         // y axis
-        final double minY = currentBounds.getMinY();
-        final double maxY = currentBounds.getMaxY();
+        final var minY = currentBounds.getMinY();
+        final var maxY = currentBounds.getMaxY();
         final double newMinY, newMaxY;
         switch(this) {
             case NW:
@@ -210,7 +210,7 @@ public enum CardinalPoint {
     }
     
     
-    public Point2D clampVector(double dx, double dy) {
+    public Point2D clampVector(final double dx, final double dy) {
         final double resultDX, resultDY;
         
         switch(this) {
@@ -234,7 +234,7 @@ public enum CardinalPoint {
     }
     
     
-    public Bounds snapBounds(Bounds bounds, double ratio) {
+    public Bounds snapBounds(final Bounds bounds, final double ratio) {
         /*
          * 
          *        NW                N                NE
@@ -252,14 +252,14 @@ public enum CardinalPoint {
          * 
          */
         
-        final double minX = bounds.getMinX();
-        final double minY = bounds.getMinY();
-        final double maxX = bounds.getMaxX();
-        final double maxY = bounds.getMaxY();
-        final double snapWidth = bounds.getHeight() / ratio;
-        final double snapDX = snapWidth - bounds.getWidth();
-        final double snapHeight = bounds.getWidth() * ratio;
-        final double snapDY = snapHeight - bounds.getHeight();
+        final var minX = bounds.getMinX();
+        final var minY = bounds.getMinY();
+        final var maxX = bounds.getMaxX();
+        final var maxY = bounds.getMaxY();
+        final var snapWidth = bounds.getHeight() / ratio;
+        final var snapDX = snapWidth - bounds.getWidth();
+        final var snapHeight = bounds.getWidth() * ratio;
+        final var snapDY = snapHeight - bounds.getHeight();
         final double newMinX, newMinY, newMaxX, newMaxY;
 
         // x axis

@@ -31,7 +31,6 @@
  */
 package com.oracle.javafx.scenebuilder.kit.editor.drag;
 
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -50,7 +49,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.job.BatchJob;
 import com.oracle.javafx.scenebuilder.kit.editor.job.Job;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.BackupSelectionJob;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.UpdateSelectionJob;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyPath;
 
 /**
@@ -70,18 +68,18 @@ public class DragController {
     private AbstractDropTarget committedDropTarget;
     private Timer mouseTimer;
     
-    public DragController(EditorController editorController) {
+    public DragController(final EditorController editorController) {
         this.editorController = editorController;
     }
     
-    public void begin(AbstractDragSource dragSource) {
+    public void begin(final AbstractDragSource dragSource) {
         assert dragSource != null;
         assert dragSource.isAcceptable();
         assert getDragSource() == null;
         assert getDropTarget() == null;
         assert liveUpdater == null;
         assert backupSelectionJob == null;
-        assert dropAccepted == false;
+        assert !dropAccepted;
         assert committedDropTarget == null;
         assert mouseTimer == null;
         
@@ -111,11 +109,11 @@ public class DragController {
 
         if (committedDropTarget != null) {
             assert committedDropTarget.acceptDragSource(getDragSource());
-            final Job dropJob 
+            final var dropJob
                     = committedDropTarget.makeDropJob(getDragSource(), editorController);
             final Job selectJob 
                     = new UpdateSelectionJob(getDragSource().getDraggedObjects(), editorController);
-            final BatchJob batchJob 
+            final var batchJob
                     = new BatchJob(editorController, dropJob.getDescription());
             if (committedDropTarget.isSelectRequiredAfterDrop()) {
                 batchJob.addSubJob(backupSelectionJob);
@@ -146,7 +144,7 @@ public class DragController {
         return dragSourceProperty;
     }
     
-    public void setDropTarget(AbstractDropTarget newDropTarget) {
+    public void setDropTarget(final AbstractDropTarget newDropTarget) {
         assert getDragSource() != null;
         assert (newDropTarget == null) || (this.committedDropTarget == null);
         
@@ -169,11 +167,11 @@ public class DragController {
         if (dropAccepted) {
             assert getDropTarget() != null;
             assert getDropTarget().acceptDragSource(getDragSource());
-            assert getDragSource().getDraggedObjects().isEmpty() == false;
+            assert !getDragSource().getDraggedObjects().isEmpty();
             
-            final FXOMObject firstObject = getDragSource().getDraggedObjects().get(0);
-            final FXOMObject currentParent = firstObject.getParentObject();
-            final FXOMObject nextParent = getDropTarget().getTargetObject();
+            final var firstObject = getDragSource().getDraggedObjects().getFirst();
+            final var currentParent = firstObject.getParentObject();
+            final var nextParent = getDropTarget().getTargetObject();
             
             if ((currentParent == nextParent) && liveUpdateEnabled) {
                 liveUpdater.setDropTarget(newDropTarget);
@@ -238,7 +236,7 @@ public class DragController {
     
     private static final long MOUSE_TIMER_DELAY = 500; // ms
     private void trackMouse() {
-        final boolean runAsDaemon = true;
+        final var runAsDaemon = true;
         
         if (mouseTimer == null) {
             mouseTimer = new Timer(runAsDaemon);
@@ -265,7 +263,7 @@ public class DragController {
      * @return true if one of the dragged object is in the parent chain of the
      * specified drop target, false otherwise
      */
-    private boolean isDragSourceInParentChain(AbstractDropTarget newDropTarget) {
+    private boolean isDragSourceInParentChain(final AbstractDropTarget newDropTarget) {
         assert newDropTarget != null;
         boolean result;
         
@@ -273,16 +271,16 @@ public class DragController {
             // dragSource is dragged over an empty document
             result = false;
         } else {
-            final List<FXOMObject> draggedObjects
+            final var draggedObjects
                     = getDragSource().getDraggedObjects();
-            final DesignHierarchyPath dropTargetPath
+            final var dropTargetPath
                     = new DesignHierarchyPath(newDropTarget.getTargetObject());
             
             result = false;
-            for (FXOMObject draggedObject : draggedObjects) {
-                final DesignHierarchyPath draggedObjectPath
+            for (final var draggedObject : draggedObjects) {
+                final var draggedObjectPath
                         = new DesignHierarchyPath(draggedObject);
-                final DesignHierarchyPath commonPath
+                final var commonPath
                         = draggedObjectPath.getCommonPathWith(dropTargetPath);
                 // If one of the dragged objects is in the parent chain 
                 // of the drop target, we abort the DND gesture

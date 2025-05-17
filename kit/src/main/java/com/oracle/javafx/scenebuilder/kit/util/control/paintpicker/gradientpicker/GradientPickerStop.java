@@ -32,10 +32,6 @@
  */
 package com.oracle.javafx.scenebuilder.kit.util.control.paintpicker.gradientpicker;
 
-import com.oracle.javafx.scenebuilder.kit.util.control.paintpicker.PaintPicker.Mode;
-import com.oracle.javafx.scenebuilder.kit.util.control.paintpicker.PaintPickerController;
-import com.oracle.javafx.scenebuilder.kit.util.control.paintpicker.colorpicker.ColorPicker;
-
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Side;
@@ -57,7 +53,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.CustomMenuItem;
 import javafx.scene.control.TextField;
-import javafx.scene.paint.Paint;
 
 /**
  * Controller class for the gradient editor stop.
@@ -91,13 +86,13 @@ public class GradientPickerStop extends VBox {
     /*
      * Clamp value to be between min and max.
      */
-    private static double clamp(double min, double value, double max) {
+    private static double clamp(final double min, final double value, final double max) {
         if (value < min) return min;
         if (value > max) return max;
         return value;
     }
 
-    public GradientPickerStop(GradientPicker ge, double mini, double maxi, double val, Color c) {
+    public GradientPickerStop(final GradientPicker ge, final double mini, final double maxi, final double val, final Color c) {
         gradientPicker = ge;
         min = mini;
         max = maxi;
@@ -106,7 +101,7 @@ public class GradientPickerStop extends VBox {
         initialize();
     }
 
-    public void setOffset(double val) {
+    public void setOffset(final double val) {
         offset = clamp(min, val, max);
         valueToPixels();
     }
@@ -115,7 +110,7 @@ public class GradientPickerStop extends VBox {
         return offset;
     }
 
-    public void setColor(Color c) {
+    public void setColor(final Color c) {
         color = c;
         chip_rect.setFill(c);
     }
@@ -124,7 +119,7 @@ public class GradientPickerStop extends VBox {
         return color;
     }
 
-    public void setSelected(boolean selected) {
+    public void setSelected(final boolean selected) {
         isSelected = selected;
         if (selected) {
             indicator_image.setVisible(true);
@@ -139,13 +134,13 @@ public class GradientPickerStop extends VBox {
 
     private void initialize() {
 
-        final FXMLLoader loader = new FXMLLoader();
+        final var loader = new FXMLLoader();
         loader.setLocation(GradientPickerStop.class.getResource("GradientPickerStop.fxml")); //NOI18N
         loader.setController(this);
         loader.setRoot(this);
         try {
             loader.load();
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             Logger.getLogger(GradientPicker.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -157,7 +152,7 @@ public class GradientPickerStop extends VBox {
         chip_rect.setFill(color);
         gradientPicker.setSelectedStop(this);
         
-        stop_button.setOnAction((ActionEvent event) -> {
+        stop_button.setOnAction((final ActionEvent event) -> {
             event.consume();
         });
 
@@ -171,33 +166,33 @@ public class GradientPickerStop extends VBox {
     }
     
     @FXML
-    void stopAction(ActionEvent event) {
-        double val = Double.valueOf(offset_textfield.getText());
+    void stopAction(final ActionEvent event) {
+        final double val = Double.valueOf(offset_textfield.getText());
         setOffset(val);
         showHUD();
         // Called when moving a gradient stop :
         // - update gradient preview accordingly
         // - update model
-        final PaintPickerController paintPicker
+        final var paintPicker
                 = gradientPicker.getPaintPickerController();
-        final Mode mode = paintPicker.getMode();
-        final Paint value = gradientPicker.getValue(mode);
+        final var mode = paintPicker.getMode();
+        final var value = gradientPicker.getValue(mode);
         gradientPicker.updatePreview(value);
         // Update model
         paintPicker.setPaintProperty(value);
     }
 
     @FXML
-    void thumbKeyPressed(KeyEvent e) {
+    void thumbKeyPressed(final KeyEvent e) {
         if (e.getCode() == KeyCode.BACK_SPACE || e.getCode() == KeyCode.DELETE) {
             gradientPicker.removeStop(this);
             // Called when removing a gradient stop :
             // - update gradient preview accordingly
             // - update model
-            final PaintPickerController paintPicker
+            final var paintPicker
                     = gradientPicker.getPaintPickerController();
-            final Mode mode = paintPicker.getMode();
-            final Paint value = gradientPicker.getValue(mode);
+            final var mode = paintPicker.getMode();
+            final var value = gradientPicker.getValue(mode);
             gradientPicker.updatePreview(value);
             // Update model
             paintPicker.setPaintProperty(value);
@@ -206,7 +201,7 @@ public class GradientPickerStop extends VBox {
     }
 
     @FXML
-    void thumbMousePressed(MouseEvent event) {
+    void thumbMousePressed(final MouseEvent event) {
         gradientPicker.setSelectedStop(this);
         startDragX = event.getSceneX();
         origX = getLayoutX();
@@ -216,9 +211,9 @@ public class GradientPickerStop extends VBox {
         // Called when selecting a gradient stop :
         // - update color preview accordingly
         // - do not update the model
-        final PaintPickerController paintPicker
+        final var paintPicker
                 = gradientPicker.getPaintPickerController();
-        final ColorPicker colorPicker = paintPicker.getColorPicker();
+        final var colorPicker = paintPicker.getColorPicker();
         colorPicker.updateUI(color);
         stop_button.requestFocus();
     }
@@ -229,10 +224,10 @@ public class GradientPickerStop extends VBox {
     }
 
     @FXML
-    void thumbMouseDragged(MouseEvent event) {
-        double dragValue = event.getSceneX() - startDragX;
-        double deltaX = origX + dragValue;
-        double trackWidth = getParent().getBoundsInLocal().getWidth();
+    void thumbMouseDragged(final MouseEvent event) {
+        final var dragValue = event.getSceneX() - startDragX;
+        final var deltaX = origX + dragValue;
+        final var trackWidth = getParent().getBoundsInLocal().getWidth();
         final Double newX = clamp(edgeMargin, deltaX, (trackWidth - (getWidth() + edgeMargin)));
         setLayoutX(newX);
 //        showHUD();
@@ -240,10 +235,10 @@ public class GradientPickerStop extends VBox {
         // Called when moving a gradient stop :
         // - update gradient preview accordingly
         // - update model
-        final PaintPickerController paintPicker
+        final var paintPicker
                 = gradientPicker.getPaintPickerController();
-        final Mode mode = paintPicker.getMode();
-        final Paint value = gradientPicker.getValue(mode);
+        final var mode = paintPicker.getMode();
+        final var value = gradientPicker.getValue(mode);
         gradientPicker.updatePreview(value);
         // Update model
         paintPicker.setPaintProperty(value);
@@ -255,16 +250,16 @@ public class GradientPickerStop extends VBox {
     }
 
     private void valueToPixels() {
-        double stopValue = clamp(min, offset, max);
-        double availablePixels = getParent().getLayoutBounds().getWidth() - (thumbWidth + edgeMargin);
-        double range = max - min;
-        double pixelPosition = ((availablePixels / range) * stopValue);
+        final var stopValue = clamp(min, offset, max);
+        final var availablePixels = getParent().getLayoutBounds().getWidth() - (thumbWidth + edgeMargin);
+        final var range = max - min;
+        final var pixelPosition = ((availablePixels / range) * stopValue);
         setLayoutX(pixelPosition);
     }
 
     private void pixelsToValue() {
-        double range = max - min;
-        double availablePixels = getParent().getLayoutBounds().getWidth() - (thumbWidth + edgeMargin);
+        final var range = max - min;
+        final var availablePixels = getParent().getLayoutBounds().getWidth() - (thumbWidth + edgeMargin);
         setOffset(min + (getLayoutX() * (range / availablePixels)));
     }
 }

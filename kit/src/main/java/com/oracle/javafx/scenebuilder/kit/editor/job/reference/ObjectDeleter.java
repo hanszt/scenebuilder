@@ -42,7 +42,6 @@ import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMNode;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMNodes;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMProperty;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyC;
 import java.util.LinkedList;
 import java.util.List;
@@ -56,24 +55,24 @@ public class ObjectDeleter {
     private final FXOMDocument fxomDocument;
     private final List<Job> executedJobs = new LinkedList<>();
     
-    public ObjectDeleter(EditorController editorController) {
+    public ObjectDeleter(final EditorController editorController) {
         assert editorController != null;
         assert editorController.getFxomDocument() != null;
         this.editorController = editorController;
         this.fxomDocument = editorController.getFxomDocument();
     }
     
-    public void delete(FXOMObject target) {
-        final FXOMNode node = prepareDeleteObject(target, target);
+    public void delete(final FXOMObject target) {
+        final var node = prepareDeleteObject(target, target);
         
         if (node == target) {
-            final RemoveObjectJob removeJob = new RemoveObjectJob(target, editorController);
+            final var removeJob = new RemoveObjectJob(target, editorController);
             removeJob.execute();
             executedJobs.add(removeJob);
         }
     }
     
-    public void prepareDelete(FXOMObject target) {
+    public void prepareDelete(final FXOMObject target) {
         assert target != null;
         assert target.getFxomDocument() == fxomDocument;
         assert fxomDocument.getFxomRoot() != null; // At least target
@@ -90,16 +89,16 @@ public class ObjectDeleter {
      * Private
      */
     
-    private FXOMNode prepareDeleteObject(FXOMObject node, FXOMObject target) {
+    private FXOMNode prepareDeleteObject(final FXOMObject node, final FXOMObject target) {
         final FXOMNode result;
         
-        final String nodeFxId = node.getFxId();
+        final var nodeFxId = node.getFxId();
         if (nodeFxId == null) {
             // node has no fx:id : it can be deleted safely
             result = node;
         } else {
-            final FXOMObject fxomRoot = fxomDocument.getFxomRoot();
-            final List<FXOMNode> references = fxomRoot.collectReferences(nodeFxId, target);
+            final var fxomRoot = fxomDocument.getFxomRoot();
+            final var references = fxomRoot.collectReferences(nodeFxId, target);
             if (references.isEmpty()) {
                 // node has an fx:id but this one is not referenced
                 // outside of the delete target : it can be deleted safely
@@ -110,7 +109,7 @@ public class ObjectDeleter {
                 // => we remove all the weak references between node and R
                 // => we combine node with R
                 FXOMNode firstReference = null;
-                for (FXOMNode r : references) {
+                for (final var r : references) {
                     if (FXOMNodes.isWeakReference(r)) {
                         // This weak reference will become a forward reference
                         // after the deletion => we remove it.
@@ -141,18 +140,18 @@ public class ObjectDeleter {
         
         if (result == node) {
             if (node instanceof FXOMInstance) {
-                final FXOMInstance fxomInstance = (FXOMInstance) node;
-                for (FXOMProperty p : new LinkedList<>(fxomInstance.getProperties().values())) {
+                final var fxomInstance = (FXOMInstance) node;
+                for (final var p : new LinkedList<>(fxomInstance.getProperties().values())) {
                     if (p instanceof FXOMPropertyC) {
-                        final FXOMPropertyC cp = (FXOMPropertyC) p;
-                        for (FXOMObject value : new LinkedList<>(cp.getValues())) {
+                        final var cp = (FXOMPropertyC) p;
+                        for (final var value : new LinkedList<>(cp.getValues())) {
                             prepareDeleteObject(value, target);
                         }
                     }
                 }
             } else if (result instanceof FXOMCollection) {
-                final FXOMCollection fxomCollection = (FXOMCollection) result;
-                for (FXOMObject i : new LinkedList<>(fxomCollection.getItems())) {
+                final var fxomCollection = (FXOMCollection) result;
+                for (final var i : new LinkedList<>(fxomCollection.getItems())) {
                     prepareDeleteObject(i, target);
                 }
             } // else no prework needed

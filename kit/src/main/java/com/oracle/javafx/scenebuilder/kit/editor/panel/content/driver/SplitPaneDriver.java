@@ -46,7 +46,7 @@ import javafx.scene.layout.Region;
  */
 public class SplitPaneDriver extends AbstractNodeDriver {
 
-    public SplitPaneDriver(ContentPanelController contentPanelController) {
+    public SplitPaneDriver(final ContentPanelController contentPanelController) {
         super(contentPanelController);
     }
 
@@ -55,13 +55,13 @@ public class SplitPaneDriver extends AbstractNodeDriver {
      */
     
     @Override
-    public AbstractResizer<?> makeResizer(FXOMObject fxomObject) {
+    public AbstractResizer<?> makeResizer(final FXOMObject fxomObject) {
         assert fxomObject.getSceneGraphObject() instanceof SplitPane;
         return new RegionResizer((Region) fxomObject.getSceneGraphObject());
     }
 
     @Override
-    public AbstractHandles<?> makeHandles(FXOMObject fxomObject) {
+    public AbstractHandles<?> makeHandles(final FXOMObject fxomObject) {
         assert fxomObject instanceof FXOMInstance;
         assert fxomObject.getSceneGraphObject() instanceof SplitPane;
         return new SplitPaneHandles(contentPanelController, (FXOMInstance) fxomObject);

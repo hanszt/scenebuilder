@@ -38,14 +38,12 @@ import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.RemovePropertyJob;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.AbstractSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMCollection;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMProperty;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyC;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyT;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
-import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -63,10 +61,10 @@ public class InsertAsSubComponentJob extends BatchSelectionJob {
     private final int targetIndex;
 
     public InsertAsSubComponentJob(
-            FXOMObject newObject,
-            FXOMObject targetObject,
-            int targetIndex,
-            EditorController editorController) {
+            final FXOMObject newObject,
+            final FXOMObject targetObject,
+            final int targetIndex,
+            final EditorController editorController) {
         super(editorController);
 
         assert newObject != null;
@@ -86,7 +84,7 @@ public class InsertAsSubComponentJob extends BatchSelectionJob {
         
         final boolean executable;
         if (targetObject instanceof FXOMInstance) {
-            final DesignHierarchyMask mask = new DesignHierarchyMask(targetObject);
+            final var mask = new DesignHierarchyMask(targetObject);
             executable = mask.isAcceptingSubComponent(newObject);
         } else {
             // TODO(elp): someday we should support insering in FXOMCollection
@@ -94,10 +92,10 @@ public class InsertAsSubComponentJob extends BatchSelectionJob {
         }
         
         if (executable) {
-            final FXOMDocument fxomDocument = targetObject.getFxomDocument();
-            final FXOMInstance targetInstance = (FXOMInstance) targetObject;
-            final DesignHierarchyMask mask = new DesignHierarchyMask(targetObject);
-            final PropertyName subComponentName = mask.getSubComponentPropertyName();
+            final var fxomDocument = targetObject.getFxomDocument();
+            final var targetInstance = (FXOMInstance) targetObject;
+            final var mask = new DesignHierarchyMask(targetObject);
+            final var subComponentName = mask.getSubComponentPropertyName();
             assert subComponentName != null;
 
             /*
@@ -114,7 +112,7 @@ public class InsertAsSubComponentJob extends BatchSelectionJob {
              *          => newObject must be inserted in the FXOMPropertyC
              */
 
-            final FXOMProperty currentProperty
+            final var currentProperty
                     = targetInstance.getProperties().get(subComponentName);
            
             final FXOMPropertyC targetProperty;
@@ -160,7 +158,7 @@ public class InsertAsSubComponentJob extends BatchSelectionJob {
             final Job pruneJob = new PrunePropertiesJob(newObject, targetObject, 
                     getEditorController());
             if (pruneJob.isExecutable()) {
-                result.add(0, pruneJob);
+                result.addFirst(pruneJob);
             }
             
         } else {
@@ -172,12 +170,12 @@ public class InsertAsSubComponentJob extends BatchSelectionJob {
 
     @Override
     protected String makeDescription() {
-        final StringBuilder sb = new StringBuilder();
+        final var sb = new StringBuilder();
 
         sb.append("Insert ");
 
         if (newObject instanceof FXOMInstance) {
-            final Object sceneGraphObject = newObject.getSceneGraphObject();
+            final var sceneGraphObject = newObject.getSceneGraphObject();
             if (sceneGraphObject != null) {
                 sb.append(sceneGraphObject.getClass().getSimpleName());
             } else {

@@ -57,21 +57,21 @@ public class FXOMIntrinsic extends FXOMObject {
     private Object sourceSceneGraphObject;
 
     
-    FXOMIntrinsic(FXOMDocument document, GlueElement glueElement, Object targetSceneGraphObject,  List<FXOMProperty> properties) {
+    FXOMIntrinsic(final FXOMDocument document, final GlueElement glueElement, final Object targetSceneGraphObject, final List<FXOMProperty> properties) {
         super(document, glueElement, null);
         this.sourceSceneGraphObject = targetSceneGraphObject;
-        for (FXOMProperty p : properties) {
+        for (final var p : properties) {
             this.properties.put(p.getName(), p);
         }
     }
     
-    public FXOMIntrinsic(FXOMDocument document, Type type, String source) {
+    public FXOMIntrinsic(final FXOMDocument document, final Type type, final String source) {
         super(document, makeTagNameFromType(type));
         getGlueElement().getAttributes().put(SOURCE_PROPERTY, source);
     }
 
-    public void addIntrinsicProperty(FXOMDocument fxomDocument) {
-        final Map<String, String> attributes = this.getGlueElement().getAttributes();
+    public void addIntrinsicProperty(final FXOMDocument fxomDocument) {
+        final var attributes = this.getGlueElement().getAttributes();
         if(attributes.containsKey(CHARSET_PROPERTY)) {
             createAndInsertProperty(attributes, fxomDocument, CHARSET_PROPERTY);
         }
@@ -80,18 +80,18 @@ public class FXOMIntrinsic extends FXOMObject {
         }
     }
 
-    private void createAndInsertProperty(Map<String, String> attributes, FXOMDocument fxomDocument, String propertyKey) {
-        final String valueString = attributes.get(propertyKey);
-        PropertyName propertyName = new PropertyName(propertyKey);
-        FXOMProperty property = new FXOMPropertyT(fxomDocument, propertyName, valueString);
+    private void createAndInsertProperty(final Map<String, String> attributes, final FXOMDocument fxomDocument, final String propertyKey) {
+        final var valueString = attributes.get(propertyKey);
+        final var propertyName = new PropertyName(propertyKey);
+        final FXOMProperty property = new FXOMPropertyT(fxomDocument, propertyName, valueString);
         this.getProperties().put(propertyName, property);
     }
 
     public void removeCharsetProperty() {
-        final Map<String, String> attributes = this.getGlueElement().getAttributes();
+        final var attributes = this.getGlueElement().getAttributes();
         if(attributes.containsKey(CHARSET_PROPERTY)) {
             attributes.remove(CHARSET_PROPERTY);
-            PropertyName charsetPropertyName = new PropertyName(CHARSET_PROPERTY);
+            final var charsetPropertyName = new PropertyName(CHARSET_PROPERTY);
             this.getProperties().remove(charsetPropertyName);
         }
     }
@@ -121,7 +121,7 @@ public class FXOMIntrinsic extends FXOMObject {
         return getGlueElement().getAttributes().get(SOURCE_PROPERTY);
     }
 
-    public void setSource(String source) {
+    public void setSource(final String source) {
         if (source == null) {
             getGlueElement().getAttributes().remove(SOURCE_PROPERTY);
         } else {
@@ -133,7 +133,7 @@ public class FXOMIntrinsic extends FXOMObject {
         return sourceSceneGraphObject;
     }
 
-    public void setSourceSceneGraphObject(Object sourceSceneGraphObject) {
+    public void setSourceSceneGraphObject(final Object sourceSceneGraphObject) {
         this.sourceSceneGraphObject = sourceSceneGraphObject;
     }
     
@@ -141,14 +141,14 @@ public class FXOMIntrinsic extends FXOMObject {
         return properties;
     }
 
-    public void fillProperties(Map<PropertyName, FXOMProperty> properties ) {
-        for (FXOMProperty p : properties.values()) {
+    public void fillProperties(final Map<PropertyName, FXOMProperty> properties ) {
+        for (final var p : properties.values()) {
             this.properties.put(p.getName(), p);
         }
     }
 
     public FXOMInstance createFxomInstanceFromIntrinsic() {
-        FXOMInstance fxomInstance = new FXOMInstance(this.getFxomDocument(), this.getGlueElement());
+        final var fxomInstance = new FXOMInstance(this.getFxomDocument(), this.getGlueElement());
         fxomInstance.setSceneGraphObject(this.getSourceSceneGraphObject());
         fxomInstance.setDeclaredClass(this.getClass());
         if(!this.getProperties().isEmpty()) {
@@ -169,8 +169,8 @@ public class FXOMIntrinsic extends FXOMObject {
 
 
     @Override
-    public FXOMObject searchWithSceneGraphObject(Object sceneGraphObject) {
-        FXOMObject result;
+    public FXOMObject searchWithSceneGraphObject(final Object sceneGraphObject) {
+        final FXOMObject result;
         
         if (getType() == Type.FX_INCLUDE) {
             result = super.searchWithSceneGraphObject(sceneGraphObject);
@@ -182,8 +182,8 @@ public class FXOMIntrinsic extends FXOMObject {
     }
 
     @Override
-    public FXOMObject searchWithFxId(String fxId) {
-        FXOMObject result;
+    public FXOMObject searchWithFxId(final String fxId) {
+        final FXOMObject result;
         
         if (getType() == Type.FX_INCLUDE) {
             result = super.searchWithFxId(fxId);
@@ -195,27 +195,27 @@ public class FXOMIntrinsic extends FXOMObject {
     }
 
     @Override
-    protected void collectDeclaredClasses(Set<Class<?>> result) {
+    protected void collectDeclaredClasses(final Set<Class<?>> result) {
         // Nothing to collect in this kind of object
     }
 
     @Override
-    protected void collectNullProperties(List<FXOMPropertyT> result) {
+    protected void collectNullProperties(final List<FXOMPropertyT> result) {
         // Nothing to collect in this kind of object
     }
 
     @Override
-    protected void collectPropertiesT(List<FXOMPropertyT> result) {
+    protected void collectPropertiesT(final List<FXOMPropertyT> result) {
         // Nothing to collect in this kind of object
     }
 
     @Override
-    protected void collectProperties(PropertyName propertyName, List<FXOMProperty> result) {
+    protected void collectProperties(final PropertyName propertyName, final List<FXOMProperty> result) {
         // Nothing to collect in this kind of object
     }
 
     @Override
-    protected void collectReferences(String source, List<FXOMIntrinsic> result) {
+    protected void collectReferences(final String source, final List<FXOMIntrinsic> result) {
         assert result != null;
         
         if ((getType() == Type.FX_REFERENCE) 
@@ -225,7 +225,7 @@ public class FXOMIntrinsic extends FXOMObject {
     }
 
     @Override
-    protected void collectReferences(String source, FXOMObject scope, List<FXOMNode> result) {
+    protected void collectReferences(final String source, final FXOMObject scope, final List<FXOMNode> result) {
         assert result != null;
         
         if ((scope == null) || (scope != this)) {
@@ -237,7 +237,7 @@ public class FXOMIntrinsic extends FXOMObject {
     }
 
     @Override
-    protected void collectIncludes(String source, List<FXOMIntrinsic> result) {
+    protected void collectIncludes(final String source, final List<FXOMIntrinsic> result) {
         assert result != null;
         
         if ((getType() == Type.FX_INCLUDE) 
@@ -247,20 +247,20 @@ public class FXOMIntrinsic extends FXOMObject {
     }
 
     @Override
-    protected void collectFxIds(Map<String, FXOMObject> result) {
-        final String fxId = getFxId();
+    protected void collectFxIds(final Map<String, FXOMObject> result) {
+        final var fxId = getFxId();
         if (fxId != null) {
             result.put(fxId, this);
         }
     }
 
     @Override
-    protected void collectObjectWithSceneGraphObjectClass(Class<?> sceneGraphObjectClass, List<FXOMObject> result) {
+    protected void collectObjectWithSceneGraphObjectClass(final Class<?> sceneGraphObjectClass, final List<FXOMObject> result) {
         // Nothing to collect in this kind of object
     }
 
     @Override
-    protected void collectEventHandlers(List<FXOMPropertyT> result) {
+    protected void collectEventHandlers(final List<FXOMPropertyT> result) {
         // Nothing to collect in this kind of object
     }
 
@@ -269,7 +269,7 @@ public class FXOMIntrinsic extends FXOMObject {
      */
     
     @Override
-    public void documentLocationWillChange(URL newLocation) {
+    public void documentLocationWillChange(final URL newLocation) {
         // Nothing special to do here
     }
     
@@ -278,7 +278,7 @@ public class FXOMIntrinsic extends FXOMObject {
      * Private
      */
     
-    private static String makeTagNameFromType(Type type) {
+    private static String makeTagNameFromType(final Type type) {
         final String result;
         
         switch(type) {

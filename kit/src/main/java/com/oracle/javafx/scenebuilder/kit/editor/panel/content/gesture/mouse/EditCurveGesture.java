@@ -32,15 +32,12 @@
  */
 package com.oracle.javafx.scenebuilder.kit.editor.panel.content.gesture.mouse;
 
-import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.ModifyObjectJob;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.ContentPanelController;
-import com.oracle.javafx.scenebuilder.kit.editor.panel.content.HudWindowController;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.curve.AbstractCurveEditor;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.handles.AbstractHandles;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.guides.EditCurveGuideController;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.util.CardinalPoint;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.Metadata;
@@ -61,7 +58,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javafx.scene.Cursor;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Circle;
 
 /**
@@ -91,7 +87,7 @@ public class EditCurveGesture extends AbstractMouseGesture {
     
     private final EnumMap<Tunable, Integer> tunableMap = new EnumMap<>(Tunable.class);
 
-    public EditCurveGesture(ContentPanelController contentPanelController, FXOMInstance fxomInstance, Tunable tunable) {
+    public EditCurveGesture(final ContentPanelController contentPanelController, final FXOMInstance fxomInstance, final Tunable tunable) {
         super(contentPanelController);
         assert contentPanelController.lookupDriver(fxomInstance) != null;
         assert fxomInstance.getSceneGraphObject() instanceof Node;
@@ -113,12 +109,12 @@ public class EditCurveGesture extends AbstractMouseGesture {
     
     @Override
     protected void mousePressed() {
-        final MouseEvent mousePressedEvent = getMousePressedEvent();
+        final var mousePressedEvent = getMousePressedEvent();
         inserted = false;
         removed = false;
         if (tunableMap.containsKey(Tunable.SIDE) && mousePressedEvent.isShortcutDown()) {
-            final double hitX = mousePressedEvent.getSceneX();
-            final double hitY = mousePressedEvent.getSceneY();
+            final var hitX = mousePressedEvent.getSceneX();
+            final var hitY = mousePressedEvent.getSceneY();
             insertionPoint = editor.getSceneGraphObject().sceneToLocal(hitX, hitY, true);
             inserted = true;
         } else if (tunableMap.containsKey(Tunable.VERTEX) && mousePressedEvent.isShortcutDown()) {
@@ -134,34 +130,34 @@ public class EditCurveGesture extends AbstractMouseGesture {
 
         controller = editor.createController(tunableMap);
 
-        final double hitX = getLastMouseEvent().getSceneX();
-        final double hitY = getLastMouseEvent().getSceneY();
+        final var hitX = getLastMouseEvent().getSceneX();
+        final var hitY = getLastMouseEvent().getSceneY();
         final Set<FXOMObject> pickExcludes = new HashSet<>();
         pickExcludes.add(fxomInstance);
 
-        FXOMObject hitParent = contentPanelController.pick(hitX, hitY, pickExcludes);
+        var hitParent = contentPanelController.pick(hitX, hitY, pickExcludes);
         if (hitParent == null) {
-            final FXOMDocument fxomDocument
+            final var fxomDocument
                     = contentPanelController.getEditorController().getFxomDocument();
             hitParent = fxomDocument.getFxomRoot();
         }
 
         assert hitParent != null;
 
-        DesignHierarchyMask hitParentMask = new DesignHierarchyMask(hitParent);
+        final var hitParentMask = new DesignHierarchyMask(hitParent);
         assert hitParentMask.isFreeChildPositioning();
 
         for (int i = 0, c = hitParentMask.getSubComponentCount(); i < c; i++) {
-            final FXOMObject child = hitParentMask.getSubComponentAtIndex(i);
-            final boolean isNode = child.getSceneGraphObject() instanceof Node;
+            final var child = hitParentMask.getSubComponentAtIndex(i);
+            final var isNode = child.getSceneGraphObject() instanceof Node;
             if (isNode && child != fxomInstance) {
-                final Node childNode = (Node) child.getSceneGraphObject();
+                final var childNode = (Node) child.getSceneGraphObject();
                 controller.addSampleBounds(childNode);
             }
         }
 
         assert hitParent.getSceneGraphObject() instanceof Node;
-        final Node hitParentNode = (Node) hitParent.getSceneGraphObject();
+        final var hitParentNode = (Node) hitParent.getSceneGraphObject();
         controller.addSampleBounds(hitParentNode);
         
         setupAndOpenHudWindow();
@@ -177,25 +173,25 @@ public class EditCurveGesture extends AbstractMouseGesture {
 
     @Override
     protected void mouseDragEnded() {
-        final Map<PropertyName, Object> changeMap = editor.getChangeMap();
+        final var changeMap = editor.getChangeMap();
         List<Double> points = null;
         if (editor.getPoints() != null) {
             points = new ArrayList<>(editor.getPoints());
         }
         userDidCancel();
 
-        final Metadata metadata = Metadata.getMetadata();
+        final var metadata = Metadata.getMetadata();
         final Map<ValuePropertyMetadata, Object> metaValueMap = new HashMap<>();
-        for (Map.Entry<PropertyName,Object> e : changeMap.entrySet()) {
-            final ValuePropertyMetadata vpm = metadata.queryValueProperty(fxomInstance, e.getKey());
+        for (final var e : changeMap.entrySet()) {
+            final var vpm = metadata.queryValueProperty(fxomInstance, e.getKey());
             assert vpm != null;
             metaValueMap.put(vpm, e.getValue());
         }
         if (!changeMap.isEmpty()) {
-            final EditorController editorController
+            final var editorController
                     = contentPanelController.getEditorController();
-            for (Map.Entry<ValuePropertyMetadata, Object> e : metaValueMap.entrySet()) {
-                final ModifyObjectJob job = new ModifyObjectJob(
+            for (final var e : metaValueMap.entrySet()) {
+                final var job = new ModifyObjectJob(
                         fxomInstance,
                         e.getKey(),
                         e.getValue(),
@@ -208,11 +204,11 @@ public class EditCurveGesture extends AbstractMouseGesture {
         }
         
         if (points != null) {
-            final EditorController editorController
+            final var editorController
                     = contentPanelController.getEditorController();
-            final ValuePropertyMetadata pointsMeta 
+            final var pointsMeta
                 = metadata.queryValueProperty(fxomInstance, POINTS_NAME);
-            final ModifyObjectJob job = new ModifyObjectJob(fxomInstance,
+            final var job = new ModifyObjectJob(fxomInstance,
                         pointsMeta,
                         points,
                         editorController);
@@ -238,13 +234,13 @@ public class EditCurveGesture extends AbstractMouseGesture {
             }
             userDidCancel();
             
-            final Metadata metadata = Metadata.getMetadata();
+            final var metadata = Metadata.getMetadata();
             if (points != null) {
-                final EditorController editorController
+                final var editorController
                         = contentPanelController.getEditorController();
-                final ValuePropertyMetadata pointsMeta 
+                final var pointsMeta
                     = metadata.queryValueProperty(fxomInstance, POINTS_NAME);
-                final ModifyObjectJob job = new ModifyObjectJob(fxomInstance,
+                final var job = new ModifyObjectJob(fxomInstance,
                             pointsMeta,
                             points,
                             editorController);
@@ -256,7 +252,7 @@ public class EditCurveGesture extends AbstractMouseGesture {
     }
     
     @Override
-    protected void keyEvent(KeyEvent e) {
+    protected void keyEvent(final KeyEvent e) {
         if (e.getCode() == KeyCode.SHIFT) {
             if (e.getEventType() == KeyEvent.KEY_PRESSED) {
                 straightAnglesMode = true;
@@ -278,12 +274,12 @@ public class EditCurveGesture extends AbstractMouseGesture {
         if (editor == null || controller == null) {
             return;
         }
-        final Node sceneGraphObject = editor.getSceneGraphObject();
+        final var sceneGraphObject = editor.getSceneGraphObject();
         sceneGraphObject.getParent().layout();
 
-        final double currentSceneX = getLastMouseEvent().getSceneX();
-        final double currentSceneY = getLastMouseEvent().getSceneY();
-        Point2D current = new Point2D(currentSceneX, currentSceneY);
+        final var currentSceneX = getLastMouseEvent().getSceneX();
+        final var currentSceneY = getLastMouseEvent().getSceneY();
+        var current = new Point2D(currentSceneX, currentSceneY);
         
         if (straightAnglesMode) {
             current = controller.makeStraightAngles(current);
@@ -298,9 +294,9 @@ public class EditCurveGesture extends AbstractMouseGesture {
         updateHudWindow();
     }
     
-    private void updateHandle(boolean value) {
-        Node hitNode = (Node) getMousePressedEvent().getTarget();
-        AbstractHandles<?> hitHandles = AbstractHandles.lookupHandles(hitNode);
+    private void updateHandle(final boolean value) {
+        var hitNode = (Node) getMousePressedEvent().getTarget();
+        var hitHandles = AbstractHandles.lookupHandles(hitNode);
         while (hitHandles == null && hitNode.getParent() != null) {
             hitNode = hitNode.getParent();
             hitHandles = AbstractHandles.lookupHandles(hitNode);
@@ -315,19 +311,19 @@ public class EditCurveGesture extends AbstractMouseGesture {
     }
     
     private void setupAndOpenHudWindow() {
-        final HudWindowController hudWindowController = contentPanelController.getHudWindowController();
+        final var hudWindowController = contentPanelController.getHudWindowController();
         
-        final int propertiesCount = editor.getPropertyNames().size();
-        final int pointsCount = editor.getPoints() != null ? Math.min(MAX_POINTS_HUD, editor.getPoints().size()) : 0;
+        final var propertiesCount = editor.getPropertyNames().size();
+        final var pointsCount = editor.getPoints() != null ? Math.min(MAX_POINTS_HUD, editor.getPoints().size()) : 0;
         hudWindowController.setRowCount(propertiesCount + pointsCount);
         
-        final List<PropertyName> sizePropertyNames = editor.getPropertyNames();
-        for (int i = 0; i < propertiesCount; i++) {
-            final PropertyName pn = sizePropertyNames.get(i);
+        final var sizePropertyNames = editor.getPropertyNames();
+        for (var i = 0; i < propertiesCount; i++) {
+            final var pn = sizePropertyNames.get(i);
             hudWindowController.setNameAtRowIndex(pn.getName() + ":", i);
         }
         
-        for (int i = 0; i < pointsCount / 2; i++) {
+        for (var i = 0; i < pointsCount / 2; i++) {
             hudWindowController.setNameAtRowIndex("" + (i + 1) + ".X:", 2 * i + propertiesCount);
             hudWindowController.setNameAtRowIndex("" + (i + 1) + ".Y:", 2 * i + 1 + propertiesCount);
         }
@@ -339,21 +335,21 @@ public class EditCurveGesture extends AbstractMouseGesture {
     }
     
     private void updateHudWindow() {
-        final HudWindowController hudWindowController = contentPanelController.getHudWindowController();
-        final List<PropertyName> sizePropertyNames = editor.getPropertyNames();
-        final int propertiesCount = sizePropertyNames.size();
+        final var hudWindowController = contentPanelController.getHudWindowController();
+        final var sizePropertyNames = editor.getPropertyNames();
+        final var propertiesCount = sizePropertyNames.size();
         
-        for (int i = 0; i < propertiesCount; i++) {
-            final PropertyName pn = sizePropertyNames.get(i);
-            final String value = String.valueOf(editor.getValue(pn));
+        for (var i = 0; i < propertiesCount; i++) {
+            final var pn = sizePropertyNames.get(i);
+            final var value = String.valueOf(editor.getValue(pn));
             hudWindowController.setValueAtRowIndex(value, i);
         }
         
         // Limit added points to grid
         // TODO: Add another column to the grid
-        final int pointsCount = editor.getPoints() != null ? Math.min(MAX_POINTS_HUD, editor.getPoints().size()) : 0;
+        final var pointsCount = editor.getPoints() != null ? Math.min(MAX_POINTS_HUD, editor.getPoints().size()) : 0;
         if (pointsCount > 0) {
-            for (int i = 0; i < pointsCount; i++) {
+            for (var i = 0; i < pointsCount; i++) {
                 hudWindowController.setValueAtRowIndex(String.format("%.3f", editor.getPoints().get(i)), i + propertiesCount);
             }
         }

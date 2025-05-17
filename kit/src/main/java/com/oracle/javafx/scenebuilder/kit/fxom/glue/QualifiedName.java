@@ -42,14 +42,14 @@ class QualifiedName implements Comparable<QualifiedName> {
     private final String qualifier;
     private final String name;
 
-    public QualifiedName(String qualifier, String name) {
+    public QualifiedName(final String qualifier, final String name) {
         assert name != null;
         this.qualifier = qualifier;
         this.name = name;
     }
     
-    public QualifiedName(String qualifiedName) {
-        final int dotIndex = qualifiedName.indexOf('.');
+    public QualifiedName(final String qualifiedName) {
+        final var dotIndex = qualifiedName.indexOf('.');
         if (dotIndex == -1) {
             this.qualifier = null;
             this.name = qualifiedName;
@@ -73,21 +73,21 @@ class QualifiedName implements Comparable<QualifiedName> {
     
     @Override
     public int hashCode() {
-        int hash = 7;
+        var hash = 7;
         hash = 71 * hash + Objects.hashCode(this.qualifier);
         hash = 71 * hash + Objects.hashCode(this.name);
         return hash;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         }
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final QualifiedName other = (QualifiedName) obj;
+        final var other = (QualifiedName) obj;
         if (!Objects.equals(this.qualifier, other.qualifier)) {
             return false;
         }
@@ -102,7 +102,7 @@ class QualifiedName implements Comparable<QualifiedName> {
      */
     
     @Override
-    public int compareTo(QualifiedName o) {
+    public int compareTo(final QualifiedName o) {
         int result;
         
         if (this == o) {

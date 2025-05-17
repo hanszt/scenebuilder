@@ -45,7 +45,7 @@ public class GlueCharacters extends GlueAuxiliary {
     private final Type type;
     private String data;
     
-    public GlueCharacters(GlueDocument document, Type type, String data) {
+    public GlueCharacters(final GlueDocument document, final Type type, final String data) {
         super(document);
         this.type = type;
         this.data = data;
@@ -59,7 +59,7 @@ public class GlueCharacters extends GlueAuxiliary {
         return data;
     }
 
-    public void setData(String data) {
+    public void setData(final String data) {
         this.data = data;
     }
     
@@ -77,21 +77,21 @@ public class GlueCharacters extends GlueAuxiliary {
          * - when delta < 0, removing 'delta' spaces after each '\n' char *when possible*
          */
         
-        final StringBuilder newValue = new StringBuilder();
+        final var newValue = new StringBuilder();
         
         if (delta > 0) {
             for (int i = 0, length = data.length(); i < length; i++) {
-                final char ch = data.charAt(i);
+                final var ch = data.charAt(i);
                 newValue.append(ch);
                 if (ch == '\n') {
-                    for (int n = 0; n < delta; n++) {
+                    for (var n = 0; n < delta; n++) {
                         newValue.append(' ');
                     }
                 }
             }
         } else {
             for (int i = 0, length = data.length(); i < length; i++) {
-                final char ch = data.charAt(i);
+                final var ch = data.charAt(i);
                 newValue.append(ch);
                 if (ch == '\n') {
                     while ((i+1 < length) 
@@ -120,9 +120,9 @@ public class GlueCharacters extends GlueAuxiliary {
          * 
          * then returns number of b characters else returns -1.
          */
-        
-        int i = 0;
-        final int count = data.length();
+
+        var i = 0;
+        final var count = data.length();
         while ((i < count) && data.charAt(i) != '\n') {
             i++;
         }

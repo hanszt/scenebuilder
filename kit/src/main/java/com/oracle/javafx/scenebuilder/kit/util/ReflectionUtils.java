@@ -50,14 +50,14 @@ public class ReflectionUtils {
 
     private ReflectionUtils() {}
 
-    public static void setStaticLoad(FXMLLoader loader, boolean staticLoad) {
-        Class<?> clazz = loader.getClass();
-        Method setStaticLoadMethod = methodMap.computeIfAbsent(clazz.getName(), s -> {
+    public static void setStaticLoad(final FXMLLoader loader, final boolean staticLoad) {
+        final Class<?> clazz = loader.getClass();
+        final var setStaticLoadMethod = methodMap.computeIfAbsent(clazz.getName(), s -> {
             try {
-                Method method = clazz.getDeclaredMethod("setStaticLoad", boolean.class);
+                final var method = clazz.getDeclaredMethod("setStaticLoad", boolean.class);
                 method.setAccessible(true);
                 return method;
-            } catch (NoSuchMethodException e) {
+            } catch (final NoSuchMethodException e) {
                 Logger.getLogger(ReflectionUtils.class.getName()).log(Level.WARNING, "Failed to find method setStaticLoad: ", e);
             }
             return null;
@@ -65,7 +65,7 @@ public class ReflectionUtils {
         if (setStaticLoadMethod != null) {
             try {
                 setStaticLoadMethod.invoke(loader, staticLoad);
-            } catch (IllegalAccessException | InvocationTargetException e) {
+            } catch (final IllegalAccessException | InvocationTargetException e) {
                 Logger.getLogger(ReflectionUtils.class.getName()).log(Level.WARNING, "Failed to invoke method setStaticLoad: ", e);
             }
         }

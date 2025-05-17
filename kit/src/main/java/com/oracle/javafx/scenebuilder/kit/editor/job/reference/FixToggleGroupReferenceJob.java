@@ -45,13 +45,13 @@ public class FixToggleGroupReferenceJob  extends Job {
     
     private final Job subJob;
     
-    public FixToggleGroupReferenceJob(FXOMNode reference, EditorController editorController) {
+    public FixToggleGroupReferenceJob(final FXOMNode reference, final EditorController editorController) {
         super(editorController);
         if (reference instanceof FXOMIntrinsic) {
-            final FXOMIntrinsic fxomIntrinsic = (FXOMIntrinsic) reference;
+            final var fxomIntrinsic = (FXOMIntrinsic) reference;
             subJob = new FixToggleGroupIntrinsicReferenceJob(fxomIntrinsic, getEditorController());
         } else if (reference instanceof FXOMPropertyT) {
-            final FXOMPropertyT fxomProperty = (FXOMPropertyT) reference;
+            final var fxomProperty = (FXOMPropertyT) reference;
             subJob = new FixToggleGroupExpressionReferenceJob(fxomProperty, getEditorController());
         } else {
             throw new RuntimeException("Bug"); //NOI18N

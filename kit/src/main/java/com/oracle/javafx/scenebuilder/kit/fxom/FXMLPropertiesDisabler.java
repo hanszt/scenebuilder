@@ -59,7 +59,7 @@ class FXMLPropertiesDisabler {
      * @param os {@link OS} Represents the operating system where Scene Builder is
      *           supposed to work on.
      */
-    FXMLPropertiesDisabler(OS os) {
+    FXMLPropertiesDisabler(final OS os) {
         this.os = Objects.requireNonNull(os);
     }
 
@@ -71,9 +71,9 @@ class FXMLPropertiesDisabler {
      * @return FXML source with all properties disabled (=false) where WYSIWYG editing is not suitable.
      * @throws NullPointerException in case of fxmlText is null
      */
-    public String disableProperties(String fxmlText) {
+    public String disableProperties(final String fxmlText) {
         Objects.requireNonNull(fxmlText, "fxmlText must not be null");
-        String modifiedFxml = disableUseSystemMenuBarProperty(fxmlText);
+        final var modifiedFxml = disableUseSystemMenuBarProperty(fxmlText);
         return modifiedFxml;
     }
 
@@ -96,7 +96,7 @@ class FXMLPropertiesDisabler {
      * @return FXML source with all properties disabled (=false) where WYSIWYG editing is not suitable.
      * @throws NullPointerException in case of fxmlText is null
      */
-    private String disableUseSystemMenuBarProperty(String fxmlText) {
+    private String disableUseSystemMenuBarProperty(final String fxmlText) {
         Objects.requireNonNull(fxmlText, "fxmlText must not be null");
         if (OS.MAC == os) {
             /*
@@ -108,7 +108,7 @@ class FXMLPropertiesDisabler {
              * optional white space
              * "true"
              */
-            String regex = "(\\s)useSystemMenuBar(\\s*)[=](\\s*)\"true\"";
+            final var regex = "(\\s)useSystemMenuBar(\\s*)[=](\\s*)\"true\"";
             return fxmlText.replaceAll(regex, " useSystemMenuBar=\"false\"");
         }
         return fxmlText;

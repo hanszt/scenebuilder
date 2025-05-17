@@ -45,14 +45,14 @@ public class ValuePropertyMetadataClassComparator implements Comparator<ValuePro
     }
 
     @Override
-    public int compare(ValuePropertyMetadata propMeta1, ValuePropertyMetadata propMeta2) {
-        String className1;
+    public int compare(final ValuePropertyMetadata propMeta1, final ValuePropertyMetadata propMeta2) {
+        final String className1;
         if (propMeta1.getValueClass().isEnum()) {
             className1 = "Enum"; //NOI18N
         } else {
             className1 = propMeta1.getValueClass().getSimpleName();
         }
-        String className2;
+        final String className2;
         if (propMeta2.getValueClass().isEnum()) {
             className2 = "Enum"; //NOI18N
         } else {

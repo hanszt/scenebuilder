@@ -48,14 +48,14 @@ public class FXOMPropertyC extends FXOMProperty {
     private final GlueElement glueElement;
 
     public FXOMPropertyC(
-            FXOMDocument document, 
-            PropertyName name,
-            List<FXOMObject> values,
-            GlueElement glueElement) {
+            final FXOMDocument document,
+            final PropertyName name,
+            final List<FXOMObject> values,
+            final GlueElement glueElement) {
         super(document, name);
         
         assert values != null;
-        assert values.isEmpty() == false;
+        assert !values.isEmpty();
         assert glueElement != null;
         assert glueElement.getTagName().equals(getName().toString());
         
@@ -64,21 +64,21 @@ public class FXOMPropertyC extends FXOMProperty {
         // Adds values to this property.
         // Note we don't use addValue() because
         // here Glue is already up to date.
-        for (FXOMObject v : values) {
+        for (final var v : values) {
             this.values.add(v);
             v.setParentProperty(this);
         }
     }
     
     
-    public FXOMPropertyC(FXOMDocument document, PropertyName name) {
+    public FXOMPropertyC(final FXOMDocument document, final PropertyName name) {
         super(document, name);
         
         this.glueElement = new GlueElement(document.getGlue(), name.toString());
     }
     
     
-    public FXOMPropertyC(FXOMDocument document, PropertyName name, FXOMObject value) {
+    public FXOMPropertyC(final FXOMDocument document, final PropertyName name, final FXOMObject value) {
         super(document, name);
         
         assert value != null;
@@ -87,14 +87,14 @@ public class FXOMPropertyC extends FXOMProperty {
         value.addToParentProperty(-1, this);
     }
 
-    public FXOMPropertyC(FXOMDocument document, PropertyName name, List<FXOMObject> values) {
+    public FXOMPropertyC(final FXOMDocument document, final PropertyName name, final List<FXOMObject> values) {
         super(document, name);
         
         assert values != null;
-        assert values.isEmpty() == false;
+        assert !values.isEmpty();
         
         this.glueElement = new GlueElement(document.getGlue(), name.toString());
-        for (FXOMObject value : values) {
+        for (final var value : values) {
             value.addToParentProperty(-1, this);
         }
     }
@@ -114,7 +114,7 @@ public class FXOMPropertyC extends FXOMProperty {
      */
     
     @Override
-    public void addToParentInstance(int index, FXOMInstance newParentInstance) {
+    public void addToParentInstance(final int index, final FXOMInstance newParentInstance) {
         
         if (getParentInstance() != null) {
             removeFromParentInstance();
@@ -123,7 +123,7 @@ public class FXOMPropertyC extends FXOMProperty {
         setParentInstance(newParentInstance);
         newParentInstance.addProperty(this);
         
-        final GlueElement newParentElement = newParentInstance.getGlueElement();
+        final var newParentElement = newParentInstance.getGlueElement();
         glueElement.addToParent(index, newParentElement);
     }
 
@@ -132,7 +132,7 @@ public class FXOMPropertyC extends FXOMProperty {
         
         assert getParentInstance() != null;
         
-        final FXOMInstance currentParentInstance = getParentInstance();
+        final var currentParentInstance = getParentInstance();
         
         assert glueElement.getParent() == currentParentInstance.getGlueElement();
         glueElement.removeFromParent();
@@ -148,7 +148,7 @@ public class FXOMPropertyC extends FXOMProperty {
         if (getParentInstance() == null) {
             result = -1;
         } else {
-            final GlueElement parentElement = getParentInstance().getGlueElement();
+            final var parentElement = getParentInstance().getGlueElement();
             result = parentElement.getChildren().indexOf(glueElement);
             assert result != -1;
         }
@@ -162,7 +162,7 @@ public class FXOMPropertyC extends FXOMProperty {
      */
     
     @Override
-    public void moveToFxomDocument(FXOMDocument destination) {
+    public void moveToFxomDocument(final FXOMDocument destination) {
         assert destination != null;
         assert destination != getFxomDocument();
         
@@ -182,20 +182,20 @@ public class FXOMPropertyC extends FXOMProperty {
 
     
     @Override
-    protected void changeFxomDocument(FXOMDocument destination) {
+    protected void changeFxomDocument(final FXOMDocument destination) {
         assert destination != null;
         assert destination != getFxomDocument();
         assert destination.getGlue() == glueElement.getDocument();
         
         super.changeFxomDocument(destination);
-        for (FXOMObject v : values) {
+        for (final var v : values) {
             v.changeFxomDocument(destination);
         }
     }
 
     @Override
-    public void documentLocationWillChange(URL newLocation) {
-        for (FXOMObject v : values) {
+    public void documentLocationWillChange(final URL newLocation) {
+        for (final var v : values) {
             v.documentLocationWillChange(newLocation);
         }
     }
@@ -206,10 +206,10 @@ public class FXOMPropertyC extends FXOMProperty {
      */
     
     /* Reserved to FXOMObject.addToParentProperty() private use */
-    void addValue(int index, FXOMObject value) {
+    void addValue(final int index, final FXOMObject value) {
         assert value != null;
         assert value.getParentProperty() == this;
-        assert values.contains(value) == false;
+        assert !values.contains(value);
         if (index == -1) {
             values.add(value);
         } else {
@@ -218,7 +218,7 @@ public class FXOMPropertyC extends FXOMProperty {
     }
     
     /* Reserved to FXOMObject.removeFromParentProperty() private use */
-    void removeValue(FXOMObject value) {
+    void removeValue(final FXOMObject value) {
         assert value != null;
         assert value.getParentProperty() == null;
         assert values.contains(value);

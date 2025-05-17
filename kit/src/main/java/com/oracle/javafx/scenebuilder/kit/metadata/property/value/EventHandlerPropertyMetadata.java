@@ -41,8 +41,8 @@ import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
  */
 public class EventHandlerPropertyMetadata extends TextEncodablePropertyMetadata<String> {
 
-    public EventHandlerPropertyMetadata(PropertyName name, boolean readWrite, 
-            String defaultValue, InspectorPath inspectorPath) {
+    public EventHandlerPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                        final String defaultValue, final InspectorPath inspectorPath) {
         super(name, String.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -51,12 +51,12 @@ public class EventHandlerPropertyMetadata extends TextEncodablePropertyMetadata<
      */
     
     @Override
-    public String makeValueFromString(String string) {
+    public String makeValueFromString(final String string) {
         return string;
     }
     
     @Override
-    public String getValue(FXOMInstance fxomInstance) {
+    public String getValue(final FXOMInstance fxomInstance) {
         // We override just to add a sanity check
         assert isReadWrite();
         return super.getValue(fxomInstance);

@@ -52,8 +52,8 @@ public class LibraryItemNameComparator implements Comparator<LibraryItem> {
      * @param li2 The second item we get name from.
      */
     @Override
-    public int compare(LibraryItem li1, LibraryItem li2) {
-        int result;
+    public int compare(final LibraryItem li1, final LibraryItem li2) {
+        final int result;
 
         if (li1 == li2) {
             result = 0;

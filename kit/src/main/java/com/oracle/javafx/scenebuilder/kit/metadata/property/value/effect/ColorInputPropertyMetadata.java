@@ -63,8 +63,8 @@ public class ColorInputPropertyMetadata extends ComplexPropertyMetadata<ColorInp
             = new PaintPropertyMetadata(new PropertyName("paint"), //NOI18N
             true /* readWrite */, Color.RED, InspectorPath.UNUSED);
 
-    public ColorInputPropertyMetadata(PropertyName name, boolean readWrite, 
-            ColorInput defaultValue, InspectorPath inspectorPath) {
+    public ColorInputPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                      final ColorInput defaultValue, final InspectorPath inspectorPath) {
         super(name, ColorInput.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -73,8 +73,8 @@ public class ColorInputPropertyMetadata extends ComplexPropertyMetadata<ColorInp
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(ColorInput value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, value.getClass());
+    public FXOMInstance makeFxomInstanceFromValue(final ColorInput value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, value.getClass());
         
         paintMetadata.setValue(result, value.getPaint());
         heightMetadata.setValue(result, value.getHeight());

@@ -37,8 +37,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.messagelog.MessageLogEntry;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.util.AbstractFxmlPanelController;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 
-import java.net.URL;
-
 import javafx.animation.FadeTransition;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
@@ -79,11 +77,11 @@ public class MessageBarController extends AbstractFxmlPanelController {
     private final ImageView fileDirtyImage;
     private Tooltip statusLabelTooltip = null;
 
-    public MessageBarController(EditorController editorController) {
+    public MessageBarController(final EditorController editorController) {
         super(MessageBarController.class.getResource("MessageBar.fxml"), I18N.getBundle(), editorController); //NOI18N
 
         // Initialize file dirty image
-        final URL fileDirtyURL = MessageBarController.class.getResource("file-dirty.png"); //NOI18N
+        final var fileDirtyURL = MessageBarController.class.getResource("file-dirty.png"); //NOI18N
         assert fileDirtyURL != null;
         fileDirtyImage = new ImageView(new Image(fileDirtyURL.toExternalForm()));
     }
@@ -96,7 +94,7 @@ public class MessageBarController extends AbstractFxmlPanelController {
      * Action Handlers
      */
     @FXML
-    void onOpenCloseAction(ActionEvent e) {
+    void onOpenCloseAction(final ActionEvent e) {
         if (messageWindowController == null) {
             messageWindowController = new MessagePopupController(getEditorController());
         }
@@ -111,7 +109,7 @@ public class MessageBarController extends AbstractFxmlPanelController {
      * AbstractPanelController
      */
     @Override
-    protected void fxomDocumentDidChange(FXOMDocument oldDocument) {
+    protected void fxomDocumentDidChange(final FXOMDocument oldDocument) {
         // Nothing to do
     }
 
@@ -157,7 +155,7 @@ public class MessageBarController extends AbstractFxmlPanelController {
                 (ChangeListener<Number>) (ov, t, t1) -> messageLogDidChange());
         getEditorController().getMessageLog().numOfWarningMessagesProperty().addListener(
                 (ChangeListener<Number>) (ov, t, t1) -> {
-                    String numberOfMessages = Integer.toString(t1.intValue());
+                    var numberOfMessages = Integer.toString(t1.intValue());
                     if (t1.intValue() > 9) {
                         numberOfMessages = "*"; //NOI18N
                     }
@@ -173,7 +171,7 @@ public class MessageBarController extends AbstractFxmlPanelController {
     /*
      * Private
      */
-    public void setDocumentDirty(boolean isDirty) {
+    public void setDocumentDirty(final boolean isDirty) {
         if (statusLabel != null) {
             if (isDirty) {
                 statusLabel.setGraphic(fileDirtyImage);
@@ -188,9 +186,9 @@ public class MessageBarController extends AbstractFxmlPanelController {
     private void messageLogDidChange() {
         assert messageLabel != null;
         
-        final MessageLogEntry entry
+        final var entry
                 = getEditorController().getMessageLog().getYoungestEntry();
-        int logSize = getEditorController().getMessageLog().getEntries().size();
+        final var logSize = getEditorController().getMessageLog().getEntries().size();
 
         // When an old message is dismissed the message log changes but there's
         // no need to display anything in the message bar.
@@ -222,7 +220,7 @@ public class MessageBarController extends AbstractFxmlPanelController {
             messageLabel.setVisible(true);
             
             // We go back to the host after a given time            
-            FadeTransition showHost = new FadeTransition(Duration.seconds(1), messagePart);
+            final var showHost = new FadeTransition(Duration.seconds(1), messagePart);
             showHost.setFromValue(1.0);
             showHost.setToValue(0.0);
             showHost.setDelay(Duration.seconds(3)); // DTL-5073
@@ -263,7 +261,7 @@ public class MessageBarController extends AbstractFxmlPanelController {
         iconsHbox.getStyleClass().removeAll("message-warning"); //NOI18N
     }
     
-    private void setStyle(MessageLogEntry.Type type) {
+    private void setStyle(final MessageLogEntry.Type type) {
         resetStyle();
         
         switch (type) {

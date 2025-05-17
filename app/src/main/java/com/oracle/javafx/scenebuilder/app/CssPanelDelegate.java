@@ -46,13 +46,13 @@ public class CssPanelDelegate extends CssPanelController.Delegate {
     private final InspectorPanelController inspectorController;
     private final DocumentWindowController documentWindowController;
 
-    public CssPanelDelegate(InspectorPanelController inspectorController, DocumentWindowController documentWindowController) {
+    public CssPanelDelegate(final InspectorPanelController inspectorController, final DocumentWindowController documentWindowController) {
         this.inspectorController = inspectorController;
         this.documentWindowController = documentWindowController;
     }
 
     @Override
-    public void revealInspectorEditor(ValuePropertyMetadata propMeta) {
+    public void revealInspectorEditor(final ValuePropertyMetadata propMeta) {
         if (inspectorController == null || documentWindowController == null
                 || propMeta == null) {
             return;
@@ -63,7 +63,7 @@ public class CssPanelDelegate extends CssPanelController.Delegate {
             documentWindowController.performControlAction(DocumentWindowController.DocumentControlAction.TOGGLE_RIGHT_PANEL);
         }
         // Expand the inspector section
-        String inspectorSection = propMeta.getInspectorPath().getSectionTag();
+        final var inspectorSection = propMeta.getInspectorPath().getSectionTag();
         if (inspectorSection.equalsIgnoreCase("properties")) { //NOI18N
             inspectorController.setExpandedSection(SectionId.PROPERTIES);
         } else if (inspectorSection.equalsIgnoreCase("layout")) {//NOI18N

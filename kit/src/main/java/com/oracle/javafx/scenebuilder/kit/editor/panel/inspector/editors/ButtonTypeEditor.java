@@ -34,10 +34,8 @@ package com.oracle.javafx.scenebuilder.kit.editor.panel.inspector.editors;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -70,7 +68,7 @@ public class ButtonTypeEditor extends InlineListEditor {
     private static Map<String, ButtonType> predefinedButtonsNames = new TreeMap<>();
     private Collection<ButtonType> buttonList = new TreeSet<ButtonType>(getButtonTypeComparator());
 
-    public ButtonTypeEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public ButtonTypeEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super(propMeta, selectedClasses);
         initialize();
     }
@@ -78,7 +76,7 @@ public class ButtonTypeEditor extends InlineListEditor {
     private void initialize() {
         setLayoutFormat(PropertyEditor.LayoutFormat.DOUBLE_LINE);
         // Build a sorted map, with button names as keys
-        for (Entry<ButtonType, String> entry : ButtonTypePropertyMetadata.getButtonTypeMap().entrySet()) {
+        for (final var entry : ButtonTypePropertyMetadata.getButtonTypeMap().entrySet()) {
             predefinedButtonsNames.put(entry.getValue(), entry.getKey());
         }
         updateButtonLists();
@@ -95,37 +93,37 @@ public class ButtonTypeEditor extends InlineListEditor {
         // item.
         buttonList.clear();
         buttonList.addAll(predefinedButtonsNames.values());
-        for (EditorItem item : getEditorItems()) {
-            Object itemValueObj = item.getValue();
+        for (final var item : getEditorItems()) {
+            final var itemValueObj = item.getValue();
             if (itemValueObj == null) {
                 continue;
             }
             assert itemValueObj instanceof ButtonType;
-            ButtonType itemValue = (ButtonType) itemValueObj;
+            final var itemValue = (ButtonType) itemValueObj;
             buttonList.remove(itemValue);
         }
-        for (EditorItem item : getEditorItems()) {
+        for (final var item : getEditorItems()) {
             assert item instanceof ButtonTypeItem;
             ((ButtonTypeItem) item).updateButtonList(buttonList);
         }
     }
 
     private Comparator<ButtonType> getButtonTypeComparator() {
-        Comparator<ButtonType> comparator = (ButtonType bt1, ButtonType bt2) -> bt1.getText().compareTo(bt2.getText());
+        final Comparator<ButtonType> comparator = (ButtonType bt1, ButtonType bt2) -> bt1.getText().compareTo(bt2.getText());
         return comparator;
     }
 
     @Override
     public Object getValue() {
-        List<ButtonType> value = FXCollections.observableArrayList();
+        final List<ButtonType> value = FXCollections.observableArrayList();
         // Group all the item values in a list
-        for (EditorItem buttonTypeItem : getEditorItems()) {
-            Object itemValueObj = buttonTypeItem.getValue();
+        for (final var buttonTypeItem : getEditorItems()) {
+            final var itemValueObj = buttonTypeItem.getValue();
             if (itemValueObj == null) {
                 continue;
             }
             assert itemValueObj instanceof ButtonType;
-            ButtonType itemValue = (ButtonType) itemValueObj;
+            final var itemValue = (ButtonType) itemValueObj;
             value.add(itemValue);
         }
         if (value.isEmpty()) {
@@ -138,7 +136,7 @@ public class ButtonTypeEditor extends InlineListEditor {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void setValue(Object value) {
+    public void setValue(final Object value) {
         setValueGeneric(value);
         if (value == null) {
             reset();
@@ -152,9 +150,9 @@ public class ButtonTypeEditor extends InlineListEditor {
             return;
         }
 
-        Iterator<EditorItem> itemsIter = new ArrayList<>(getEditorItems()).iterator();
-        for (ButtonType item : (List<ButtonType>) value) {
-            EditorItem editorItem;
+        final var itemsIter = new ArrayList<>(getEditorItems()).iterator();
+        for (final var item : (List<ButtonType>) value) {
+            final EditorItem editorItem;
             if (itemsIter.hasNext()) {
                 // re-use the current items first
                 editorItem = itemsIter.next();
@@ -168,7 +166,7 @@ public class ButtonTypeEditor extends InlineListEditor {
         }
         // Empty the remaining items, if needed
         while (itemsIter.hasNext()) {
-            EditorItem editorItem = itemsIter.next();
+            final var editorItem = itemsIter.next();
             removeItem(editorItem);
         }
 
@@ -176,7 +174,7 @@ public class ButtonTypeEditor extends InlineListEditor {
         updateButtonLists();
     }
 
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super.reset(propMeta, selectedClasses);
         buttonList.clear();
         buttonList.addAll(predefinedButtonsNames.values());
@@ -186,19 +184,19 @@ public class ButtonTypeEditor extends InlineListEditor {
 
     @Override
     public void requestFocus() {
-        EditorItem firstItem = getEditorItems().get(0);
+        final var firstItem = getEditorItems().getFirst();
         assert firstItem instanceof ButtonTypeItem;
         ((ButtonTypeItem) firstItem).requestFocus();
     }
 
     @Override
-    public void commit(EditorItem source) {
+    public void commit(final EditorItem source) {
         super.commit(source);
         updateButtonLists();
     }
 
     @Override
-    public void remove(EditorItem source) {
+    public void remove(final EditorItem source) {
         super.remove(source);
         updateButtonLists();
     }
@@ -222,21 +220,21 @@ public class ButtonTypeEditor extends InlineListEditor {
         private Parent root;
         private EditorItemDelegate editor;
 
-        public ButtonTypeItem(EditorItemDelegate editor, Collection<ButtonType> buttonList) {
+        public ButtonTypeItem(final EditorItemDelegate editor, final Collection<ButtonType> buttonList) {
 //            System.out.println("New ButtonTypeItem.");
             // It is an AutoSuggestEditor without MenuButton
             initialize(editor, buttonList);
         }
 
         // Method to please FindBugs
-        private void initialize(EditorItemDelegate editor, Collection<ButtonType> buttonList) {
+        private void initialize(final EditorItemDelegate editor, final Collection<ButtonType> buttonList) {
             this.editor = editor;
             root = EditorUtils.loadFxml("ButtonTypeEditorItem.fxml", this);//NOI18N
 
             buttonTypeCb.setConverter(getButtonTypeConverter());
             buttonTypeCb.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<ButtonType>() {
-                public void changed(javafx.beans.value.ObservableValue<? extends ButtonType> value,
-                        ButtonType prevValue, ButtonType newValue) {
+                public void changed(final javafx.beans.value.ObservableValue<? extends ButtonType> value,
+                                    final ButtonType prevValue, final ButtonType newValue) {
                     editor.commit(ButtonTypeItem.this);
                     updatePlusMinusButtons();
                 };
@@ -246,16 +244,16 @@ public class ButtonTypeEditor extends InlineListEditor {
             updatePlusMinusButtons();
         }
 
-        public void updateButtonList(Collection<ButtonType> buttonList) {
+        public void updateButtonList(final Collection<ButtonType> buttonList) {
             // Remove ChoiceBox items that are not in the new list (but keep the
             // current value)
-            for (ButtonType buttonType : buttonList) {
+            for (final var buttonType : buttonList) {
                 if (!buttonTypeCb.getItems().contains(buttonType)) {
                     buttonTypeCb.getItems().add(buttonType);
                 }
             }
-            ArrayList<ButtonType> currentItems = new ArrayList<>(buttonTypeCb.getItems());
-            for (ButtonType buttonType : currentItems) {
+            final var currentItems = new ArrayList<ButtonType>(buttonTypeCb.getItems());
+            for (final var buttonType : currentItems) {
                 if (!buttonList.contains(buttonType) && buttonType != getValue()) {
                     buttonTypeCb.getItems().remove(buttonType);
                 }
@@ -273,7 +271,7 @@ public class ButtonTypeEditor extends InlineListEditor {
         }
 
         @Override
-        public void setValue(Object buttonType) {
+        public void setValue(final Object buttonType) {
             assert buttonType instanceof ButtonType;
             buttonTypeCb.getSelectionModel().select((ButtonType) buttonType);
             updatePlusMinusButtons();
@@ -284,7 +282,7 @@ public class ButtonTypeEditor extends InlineListEditor {
             buttonTypeCb.getSelectionModel().clearSelection();
         }
         
-        public void reset(Collection<ButtonType> buttonList) {
+        public void reset(final Collection<ButtonType> buttonList) {
             buttonTypeCb.getItems().clear();
             updateButtonList(buttonList);
         }
@@ -329,19 +327,19 @@ public class ButtonTypeEditor extends InlineListEditor {
         }
 
         @FXML
-        void add(ActionEvent event) {
-            ButtonTypeEditor.ButtonTypeItem buttonTypeItem = getNewButtonTypeItem();
+        void add(final ActionEvent event) {
+            final var buttonTypeItem = getNewButtonTypeItem();
             editor.add(this, buttonTypeItem);
             buttonTypeItem.requestFocus();
         }
 
         @FXML
-        void remove(ActionEvent event) {
+        void remove(final ActionEvent event) {
             editor.remove(this);
         }
 
         @FXML
-        void plusBtTyped(KeyEvent event) {
+        void plusBtTyped(final KeyEvent event) {
             if (event.getCode() == KeyCode.ENTER) {
                 editor.add(this, getNewButtonTypeItem());
             }
@@ -361,27 +359,27 @@ public class ButtonTypeEditor extends InlineListEditor {
         }
 
         @SuppressWarnings("unused")
-        protected void disablePlusButton(boolean disable) {
+        protected void disablePlusButton(final boolean disable) {
             plusBt.setDisable(disable);
         }
 
         @SuppressWarnings("unused")
-        protected void disableMinusButton(boolean disable) {
+        protected void disableMinusButton(final boolean disable) {
             minusBt.setDisable(disable);
         }
 
         private StringConverter<ButtonType> getButtonTypeConverter() {
-            Map<ButtonType, String> predefinedButtons = ButtonTypePropertyMetadata.getButtonTypeMap();
+            final var predefinedButtons = ButtonTypePropertyMetadata.getButtonTypeMap();
             return new StringConverter<ButtonType>() {
 
                 @Override
-                public String toString(ButtonType buttonType) {
+                public String toString(final ButtonType buttonType) {
                     return predefinedButtons.get(buttonType);
                 }
 
                 @Override
-                public ButtonType fromString(String buttonName) {
-                    for (Entry<ButtonType, String> entry : predefinedButtons.entrySet()) {
+                public ButtonType fromString(final String buttonName) {
+                    for (final var entry : predefinedButtons.entrySet()) {
                         if (entry.getValue().equals(buttonName)) {
                             return entry.getKey();
                         }

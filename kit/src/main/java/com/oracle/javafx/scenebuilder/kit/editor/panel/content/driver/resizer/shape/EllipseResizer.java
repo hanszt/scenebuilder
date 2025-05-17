@@ -54,7 +54,7 @@ public class EllipseResizer extends AbstractResizer<Ellipse> {
     private final PropertyName radiusYName = new PropertyName("radiusY"); //NOI18N
     private final List<PropertyName> propertyNames = new ArrayList<>();
     
-    public EllipseResizer(Ellipse sceneGraphObject) {
+    public EllipseResizer(final Ellipse sceneGraphObject) {
         super(sceneGraphObject);
         originalRadiusX = sceneGraphObject.getRadiusX();
         originalRadiusY = sceneGraphObject.getRadiusY();
@@ -67,11 +67,11 @@ public class EllipseResizer extends AbstractResizer<Ellipse> {
      */
     
     @Override
-    public final Bounds computeBounds(double width, double height) {
+    public final Bounds computeBounds(final double width, final double height) {
         final double radiusX = Math.round(width / 2.0);
         final double radiusY = Math.round(height / 2.0);
-        final double minX = sceneGraphObject.getCenterX() - radiusX;
-        final double minY = sceneGraphObject.getCenterY() - radiusY;
+        final var minX = sceneGraphObject.getCenterX() - radiusX;
+        final var minY = sceneGraphObject.getCenterY() - radiusY;
         return new BoundingBox(minX, minY, 2 * radiusX, 2 * radiusY);
     }
  
@@ -81,12 +81,12 @@ public class EllipseResizer extends AbstractResizer<Ellipse> {
     }
 
     @Override
-    public void changeWidth(double width) {
+    public void changeWidth(final double width) {
         sceneGraphObject.setRadiusX(Math.round(width / 2.0));
     }
 
     @Override
-    public void changeHeight(double height) {
+    public void changeHeight(final double height) {
         sceneGraphObject.setRadiusY(Math.round(height / 2.0));
     }
 
@@ -102,7 +102,7 @@ public class EllipseResizer extends AbstractResizer<Ellipse> {
     }
 
     @Override
-    public Object getValue(PropertyName propertyName) {
+    public Object getValue(final PropertyName propertyName) {
         assert propertyName != null;
         assert propertyNames.contains(propertyName);
         
@@ -122,10 +122,10 @@ public class EllipseResizer extends AbstractResizer<Ellipse> {
     @Override
     public Map<PropertyName, Object> getChangeMap() {
         final Map<PropertyName, Object> result = new HashMap<>();
-        if (MathUtils.equals(sceneGraphObject.getRadiusX(), originalRadiusX) == false) {
+        if (!MathUtils.equals(sceneGraphObject.getRadiusX(), originalRadiusX)) {
             result.put(radiusXName, sceneGraphObject.getRadiusX());
         }
-        if (MathUtils.equals(sceneGraphObject.getRadiusY(), originalRadiusY) == false) {
+        if (!MathUtils.equals(sceneGraphObject.getRadiusY(), originalRadiusY)) {
             result.put(radiusYName, sceneGraphObject.getRadiusY());
         }
         return result;

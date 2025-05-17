@@ -33,7 +33,6 @@
 package com.oracle.javafx.scenebuilder.kit.editor;
 
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMAssetIndex;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.util.FileWatcher;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -50,7 +49,7 @@ class WatchingController implements FileWatcher.Delegate {
     private final FileWatcher fileWatcher 
             = new FileWatcher(2000 /*ms*/, this,  EditorController.class.getSimpleName());
 
-    public WatchingController(EditorController editorController) {
+    public WatchingController(final EditorController editorController) {
         this.editorController = editorController;
     }
     
@@ -79,19 +78,19 @@ class WatchingController implements FileWatcher.Delegate {
      */
     
     @Override
-    public void fileWatcherDidWatchTargetCreation(Path target) {
+    public void fileWatcherDidWatchTargetCreation(final Path target) {
         assert Platform.isFxApplicationThread();
         updateEditorController("file.watching.file.created", target); //NOI18N
     }
 
     @Override
-    public void fileWatcherDidWatchTargetDeletion(Path target) {
+    public void fileWatcherDidWatchTargetDeletion(final Path target) {
         assert Platform.isFxApplicationThread();
         updateEditorController("file.watching.file.deleted", target); //NOI18N
     }
 
     @Override
-    public void fileWatcherDidWatchTargetModification(Path target) {
+    public void fileWatcherDidWatchTargetModification(final Path target) {
         assert Platform.isFxApplicationThread();
         updateEditorController("file.watching.file.modified", target); //NOI18N
     }
@@ -103,19 +102,19 @@ class WatchingController implements FileWatcher.Delegate {
     
     private void updateFileWatcher() {
         
-        final FXOMDocument fxomDocument = editorController.getFxomDocument();
+        final var fxomDocument = editorController.getFxomDocument();
         final Collection<Path> targets;
         if (fxomDocument == null) {
             targets = Collections.emptyList();
         } else {
-            final FXOMAssetIndex assetIndex = new FXOMAssetIndex(fxomDocument);
+            final var assetIndex = new FXOMAssetIndex(fxomDocument);
             targets = assetIndex.getFileAssets().keySet();
         }
         fileWatcher.setTargets(targets);
     }
     
-    private void updateEditorController(String messageKey, Path target) {
-        final String targetFileName = target.getFileName().toString();
+    private void updateEditorController(final String messageKey, final Path target) {
+        final var targetFileName = target.getFileName().toString();
         editorController.getMessageLog().logInfoMessage(messageKey, targetFileName);
         editorController.getErrorReport().forget();
         if (targetFileName.toLowerCase(Locale.ROOT).endsWith(".css")) { //NOI18N

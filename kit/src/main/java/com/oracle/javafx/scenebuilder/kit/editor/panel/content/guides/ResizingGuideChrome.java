@@ -63,7 +63,7 @@ public class ResizingGuideChrome extends Path {
     private final LineTo lineTo1 = new LineTo();
     private final double sideLength;
     
-    public ResizingGuideChrome(double sideLength) {
+    public ResizingGuideChrome(final double sideLength) {
         this.sideLength = sideLength;
         
         final List<PathElement> elements = getElements();
@@ -75,7 +75,7 @@ public class ResizingGuideChrome extends Path {
         elements.add(lineTo1);
     }
     
-    public void setup(double x1, double y1, double x2, double y2) {
+    public void setup(final double x1, final double y1, final double x2, final double y2) {
         moveTo.setX(x1);
         moveTo.setY(y1);
         lineTo.setX(x2);
@@ -100,11 +100,11 @@ public class ResizingGuideChrome extends Path {
             lineTo1.setX(x2);
             lineTo1.setY(y2 + sideLength);
         } else {
-            final double dx = x2 - x1;
-            final double dy = y2 - y1;
-            final double distance = Math.sqrt(dx * dx + dy * dy);
-            final double leftX = -dy / distance;
-            final double leftY = +dx / distance;
+            final var dx = x2 - x1;
+            final var dy = y2 - y1;
+            final var distance = Math.sqrt(dx * dx + dy * dy);
+            final var leftX = -dy / distance;
+            final var leftY = +dx / distance;
             
             moveTo0.setX(x1 + leftX * sideLength);
             moveTo0.setY(y1 + leftY * sideLength);

@@ -36,8 +36,7 @@ import com.oracle.javafx.scenebuilder.kit.editor.panel.content.AbstractDecoratio
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.ContentPanelController;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import java.util.List;
-import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
+
 import javafx.scene.shape.ClosePath;
 import javafx.scene.shape.LineTo;
 import javafx.scene.shape.MoveTo;
@@ -58,8 +57,8 @@ public abstract class AbstractOutline<T> extends AbstractDecoration<T> {
     private final LineTo lineTo2 = new LineTo();
     private final LineTo lineTo3 = new LineTo();
     
-    public AbstractOutline(ContentPanelController contentPanelController,
-            FXOMObject fxomObject, Class<T> sceneGraphClass) {
+    public AbstractOutline(final ContentPanelController contentPanelController,
+                           final FXOMObject fxomObject, final Class<T> sceneGraphClass) {
         super(contentPanelController, fxomObject, sceneGraphClass);
         
         final List<PathElement> ringElements = ringPath.getElements();
@@ -79,13 +78,13 @@ public abstract class AbstractOutline<T> extends AbstractDecoration<T> {
     
     @Override
     protected void layoutDecoration() {
-        final Bounds b = getSceneGraphObjectBounds();
+        final var b = getSceneGraphObjectBounds();
         
-        final boolean snapToPixel = true;
-        final Point2D p0 = sceneGraphObjectToDecoration(b.getMinX(), b.getMinY(), snapToPixel);
-        final Point2D p1 = sceneGraphObjectToDecoration(b.getMaxX(), b.getMinY(), snapToPixel);
-        final Point2D p2 = sceneGraphObjectToDecoration(b.getMaxX(), b.getMaxY(), snapToPixel);
-        final Point2D p3 = sceneGraphObjectToDecoration(b.getMinX(), b.getMaxY(), snapToPixel);
+        final var snapToPixel = true;
+        final var p0 = sceneGraphObjectToDecoration(b.getMinX(), b.getMinY(), snapToPixel);
+        final var p1 = sceneGraphObjectToDecoration(b.getMaxX(), b.getMinY(), snapToPixel);
+        final var p2 = sceneGraphObjectToDecoration(b.getMaxX(), b.getMaxY(), snapToPixel);
+        final var p3 = sceneGraphObjectToDecoration(b.getMinX(), b.getMaxY(), snapToPixel);
         
         moveTo0.setX(p0.getX());
         moveTo0.setY(p0.getY());

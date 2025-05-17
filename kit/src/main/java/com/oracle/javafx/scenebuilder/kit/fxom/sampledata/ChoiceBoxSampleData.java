@@ -44,7 +44,7 @@ class ChoiceBoxSampleData extends AbstractSampleData {
     private final List<String> samples = new ArrayList<>();
 
     public ChoiceBoxSampleData() {
-        for (int i = 0; i < 20; i++) {
+        for (var i = 0; i < 20; i++) {
             samples.add(lorem(i));
         }
     }
@@ -54,22 +54,22 @@ class ChoiceBoxSampleData extends AbstractSampleData {
      */
     
     @Override
-    public void applyTo(Object sceneGraphObject) {
+    public void applyTo(final Object sceneGraphObject) {
         assert sceneGraphObject != null;
         
         @SuppressWarnings("unchecked")        
-        final ChoiceBox<String> choiceBox = (ChoiceBox<String>) sceneGraphObject;
+        final var choiceBox = (ChoiceBox<String>) sceneGraphObject;
         choiceBox.getItems().clear();
         choiceBox.getItems().addAll(samples);
-        choiceBox.getSelectionModel().select(samples.get(0));
+        choiceBox.getSelectionModel().select(samples.getFirst());
     }
     
     @Override
-    public void removeFrom(Object sceneGraphObject) {
+    public void removeFrom(final Object sceneGraphObject) {
         assert sceneGraphObject != null;
         
         @SuppressWarnings("unchecked")        
-        final ChoiceBox<String> choiceBox = (ChoiceBox<String>) sceneGraphObject;
+        final var choiceBox = (ChoiceBox<String>) sceneGraphObject;
         choiceBox.getItems().clear();
     }
     

@@ -57,21 +57,21 @@ public abstract class NumberField extends TextField {
         });
     }
 
-    public void setConstants(List<String> constants) {
+    public void setConstants(final List<String> constants) {
         this.constants.clear();
         this.constants.addAll(constants);
     }
     
-    public String getNewText(int start, int end, String text) {
-        String oldText = getText();
-        String toReplace = oldText.substring(start, end);
-        String newText;
+    public String getNewText(final int start, final int end, final String text) {
+        final var oldText = getText();
+        final var toReplace = oldText.substring(start, end);
+        final String newText;
         if (toReplace.isEmpty()) {
             // start/end is outside oldText ==> add
             newText = oldText + text;
         } else {
-            String headerStr = oldText.substring(0, start);
-            String trailerStr = "";
+            final var headerStr = oldText.substring(0, start);
+            var trailerStr = "";
             if (end < oldText.length()) {
                 trailerStr = oldText.substring(end, oldText.length());
             }
@@ -83,7 +83,7 @@ public abstract class NumberField extends TextField {
     protected boolean partOfConstants(String text) {
         // Check if the text is a part of a constant
         text = text.toLowerCase(Locale.ROOT);
-        for (String constant : constants) {
+        for (final var constant : constants) {
             if (constant.toLowerCase(Locale.ROOT).startsWith(text)) {
                 return true;
             }

@@ -37,7 +37,7 @@ public class FileBrowserRevealException extends IOException {
 
     private static final long serialVersionUID = -1682452255824949867L;
     
-    public FileBrowserRevealException(String message) {
+    public FileBrowserRevealException(final String message) {
         super(message);
     }
 

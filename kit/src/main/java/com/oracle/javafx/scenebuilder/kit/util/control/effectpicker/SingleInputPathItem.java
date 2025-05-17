@@ -53,7 +53,7 @@ public class SingleInputPathItem extends EffectPathItem {
 
     private EffectPathItem inputPathItem;
 
-    public SingleInputPathItem(EffectPickerController epc, Effect effect, EffectPathItem hostPathItem) {
+    public SingleInputPathItem(final EffectPickerController epc, final Effect effect, final EffectPathItem hostPathItem) {
         super(epc, effect, hostPathItem);
         assert effect instanceof Bloom
                 || effect instanceof BoxBlur
@@ -75,12 +75,12 @@ public class SingleInputPathItem extends EffectPathItem {
         return inputPathItem;
     }
 
-    void setInputPathItem(EffectPathItem epi) {
+    void setInputPathItem(final EffectPathItem epi) {
         inputPathItem = epi;
     }
 
     @Override
-    void setSelectedInputEffect(Effect input) {
+    void setSelectedInputEffect(final Effect input) {
         if (effect instanceof Bloom) {
             ((Bloom) effect).setInput(input);
         } else if (effect instanceof BoxBlur) {

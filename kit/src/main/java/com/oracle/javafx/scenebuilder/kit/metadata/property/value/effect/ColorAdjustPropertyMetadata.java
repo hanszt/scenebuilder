@@ -61,8 +61,8 @@ public class ColorAdjustPropertyMetadata extends ComplexPropertyMetadata<ColorAd
             = new DoublePropertyMetadata(new PropertyName("saturation"), //NOI18N
             DoublePropertyMetadata.DoubleKind.COORDINATE, true /* readWrite */, 0.0, InspectorPath.UNUSED);
 
-    public ColorAdjustPropertyMetadata(PropertyName name, boolean readWrite, 
-            ColorAdjust defaultValue, InspectorPath inspectorPath) {
+    public ColorAdjustPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                       final ColorAdjust defaultValue, final InspectorPath inspectorPath) {
         super(name, ColorAdjust.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -71,8 +71,8 @@ public class ColorAdjustPropertyMetadata extends ComplexPropertyMetadata<ColorAd
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(ColorAdjust value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, getValueClass());
+    public FXOMInstance makeFxomInstanceFromValue(final ColorAdjust value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, getValueClass());
         
         inputMetadata.setValue(result, value.getInput());
         brightnessMetadata.setValue(result, value.getBrightness());

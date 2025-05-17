@@ -56,7 +56,7 @@ public class SearchController extends AbstractFxmlController {
     @FXML
     private StackPane searchIcon;
 
-    public SearchController(EditorController c) {
+    public SearchController(final EditorController c) {
         super(SearchController.class.getResource("Search.fxml"), c); //NOI18N
 
 

@@ -46,7 +46,7 @@ public class FindEventNamesUtilTest {
         FindEventNamesUtil.initializeEventsMap();
     }
 
-    private String callService(String eventTypeName) {
+    private String callService(final String eventTypeName) {
         return FindEventNamesUtil.findEventName(eventTypeName);
     }
 
@@ -69,8 +69,8 @@ public class FindEventNamesUtilTest {
 
     @Test
     public void testEventNamesNegative() {
-        final String dummyEventTypeName = "onMyDummyEvent";
-        final String dummyEventName = "myDummyEvent";
+        final var dummyEventTypeName = "onMyDummyEvent";
+        final var dummyEventName = "myDummyEvent";
 
         assertThat(callService(EventTypeNames.ON_DRAG_DETECTED)).isNotEqualTo(EventNames.DRAG_EVENT);
         assertThat(callService(EventTypeNames.ON_DRAG_ENTERED)).isNotEqualTo(EventNames.MOUSE_DRAG_EVENT);

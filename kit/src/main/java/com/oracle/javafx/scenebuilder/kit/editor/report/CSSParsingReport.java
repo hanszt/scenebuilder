@@ -50,7 +50,7 @@ public class CSSParsingReport {
     private IOException ioException;
     private final List<CssParser.ParseError> parseErrors = new ArrayList<>();
     
-    public CSSParsingReport(Path stylesheetPath) {
+    public CSSParsingReport(final Path stylesheetPath) {
         assert stylesheetPath != null;
         
         this.stylesheetPath = stylesheetPath;
@@ -60,7 +60,7 @@ public class CSSParsingReport {
             // Leave this.ioException to null
             parseErrors.addAll(CssParser.errorsProperty());
             parseErrors.removeAll(previousErrors);
-        } catch(IOException x) {
+        } catch(final IOException x) {
             this.ioException = x;
         } finally {
             CssParser.errorsProperty().removeAll(parseErrors);

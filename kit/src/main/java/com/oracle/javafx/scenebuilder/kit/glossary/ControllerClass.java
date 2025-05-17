@@ -38,14 +38,13 @@ import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -101,7 +100,7 @@ class ControllerClass {
     private static final String MAVEN_DIR_REPLACEMENT_STRING = "$1" + MAVEN_JAVA_SOURCES_DIR + "$2";
     private static final boolean IGNORE_MAVEN_DIR_STRUCTURE = System.getProperty("ignore.maven.structure") != null;
 
-    private ControllerClass(File file) throws IOException, JavaTokenizer.ParseException {
+    private ControllerClass(final File file) throws IOException, JavaTokenizer.ParseException {
         assert file != null;
         this.file = file;
         javaContent = readFile(file);
@@ -123,14 +122,14 @@ class ControllerClass {
         return isInitializable;
     }
 
-    public static Set<ControllerClass> discoverFXMLControllerClasses(File fxmlFile) {
-        ScanData data = new ScanData();
-        String name;
-        File parentFile = fxmlFile.getParentFile();
+    public static Set<ControllerClass> discoverFXMLControllerClasses(final File fxmlFile) {
+        final var data = new ScanData();
+        final String name;
+        var parentFile = fxmlFile.getParentFile();
 
         // Check if FXML file path contains the default Maven resources path as a sub-string.
         if (!IGNORE_MAVEN_DIR_STRUCTURE) {
-            Matcher matcher = MAVEN_DIR_PATTERN.matcher(parentFile.getAbsolutePath());
+            final var matcher = MAVEN_DIR_PATTERN.matcher(parentFile.getAbsolutePath());
             if (matcher.matches()) {
                 parentFile = new File(matcher.replaceFirst(MAVEN_DIR_REPLACEMENT_STRING));
             }
@@ -140,83 +139,83 @@ class ControllerClass {
             name = getNoExtensionName(fxmlFile);
 
             // Current + go up 1 dir level and scan.
-            int maxDepth = 2;
-            for (int i = 0; i < maxDepth; i++) {
+            final var maxDepth = 2;
+            for (var i = 0; i < maxDepth; i++) {
                 scanDirectory(name, parentFile, data);
                 if (!data.continueScanning()) {
                     break;
                 }
             }
-        } catch (RuntimeException ex) {
+        } catch (final RuntimeException ex) {
             System.err.println(ex);
         }
         return data.getClasses();
     }
 
-    private static void scanDirectory(String name, File directory, ScanData data) {
+    private static void scanDirectory(final String name, final File directory, final ScanData data) {
         try {
             //1) Same name .java
-            File f = new File(directory, name + ".java");//NOI18N
+            final var f = new File(directory, name + ".java");//NOI18N
             if (f.exists()) {
                 try {
-                    ControllerClass clazz = new ControllerClass(f);
+                    final var clazz = new ControllerClass(f);
                     data.add(clazz);
-                } catch (IOException | JavaTokenizer.ParseException ex) {
+                } catch (final IOException | JavaTokenizer.ParseException ex) {
                     // NOTE skipping class
                 }
             }
             //2) Same nameController.java
-            File f2 = new File(directory, name + "Controller.java");//NOI18N
+            final var f2 = new File(directory, name + "Controller.java");//NOI18N
             if (f2.exists()) {
                 try {
-                    ControllerClass clazz = new ControllerClass(f2);
+                    final var clazz = new ControllerClass(f2);
                     data.add(clazz);
-                } catch (IOException | JavaTokenizer.ParseException ex) {
+                } catch (final IOException | JavaTokenizer.ParseException ex) {
                     // NOTE skipping class
                 }
             }
             //3) Contains FXML, requires list all java files in the same directory.
             // Enter the list if it exists.
-            for (File javaFile : filterJavaFiles(directory)) {
+            for (final var javaFile : filterJavaFiles(directory)) {
                 if (javaFile.equals(f) || javaFile.equals(f2)) {
                     continue;
                 }
                 try {
-                    ControllerClass clazz = new ControllerClass(javaFile);
+                    final var clazz = new ControllerClass(javaFile);
                     if (!clazz.getFxIds().isEmpty()
                             || !clazz.getEventHandlers().isEmpty() || clazz.isInitializable()) {
                         data.add(clazz);
                     } else {
                         data.javaScanned();
                     }
-                } catch (IOException | JavaTokenizer.ParseException ex) {
+                } catch (final IOException | JavaTokenizer.ParseException ex) {
                     // NOTE skipping class
                 }
                 if (!data.continueScanning()) {
                     return;
                 }
             }
-        } catch (RuntimeException ex) {
+        } catch (final RuntimeException ex) {
             System.err.println(ex);
         }
     }
 
-    private static String getNoExtensionName(File file) {
-        String name = file.getName();
-        int index = name.lastIndexOf('.');//NOI18N
+    private static String getNoExtensionName(final File file) {
+        final var name = file.getName();
+        var index = name.lastIndexOf('.');//NOI18N
         if (index == -1) {
             index = name.length();
         }
         return name.substring(0, index);
     }
 
-    private static File[] filterJavaFiles(File directory) {
+    private static File[] filterJavaFiles(final File directory) {
         // final int[] count = {0};
         final List<File> fileList = new ArrayList<>();
-        FilenameFilter ff = (dir, name) -> {
+        final FilenameFilter ff = (dir, name) -> {
             // count[0] = count[0] + 1;
             if (name.endsWith(".java")) { //NOI18N
-                final File file = new File(dir, name);
+                final var file = new File(dir, name);
                 if (file.canRead() && !file.isDirectory()) {
                     fileList.add(file);
                     return true;
@@ -231,10 +230,10 @@ class ControllerClass {
         return fileList.toArray(new File[fileList.size()]);
     }
 
-    private static String retrieveControllerClassName(String content) {
+    private static String retrieveControllerClassName(final String content) {
         String clazzName = null;
         String packageName;
-        Matcher m = CLASS_PATTERN.matcher(content);
+        var m = CLASS_PATTERN.matcher(content);
         if (m.find()) {
             clazzName = m.group(1);
             clazzName = clazzName.replaceAll("#", "");//NOI18N
@@ -249,11 +248,11 @@ class ControllerClass {
     }
 
     private boolean retrieveInitializableInterface() {
-        List<String> str = extract(INITIALIZABLE_PATTERN);
+        final var str = extract(INITIALIZABLE_PATTERN);
         if (str.isEmpty()) {
             return false;
         }
-        for (String s : str) {
+        for (final var s : str) {
             if (s.contains("Initializable")) {//NOI18N
                 return true;
             }
@@ -261,9 +260,9 @@ class ControllerClass {
         return false;
     }
 
-    private static List<String> extract(Pattern p, String content) {
-        List<String> result = new ArrayList<>();
-        Matcher m = p.matcher(content);
+    private static List<String> extract(final Pattern p, final String content) {
+        final List<String> result = new ArrayList<>();
+        final var m = p.matcher(content);
         while (m.find()) {
             result.add(m.group(1));
         }
@@ -271,14 +270,14 @@ class ControllerClass {
         return Collections.unmodifiableList(result);
     }
 
-    private List<String> extract(Pattern p) {
+    private List<String> extract(final Pattern p) {
         return extract(p, tokenizedContent);
     }
 
     public Set<String> getFxIds() {
         if (fxids == null) {
-            Set<String> fxids1 = cleanFxIds(extract(FXID_PATTERN_1));
-            Set<String> fxids2 = cleanFxIds(extract(FXID_PATTERN_2));
+            final var fxids1 = cleanFxIds(extract(FXID_PATTERN_1));
+            final var fxids2 = cleanFxIds(extract(FXID_PATTERN_2));
             fxids = new HashSet<>();
             fxids.addAll(fxids1);
             fxids.addAll(fxids2);
@@ -288,9 +287,9 @@ class ControllerClass {
 
     public Set<String> getEventHandlers() {
         if (events == null) {
-            List<String> events1 = extract(EVENT_PATTERN_1);
-            List<String> events2 = extract(EVENT_PATTERN_2);
-            List<String> events3 = extract(EVENT_PATTERN_3);
+            final var events1 = extract(EVENT_PATTERN_1);
+            final var events2 = extract(EVENT_PATTERN_2);
+            final var events3 = extract(EVENT_PATTERN_3);
             events = new HashSet<>();
             events.addAll(cleanEvents(events1));
             events.addAll(cleanEvents(events2));
@@ -299,15 +298,15 @@ class ControllerClass {
         return events;
     }
 
-    private static List<String> cleanEvents(List<String> extracted) {
-        List<String> ret = new ArrayList<>();
-        for (String str : extracted) {
-            int index = str.indexOf("#(#");//NOI18N
+    private static List<String> cleanEvents(final List<String> extracted) {
+        final List<String> ret = new ArrayList<>();
+        for (final var str : extracted) {
+            final var index = str.indexOf("#(#");//NOI18N
             if (index == -1) {
                 continue;
             }
-            String subStr = str.substring(0, index);
-            String cleaned = lastJavaIdentifierPart(subStr);
+            final var subStr = str.substring(0, index);
+            final var cleaned = lastJavaIdentifierPart(subStr);
             if (cleaned != null) {
                 ret.add(cleaned);
             }
@@ -315,11 +314,11 @@ class ControllerClass {
         return ret;
     }
 
-    private static Set<String> cleanFxIds(List<String> extracted) {
-        Set<String> ret = new HashSet<>();
-        for (String str : extracted) {
+    private static Set<String> cleanFxIds(final List<String> extracted) {
+        final Set<String> ret = new HashSet<>();
+        for (final var str : extracted) {
             // Make it <instance Name>
-            String instanceName = lastJavaIdentifierPart(str);
+            final var instanceName = lastJavaIdentifierPart(str);
             if (instanceName == null) {
                 continue;
             }
@@ -328,37 +327,37 @@ class ControllerClass {
         return ret;
     }
 
-    private static String lastJavaIdentifierPart(String str) {
+    private static String lastJavaIdentifierPart(final String str) {
         try {
             assert str != null;
-            int index = str.length() - 1;
+            var index = str.length() - 1;
             while (!Character.isJavaIdentifierPart(str.charAt(index)) && index >= 0) {
                 index--;
             }
-            int indexEnd = index + 1;
+            final var indexEnd = index + 1;
             while (Character.isJavaIdentifierPart(str.charAt(index)) && index >= 0) {
                 index--;
             }
-            int indexStart = index + 1;
+            final var indexStart = index + 1;
             return str.substring(indexStart, indexEnd);
-        } catch (RuntimeException ex) {
+        } catch (final RuntimeException ex) {
             System.err.println(ex);
             return null;
         }
     }
 
-    private static String readFile(File file) throws FileNotFoundException, IOException {
+    private static String readFile(final File file) throws FileNotFoundException, IOException {
         /*
          * To convert the InputStream to String we use the BufferedReader.readLine()
          * method. We iterate until the BufferedReader return null which means
          * there's no more data to read. Each line will appended to a StringBuilder
          * and returned as String.
          */
-        StringBuilder sb = new StringBuilder();
+        final var sb = new StringBuilder();
         String line;
 
-        try (BufferedReader bufReader =
-                new BufferedReader(new InputStreamReader(new FileInputStream(file), Charset.forName("UTF-8")))) { //NOI18N
+        try (final var bufReader =
+                new BufferedReader(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) { //NOI18N
             while ((line = bufReader.readLine()) != null) {
                 sb.append(line).append("\n"); //NOI18N
             }
@@ -379,7 +378,7 @@ class ControllerClass {
             numJavaParsed++;
         }
 
-        private void add(ControllerClass clazz) {
+        private void add(final ControllerClass clazz) {
             numJavaParsed++;
             files.add(clazz);
         }

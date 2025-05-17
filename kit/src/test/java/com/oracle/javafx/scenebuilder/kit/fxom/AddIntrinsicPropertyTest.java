@@ -56,8 +56,8 @@ public class AddIntrinsicPropertyTest {
     }
 
     private static void prepareTestData() {
-        final String sourceFile = "TestInclude.fxml";
-        final String exampleCharset = "UTF-8";
+        final var sourceFile = "TestInclude.fxml";
+        final var exampleCharset = "UTF-8";
         fxomDocument = new FXOMDocument();
         fxomIntrinsic = new FXOMIntrinsic(fxomDocument, FXOMIntrinsic.Type.FX_INCLUDE, sourceFile);
         charsetPropertyName = new PropertyName(CHARSET_PROPERTY_NAME);
@@ -72,7 +72,7 @@ public class AddIntrinsicPropertyTest {
     @Test
     public void testAddCharsetProperty() {
         callService();
-        FXOMProperty fxomProperty = fxomIntrinsic.getProperties().get(charsetPropertyName);
+        final var fxomProperty = fxomIntrinsic.getProperties().get(charsetPropertyName);
         assertThat(fxomProperty).isNotNull();
         assertThat(fxomProperty.getName()).isEqualTo(charsetPropertyName);
     }
@@ -80,7 +80,7 @@ public class AddIntrinsicPropertyTest {
     @Test
     public void testAddSourceProperty() {
         callService();
-        FXOMProperty fxomProperty = fxomIntrinsic.getProperties().get(sourcePropertyName);
+        final var fxomProperty = fxomIntrinsic.getProperties().get(sourcePropertyName);
         assertThat(fxomProperty).isNotNull();
         assertThat(fxomProperty.getName()).isEqualTo(sourcePropertyName);
     }

@@ -55,7 +55,7 @@ public class ImageViewResizer extends AbstractResizer<ImageView> {
     private final PropertyName fitHeightName = new PropertyName("fitHeight"); //NOI18N
     private final List<PropertyName> propertyNames = new ArrayList<>();
     
-    public ImageViewResizer(ImageView sceneGraphObject) {
+    public ImageViewResizer(final ImageView sceneGraphObject) {
         super(sceneGraphObject);
         originalFitWidth   = sceneGraphObject.getFitWidth();
         originalFitHeight  = sceneGraphObject.getFitHeight();
@@ -70,9 +70,9 @@ public class ImageViewResizer extends AbstractResizer<ImageView> {
      */
     
     @Override
-    public final Bounds computeBounds(double width, double height) {
-        final double minX = sceneGraphObject.getX();
-        final double minY = sceneGraphObject.getY();
+    public final Bounds computeBounds(final double width, final double height) {
+        final var minX = sceneGraphObject.getX();
+        final var minY = sceneGraphObject.getY();
         final double actualWidth;
         if (width > 0) {
             actualWidth = width;
@@ -95,12 +95,12 @@ public class ImageViewResizer extends AbstractResizer<ImageView> {
     }
 
     @Override
-    public void changeWidth(double width) {
+    public void changeWidth(final double width) {
         sceneGraphObject.setFitWidth(Math.round(width));
     }
 
     @Override
-    public void changeHeight(double height) {
+    public void changeHeight(final double height) {
         sceneGraphObject.setFitHeight(Math.round(height));
     }
 
@@ -116,7 +116,7 @@ public class ImageViewResizer extends AbstractResizer<ImageView> {
     }
 
     @Override
-    public Object getValue(PropertyName propertyName) {
+    public Object getValue(final PropertyName propertyName) {
         assert propertyName != null;
         assert propertyNames.contains(propertyName);
         
@@ -136,10 +136,10 @@ public class ImageViewResizer extends AbstractResizer<ImageView> {
     @Override
     public Map<PropertyName, Object> getChangeMap() {
         final Map<PropertyName, Object> result = new HashMap<>();
-        if (MathUtils.equals(sceneGraphObject.getFitWidth(), originalFitWidth) == false) {
+        if (!MathUtils.equals(sceneGraphObject.getFitWidth(), originalFitWidth)) {
             result.put(fitWidthName, sceneGraphObject.getFitWidth());
         }
-        if (MathUtils.equals(sceneGraphObject.getFitHeight(), originalFitHeight) == false) {
+        if (!MathUtils.equals(sceneGraphObject.getFitHeight(), originalFitHeight)) {
             result.put(fitHeightName, sceneGraphObject.getFitHeight());
         }
         return result;

@@ -38,8 +38,8 @@ public class SkeletonCreatorKotlin extends AbstractSkeletonCreator {
     }
 
     @Override
-    void appendPackage(SkeletonContext context, StringBuilder sb) {
-        String controller = context.getFxController();
+    void appendPackage(final SkeletonContext context, final StringBuilder sb) {
+        final var controller = context.getFxController();
 
         if (controller != null && controller.contains(".") && !controller.contains("$")) { //NOI18N
             sb.append("package "); //NOI18N
@@ -49,31 +49,31 @@ public class SkeletonCreatorKotlin extends AbstractSkeletonCreator {
     }
 
     @Override
-    void appendImports(SkeletonContext context, StringBuilder sb) {
-        for (String importStatement : context.getImports()) {
+    void appendImports(final SkeletonContext context, final StringBuilder sb) {
+        for (final var importStatement : context.getImports()) {
             sb.append(importStatement).append(NL);
         }
     }
 
     @Override
-    void appendClassPart(SkeletonContext context, StringBuilder sb) {
+    void appendClassPart(final SkeletonContext context, final StringBuilder sb) {
         sb.append("class "); //NOI18N
 
         if (hasController(context)) {
-            String controllerClassName = getControllerClassName(context);
+            final var controllerClassName = getControllerClassName(context);
             sb.append(controllerClassName);
         } else {
             sb.append("PleaseProvideControllerClassName"); //NOI18N
         }
     }
 
-    private boolean hasController(SkeletonContext context) {
+    private boolean hasController(final SkeletonContext context) {
         return context.getFxController() != null && !context.getFxController().isEmpty();
     }
 
-    private String getControllerClassName(SkeletonContext context) {
-        String simpleName = context.getFxController().replace("$", "."); //NOI18N
-        int dot = simpleName.lastIndexOf('.');
+    private String getControllerClassName(final SkeletonContext context) {
+        var simpleName = context.getFxController().replace("$", "."); //NOI18N
+        final var dot = simpleName.lastIndexOf('.');
         if (dot > -1) {
             simpleName = simpleName.substring(dot + 1);
         }
@@ -81,18 +81,18 @@ public class SkeletonCreatorKotlin extends AbstractSkeletonCreator {
     }
 
     @Override
-    void appendField(Class<?> fieldClass, String fieldName, StringBuilder sb) {
+    void appendField(final Class<?> fieldClass, final String fieldName, final StringBuilder sb) {
         sb.append("private lateinit var ").append(fieldName).append(": ").append(fieldClass.getSimpleName()); //NOI18N
         appendFieldParameters(sb, fieldClass);
     }
 
     @Override
-    void appendFieldParameterType(StringBuilder sb) {
+    void appendFieldParameterType(final StringBuilder sb) {
         sb.append("Any"); //NOI18N
     }
 
     @Override
-    void appendEventHandler(String methodName, String eventClassName, StringBuilder sb) {
+    void appendEventHandler(final String methodName, final String eventClassName, final StringBuilder sb) {
         sb.append("fun "); //NOI18N
         sb.append(methodName);
         sb.append("(event: ").append(eventClassName).append(") {").append(NL).append(NL); //NOI18N
@@ -100,13 +100,13 @@ public class SkeletonCreatorKotlin extends AbstractSkeletonCreator {
     }
 
     @Override
-    void appendInitializeMethodPart(StringBuilder sb) {
+    void appendInitializeMethodPart(final StringBuilder sb) {
         sb.append("fun initialize()"); //NOI18N
     }
 
     @Override
-    void appendAssertions(SkeletonContext context, StringBuilder sb) {
-        for (String assertion : context.getAssertions()) {
+    void appendAssertions(final SkeletonContext context, final StringBuilder sb) {
+        for (final var assertion : context.getAssertions()) {
             sb.append(INDENT).append(INDENT)
                 .append("assert(").append(assertion).append(" != null) {") //NOI18N
                 .append("\"fx:id=\\\"").append(assertion).append("\\\" was not injected: check your FXML file ") //NOI18N

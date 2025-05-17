@@ -49,7 +49,7 @@ import java.net.URL;
  */
 class TransientClassLoader extends ClassLoader {
     
-    public TransientClassLoader(ClassLoader parentClassLoader) {
+    public TransientClassLoader(final ClassLoader parentClassLoader) {
         super(parentClassLoader);
     }
     
@@ -58,12 +58,12 @@ class TransientClassLoader extends ClassLoader {
      */
     
     @Override
-    public URL getResource(String name) {
-        URL  result = super.getResource(name);
+    public URL getResource(final String name) {
+        var result = super.getResource(name);
         if (result == null) {
             try {
                 result = new URL("file", null, name); //NOI18N
-            } catch(MalformedURLException x) {
+            } catch(final MalformedURLException x) {
                 throw new RuntimeException("Bug", x); //NOI18N
             }
         }

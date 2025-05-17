@@ -42,8 +42,8 @@ import javafx.scene.Node;
  */
 public abstract class AbstractNodeTring<T extends Node> extends AbstractGenericTring<T> {
 
-    public AbstractNodeTring(ContentPanelController contentPanelController, 
-            FXOMInstance fxomInstance, Class<T> sceneGraphClass) {
+    public AbstractNodeTring(final ContentPanelController contentPanelController,
+                             final FXOMInstance fxomInstance, final Class<T> sceneGraphClass) {
         super(contentPanelController, fxomInstance, sceneGraphClass);
     }
     

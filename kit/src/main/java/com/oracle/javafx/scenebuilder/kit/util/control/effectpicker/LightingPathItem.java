@@ -49,7 +49,7 @@ public class LightingPathItem extends EffectPathItem {
     private EffectPathItem bumpInputPathItem;
     private EffectPathItem contentInputPathItem;
 
-    public LightingPathItem(EffectPickerController epc, Effect effect, EffectPathItem hostPathItem) {
+    public LightingPathItem(final EffectPickerController epc, final Effect effect, final EffectPathItem hostPathItem) {
         super(epc, effect, hostPathItem);
         assert effect instanceof javafx.scene.effect.Lighting;
         initialize();
@@ -60,26 +60,26 @@ public class LightingPathItem extends EffectPathItem {
         if (bumpMenuItem.isSelected()) {
             return bumpInputPathItem;
         } else {
-            assert contentMenuItem.isSelected() == true;
+            assert contentMenuItem.isSelected();
             return contentInputPathItem;
         }
     }
 
     @Override
-    void setSelectedInputEffect(Effect input) {
+    void setSelectedInputEffect(final Effect input) {
         if (bumpMenuItem.isSelected()) {
             setBumpInput(input);
         } else {
-            assert contentMenuItem.isSelected() == true;
+            assert contentMenuItem.isSelected();
             setContentInput(input);
         }
     }
 
-    void setBumpInputPathItem(EffectPathItem epi) {
+    void setBumpInputPathItem(final EffectPathItem epi) {
         bumpInputPathItem = epi;
     }
 
-    void setContentInputPathItem(EffectPathItem epi) {
+    void setContentInputPathItem(final EffectPathItem epi) {
         contentInputPathItem = epi;
     }
 
@@ -87,7 +87,7 @@ public class LightingPathItem extends EffectPathItem {
         return ((Lighting) effect).getBumpInput();
     }
 
-    void setBumpInput(Effect input) {
+    void setBumpInput(final Effect input) {
         ((Lighting) effect).setBumpInput(input);
     }
 
@@ -95,13 +95,13 @@ public class LightingPathItem extends EffectPathItem {
         return ((Lighting) effect).getContentInput();
     }
 
-    void setContentInput(Effect input) {
+    void setContentInput(final Effect input) {
         ((Lighting) effect).setContentInput(input);
     }
 
     private void initialize() {
         // Add Select Input Menu
-        final Menu inputMenu = new Menu("Select Input"); //NOI18N
+        final var inputMenu = new Menu("Select Input"); //NOI18N
         bumpMenuItem.setToggleGroup(inputToggleGroup);
         bumpMenuItem.setOnAction(event -> {
             toggle_button.setText(getSimpleName() + " (BumpInput)"); //NOI18N

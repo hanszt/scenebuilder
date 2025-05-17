@@ -60,8 +60,8 @@ public class BlendPropertyMetadata extends ComplexPropertyMetadata<Blend> {
             = new EnumerationPropertyMetadata(new PropertyName("mode"), //NOI18N
             BlendMode.class, true, BlendMode.SRC_OVER, InspectorPath.UNUSED);
 
-    public BlendPropertyMetadata(PropertyName name, boolean readWrite, 
-            Blend defaultValue, InspectorPath inspectorPath) {
+    public BlendPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                 final Blend defaultValue, final InspectorPath inspectorPath) {
         super(name, Blend.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -70,8 +70,8 @@ public class BlendPropertyMetadata extends ComplexPropertyMetadata<Blend> {
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(Blend value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, value.getClass());
+    public FXOMInstance makeFxomInstanceFromValue(final Blend value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, value.getClass());
         
         bottomInputMetadata.setValue(result, value.getBottomInput());
         topInputMetadata.setValue(result, value.getTopInput());

@@ -39,7 +39,7 @@ import javafx.scene.layout.StackPane;
  */
 public class WrapInStackPaneJob extends AbstractWrapInSubComponentJob {
 
-    public WrapInStackPaneJob(EditorController editorController) {
+    public WrapInStackPaneJob(final EditorController editorController) {
         super(editorController);
         newContainerClass = StackPane.class;
     }

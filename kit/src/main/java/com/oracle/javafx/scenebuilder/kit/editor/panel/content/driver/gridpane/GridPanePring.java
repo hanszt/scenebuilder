@@ -54,7 +54,7 @@ public class GridPanePring extends AbstractPring<GridPane> {
                     true /* shouldShowTray */,
                     false /* shouldCreateSensors */ );
     
-    public GridPanePring(ContentPanelController contentPanelController, FXOMInstance fxomInstance) {
+    public GridPanePring(final ContentPanelController contentPanelController, final FXOMInstance fxomInstance) {
         super(contentPanelController, fxomInstance, GridPane.class);
         
         assert fxomInstance.getSceneGraphObject() instanceof GridPane;
@@ -100,16 +100,16 @@ public class GridPanePring extends AbstractPring<GridPane> {
         }
         
         // Mosaic update may have created new trays. Attach this pring to them.
-        for (Node node : this.mosaic.getNorthTrayNodes()) {
+        for (final var node : this.mosaic.getNorthTrayNodes()) {
             attachPring(node);
         }
-        for (Node node : this.mosaic.getSouthTrayNodes()) {
+        for (final var node : this.mosaic.getSouthTrayNodes()) {
             attachPring(node);
         }
-        for (Node node : this.mosaic.getEastTrayNodes()) {
+        for (final var node : this.mosaic.getEastTrayNodes()) {
             attachPring(node);
         }
-        for (Node node : this.mosaic.getWestTrayNodes()) {
+        for (final var node : this.mosaic.getWestTrayNodes()) {
             attachPring(node);
         }
         
@@ -123,17 +123,17 @@ public class GridPanePring extends AbstractPring<GridPane> {
      */
     
     @Override
-    public void changeStroke(Paint stroke) {
+    public void changeStroke(final Paint stroke) {
         assert stroke instanceof Color;
         mosaic.setTrayColor((Color) stroke);
     }
 
     @Override
-    public AbstractGesture findGesture(Node node) {
+    public AbstractGesture findGesture(final Node node) {
         
         final GridSelectionGroup.Type feature;
-        
-        int trayIndex = mosaic.getNorthTrayNodes().indexOf(node);
+
+        var trayIndex = mosaic.getNorthTrayNodes().indexOf(node);
         if (trayIndex != -1) {
             feature = GridSelectionGroup.Type.COLUMN;
         } else {
@@ -169,7 +169,7 @@ public class GridPanePring extends AbstractPring<GridPane> {
     /* 
      * Wraper to avoid the 'leaking this in constructor' warning emitted by NB.
      */
-    private void attachPring(Node node) {
+    private void attachPring(final Node node) {
         if (AbstractPring.lookupPring(node) == null) {
             attachPring(node, this);
         }

@@ -42,9 +42,7 @@ import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.UpdateSelectionJob;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.Metadata;
-import com.oracle.javafx.scenebuilder.kit.metadata.property.ValuePropertyMetadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.property.value.ImagePropertyMetadata;
-import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignImage;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
 import javafx.scene.image.ImageView;
 
@@ -55,7 +53,7 @@ public class ImageViewDropTarget extends AbstractDropTarget {
     
     private final FXOMInstance targetImageView;
 
-    public ImageViewDropTarget(FXOMObject targetImageView) {
+    public ImageViewDropTarget(final FXOMObject targetImageView) {
         assert targetImageView instanceof FXOMInstance;
         assert targetImageView.getSceneGraphObject() instanceof ImageView;
         
@@ -73,33 +71,33 @@ public class ImageViewDropTarget extends AbstractDropTarget {
     }
 
     @Override
-    public boolean acceptDragSource(AbstractDragSource dragSource) {
+    public boolean acceptDragSource(final AbstractDragSource dragSource) {
         assert dragSource != null;
         return dragSource.isSingleImageViewOnly();
     }
 
     @Override
-    public Job makeDropJob(AbstractDragSource dragSource, EditorController editorController) {
+    public Job makeDropJob(final AbstractDragSource dragSource, final EditorController editorController) {
         
         assert dragSource != null;
         assert dragSource.isSingleImageViewOnly(); // (1)
         
-        final FXOMObject draggedObject 
-                = dragSource.getDraggedObjects().get(0);
+        final var draggedObject
+                = dragSource.getDraggedObjects().getFirst();
         assert draggedObject instanceof FXOMInstance; // because (1)
-        final FXOMInstance draggedInstance 
+        final var draggedInstance
                 = (FXOMInstance) draggedObject;
-        final PropertyName imageName 
+        final var imageName
                 = new PropertyName("image"); //NOI18N
-        final ValuePropertyMetadata vpm 
+        final var vpm
                 = Metadata.getMetadata().queryValueProperty(draggedInstance, imageName);
         assert vpm instanceof ImagePropertyMetadata;
-        final ImagePropertyMetadata imageVPM
+        final var imageVPM
                 = (ImagePropertyMetadata) vpm;
-        final DesignImage image
+        final var image
                 = imageVPM.getValue(draggedInstance);
         
-        final BatchJob result = new BatchJob(editorController);
+        final var result = new BatchJob(editorController);
         result.addSubJob(new BackupSelectionJob(editorController));
         result.addSubJob(new ModifyObjectJob(targetImageView, imageVPM, image, editorController));
         result.addSubJob(new UpdateSelectionJob(targetImageView, editorController));

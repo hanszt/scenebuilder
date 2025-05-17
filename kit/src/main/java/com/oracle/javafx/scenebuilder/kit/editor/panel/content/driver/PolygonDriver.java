@@ -45,7 +45,7 @@ import javafx.scene.shape.Polygon;
  */
 public class PolygonDriver extends AbstractNodeDriver {
 
-    public PolygonDriver(ContentPanelController contentPanelController) {
+    public PolygonDriver(final ContentPanelController contentPanelController) {
         super(contentPanelController);
     }
 
@@ -54,18 +54,18 @@ public class PolygonDriver extends AbstractNodeDriver {
      */
     
     @Override
-    public AbstractHandles<?> makeHandles(FXOMObject fxomObject) {
+    public AbstractHandles<?> makeHandles(final FXOMObject fxomObject) {
         assert fxomObject.getSceneGraphObject() instanceof Polygon;
         assert fxomObject instanceof FXOMInstance;
         return new PolygonHandles(contentPanelController, (FXOMInstance)fxomObject);
     }
 
     @Override
-    public AbstractCurveEditor<?> makeCurveEditor(FXOMObject fxomObject) {
+    public AbstractCurveEditor<?> makeCurveEditor(final FXOMObject fxomObject) {
         assert fxomObject.getSceneGraphObject() instanceof Polygon;
         assert fxomObject instanceof FXOMInstance;
 
-        final Polygon polygon = (Polygon) fxomObject.getSceneGraphObject();
+        final var polygon = (Polygon) fxomObject.getSceneGraphObject();
         return new PolygonEditor(polygon);
     }
     

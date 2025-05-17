@@ -32,7 +32,7 @@
 package com.oracle.javafx.scenebuilder.kit.editor.job;
 
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -46,7 +46,7 @@ public abstract class BatchDocumentJob extends CompositeJob {
 
     private List<Job> subJobs;
 
-    public BatchDocumentJob(EditorController editorController) {
+    public BatchDocumentJob(final EditorController editorController) {
         super(editorController);
     }
 
@@ -61,15 +61,15 @@ public abstract class BatchDocumentJob extends CompositeJob {
 
     @Override
     public final boolean isExecutable() {
-        return getSubJobs().isEmpty() == false;
+        return !getSubJobs().isEmpty();
     }
 
     @Override
     public void execute() {
-        final FXOMDocument fxomDocument
+        final var fxomDocument
                 = getEditorController().getFxomDocument();
         fxomDocument.beginUpdate();
-        for (Job subJob : getSubJobs()) {
+        for (final var subJob : getSubJobs()) {
             subJob.execute();
         }
         fxomDocument.endUpdate();
@@ -77,10 +77,10 @@ public abstract class BatchDocumentJob extends CompositeJob {
 
     @Override
     public void undo() {
-        final FXOMDocument fxomDocument
+        final var fxomDocument
                 = getEditorController().getFxomDocument();
         fxomDocument.beginUpdate();
-        for (int i = getSubJobs().size() - 1; i >= 0; i--) {
+        for (var i = getSubJobs().size() - 1; i >= 0; i--) {
             getSubJobs().get(i).undo();
         }
         fxomDocument.endUpdate();
@@ -88,10 +88,10 @@ public abstract class BatchDocumentJob extends CompositeJob {
 
     @Override
     public void redo() {
-        final FXOMDocument fxomDocument
+        final var fxomDocument
                 = getEditorController().getFxomDocument();
         fxomDocument.beginUpdate();
-        for (Job subJob : getSubJobs()) {
+        for (final var subJob : getSubJobs()) {
             subJob.redo();
         }
         fxomDocument.endUpdate();

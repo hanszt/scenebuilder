@@ -54,11 +54,11 @@ public class GridSnapshotItem {
         private final VPos valignment;
         private final HPos halignment;
         
-        public GridSnapshotItem(FXOMObject fxomObject) {
+        public GridSnapshotItem(final FXOMObject fxomObject) {
             assert fxomObject != null;
             assert fxomObject.getSceneGraphObject() instanceof Node;
             
-            final Node node = (Node) fxomObject.getSceneGraphObject();
+            final var node = (Node) fxomObject.getSceneGraphObject();
             this.columnIndex = GridPane.getColumnIndex(node);
             this.rowIndex = GridPane.getRowIndex(node);
             this.columnSpan = GridPane.getColumnSpan(node);
@@ -69,7 +69,7 @@ public class GridSnapshotItem {
             this.halignment = GridPane.getHalignment(node);
         }
 
-        public GridSnapshotItem(FXOMObject fxomObject, int columnIndex, int rowIndex) {
+        public GridSnapshotItem(final FXOMObject fxomObject, final int columnIndex, final int rowIndex) {
             assert fxomObject != null;
             assert fxomObject.getSceneGraphObject() instanceof Node;
             assert columnIndex >= 0;
@@ -118,8 +118,8 @@ public class GridSnapshotItem {
         }
         
         public GridBounds getBounds() {
-            final int actualColumnIndex = (columnIndex == null) ? 0 : columnIndex;
-            final int actualRowIndex = (rowIndex == null) ? 0 : rowIndex;
+            final var actualColumnIndex = (columnIndex == null) ? 0 : columnIndex;
+            final var actualRowIndex = (rowIndex == null) ? 0 : rowIndex;
             
             final int actualColumnSpan;
             if ((columnSpan == null) || (columnSpan == GridPane.REMAINING)) {

@@ -43,7 +43,7 @@ public class Utils {
         // no-op
     }
 
-    public static final String makeTitle(FXOMDocument fxomDocument) {
+    public static final String makeTitle(final FXOMDocument fxomDocument) {
         final String title;
 
         if (fxomDocument == null) {
@@ -51,11 +51,11 @@ public class Utils {
         } else if (fxomDocument.getLocation() == null) {
             title = I18N.getString("label.untitled");
         } else {
-            String name = ""; //NOI18N
+            var name = ""; //NOI18N
             try {
-                final File toto = new File(fxomDocument.getLocation().toURI());
+                final var toto = new File(fxomDocument.getLocation().toURI());
                 name = toto.getName();
-            } catch (URISyntaxException ex) {
+            } catch (final URISyntaxException ex) {
                 throw new RuntimeException("Bug", ex); //NOI18N
             }
             title = name;

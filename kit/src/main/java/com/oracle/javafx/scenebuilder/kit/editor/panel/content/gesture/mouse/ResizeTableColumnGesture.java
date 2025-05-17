@@ -32,7 +32,6 @@
 
 package com.oracle.javafx.scenebuilder.kit.editor.panel.content.gesture.mouse;
 
-import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
 import com.oracle.javafx.scenebuilder.kit.editor.job.BatchJob;
 import com.oracle.javafx.scenebuilder.kit.editor.job.Job;
@@ -48,9 +47,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javafx.geometry.Point2D;
+
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.input.KeyEvent;
 
 /**
@@ -62,8 +60,8 @@ public class ResizeTableColumnGesture extends AbstractMouseGesture {
     private TableColumnResizer resizer;
 
 
-    public ResizeTableColumnGesture(ContentPanelController contentPanelController,
-            FXOMInstance fxomInstance) {
+    public ResizeTableColumnGesture(final ContentPanelController contentPanelController,
+                                    final FXOMInstance fxomInstance) {
         super(contentPanelController);
         
         assert fxomInstance != null;
@@ -96,14 +94,14 @@ public class ResizeTableColumnGesture extends AbstractMouseGesture {
     protected void mouseDragged() {
         assert resizer != null;
         
-        final double startSceneX = getMousePressedEvent().getSceneX();
-        final double startSceneY = getMousePressedEvent().getSceneY();
-        final double currentSceneX = getLastMouseEvent().getSceneX();
-        final double currentSceneY = getLastMouseEvent().getSceneY();
-        final TableView<?> tableView = resizer.getTableColumn().getTableView();
-        final Point2D start = tableView.sceneToLocal(startSceneX, startSceneY, true /* rootScene */);
-        final Point2D current = tableView.sceneToLocal(currentSceneX, currentSceneY, true /* rootScene */);
-        final double dx = current.getX() - start.getX();
+        final var startSceneX = getMousePressedEvent().getSceneX();
+        final var startSceneY = getMousePressedEvent().getSceneY();
+        final var currentSceneX = getLastMouseEvent().getSceneX();
+        final var currentSceneY = getLastMouseEvent().getSceneY();
+        final var tableView = resizer.getTableColumn().getTableView();
+        final var start = tableView.sceneToLocal(startSceneX, startSceneY, true /* rootScene */);
+        final var current = tableView.sceneToLocal(currentSceneX, currentSceneY, true /* rootScene */);
+        final var dx = current.getX() - start.getX();
         
         resizer.updateWidth(dx);
         tableView.layout();
@@ -123,23 +121,23 @@ public class ResizeTableColumnGesture extends AbstractMouseGesture {
          */
         
         // Step #1
-        final Map<PropertyName, Object> changeMap = resizer.getChangeMap();
-        final Map<PropertyName, Object> changeMapNext = resizer.getChangeMapNext();
+        final var changeMap = resizer.getChangeMap();
+        final var changeMapNext = resizer.getChangeMapNext();
         
 
         // Step #2
         userDidCancel();
         
         // Step #3
-        final EditorController editorController 
+        final var editorController
                 = contentPanelController.getEditorController();
-        final BatchJob batchJob
+        final var batchJob
                 = new BatchJob(editorController, true,
                 I18N.getString("label.action.edit.resize.column"));
-        if (changeMap.isEmpty() == false) {
+        if (!changeMap.isEmpty()) {
             batchJob.addSubJobs(makeResizeJob(columnInstance, changeMap));
         }
-        if (changeMapNext.isEmpty() == false) {
+        if (!changeMapNext.isEmpty()) {
             batchJob.addSubJobs(makeResizeJob(columnInstance.getNextSlibing(), changeMapNext));
         }
         if (batchJob.isExecutable()) {
@@ -155,7 +153,7 @@ public class ResizeTableColumnGesture extends AbstractMouseGesture {
     }
 
     @Override
-    protected void keyEvent(KeyEvent e) {
+    protected void keyEvent(final KeyEvent e) {
         // Nothing special here
     }
 
@@ -170,22 +168,22 @@ public class ResizeTableColumnGesture extends AbstractMouseGesture {
      * Private
      */
     
-    private List<Job> makeResizeJob(FXOMObject columnObject, Map<PropertyName, Object> changeMap) {
+    private List<Job> makeResizeJob(final FXOMObject columnObject, final Map<PropertyName, Object> changeMap) {
         assert columnObject.getSceneGraphObject() instanceof TableColumn;
         assert columnObject instanceof FXOMInstance;
         
         final List<Job> result = new ArrayList<>();
 
-        final Metadata metadata = Metadata.getMetadata();
+        final var metadata = Metadata.getMetadata();
         final Map<ValuePropertyMetadata, Object> metaValueMap = new HashMap<>();
-        for (Map.Entry<PropertyName,Object> e : changeMap.entrySet()) {
-            final ValuePropertyMetadata vpm = metadata.queryValueProperty(columnInstance, e.getKey());
+        for (final var e : changeMap.entrySet()) {
+            final var vpm = metadata.queryValueProperty(columnInstance, e.getKey());
             assert vpm != null;
             metaValueMap.put(vpm, e.getValue());
         }
 
-        for (Map.Entry<ValuePropertyMetadata, Object> e : metaValueMap.entrySet()) {
-            final ModifyObjectJob job = new ModifyObjectJob(
+        for (final var e : metaValueMap.entrySet()) {
+            final var job = new ModifyObjectJob(
                     (FXOMInstance) columnObject,
                     e.getKey(),
                     e.getValue(),

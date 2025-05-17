@@ -32,7 +32,6 @@
 
 package com.oracle.javafx.scenebuilder.kit.editor.panel.content.gesture.mouse;
 
-import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.ModifyObjectJob;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.gridpane.GridPaneHandles;
@@ -46,7 +45,7 @@ import com.oracle.javafx.scenebuilder.kit.util.Deprecation;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import javafx.geometry.Point2D;
+
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
@@ -72,7 +71,7 @@ public class ResizeColumnGesture extends AbstractMouseGesture {
     private GridPaneColumnResizer resizer;
 
 
-    public ResizeColumnGesture(GridPaneHandles gridPaneHandles, int columnIndex) {
+    public ResizeColumnGesture(final GridPaneHandles gridPaneHandles, final int columnIndex) {
         super(gridPaneHandles.getContentPanelController());
         
         assert columnIndex >= 0;
@@ -108,13 +107,13 @@ public class ResizeColumnGesture extends AbstractMouseGesture {
     protected void mouseDragged() {
         assert resizer != null;
         
-        final double startSceneX = getMousePressedEvent().getSceneX();
-        final double startSceneY = getMousePressedEvent().getSceneY();
-        final double currentSceneX = getLastMouseEvent().getSceneX();
-        final double currentSceneY = getLastMouseEvent().getSceneY();
-        final Point2D start = gridPane.sceneToLocal(startSceneX, startSceneY, true /* rootScene */);
-        final Point2D current = gridPane.sceneToLocal(currentSceneX, currentSceneY, true /* rootScene */);
-        final double dx = current.getX() - start.getX();
+        final var startSceneX = getMousePressedEvent().getSceneX();
+        final var startSceneY = getMousePressedEvent().getSceneY();
+        final var currentSceneX = getLastMouseEvent().getSceneX();
+        final var currentSceneY = getLastMouseEvent().getSceneY();
+        final var start = gridPane.sceneToLocal(startSceneX, startSceneY, true /* rootScene */);
+        final var current = gridPane.sceneToLocal(currentSceneX, currentSceneY, true /* rootScene */);
+        final var dx = current.getX() - start.getX();
         
         resizer.updateWidth(dx);
         gridPane.layout();
@@ -135,16 +134,16 @@ public class ResizeColumnGesture extends AbstractMouseGesture {
          */
         
         // Step #1
-        final List<ColumnConstraints> newConstraints 
+        final var newConstraints
                 = cloneColumnConstraintsList(gridPane);
 
         // Step #2
         userDidCancel();
         
         // Step #3
-        final EditorController editorController 
+        final var editorController
                 = contentPanelController.getEditorController();
-        final ModifyObjectJob j = new ModifyObjectJob(
+        final var j = new ModifyObjectJob(
                 fxomInstance,
                 columnConstraintsMeta,
                 newConstraints,
@@ -162,7 +161,7 @@ public class ResizeColumnGesture extends AbstractMouseGesture {
     }
 
     @Override
-    protected void keyEvent(KeyEvent e) {
+    protected void keyEvent(final KeyEvent e) {
         // Nothing special here
     }
 
@@ -178,10 +177,10 @@ public class ResizeColumnGesture extends AbstractMouseGesture {
      * Private
      */
     
-    private List<ColumnConstraints> cloneColumnConstraintsList(GridPane gridPane) {
+    private List<ColumnConstraints> cloneColumnConstraintsList(final GridPane gridPane) {
         final List<ColumnConstraints> result = new ArrayList<>();
         
-        for (ColumnConstraints cc : gridPane.getColumnConstraints()) {
+        for (final var cc : gridPane.getColumnConstraints()) {
             result.add(cloneColumnConstraints(cc));
         }
         
@@ -189,8 +188,8 @@ public class ResizeColumnGesture extends AbstractMouseGesture {
     }
     
     
-    private ColumnConstraints cloneColumnConstraints(ColumnConstraints cc) {
-        final ColumnConstraints result = new ColumnConstraints();
+    private ColumnConstraints cloneColumnConstraints(final ColumnConstraints cc) {
+        final var result = new ColumnConstraints();
         
         result.setFillWidth(cc.isFillWidth());
         result.setHalignment(cc.getHalignment());

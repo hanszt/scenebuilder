@@ -87,70 +87,70 @@ public class GluonMetadataProvider implements ExternalMetadataProvider {
 
     public GluonMetadataProvider() {
         // Property Names
-        final PropertyName bottomNavigationTypeName = new PropertyName("type");
-        final PropertyName buttonsName = new PropertyName("buttons");
-        final PropertyName collapsedContentName = new PropertyName("collapsedContent");
-        final PropertyName contentName = new PropertyName("content");
-        final PropertyName expandedContentName = new PropertyName("expandedContent");
-        final PropertyName expandedName = new PropertyName("expanded");
-        final PropertyName onPullToRefreshName = new PropertyName("onPullToRefresh");
-        final PropertyName searchBoxVisibleName = new PropertyName("searchBoxVisible");
-        final PropertyName selectionTypeName = new PropertyName("selectionType");
-        final PropertyName titleFilterName = new PropertyName("titleFilter");
+        final var bottomNavigationTypeName = new PropertyName("type");
+        final var buttonsName = new PropertyName("buttons");
+        final var collapsedContentName = new PropertyName("collapsedContent");
+        final var contentName = new PropertyName("content");
+        final var expandedContentName = new PropertyName("expandedContent");
+        final var expandedName = new PropertyName("expanded");
+        final var onPullToRefreshName = new PropertyName("onPullToRefresh");
+        final var searchBoxVisibleName = new PropertyName("searchBoxVisible");
+        final var selectionTypeName = new PropertyName("selectionType");
+        final var titleFilterName = new PropertyName("titleFilter");
 
         // Property Metadata
-        final ComponentPropertyMetadata actionItems_Node_PropertyMetadata =
+        final var actionItems_Node_PropertyMetadata =
             new ComponentPropertyMetadata(
                 actionItemsName,
                 NodeMetadata,
                 true); /* collection */
-        final EnumerationPropertyMetadata bottomNavigationTypePropertyMetadata =
+        final var bottomNavigationTypePropertyMetadata =
             new EnumerationPropertyMetadata(
                 bottomNavigationTypeName,
                 BottomNavigation.Type.class,
                 true, /* readWrite */
                 BottomNavigation.Type.FIXED, /* defaultValue */
                 new InspectorPath("Properties", "Specific", 0));
-        final ComponentPropertyMetadata buttons_EXPANDEDPANEL_PropertyMetadata =
+        final var buttons_EXPANDEDPANEL_PropertyMetadata =
             new ComponentPropertyMetadata(
                 buttonsName,
                 ButtonBaseMetadata,
                 true); /* collection */
-        final ComponentPropertyMetadata collapsedContentPropertyMetadata =
+        final var collapsedContentPropertyMetadata =
             new ComponentPropertyMetadata(
                 collapsedContentName,
                 NodeMetadata,
                 false /* collection */
             );
-        final ComponentPropertyMetadata content_EXPANDEDPANEL_PropertyMetadata =
+        final var content_EXPANDEDPANEL_PropertyMetadata =
             new ComponentPropertyMetadata(
                 contentName,
                 NodeMetadata,
                 false); /* collection */
-        final ComponentPropertyMetadata expandedContentPropertyMetadata =
+        final var expandedContentPropertyMetadata =
             new ComponentPropertyMetadata(
                 expandedContentName,
                 NodeMetadata,
                 false /* collection */
             );
-        final BooleanPropertyMetadata expandedPropertyMetadata =
+        final var expandedPropertyMetadata =
             new BooleanPropertyMetadata(
                 expandedName,
                 true, /* readWrite */
                 false, /* defaultValue */
                 new InspectorPath("Properties", "Specific", 0)
             );
-        final ComponentPropertyMetadata items_ExpansionPanel_PropertyMetadata =
+        final var items_ExpansionPanel_PropertyMetadata =
             new ComponentPropertyMetadata(
                 itemsName,
                 ExpansionPanelMetadata,
                 true); /* collection */
-        final ComponentPropertyMetadata items_MenuItem_PropertyMetadata =
+        final var items_MenuItem_PropertyMetadata =
             new ComponentPropertyMetadata(
                 itemsName,
                 MenuItemMetadata,
                 true); /* collection */
-        final ComponentPropertyMetadata items_Node_PropertyMetadata =
+        final var items_Node_PropertyMetadata =
             new ComponentPropertyMetadata(
                 itemsName,
                 NodeMetadata,
@@ -162,7 +162,7 @@ public class GluonMetadataProvider implements ExternalMetadataProvider {
                 null, /* defaultValue */
                 new InspectorPath("Code", "Specific", 0)
             );
-        final ComponentPropertyMetadata options_Option_PropertyMetadata =
+        final var options_Option_PropertyMetadata =
             new ComponentPropertyMetadata(
                 optionsName,
                 OptionMetadata,
@@ -186,12 +186,12 @@ public class GluonMetadataProvider implements ExternalMetadataProvider {
                 true, /* readWrite */
                 "",
                 new InspectorPath("Properties", "Specific", 1));
-        final ComponentPropertyMetadata titleNodes_Node_PropertyMetadata =
+        final var titleNodes_Node_PropertyMetadata =
             new ComponentPropertyMetadata(
                 titleNodesName,
                 NodeMetadata,
                 true); /* collection */
-        final ComponentPropertyMetadata toggles_ToggleButton_PropertyMetadata =
+        final var toggles_ToggleButton_PropertyMetadata =
             new ComponentPropertyMetadata(
                 togglesName,
                 ToggleButtonMetadata,
@@ -236,7 +236,7 @@ public class GluonMetadataProvider implements ExternalMetadataProvider {
     }
 
     @Override
-    public Optional<PropertyName> getExternalSubComponentProperty(Class<?> componentClass) {
+    public Optional<PropertyName> getExternalSubComponentProperty(final Class<?> componentClass) {
         PropertyName result = null;
         if (componentClass == com.gluonhq.charm.glisten.control.BottomNavigation.class) {
             result = actionItemsName;

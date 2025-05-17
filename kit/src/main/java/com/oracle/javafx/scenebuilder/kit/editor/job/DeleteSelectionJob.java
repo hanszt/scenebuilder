@@ -34,7 +34,6 @@ package com.oracle.javafx.scenebuilder.kit.editor.job;
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.GridSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
 
 /**
  * This job manages either an ObjectSelectionGroup or a GridSelectionGroup
@@ -44,7 +43,7 @@ public class DeleteSelectionJob extends Job {
 
     private Job subJob;
 
-    public DeleteSelectionJob(EditorController editorController) {
+    public DeleteSelectionJob(final EditorController editorController) {
         super(editorController);
         buildSubJobs();
     }
@@ -86,7 +85,7 @@ public class DeleteSelectionJob extends Job {
      */
     private void buildSubJobs() {
 
-        final Selection selection = getEditorController().getSelection();
+        final var selection = getEditorController().getSelection();
         if (selection.getGroup() instanceof ObjectSelectionGroup) {
             subJob = new DeleteObjectSelectionJob(getEditorController());
         } else if (selection.getGroup() instanceof GridSelectionGroup) {

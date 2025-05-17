@@ -63,8 +63,8 @@ public class InsertRowJob extends BatchSelectionJob {
     private final int rowIndex;
     private final int insertCount;
 
-    public InsertRowJob(FXOMObject gridPaneObject, 
-            int rowIndex, int insertCount, EditorController editorController) {
+    public InsertRowJob(final FXOMObject gridPaneObject,
+                        final int rowIndex, final int insertCount, final EditorController editorController) {
         super(editorController);
         
         assert gridPaneObject instanceof FXOMInstance;
@@ -90,8 +90,8 @@ public class InsertRowJob extends BatchSelectionJob {
                 = new InsertRowConstraintsJob(gridPaneObject, rowIndex, insertCount, getEditorController());
         result.add(insertJob);
         
-        final int lastRowIndex = rowContraintsMeta.getValue(gridPaneObject).size()-1;
-        for (int r = lastRowIndex; r >= rowIndex; r--) {
+        final var lastRowIndex = rowContraintsMeta.getValue(gridPaneObject).size() - 1;
+        for (var r = lastRowIndex; r >= rowIndex; r--) {
             final Job moveJob
                     = new MoveRowContentJob(gridPaneObject, r, +insertCount, getEditorController());
             if (moveJob.isExecutable()) {

@@ -46,8 +46,8 @@ public abstract class AbstractPring<T> extends AbstractDecoration<T> {
     
     public static final String PARENT_RING_CLASS = "parent-ring"; //NOI18N
     
-    public AbstractPring(ContentPanelController contentPanelController,
-            FXOMObject fxomObject, Class<T> sceneGraphClass) {
+    public AbstractPring(final ContentPanelController contentPanelController,
+                         final FXOMObject fxomObject, final Class<T> sceneGraphClass) {
         super(contentPanelController, fxomObject, sceneGraphClass);
     }
     
@@ -56,12 +56,12 @@ public abstract class AbstractPring<T> extends AbstractDecoration<T> {
     
     private static final String PRING = "PRING"; //NOI18N
     
-    public static AbstractPring<?> lookupPring(Node node) {
+    public static AbstractPring<?> lookupPring(final Node node) {
         assert node != null;
-        assert node.isMouseTransparent() == false;
+        assert !node.isMouseTransparent();
         
         final AbstractPring<?> result;
-        final Object value = node.getProperties().get(PRING);
+        final var value = node.getProperties().get(PRING);
         if (value instanceof AbstractPring) {
             result = (AbstractPring<?>) value;
         } else {
@@ -72,9 +72,9 @@ public abstract class AbstractPring<T> extends AbstractDecoration<T> {
         return result;
     }
     
-    public static void attachPring(Node node, AbstractPring<?> pring) {
+    public static void attachPring(final Node node, final AbstractPring<?> pring) {
         assert node != null;
-        assert node.isMouseTransparent() == false;
+        assert !node.isMouseTransparent();
         assert lookupPring(node) == null;
         
         if (pring == null) {

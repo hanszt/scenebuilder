@@ -37,8 +37,7 @@ import com.oracle.javafx.scenebuilder.kit.editor.panel.content.gesture.AbstractG
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.gesture.mouse.AdjustDividerGesture;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import java.util.List;
-import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
+
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -54,8 +53,8 @@ public class SplitPaneHandles extends AbstractNodeHandles<SplitPane> {
     
     private final Group grips = new Group();
     
-    public SplitPaneHandles(ContentPanelController contentPanelController,
-            FXOMInstance fxomInstance) {
+    public SplitPaneHandles(final ContentPanelController contentPanelController,
+                            final FXOMInstance fxomInstance) {
         super(contentPanelController, fxomInstance, SplitPane.class);
         
         getRootNode().getChildren().add(grips); // Above handles
@@ -73,17 +72,17 @@ public class SplitPaneHandles extends AbstractNodeHandles<SplitPane> {
         adjustGripCount();
         
         // Updates grip positions
-        final double[] positions = getSceneGraphObject().getDividerPositions();
+        final var positions = getSceneGraphObject().getDividerPositions();
         for (int i = 0, count = positions.length; i < count; i++) {
             layoutDivider(i);
         }
     }
 
     @Override
-    public AbstractGesture findGesture(Node node) {
-        
-        int gripIndex = 0;
-        final int gripCount = grips.getChildren().size();
+    public AbstractGesture findGesture(final Node node) {
+
+        var gripIndex = 0;
+        final var gripCount = grips.getChildren().size();
         final List<Node> gripNodes = grips.getChildren();
         while ((gripIndex < gripCount) && (gripNodes.get(gripIndex) != node)) {
             gripIndex++;
@@ -107,19 +106,19 @@ public class SplitPaneHandles extends AbstractNodeHandles<SplitPane> {
      */
     
     private void adjustGripCount() {
-        final int dividerCount = getSceneGraphObject().getDividerPositions().length;
+        final var dividerCount = getSceneGraphObject().getDividerPositions().length;
         final List<Node> gripChildren = grips.getChildren();
         
         while (gripChildren.size() < dividerCount) {
             gripChildren.add(makeGripLine());
         }
         while (gripChildren.size() > dividerCount) {
-            gripChildren.remove(gripChildren.size()-1);
+            gripChildren.removeLast();
         }
     }
     
     private Line makeGripLine() {
-        final Line result = new Line();
+        final var result = new Line();
         result.setStrokeWidth(SELECTION_HANDLES_SIZE);
         result.setStroke(Color.TRANSPARENT);
         switch(getSceneGraphObject().getOrientation()) {
@@ -135,7 +134,7 @@ public class SplitPaneHandles extends AbstractNodeHandles<SplitPane> {
         return result;
     }
     
-    private void layoutDivider(int gripIndex) {
+    private void layoutDivider(final int gripIndex) {
         assert grips.getChildren().get(gripIndex) instanceof Line;
         
         
@@ -171,10 +170,10 @@ public class SplitPaneHandles extends AbstractNodeHandles<SplitPane> {
          *      +--------------------+
          */
         
-        final SplitPaneDesignInfoX di = new SplitPaneDesignInfoX();
-        final double pos = getSceneGraphObject().getDividerPositions()[gripIndex];
-        final double xy = di.dividerPositionToSplitPaneLocal(getSceneGraphObject(), pos);
-        final Bounds lb = getSceneGraphObject().getLayoutBounds();
+        final var di = new SplitPaneDesignInfoX();
+        final var pos = getSceneGraphObject().getDividerPositions()[gripIndex];
+        final var xy = di.dividerPositionToSplitPaneLocal(getSceneGraphObject(), pos);
+        final var lb = getSceneGraphObject().getLayoutBounds();
         
         final double startX, startY, endX, endY;
         switch(getSceneGraphObject().getOrientation()) {
@@ -193,11 +192,11 @@ public class SplitPaneHandles extends AbstractNodeHandles<SplitPane> {
                 break;
         }
         
-        final boolean snapToPixel = true;
-        final Point2D startPoint = sceneGraphObjectToDecoration(startX, startY, snapToPixel);
-        final Point2D endPoint = sceneGraphObjectToDecoration(endX, endY, snapToPixel);
+        final var snapToPixel = true;
+        final var startPoint = sceneGraphObjectToDecoration(startX, startY, snapToPixel);
+        final var endPoint = sceneGraphObjectToDecoration(endX, endY, snapToPixel);
         
-        final Line gripLine = (Line) grips.getChildren().get(gripIndex);
+        final var gripLine = (Line) grips.getChildren().get(gripIndex);
         gripLine.setStartX(startPoint.getX());
         gripLine.setStartY(startPoint.getY());
         gripLine.setEndX(endPoint.getX());
@@ -208,7 +207,7 @@ public class SplitPaneHandles extends AbstractNodeHandles<SplitPane> {
     /* 
      * Wrapper to avoid the 'leaking this in constructor' warning emitted by NB.
      */
-    private void attachHandles(Node node) {
+    private void attachHandles(final Node node) {
         attachHandles(node, this);
     }
 }

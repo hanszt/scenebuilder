@@ -47,8 +47,8 @@ public class AddPropertyValueJob extends Job {
     private final FXOMPropertyC targetProperty;
     private final int targetIndex;
     
-    public AddPropertyValueJob(FXOMObject value, FXOMPropertyC targetProperty, 
-            int targetIndex, EditorController editorController) {
+    public AddPropertyValueJob(final FXOMObject value, final FXOMPropertyC targetProperty,
+                               final int targetIndex, final EditorController editorController) {
         super(editorController);
         
         assert value != null;

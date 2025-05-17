@@ -37,9 +37,7 @@ import com.oracle.javafx.scenebuilder.kit.editor.job.InlineDocumentJob;
 import com.oracle.javafx.scenebuilder.kit.editor.job.Job;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.RemoveObjectJob;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.ReplacePropertyValueJobT;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMNodes;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyT;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PrefixedValue;
 import java.util.LinkedList;
@@ -53,8 +51,8 @@ public class CombineExpressionReferenceJob extends InlineDocumentJob {
     private final FXOMPropertyT reference;
 
     public CombineExpressionReferenceJob(
-            FXOMPropertyT reference, 
-            EditorController editorController) {
+            final FXOMPropertyT reference,
+            final EditorController editorController) {
         super(editorController);
         
         assert reference != null;
@@ -71,9 +69,9 @@ public class CombineExpressionReferenceJob extends InlineDocumentJob {
         final List<Job> result = new LinkedList<>();
         
         // 1) Locate the referee
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
-        final String fxId = FXOMNodes.extractReferenceSource(reference);
-        final FXOMObject referee = fxomDocument.searchWithFxId(fxId);
+        final var fxomDocument = getEditorController().getFxomDocument();
+        final var fxId = FXOMNodes.extractReferenceSource(reference);
+        final var referee = fxomDocument.searchWithFxId(fxId);
         
         // 2) Remove the referee
         final Job removeJob = new RemoveObjectJob(referee, getEditorController());
@@ -95,7 +93,7 @@ public class CombineExpressionReferenceJob extends InlineDocumentJob {
 
     @Override
     public boolean isExecutable() {
-        final PrefixedValue pv = new PrefixedValue(reference.getValue());
+        final var pv = new PrefixedValue(reference.getValue());
         return pv.isExpression();
     }
     

@@ -34,8 +34,6 @@ package com.oracle.javafx.scenebuilder.kit.util.control.effectpicker.editors;
 import com.oracle.javafx.scenebuilder.kit.util.control.effectpicker.EffectPickerController;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -58,8 +56,8 @@ public class CheckBoxControl extends GridPane {
     private final BooleanProperty value = new SimpleBooleanProperty();
     private final EffectPickerController effectPickerController;
 
-    public CheckBoxControl(EffectPickerController effectPickerController,
-            String label, boolean initValue) {
+    public CheckBoxControl(final EffectPickerController effectPickerController,
+                           final String label, final boolean initValue) {
         this.effectPickerController = effectPickerController;
         initialize(label, initValue);
     }
@@ -72,21 +70,21 @@ public class CheckBoxControl extends GridPane {
         return value.get();
     }
 
-    public void setValue(boolean v) {
+    public void setValue(final boolean v) {
         value.set(v);
     }
 
-    private void initialize(String label, boolean initValue) {
+    private void initialize(final String label, final boolean initValue) {
 
-        final URL layoutURL = CheckBoxControl.class.getResource("CheckBoxControl.fxml"); //NOI18N
-        try (InputStream is = layoutURL.openStream()) {
-            final FXMLLoader loader = new FXMLLoader();
+        final var layoutURL = CheckBoxControl.class.getResource("CheckBoxControl.fxml"); //NOI18N
+        try (final var is = layoutURL.openStream()) {
+            final var loader = new FXMLLoader();
             loader.setController(this);
             loader.setRoot(this);
             loader.setLocation(layoutURL);
-            final Parent p = (Parent) loader.load(is);
+            final var p = (Parent) loader.load(is);
             assert p == this;
-        } catch (IOException x) {
+        } catch (final IOException x) {
             throw new RuntimeException(x);
         }
 
@@ -98,7 +96,7 @@ public class CheckBoxControl extends GridPane {
             // Then notify the controller a change occured
             effectPickerController.incrementRevision();
         });
-        editor_checkbox.setOnAction((ActionEvent event) -> {
+        editor_checkbox.setOnAction((final ActionEvent event) -> {
             event.consume();
         });
 

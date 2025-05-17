@@ -31,7 +31,6 @@
  */
 package com.oracle.javafx.scenebuilder.kit.editor.panel.util.dialog;
 
-import java.net.URL;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -49,7 +48,7 @@ public class AlertDialog extends AbstractModalDialog {
     
     private Runnable actionRunnable;
     
-    public AlertDialog(Window owner) {
+    public AlertDialog(final Window owner) {
         super(AlertDialog.class.getResource("AlertDialog.fxml"), null, owner); //NOI18N
         getStage().setResizable(false);
         setImageViewVisible(true);
@@ -60,7 +59,7 @@ public class AlertDialog extends AbstractModalDialog {
         return getMessageLabel().getText();
     }
     
-    public void setMessage(String message) {
+    public void setMessage(final String message) {
         getMessageLabel().setText(message);
     }
     
@@ -68,11 +67,11 @@ public class AlertDialog extends AbstractModalDialog {
         return getDetailsLabel().getText();
     }
     
-    public void setDetails(String details) {
+    public void setDetails(final String details) {
         getDetailsLabel().setText(details);
     }
     
-    public void setActionRunnable(Runnable runnable) {
+    public void setActionRunnable(final Runnable runnable) {
         this.actionRunnable = runnable;
     }
 
@@ -93,17 +92,17 @@ public class AlertDialog extends AbstractModalDialog {
     }
     
     @Override
-    public void okButtonPressed(ActionEvent e) {
+    public void okButtonPressed(final ActionEvent e) {
         getStage().close();
     }
     
     @Override
-    public void cancelButtonPressed(ActionEvent e) {
+    public void cancelButtonPressed(final ActionEvent e) {
         getStage().close();
     }
     
     @Override
-    public void actionButtonPressed(ActionEvent e) {
+    public void actionButtonPressed(final ActionEvent e) {
         if (actionRunnable != null) {
             actionRunnable.run();
         } else {
@@ -132,7 +131,7 @@ public class AlertDialog extends AbstractModalDialog {
     private static Image dialogImage;
     private static synchronized Image getDialogImage() {
         if (dialogImage == null) {
-            final URL dialogImageURL = AlertDialog.class.getResource("alert-question-mark.png"); //NOI18N
+            final var dialogImageURL = AlertDialog.class.getResource("alert-question-mark.png"); //NOI18N
             dialogImage = new Image(dialogImageURL.toExternalForm());
         }
         return dialogImage;

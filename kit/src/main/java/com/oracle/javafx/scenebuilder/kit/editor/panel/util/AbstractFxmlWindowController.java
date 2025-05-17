@@ -37,7 +37,6 @@ import java.util.ResourceBundle;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 
 /**
  *
@@ -48,26 +47,26 @@ public abstract class AbstractFxmlWindowController extends AbstractWindowControl
     private final URL fxmlURL;
     private final ResourceBundle resources;
     
-    public AbstractFxmlWindowController(URL fxmlURL) {
+    public AbstractFxmlWindowController(final URL fxmlURL) {
         this(fxmlURL, null);
     };
     
-    public AbstractFxmlWindowController(URL fxmlURL, ResourceBundle resources) {
+    public AbstractFxmlWindowController(final URL fxmlURL, final ResourceBundle resources) {
         this(fxmlURL, resources, null);
     }
     
-    public AbstractFxmlWindowController(URL fxmlURL, ResourceBundle resources, boolean sizeToScene) {
+    public AbstractFxmlWindowController(final URL fxmlURL, final ResourceBundle resources, final boolean sizeToScene) {
         this(fxmlURL, resources, null, sizeToScene);
     }
     
-    public AbstractFxmlWindowController(URL fxmlURL, ResourceBundle resources, Stage owner) {
+    public AbstractFxmlWindowController(final URL fxmlURL, final ResourceBundle resources, final Stage owner) {
         super(owner);
         assert fxmlURL != null : "Check fxml path given to " + getClass().getSimpleName();
         this.fxmlURL = fxmlURL;
         this.resources = resources;
     }
 
-    public AbstractFxmlWindowController(URL fxmlURL, ResourceBundle resources, Stage owner, boolean sizeToScene) {
+    public AbstractFxmlWindowController(final URL fxmlURL, final ResourceBundle resources, final Stage owner, final boolean sizeToScene) {
         super(owner, sizeToScene);
         assert fxmlURL != null : "Check fxml path given to " + getClass().getSimpleName();
         this.fxmlURL = fxmlURL;
@@ -101,7 +100,7 @@ public abstract class AbstractFxmlWindowController extends AbstractWindowControl
      */
     @Override
     protected void makeRoot() {
-        final FXMLLoader loader = new FXMLLoader();
+        final var loader = new FXMLLoader();
 
         loader.setController(this);
         loader.setLocation(fxmlURL);
@@ -109,7 +108,7 @@ public abstract class AbstractFxmlWindowController extends AbstractWindowControl
         try {
             setRoot((Region)loader.load());
             controllerDidLoadFxml();
-        } catch (RuntimeException | IOException x) {
+        } catch (final RuntimeException | IOException x) {
             System.out.println("loader.getController()=" + loader.getController());
             System.out.println("loader.getLocation()=" + loader.getLocation());
             throw new RuntimeException("Failed to load " + fxmlURL.getFile(), x); //NOI18N

@@ -83,24 +83,24 @@ public class EffectPicker extends Pane {
         return effectClasses;
     }
 
-    public EffectPicker(EffectPicker.Delegate epd, PaintPicker.Delegate ppd) {
-        final FXMLLoader loader = new FXMLLoader();
+    public EffectPicker(final EffectPicker.Delegate epd, final PaintPicker.Delegate ppd) {
+        final var loader = new FXMLLoader();
         loader.setLocation(EffectPicker.class.getResource("EffectPicker.fxml")); //NOI18N
 
         try {
             // Loading
-            final Object rootObject = loader.load();
+            final var rootObject = loader.load();
             assert rootObject instanceof Node;
-            final Node rootNode = (Node) rootObject;
+            final var rootNode = (Node) rootObject;
             getChildren().add(rootNode);
 
             // Retrieving the controller
-            final Object ctl = loader.getController();
+            final var ctl = loader.getController();
             assert ctl instanceof EffectPickerController;
             this.controller = (EffectPickerController) ctl;
             this.controller.setEffectPickerDelegate(epd);
             this.controller.setPaintPickerDelegate(ppd);
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             throw new IllegalStateException(ex);
         }
     }
@@ -109,7 +109,7 @@ public class EffectPicker extends Pane {
         return controller.rootEffectProperty();
     }
 
-    public final void setRootEffectProperty(Effect value) {
+    public final void setRootEffectProperty(final Effect value) {
         // Update model
         controller.setRootEffectProperty(value);
         // Update UI
@@ -138,10 +138,10 @@ public class EffectPicker extends Pane {
 
     public List<MenuItem> getMenuItems() {
         final List<MenuItem> menuItems = new ArrayList<>();
-        for (final Class<? extends Effect> clazz : getEffectClasses()) {
-            final MenuItem mi = new MenuItem(clazz.getSimpleName());
+        for (final var clazz : getEffectClasses()) {
+            final var mi = new MenuItem(clazz.getSimpleName());
             mi.setOnAction(t -> {
-                final Effect effect = Utils.newInstance(clazz);
+                final var effect = Utils.newInstance(clazz);
                 setRootEffectProperty(effect);
                 controller.incrementRevision();
             });

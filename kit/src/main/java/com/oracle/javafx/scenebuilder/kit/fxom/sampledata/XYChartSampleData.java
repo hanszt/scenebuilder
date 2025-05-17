@@ -56,11 +56,11 @@ class XYChartSampleData extends AbstractSampleData {
     private Class<?> sampleXAxisClass;
     private Class<?> sampleYAxisClass;
 
-    public static boolean isKnownXYChart(Object obj) {
+    public static boolean isKnownXYChart(final Object obj) {
         final boolean result;
         
         if (obj instanceof XYChart) {
-            final Class<?> objClass = obj.getClass();
+            final var objClass = obj.getClass();
             result = (objClass == BarChart.class 
                     || objClass == AreaChart.class
                     || objClass == BubbleChart.class
@@ -80,37 +80,37 @@ class XYChartSampleData extends AbstractSampleData {
      */
     
     @Override
-    public void applyTo(Object sceneGraphObject) {
+    public void applyTo(final Object sceneGraphObject) {
         assert sceneGraphObject instanceof XYChart;
         
         @SuppressWarnings("unchecked")        
-        final XYChart<Object,Object> xyChart = (XYChart<Object,Object>) sceneGraphObject;
+        final var xyChart = (XYChart<Object,Object>) sceneGraphObject;
         updateSamples(xyChart);
         xyChart.getData().clear();
         xyChart.getData().addAll(samples);
         if (xyChart.getXAxis().getClass() == CategoryAxis.class) {
-            final CategoryAxis axis = (CategoryAxis)(Axis<?>) xyChart.getXAxis();
+            final var axis = (CategoryAxis)(Axis<?>) xyChart.getXAxis();
             axis.getCategories().setAll(categories);
         }
         if (xyChart.getYAxis().getClass() == CategoryAxis.class) {
-            final CategoryAxis axis = (CategoryAxis)(Axis<?>) xyChart.getYAxis();
+            final var axis = (CategoryAxis)(Axis<?>) xyChart.getYAxis();
             axis.getCategories().setAll(categories);
         }
     }
     
     @Override
-    public void removeFrom(Object sceneGraphObject) {
+    public void removeFrom(final Object sceneGraphObject) {
         assert sceneGraphObject instanceof XYChart;
         
         @SuppressWarnings("unchecked")        
-        final XYChart<Object,Object> xyChart = (XYChart<Object,Object>) sceneGraphObject;
+        final var xyChart = (XYChart<Object,Object>) sceneGraphObject;
         xyChart.getData().clear();
         if (xyChart.getXAxis().getClass() == CategoryAxis.class) {
-            final CategoryAxis axis = (CategoryAxis)(Axis<?>) xyChart.getXAxis();
+            final var axis = (CategoryAxis)(Axis<?>) xyChart.getXAxis();
             axis.getCategories().clear();
         }
         if (xyChart.getYAxis().getClass() == CategoryAxis.class) {
-            final CategoryAxis axis = (CategoryAxis)(Axis<?>) xyChart.getYAxis();
+            final var axis = (CategoryAxis)(Axis<?>) xyChart.getYAxis();
             axis.getCategories().clear();
         }
     }
@@ -120,7 +120,7 @@ class XYChartSampleData extends AbstractSampleData {
      * Private
      */
     
-    private void updateSamples(XYChart<?,?> xyChart) {
+    private void updateSamples(final XYChart<?,?> xyChart) {
         
         final Class<?> xAxisClass = xyChart.getXAxis().getClass();
         final Class<?> yAxisClass = xyChart.getYAxis().getClass();
@@ -129,12 +129,12 @@ class XYChartSampleData extends AbstractSampleData {
             sampleXAxisClass = xAxisClass;
             sampleYAxisClass = yAxisClass;
             
-            for (int i = 0; i < 3; i++) {
-                final XYChart.Series<Object, Object> serie = new XYChart.Series<>();
-                for (int j = 0; j < 10; j++) {
-                    final Object xValue = makeValue(sampleXAxisClass, i);
-                    final Object yValue = makeValue(sampleYAxisClass, i);
-                    final XYChart.Data<Object, Object> data = new XYChart.Data<>(xValue, yValue);
+            for (var i = 0; i < 3; i++) {
+                final var serie = new XYChart.Series<Object, Object>();
+                for (var j = 0; j < 10; j++) {
+                    final var xValue = makeValue(sampleXAxisClass, i);
+                    final var yValue = makeValue(sampleYAxisClass, i);
+                    final var data = new XYChart.Data<Object, Object>(xValue, yValue);
                     serie.getData().add(data);
 
                 }
@@ -143,14 +143,14 @@ class XYChartSampleData extends AbstractSampleData {
             
             categories.clear();
             if ((sampleXAxisClass == CategoryAxis.class) || (sampleYAxisClass == CategoryAxis.class)) {
-                for (int j = 0; j < 10; j++) {
+                for (var j = 0; j < 10; j++) {
                     categories.add(String.valueOf(2000 + j));
                 }
             }
         }
     }
     
-    private Object makeValue(Class<?> axisClass, int index) {
+    private Object makeValue(final Class<?> axisClass, final int index) {
         final Object result;
         
         if (axisClass == NumberAxis.class) {

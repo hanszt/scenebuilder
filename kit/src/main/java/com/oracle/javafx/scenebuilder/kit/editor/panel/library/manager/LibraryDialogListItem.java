@@ -43,7 +43,7 @@ public class LibraryDialogListItem implements DialogListItem {
     private final LibraryDialogController libraryDialogController;
     private final Path filePath;
 
-    public LibraryDialogListItem(LibraryDialogController libraryDialogController, Path filePath) {
+    public LibraryDialogListItem(final LibraryDialogController libraryDialogController, final Path filePath) {
         this.libraryDialogController = libraryDialogController;
         this.filePath = filePath;
     }

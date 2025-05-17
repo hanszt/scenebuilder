@@ -45,7 +45,7 @@ public class ErrorDialog extends AlertDialog {
     private String debugInfo;
     private String detailsTitle;
     
-    public ErrorDialog(Window owner) {
+    public ErrorDialog(final Window owner) {
         super(owner);
         setOKButtonVisible(false);
         setShowDefaultButton(true);
@@ -61,19 +61,19 @@ public class ErrorDialog extends AlertDialog {
         return debugInfo;
     }
     
-    public void setDebugInfo(String debugInfo) {
+    public void setDebugInfo(final String debugInfo) {
         this.debugInfo = debugInfo;
         updateActionButtonVisibility();
     }
     
-    public void setDebugInfoWithThrowable(Throwable t) {
+    public void setDebugInfoWithThrowable(final Throwable t) {
         final String info;
         
         if (t == null) {
             info = null;
         } else {
-            final StringWriter sw = new StringWriter();
-            final PrintWriter pw = new PrintWriter(sw);
+            final var sw = new StringWriter();
+            final var pw = new PrintWriter(sw);
             t./**/printStackTrace(pw);
             info = sw.toString();
         }
@@ -81,7 +81,7 @@ public class ErrorDialog extends AlertDialog {
         setDebugInfo(info);
     }
     
-    public void setDetailsTitle(String detailsTitle) {
+    public void setDetailsTitle(final String detailsTitle) {
         this.detailsTitle = detailsTitle;
     }
 
@@ -94,7 +94,7 @@ public class ErrorDialog extends AlertDialog {
     }
     
     private void showDetailsDialog() {
-        final TextViewDialog detailDialog = new TextViewDialog(this.getStage());
+        final var detailDialog = new TextViewDialog(this.getStage());
         detailDialog.setText(debugInfo);
         if (detailsTitle != null) {
             detailDialog.setTitle(detailsTitle);

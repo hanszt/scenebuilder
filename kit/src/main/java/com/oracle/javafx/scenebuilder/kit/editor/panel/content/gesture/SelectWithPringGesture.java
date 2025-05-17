@@ -44,8 +44,8 @@ public class SelectWithPringGesture extends AbstractMouseDragGesture {
     
     private final FXOMInstance fxomInstance;
 
-    public SelectWithPringGesture(ContentPanelController contentPanelController,
-            FXOMInstance fxomInstance) {
+    public SelectWithPringGesture(final ContentPanelController contentPanelController,
+                                  final FXOMInstance fxomInstance) {
         super(contentPanelController);
         this.fxomInstance = fxomInstance;
     }
@@ -55,7 +55,7 @@ public class SelectWithPringGesture extends AbstractMouseDragGesture {
      */
 
     @Override
-    protected void mousePressed(MouseEvent e) {
+    protected void mousePressed(final MouseEvent e) {
         contentPanelController.getEditorController().getSelection().select(fxomInstance);
         
         /*
@@ -67,19 +67,19 @@ public class SelectWithPringGesture extends AbstractMouseDragGesture {
     }
 
     @Override
-    protected void mouseDragDetected(MouseEvent e) {
+    protected void mouseDragDetected(final MouseEvent e) {
         // Should not be called : see comment in mousePressed().
         assert false;
     }
 
     @Override
-    protected void mouseReleased(MouseEvent e) {
+    protected void mouseReleased(final MouseEvent e) {
         // Should not be called : see comment in mousePressed().
         assert false;
     }
 
     @Override
-    protected void mouseExited(MouseEvent e) {
+    protected void mouseExited(final MouseEvent e) {
         // Mouse has exited pring because it has been removed from the
         // scene graph by the selection operation in mousePressed().
 

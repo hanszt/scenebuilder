@@ -32,7 +32,6 @@
 package com.oracle.javafx.scenebuilder.kit.editor.panel.inspector.editors;
 
 import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
-import com.oracle.javafx.scenebuilder.kit.metadata.property.ValuePropertyMetadata;
 
 import java.util.List;
 
@@ -57,7 +56,7 @@ public abstract class PropertiesEditor extends Editor {
     private FadeTransition fadeTransition = null;
     private final String name;
 
-    public PropertiesEditor(String name) {
+    public PropertiesEditor(final String name) {
         // HBox for consistency with PropertyEditor, and potentially have an hyperlink
         this.name = name;
         nameNode = new HBox();
@@ -78,8 +77,8 @@ public abstract class PropertiesEditor extends Editor {
     public final MenuButton getMenu() {
         if (menu == null) {
             menu = new MenuButton();
-            
-            Region region = new Region();
+
+            final var region = new Region();
             menu.setGraphic(region);
             region.getStyleClass().add("cog-shape"); //NOI18N
             
@@ -100,7 +99,7 @@ public abstract class PropertiesEditor extends Editor {
             });
             menu.getItems().add(resetvalueMenuItem);
             resetvalueMenuItem.setOnAction(e -> {
-                for (PropertyEditor propertyEditor : getPropertyEditors()) {
+                for (final var propertyEditor : getPropertyEditors()) {
                     propertyEditor.setValue(propertyEditor.getPropertyMeta().getDefaultValueObject());
                 }
             });
@@ -110,16 +109,16 @@ public abstract class PropertiesEditor extends Editor {
 
     @Override
     public void removeAllListeners() {
-        for (PropertyEditor propertyEditor : getPropertyEditors()) {
+        for (final var propertyEditor : getPropertyEditors()) {
             propertyEditor.removeAllListeners();
         }
     }
 
     protected void propertyChanged() {
-        boolean allDefault = true;
-        for (PropertyEditor propertyEditor : getPropertyEditors()) {
-            Object value = propertyEditor.valueProperty().getValue();
-            ValuePropertyMetadata propMeta = propertyEditor.getPropertyMeta();
+        var allDefault = true;
+        for (final var propertyEditor : getPropertyEditors()) {
+            final var value = propertyEditor.valueProperty().getValue();
+            final var propMeta = propertyEditor.getPropertyMeta();
             if (value == null) {
                 if (!(propMeta.getDefaultValueObject() == null)) {
                     allDefault = false;

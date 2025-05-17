@@ -34,8 +34,7 @@ package com.oracle.javafx.scenebuilder.kit.editor.job;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.ReIndexObjectJob;
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,19 +43,19 @@ import java.util.List;
  */
 public class BringForwardJob extends InlineDocumentJob {
 
-    public BringForwardJob(EditorController editorController) {
+    public BringForwardJob(final EditorController editorController) {
         super(editorController);
     }
 
     @Override
     public boolean isExecutable() {
-        final Selection selection = getEditorController().getSelection();
-        if (selection.getGroup() instanceof ObjectSelectionGroup == false) {
+        final var selection = getEditorController().getSelection();
+        if (!(selection.getGroup() instanceof ObjectSelectionGroup)) {
             return false;
         }
-        final ObjectSelectionGroup osg = (ObjectSelectionGroup) selection.getGroup();
-        for (FXOMObject item : osg.getSortedItems()) {
-            final FXOMObject nextSlibing = item.getNextSlibing();
+        final var osg = (ObjectSelectionGroup) selection.getGroup();
+        for (final var item : osg.getSortedItems()) {
+            final var nextSlibing = item.getNextSlibing();
             if (nextSlibing == null) {
                 return false;
             }
@@ -70,17 +69,17 @@ public class BringForwardJob extends InlineDocumentJob {
         assert isExecutable(); // (1)
         final List<Job> result = new ArrayList<>();
 
-        final Selection selection = getEditorController().getSelection();
+        final var selection = getEditorController().getSelection();
         assert selection.getGroup() instanceof ObjectSelectionGroup; // Because of (1)
-        final ObjectSelectionGroup osg = (ObjectSelectionGroup) selection.getGroup();
-        final List<FXOMObject> candidates = osg.getSortedItems();
+        final var osg = (ObjectSelectionGroup) selection.getGroup();
+        final var candidates = osg.getSortedItems();
 
-        for (int i = candidates.size() - 1; i >= 0; i--) {
-            final FXOMObject candidate = candidates.get(i);
-            final FXOMObject nextSlibing = candidate.getNextSlibing();
+        for (var i = candidates.size() - 1; i >= 0; i--) {
+            final var candidate = candidates.get(i);
+            final var nextSlibing = candidate.getNextSlibing();
             if (nextSlibing != null) {
-                final FXOMObject beforeChild = nextSlibing.getNextSlibing();
-                final ReIndexObjectJob subJob = new ReIndexObjectJob(
+                final var beforeChild = nextSlibing.getNextSlibing();
+                final var subJob = new ReIndexObjectJob(
                         candidate, beforeChild, getEditorController());
                 if (subJob.isExecutable()) {
                     subJob.execute();
@@ -100,7 +99,7 @@ public class BringForwardJob extends InlineDocumentJob {
                 result = "Unexecutable Bring Forward"; // NO18N
                 break;
             case 1: // one arrange Z order
-                result = getSubJobs().get(0).getDescription();
+                result = getSubJobs().getFirst().getDescription();
                 break;
             default:
                 result = makeMultipleSelectionDescription();
@@ -110,7 +109,7 @@ public class BringForwardJob extends InlineDocumentJob {
     }
 
     private String makeMultipleSelectionDescription() {
-        final StringBuilder result = new StringBuilder();
+        final var result = new StringBuilder();
         result.append("Bring Forward ");
         result.append(getSubJobs().size());
         result.append(" Objects");

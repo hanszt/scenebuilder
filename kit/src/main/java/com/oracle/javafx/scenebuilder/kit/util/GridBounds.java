@@ -42,7 +42,7 @@ public class GridBounds {
     private final int columnSpan;
     private final int rowSpan;
 
-    public GridBounds(int columnIndex, int rowIndex, int columnSpan, int rowSpan) {
+    public GridBounds(final int columnIndex, final int rowIndex, final int columnSpan, final int rowSpan) {
         assert (columnSpan >= 0);
         assert (rowSpan >= 0);
         this.minColumnIndex = columnIndex;
@@ -79,19 +79,19 @@ public class GridBounds {
         return (columnSpan == 0) || (rowSpan == 0);
     }
     
-    public GridBounds move(int columnDelta, int rowDelta) {
-        final int newColumnIndex = minColumnIndex + columnDelta;
-        final int newRowIndex = minRowIndex + rowDelta;
+    public GridBounds move(final int columnDelta, final int rowDelta) {
+        final var newColumnIndex = minColumnIndex + columnDelta;
+        final var newRowIndex = minRowIndex + rowDelta;
         return new GridBounds(newColumnIndex, newRowIndex, columnSpan, rowSpan);
     }
     
-    public GridBounds union(GridBounds gridBounds) {
-        final int newMinColumnIndex = Math.min(minColumnIndex, gridBounds.minColumnIndex);
-        final int newMinRowIndex = Math.min(minRowIndex, gridBounds.minRowIndex);
-        final int newMaxColumnIndex = Math.max(getMaxColumnIndex(), gridBounds.getMaxColumnIndex());
-        final int newMaxRowIndex = Math.max(getMaxRowIndex(), gridBounds.getMaxRowIndex());
-        final int newColumnSpan = newMaxColumnIndex - newMinColumnIndex;
-        final int newRowSpan = newMaxRowIndex - newMinRowIndex;
+    public GridBounds union(final GridBounds gridBounds) {
+        final var newMinColumnIndex = Math.min(minColumnIndex, gridBounds.minColumnIndex);
+        final var newMinRowIndex = Math.min(minRowIndex, gridBounds.minRowIndex);
+        final var newMaxColumnIndex = Math.max(getMaxColumnIndex(), gridBounds.getMaxColumnIndex());
+        final var newMaxRowIndex = Math.max(getMaxRowIndex(), gridBounds.getMaxRowIndex());
+        final var newColumnSpan = newMaxColumnIndex - newMinColumnIndex;
+        final var newRowSpan = newMaxRowIndex - newMinRowIndex;
         return new GridBounds(newMinColumnIndex, newMinRowIndex, newColumnSpan, newRowSpan);
     }
 }

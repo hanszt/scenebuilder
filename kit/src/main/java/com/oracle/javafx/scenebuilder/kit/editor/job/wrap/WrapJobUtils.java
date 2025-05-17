@@ -37,7 +37,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.ModifyObjectJob;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.Metadata;
-import com.oracle.javafx.scenebuilder.kit.metadata.property.ValuePropertyMetadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask.Accessory;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
@@ -68,7 +67,7 @@ public class WrapJobUtils {
      */
     static PropertyName getContainerPropertyName(
             final FXOMInstance container, final List<FXOMObject> children) {
-        final DesignHierarchyMask mask = new DesignHierarchyMask(container);
+        final var mask = new DesignHierarchyMask(container);
         final PropertyName result;
 
         if (container.getSceneGraphObject() instanceof BorderPane) {
@@ -79,13 +78,13 @@ public class WrapJobUtils {
             assert mask.isAcceptingAccessory(Accessory.RIGHT);
             assert mask.isAcceptingAccessory(Accessory.BOTTOM);
             assert children != null && children.size() == 1; // wrap job is executable
-            final FXOMObject child = children.iterator().next();
+            final var child = children.getFirst();
 
-            final FXOMObject top = mask.getAccessory(Accessory.TOP);
-            final FXOMObject left = mask.getAccessory(Accessory.LEFT);
-            final FXOMObject center = mask.getAccessory(Accessory.CENTER);
-            final FXOMObject right = mask.getAccessory(Accessory.RIGHT);
-            final FXOMObject bottom = mask.getAccessory(Accessory.BOTTOM);
+            final var top = mask.getAccessory(Accessory.TOP);
+            final var left = mask.getAccessory(Accessory.LEFT);
+            final var center = mask.getAccessory(Accessory.CENTER);
+            final var right = mask.getAccessory(Accessory.RIGHT);
+            final var bottom = mask.getAccessory(Accessory.BOTTOM);
             // Return same accessory as the child container one
             if (child.equals(top)) {
                 result = mask.getPropertyNameForAccessory(Accessory.TOP);
@@ -108,12 +107,12 @@ public class WrapJobUtils {
             assert mask.isAcceptingAccessory(Accessory.EXPANDABLE_CONTENT);
             assert mask.isAcceptingAccessory(Accessory.HEADER);
             assert children != null && children.size() == 1; // wrap job is executable
-            final FXOMObject child = children.iterator().next();
+            final var child = children.getFirst();
 
-            final FXOMObject content = mask.getAccessory(Accessory.DP_CONTENT);
-            final FXOMObject graphic = mask.getAccessory(Accessory.DP_GRAPHIC);
-            final FXOMObject expandableContent = mask.getAccessory(Accessory.EXPANDABLE_CONTENT);
-            final FXOMObject header = mask.getAccessory(Accessory.HEADER);
+            final var content = mask.getAccessory(Accessory.DP_CONTENT);
+            final var graphic = mask.getAccessory(Accessory.DP_GRAPHIC);
+            final var expandableContent = mask.getAccessory(Accessory.EXPANDABLE_CONTENT);
+            final var header = mask.getAccessory(Accessory.HEADER);
             // Return same accessory as the child container one
             if (child.equals(content)) {
                 result = mask.getPropertyNameForAccessory(Accessory.DP_CONTENT);
@@ -137,20 +136,20 @@ public class WrapJobUtils {
             assert mask.isAcceptingAccessory(Accessory.CONTENT)
                     || mask.isAcceptingAccessory(Accessory.GRAPHIC);
             assert children != null && children.size() == 1; // wrap job is executable
-            final FXOMObject child = children.iterator().next();
+            final var child = children.getFirst();
 
-            if (mask.isAcceptingAccessory(Accessory.GRAPHIC) == false) {
+            if (!mask.isAcceptingAccessory(Accessory.GRAPHIC)) {
                 // Containers accepting CONTENT only
                 assert mask.isAcceptingAccessory(Accessory.CONTENT);
                 result = mask.getPropertyNameForAccessory(Accessory.CONTENT);
-            } else if (mask.isAcceptingAccessory(Accessory.CONTENT) == false) {
+            } else if (!mask.isAcceptingAccessory(Accessory.CONTENT)) {
                 // Containers accepting GRAPHIC only
                 assert mask.isAcceptingAccessory(Accessory.GRAPHIC);
                 result = mask.getPropertyNameForAccessory(Accessory.GRAPHIC);
             } else {
                 // Containers accepting both CONTENT and GRAPHIC
-                final FXOMObject content = mask.getAccessory(Accessory.CONTENT);
-                final FXOMObject graphic = mask.getAccessory(Accessory.GRAPHIC);
+                final var content = mask.getAccessory(Accessory.CONTENT);
+                final var graphic = mask.getAccessory(Accessory.GRAPHIC);
                 // Return same accessory as the child container one
                 if (child.equals(content)) {
                     result = mask.getPropertyNameForAccessory(Accessory.CONTENT);
@@ -166,12 +165,12 @@ public class WrapJobUtils {
     }
 
     static Bounds getUnionOfBounds(final List<FXOMObject> fxomObjects) {
-        assert fxomObjects != null && fxomObjects.isEmpty() == false;
+        assert fxomObjects != null && !fxomObjects.isEmpty();
         Bounds result = null;
-        for (FXOMObject fxomObject : fxomObjects) {
-            final Object scenegraphObject = fxomObject.getSceneGraphObject();
+        for (final var fxomObject : fxomObjects) {
+            final var scenegraphObject = fxomObject.getSceneGraphObject();
             assert scenegraphObject instanceof Node;
-            final Node node = (Node) scenegraphObject;
+            final var node = (Node) scenegraphObject;
             if (result == null) {
                 result = node.getBoundsInParent();
             } else {
@@ -187,10 +186,10 @@ public class WrapJobUtils {
             final String name,
             final Object value,
             final EditorController controller) {
-        final PropertyName pn = new PropertyName(name, clazz);
-        final ValuePropertyMetadata vpm
+        final var pn = new PropertyName(name, clazz);
+        final var vpm
                 = Metadata.getMetadata().queryValueProperty(instance, pn);
-        final ModifyObjectJob job = new ModifyObjectJob(
+        final var job = new ModifyObjectJob(
                 instance, vpm, value, controller);
         return job;
     }
@@ -209,16 +208,16 @@ public class WrapJobUtils {
      * @param bounds a series of bounds
      * @return the union of all bounds in the series.
      */
-    private static Bounds getUnionOfBounds(Bounds... bounds) {
+    private static Bounds getUnionOfBounds(final Bounds... bounds) {
         if (bounds == null || bounds.length == 0) {
             return new BoundingBox(0, 0, 0, 0);
         }
         if (bounds.length == 1) {
             return bounds[0];
         }
-        Bounds b0 = bounds[0];
-        for (int i = 1; i < bounds.length; i++) {
-            final Bounds bi = bounds[i];
+        var b0 = bounds[0];
+        for (var i = 1; i < bounds.length; i++) {
+            final var bi = bounds[i];
             if (bi == null) {
                 continue;
             }
@@ -234,8 +233,13 @@ public class WrapJobUtils {
      * @param b2 second bounds
      * @return the union of the two bounds.
      */
-    private static Bounds union(Bounds b1, Bounds b2) {
-        double minX, minY, minZ, maxX, maxY, maxZ;
+    private static Bounds union(final Bounds b1, final Bounds b2) {
+        final double minX;
+        double minY;
+        double minZ;
+        double maxX;
+        double maxY;
+        final double maxZ;
 
         minX = Math.min(b1.getMinX(), b2.getMinX());
         minY = Math.min(b1.getMinY(), b2.getMinY());

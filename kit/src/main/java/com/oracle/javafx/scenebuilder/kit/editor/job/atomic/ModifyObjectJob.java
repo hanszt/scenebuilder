@@ -50,10 +50,10 @@ public class ModifyObjectJob extends Job {
     private final String description;
 
     public ModifyObjectJob(
-            FXOMInstance fxomInstance, 
-            ValuePropertyMetadata propertyMetadata, 
-            Object newValue, 
-            EditorController editorController) {
+            final FXOMInstance fxomInstance,
+            final ValuePropertyMetadata propertyMetadata,
+            final Object newValue,
+            final EditorController editorController) {
         super(editorController);
 
         assert fxomInstance != null;
@@ -70,11 +70,11 @@ public class ModifyObjectJob extends Job {
     }
 
     public ModifyObjectJob(
-            FXOMInstance fxomInstance,
-            ValuePropertyMetadata propertyMetadata,
-            Object newValue,
-            EditorController editorController,
-            String description) {
+            final FXOMInstance fxomInstance,
+            final ValuePropertyMetadata propertyMetadata,
+            final Object newValue,
+            final EditorController editorController,
+            final String description) {
         super(editorController);
 
         assert fxomInstance != null;
@@ -93,8 +93,8 @@ public class ModifyObjectJob extends Job {
      */
     @Override
     public boolean isExecutable() {
-        final Object currentValue = propertyMetadata.getValueObject(fxomInstance);
-        return Objects.equals(newValue, currentValue) == false;
+        final var currentValue = propertyMetadata.getValueObject(fxomInstance);
+        return !Objects.equals(newValue, currentValue);
     }
 
     @Override

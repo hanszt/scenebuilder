@@ -34,7 +34,6 @@ package com.oracle.javafx.scenebuilder.kit.editor.job.atomic;
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
 import com.oracle.javafx.scenebuilder.kit.editor.job.Job;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 
 /**
@@ -43,7 +42,7 @@ import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
  */
 public class ToggleFxRootJob extends Job {
 
-    public ToggleFxRootJob(EditorController editorController) {
+    public ToggleFxRootJob(final EditorController editorController) {
         super(editorController);
     }
 
@@ -52,7 +51,7 @@ public class ToggleFxRootJob extends Job {
      */
     @Override
     public boolean isExecutable() {
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
+        final var fxomDocument = getEditorController().getFxomDocument();
         return (fxomDocument != null) && (fxomDocument.getFxomRoot() instanceof FXOMInstance);
     }
 
@@ -71,8 +70,8 @@ public class ToggleFxRootJob extends Job {
         assert getEditorController().getFxomDocument() != null;
         assert getEditorController().getFxomDocument().getFxomRoot() instanceof FXOMInstance;
 
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
-        final FXOMInstance rootInstance = (FXOMInstance) fxomDocument.getFxomRoot();
+        final var fxomDocument = getEditorController().getFxomDocument();
+        final var rootInstance = (FXOMInstance) fxomDocument.getFxomRoot();
         rootInstance.toggleFxRoot();
     }
 

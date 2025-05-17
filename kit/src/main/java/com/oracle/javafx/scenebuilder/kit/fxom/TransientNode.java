@@ -40,7 +40,7 @@ class TransientNode {
     private final TransientNode parentNode;
     private Object sceneGraphObject;
     
-    public TransientNode(TransientNode parentNode) {
+    public TransientNode(final TransientNode parentNode) {
         this.parentNode = parentNode;
     }
 
@@ -52,7 +52,7 @@ class TransientNode {
         return sceneGraphObject;
     }
 
-    public void setSceneGraphObject(Object sceneGraphObject) {
+    public void setSceneGraphObject(final Object sceneGraphObject) {
         this.sceneGraphObject = sceneGraphObject;
     }
     

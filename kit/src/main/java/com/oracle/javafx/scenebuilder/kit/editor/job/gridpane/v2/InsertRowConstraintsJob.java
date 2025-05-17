@@ -61,8 +61,8 @@ public class InsertRowConstraintsJob extends Job {
     private final int rowIndex;
     private final int insertCount;
 
-    public InsertRowConstraintsJob(FXOMObject gridPaneObject, 
-            int rowIndex, int insertCount, EditorController editorController) {
+    public InsertRowConstraintsJob(final FXOMObject gridPaneObject,
+                                   final int rowIndex, final int insertCount, final EditorController editorController) {
         super(editorController);
         
         assert gridPaneObject instanceof FXOMInstance;
@@ -95,7 +95,7 @@ public class InsertRowConstraintsJob extends Job {
         final List<RowConstraints> constraintsList 
                 = new ArrayList<>(rowContraintsMeta.getValue(gridPaneObject));
         assert rowIndex < constraintsList.size();
-        for (int i = 0; i < insertCount; i++) {
+        for (var i = 0; i < insertCount; i++) {
             constraintsList.remove(rowIndex);
         }
         rowContraintsMeta.setValue(gridPaneObject, constraintsList);
@@ -111,7 +111,7 @@ public class InsertRowConstraintsJob extends Job {
         } else {
             template = null;
         }
-        for (int i = 0; i < insertCount; i++) {
+        for (var i = 0; i < insertCount; i++) {
             constraintsList.add(rowIndex, makeRowConstraints(template));
         }
         rowContraintsMeta.setValue(gridPaneObject, constraintsList);
@@ -127,8 +127,8 @@ public class InsertRowConstraintsJob extends Job {
      * Private
      */
     
-    private RowConstraints makeRowConstraints(RowConstraints template) {
-        final RowConstraints result = new RowConstraints();
+    private RowConstraints makeRowConstraints(final RowConstraints template) {
+        final var result = new RowConstraints();
         if (rowIndex >= 1) {
             result.setFillHeight(template.isFillHeight());
             result.setValignment(template.getValignment());

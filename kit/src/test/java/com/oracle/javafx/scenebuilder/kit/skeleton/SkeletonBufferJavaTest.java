@@ -43,7 +43,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Files;
 
 public class SkeletonBufferJavaTest {
@@ -56,10 +55,10 @@ public class SkeletonBufferJavaTest {
     @Test
     public void skeletonToString_nestedTestFxml() throws IOException {
         // given
-        SkeletonBuffer skeletonBuffer = load("TestNested.fxml");
+        final var skeletonBuffer = load("TestNested.fxml");
 
         // when
-        String skeleton = skeletonBuffer.toString();
+        final var skeleton = skeletonBuffer.toString();
 
         // then
         assertEqualsFileContent("skeleton_java_nested.txt", skeleton);
@@ -68,12 +67,12 @@ public class SkeletonBufferJavaTest {
     @Test
     public void skeletonToString_testFxml_full_withComments() throws IOException {
         // given
-        SkeletonBuffer skeletonBuffer = load("Test.fxml");
+        final var skeletonBuffer = load("Test.fxml");
         skeletonBuffer.setFormat(SkeletonSettings.FORMAT_TYPE.FULL);
         skeletonBuffer.setTextType(SkeletonSettings.TEXT_TYPE.WITH_COMMENTS);
 
         // when
-        String skeleton = skeletonBuffer.toString();
+        final var skeleton = skeletonBuffer.toString();
 
         // then
         assertEqualsFileContent("skeleton_java_full_comments.txt", skeleton);
@@ -82,11 +81,11 @@ public class SkeletonBufferJavaTest {
     @Test
     public void skeletonToString_testFxml_withComments() throws IOException {
         // given
-        SkeletonBuffer skeletonBuffer = load("Test.fxml");
+        final var skeletonBuffer = load("Test.fxml");
         skeletonBuffer.setTextType(SkeletonSettings.TEXT_TYPE.WITH_COMMENTS);
 
         // when
-        String skeleton = skeletonBuffer.toString();
+        final var skeleton = skeletonBuffer.toString();
 
         // then
         assertEqualsFileContent("skeleton_java_comments.txt", skeleton);
@@ -95,35 +94,35 @@ public class SkeletonBufferJavaTest {
     @Test
     public void skeletonToString_testFxml_fullFormat() throws IOException {
         // given
-        SkeletonBuffer skeletonBuffer = load("Test.fxml");
+        final var skeletonBuffer = load("Test.fxml");
         skeletonBuffer.setFormat(SkeletonSettings.FORMAT_TYPE.FULL);
 
         // when
-        String skeleton = skeletonBuffer.toString();
+        final var skeleton = skeletonBuffer.toString();
 
         // then
         assertEqualsFileContent("skeleton_java_full.txt", skeleton);
     }
 
-    private void assertEqualsFileContent(String fileName, String actual) {
-        URL url = this.getClass().getResource(fileName);
-        File file = new File(url.getFile());
+    private void assertEqualsFileContent(final String fileName, final String actual) {
+        final var url = this.getClass().getResource(fileName);
+        final var file = new File(url.getFile());
 
         try {
-            String expectedFileContent = Files.readString(file.toPath());
+            final var expectedFileContent = Files.readString(file.toPath());
             assertEquals(expectedFileContent, actual);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             fail("Unable to open file: " + fileName);
         }
     }
 
-    private SkeletonBuffer load(String fxmlFile) throws IOException {
-        EditorController editorController = new EditorController();
-        final URL fxmlURL = SkeletonBufferJavaTest.class.getResource(fxmlFile);
-        final String fxmlText = FXOMDocument.readContentFromURL(fxmlURL);
+    private SkeletonBuffer load(final String fxmlFile) throws IOException {
+        final var editorController = new EditorController();
+        final var fxmlURL = SkeletonBufferJavaTest.class.getResource(fxmlFile);
+        final var fxmlText = FXOMDocument.readContentFromURL(fxmlURL);
         editorController.setFxmlTextAndLocation(fxmlText, fxmlURL, false);
 
-        SkeletonBuffer skeletonBuffer = new SkeletonBuffer(editorController.getFxomDocument(), "test");
+        final var skeletonBuffer = new SkeletonBuffer(editorController.getFxomDocument(), "test");
         skeletonBuffer.setLanguage(SkeletonSettings.LANGUAGE.JAVA);
         return skeletonBuffer;
     }

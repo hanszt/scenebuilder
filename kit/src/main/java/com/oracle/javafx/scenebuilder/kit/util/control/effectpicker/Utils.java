@@ -57,14 +57,14 @@ public abstract class Utils {
         // no-op
     }
 
-    public static final Effect newInstance(Class<? extends Effect> clazz) {
+    public static final Effect newInstance(final Class<? extends Effect> clazz) {
         assert clazz != null;
         return newInstance(clazz.getSimpleName());
     }
 
-    static final Effect newInstance(String text) {
+    static final Effect newInstance(final String text) {
         assert text != null;
-        assert text.isEmpty() == false;
+        assert !text.isEmpty();
         if (text.equals(Blend.class.getSimpleName())) {
             return new Blend();
         } else if (text.equals(Bloom.class.getSimpleName())) {
@@ -105,29 +105,29 @@ public abstract class Utils {
         }
     }
 
-    public static Effect clone(Effect effect) {
+    public static Effect clone(final Effect effect) {
         final Effect clone;
         if (effect == null) {
             clone = null;
         } else if (effect instanceof Blend) {
-            final Blend blend = (Blend) effect;
+            final var blend = (Blend) effect;
             clone = new Blend(blend.getMode());
             ((Blend) clone).setOpacity(blend.getOpacity());
             ((Blend) clone).setBottomInput(clone(blend.getBottomInput()));
             ((Blend) clone).setTopInput(clone(blend.getTopInput()));
         } else if (effect instanceof Bloom) {
-            final Bloom bloom = (Bloom) effect;
+            final var bloom = (Bloom) effect;
             clone = new Bloom(bloom.getThreshold());
             ((Bloom) clone).setInput(clone(bloom.getInput()));
         } else if (effect instanceof BoxBlur) {
-            final BoxBlur boxBlur = (BoxBlur) effect;
+            final var boxBlur = (BoxBlur) effect;
             clone = new BoxBlur(
                     boxBlur.getWidth(),
                     boxBlur.getHeight(),
                     boxBlur.getIterations());
             ((BoxBlur) clone).setInput(clone(boxBlur.getInput()));
         } else if (effect instanceof ColorAdjust) {
-            final ColorAdjust colorAdjust = (ColorAdjust) effect;
+            final var colorAdjust = (ColorAdjust) effect;
             clone = new ColorAdjust(
                     colorAdjust.getHue(),
                     colorAdjust.getSaturation(),
@@ -135,7 +135,7 @@ public abstract class Utils {
                     colorAdjust.getContrast());
             ((ColorAdjust) clone).setInput(clone(colorAdjust.getInput()));
         } else if (effect instanceof ColorInput) {
-            final ColorInput colorInput = (ColorInput) effect;
+            final var colorInput = (ColorInput) effect;
             clone = new ColorInput(
                     colorInput.getX(),
                     colorInput.getY(),
@@ -143,7 +143,7 @@ public abstract class Utils {
                     colorInput.getHeight(),
                     colorInput.getPaint());
         } else if (effect instanceof DisplacementMap) {
-            final DisplacementMap displacementMap = (DisplacementMap) effect;
+            final var displacementMap = (DisplacementMap) effect;
             clone = new DisplacementMap(
                     displacementMap.getMapData(),
                     displacementMap.getOffsetX(),
@@ -153,7 +153,7 @@ public abstract class Utils {
             ((DisplacementMap) clone).setWrap(displacementMap.isWrap());
             ((DisplacementMap) clone).setInput(clone(displacementMap.getInput()));
         } else if (effect instanceof DropShadow) {
-            final DropShadow dropShadow = (DropShadow) effect;
+            final var dropShadow = (DropShadow) effect;
             clone = new DropShadow(
                     dropShadow.getBlurType(),
                     dropShadow.getColor(),
@@ -165,21 +165,21 @@ public abstract class Utils {
             ((DropShadow) clone).setWidth(dropShadow.getWidth());
             ((DropShadow) clone).setInput(clone(dropShadow.getInput()));
         } else if (effect instanceof GaussianBlur) {
-            final GaussianBlur gaussianBlur = (GaussianBlur) effect;
+            final var gaussianBlur = (GaussianBlur) effect;
             clone = new GaussianBlur(gaussianBlur.getRadius());
             ((GaussianBlur) clone).setInput(clone(gaussianBlur.getInput()));
         } else if (effect instanceof Glow) {
-            final Glow glow = (Glow) effect;
+            final var glow = (Glow) effect;
             clone = new Glow(glow.getLevel());
             ((Glow) clone).setInput(clone(glow.getInput()));
         } else if (effect instanceof ImageInput) {
-            final ImageInput imageInput = (ImageInput) effect;
+            final var imageInput = (ImageInput) effect;
             clone = new ImageInput(
                     imageInput.getSource(),
                     imageInput.getX(),
                     imageInput.getY());
         } else if (effect instanceof InnerShadow) {
-            final InnerShadow innerShadow = (InnerShadow) effect;
+            final var innerShadow = (InnerShadow) effect;
             clone = new InnerShadow(
                     innerShadow.getBlurType(),
                     innerShadow.getColor(),
@@ -191,7 +191,7 @@ public abstract class Utils {
             ((InnerShadow) clone).setWidth(innerShadow.getWidth());
             ((InnerShadow) clone).setInput(clone(innerShadow.getInput()));
         } else if (effect instanceof Lighting) {
-            final Lighting lighting = (Lighting) effect;
+            final var lighting = (Lighting) effect;
             clone = new Lighting(lighting.getLight());
             ((Lighting) clone).setDiffuseConstant(lighting.getDiffuseConstant());
             ((Lighting) clone).setSpecularConstant(lighting.getSpecularConstant());
@@ -200,13 +200,13 @@ public abstract class Utils {
             ((Lighting) clone).setBumpInput(clone(lighting.getBumpInput()));
             ((Lighting) clone).setContentInput(clone(lighting.getContentInput()));
         } else if (effect instanceof MotionBlur) {
-            final MotionBlur motionBlur = (MotionBlur) effect;
+            final var motionBlur = (MotionBlur) effect;
             clone = new MotionBlur(
                     motionBlur.getAngle(),
                     motionBlur.getRadius());
             ((MotionBlur) clone).setInput(clone(motionBlur.getInput()));
         } else if (effect instanceof PerspectiveTransform) {
-            final PerspectiveTransform perspectiveTransform = (PerspectiveTransform) effect;
+            final var perspectiveTransform = (PerspectiveTransform) effect;
             clone = new PerspectiveTransform(
                     perspectiveTransform.getUlx(),
                     perspectiveTransform.getUly(),
@@ -218,7 +218,7 @@ public abstract class Utils {
                     perspectiveTransform.getLly());
             ((PerspectiveTransform) clone).setInput(clone(perspectiveTransform.getInput()));
         } else if (effect instanceof Reflection) {
-            final Reflection reflection = (Reflection) effect;
+            final var reflection = (Reflection) effect;
             clone = new Reflection(
                     reflection.getTopOffset(),
                     reflection.getFraction(),
@@ -226,11 +226,11 @@ public abstract class Utils {
                     reflection.getBottomOpacity());
             ((Reflection) clone).setInput(clone(reflection.getInput()));
         } else if (effect instanceof SepiaTone) {
-            final SepiaTone sepiaTone = (SepiaTone) effect;
+            final var sepiaTone = (SepiaTone) effect;
             clone = new SepiaTone(sepiaTone.getLevel());
             ((SepiaTone) clone).setInput(clone(sepiaTone.getInput()));
         } else if (effect instanceof Shadow) {
-            final Shadow shadow = (Shadow) effect;
+            final var shadow = (Shadow) effect;
             clone = new Shadow(
                     shadow.getBlurType(),
                     shadow.getColor(),
@@ -245,7 +245,7 @@ public abstract class Utils {
         return clone;
     }
 
-    public static Effect getDefaultInput(Effect effect) {
+    public static Effect getDefaultInput(final Effect effect) {
         final Effect input;
         assert effect != null;
         if (effect instanceof Blend) {
@@ -291,7 +291,7 @@ public abstract class Utils {
         return input;
     }
 
-    static void setDefaultInput(Effect effect, Effect input) {
+    static void setDefaultInput(final Effect effect, final Effect input) {
         assert effect != null;
         if (effect instanceof Blend) {
             ((Blend) effect).setTopInput(input);
@@ -340,7 +340,7 @@ public abstract class Utils {
      * @param max
      * @return 
      */
-    public static double clamp(double min, double value, double max) {
+    public static double clamp(final double min, final double value, final double max) {
         if (value < min) return min;
         if (value > max) return max;
         return value;

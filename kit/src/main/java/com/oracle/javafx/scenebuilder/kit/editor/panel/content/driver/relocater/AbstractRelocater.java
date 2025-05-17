@@ -47,7 +47,7 @@ public abstract class AbstractRelocater<T extends Parent> {
     protected final Node sceneGraphObject;
     protected final Class<T> parentClass;
 
-    public AbstractRelocater(Node sceneGraphObject, Class<T> parentClass) {
+    public AbstractRelocater(final Node sceneGraphObject, final Class<T> parentClass) {
         assert sceneGraphObject != null;
         assert sceneGraphObject.getParent() != null;
         assert sceneGraphObject.getParent().getClass() == parentClass;

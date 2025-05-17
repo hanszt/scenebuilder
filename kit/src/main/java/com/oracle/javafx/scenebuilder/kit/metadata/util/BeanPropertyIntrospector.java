@@ -31,7 +31,6 @@
  */
 package com.oracle.javafx.scenebuilder.kit.metadata.util;
 
-import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
@@ -45,25 +44,25 @@ class BeanPropertyIntrospector {
     private final Object object;
     private final PropertyDescriptor[] propertyDescriptors;
     
-    public BeanPropertyIntrospector(Object object) {
+    public BeanPropertyIntrospector(final Object object) {
         assert object != null;
         this.object = object;
         try {
-            final BeanInfo beanInfo = Introspector.getBeanInfo(object.getClass());
+            final var beanInfo = Introspector.getBeanInfo(object.getClass());
             this.propertyDescriptors = beanInfo.getPropertyDescriptors();
-        } catch(IntrospectionException x) {
+        } catch(final IntrospectionException x) {
             throw new RuntimeException(x);
         }
     }
     
-    public Object getValue(String propertyName) {
-        final PropertyDescriptor d = findDescriptor(propertyName);
+    public Object getValue(final String propertyName) {
+        final var d = findDescriptor(propertyName);
         final Object result;
         
         if (d != null) {
             try {
                 result = d.getReadMethod().invoke(object);
-            } catch(InvocationTargetException|IllegalAccessException x) {
+            } catch(final InvocationTargetException | IllegalAccessException x) {
                 throw new RuntimeException(x);
             }
         } else {
@@ -74,13 +73,13 @@ class BeanPropertyIntrospector {
     }
     
     
-    public void setValue(String propertyName, Object value) {
-        final PropertyDescriptor d = findDescriptor(propertyName);
+    public void setValue(final String propertyName, final Object value) {
+        final var d = findDescriptor(propertyName);
         
         if (d != null) {
             try {
                 d.getWriteMethod().invoke(object, value);
-            } catch(InvocationTargetException|IllegalAccessException x) {
+            } catch(final InvocationTargetException | IllegalAccessException x) {
                 throw new RuntimeException(x);
             }
         } else {
@@ -88,9 +87,9 @@ class BeanPropertyIntrospector {
         }
     }
     
-    private PropertyDescriptor findDescriptor(String propertyName) {
+    private PropertyDescriptor findDescriptor(final String propertyName) {
         assert propertyDescriptors != null;
-        int i = 0;
+        var i = 0;
         while ((i < propertyDescriptors.length) 
                 && ! propertyDescriptors[i].getName().equals(propertyName)){
             i++;

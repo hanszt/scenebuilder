@@ -53,7 +53,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.css.CssMetaData;
 import javafx.css.StyleOrigin;
-import javafx.css.Styleable;
 import javafx.css.StyleableProperty;
 import javafx.scene.Node;
 import javafx.scene.control.Skinnable;
@@ -86,7 +85,7 @@ public class NodeCssState {
     private Collection<CssProperty> props;
 
     @SuppressWarnings("rawtypes")
-    protected NodeCssState(Map<StyleableProperty, List<Style>> map, Node node, FXOMObject fxomObject) {
+    protected NodeCssState(final Map<StyleableProperty, List<Style>> map, final Node node, final FXOMObject fxomObject) {
         this.map = map;
         this.node = node;
         this.fxomObject = fxomObject;
@@ -116,34 +115,33 @@ public class NodeCssState {
         private final ObjectProperty<CssContentMaker.PropertyState> fxmlModel = new SimpleObjectProperty<>();
         private CssContentMaker.PropertyState currentState;
 
-        CssProperty(NodeCssState nodeCssState, CssMetaData cssMeta, Node target, FXOMObject fxomObject) {
+        CssProperty(final NodeCssState nodeCssState, final CssMetaData cssMeta, final Node target, final FXOMObject fxomObject) {
             this(nodeCssState, null, cssMeta, target, fxomObject);
         }
 
-        CssProperty(NodeCssState nodeCssState, CssProperty mainProperty,
-                CssMetaData cssMeta, Node target, FXOMObject fxomObject) {
+        CssProperty(final NodeCssState nodeCssState, final CssProperty mainProperty,
+                    final CssMetaData cssMeta, final Node target, final FXOMObject fxomObject) {
             this.mainProperty = mainProperty;
             this.cssMeta = cssMeta;
             this.target = target;
             name.setValue(cssMeta.getProperty());
-            CssContentMaker.CssPropertyState inlineState = nodeCssState.retrieveCssStyle(cssMeta, nodeCssState.getInlineStyles());
+            final var inlineState = nodeCssState.retrieveCssStyle(cssMeta, nodeCssState.getInlineStyles());
             if (inlineState != null) {
                 inlineCss.setValue(inlineState);
             }
-            CssContentMaker.CssPropertyState authorState = nodeCssState.retrieveCssStyle(cssMeta, nodeCssState.getAuthorStyles());
+            final var authorState = nodeCssState.retrieveCssStyle(cssMeta, nodeCssState.getAuthorStyles());
             if (authorState != null) {
                 authorCss.setValue(authorState);
             }
-            CssContentMaker.CssPropertyState fxThemeState = nodeCssState.retrieveCssStyle(cssMeta, nodeCssState.getUserAgentStyles());
+            final var fxThemeState = nodeCssState.retrieveCssStyle(cssMeta, nodeCssState.getUserAgentStyles());
             if (fxThemeState != null) {
                 fxTheme.setValue(fxThemeState);
             }
-            @SuppressWarnings("unchecked")
-            CssContentMaker.PropertyState builtinState = CssContentMaker.initialValue(target, mainProperty == null ? this : mainProperty, cssMeta);
+            @SuppressWarnings("unchecked") final var builtinState = CssContentMaker.initialValue(target, mainProperty == null ? this : mainProperty, cssMeta);
             assert builtinState != null;
             builtin.setValue(builtinState);
 
-            CssContentMaker.PropertyState modelState = CssContentMaker.modelValue(target, cssMeta, fxomObject);
+            final var modelState = CssContentMaker.modelValue(target, cssMeta, fxomObject);
             if (modelState != null) {
                 fxmlModel.setValue(modelState);
             }
@@ -190,25 +188,25 @@ public class NodeCssState {
         }
 
         @Override
-        public int compareTo(CssProperty cssProperty) {
+        public int compareTo(final CssProperty cssProperty) {
             return cssMeta.getProperty().compareTo(cssProperty.cssMeta.getProperty());
         }
 
         @Override
-        public boolean equals(Object obj) {
+        public boolean equals(final Object obj) {
             if (obj == null) {
                 return false;
             }
             if (getClass() != obj.getClass()) {
                 return false;
             }
-            CssProperty cssProperty = (CssProperty) obj;
+            final var cssProperty = (CssProperty) obj;
             return cssMeta.getProperty().compareTo(cssProperty.cssMeta.getProperty()) == 0;
         }
 
         @Override
         public int hashCode() {
-            int hash = 3;
+            var hash = 3;
             hash = 31 * hash + Objects.hashCode(this.cssMeta);
             hash = 31 * hash + Objects.hashCode(this.mainProperty);
             hash = 31 * hash + Objects.hashCode(this.target);
@@ -258,8 +256,8 @@ public class NodeCssState {
         public CssContentMaker.PropertyState getCurrentStyle() {
             if (currentState == null) {
                 currentState = builtinState().get();
-                CssContentMaker.PropertyState model = modelState().get();
-                CssContentMaker.CssPropertyState cssState = getWinner();
+                final var model = modelState().get();
+                final var cssState = getWinner();
                 if (cssState == null) {
                     if (model != null) {
                         currentState = model;
@@ -277,9 +275,9 @@ public class NodeCssState {
         }
 
         public StyleOrigin getCurrentStyleOrigin() {
-            CssContentMaker.PropertyState state = getCurrentStyle();
+            final var state = getCurrentStyle();
             if (state instanceof CssContentMaker.CssPropertyState) {
-                CssContentMaker.CssPropertyState cssState = (CssContentMaker.CssPropertyState) state;
+                final var cssState = (CssContentMaker.CssPropertyState) state;
                 return cssState.getStyle().getOrigin();
             } else {
                 if (state instanceof CssContentMaker.BeanPropertyState) {
@@ -291,8 +289,8 @@ public class NodeCssState {
         }
 
         public boolean isInlineInherited() {
-            boolean ret = false;
-            CssContentMaker.CssPropertyState css = inlineCss.get();
+            var ret = false;
+            final var css = inlineCss.get();
             if (css != null) {
                 ret = CssContentMaker.isInlineInherited(target, css);
             }
@@ -301,7 +299,7 @@ public class NodeCssState {
 
         public Node getSourceNodeForInline() {
             Node ret = null;
-            CssContentMaker.CssPropertyState css = inlineCss.get();
+            final var css = inlineCss.get();
             if (css != null) {
                 ret = CssContentMaker.getSourceNodeForStyle(target, propertyName().get());
             }
@@ -309,18 +307,18 @@ public class NodeCssState {
         }
 
         public List<CssContentMaker.CssPropertyState.CssStyle> getFxThemeHiddenByModel() {
-            List<CssContentMaker.CssPropertyState.CssStyle> ret = new ArrayList<>();
-            CssContentMaker.CssPropertyState ps = getWinner();
-            List<CssContentMaker.CssPropertyState.CssStyle> notAppliedStyles = 
+            final List<CssContentMaker.CssPropertyState.CssStyle> ret = new ArrayList<>();
+            final var ps = getWinner();
+            final var notAppliedStyles =
                     ps == null ? 
                     Collections.<CssContentMaker.CssPropertyState.CssStyle>emptyList() : 
                     ps.getNotAppliedStyles();
-            boolean hasModel = modelState().get() != null;
+            final var hasModel = modelState().get() != null;
             if (hasModel) {
-                List<Style> allStyles = Deprecation.getMatchingStyles(getStyleable(), target);
-                List<Style> matchingStyles = CssContentMaker.removeUserAgentStyles(allStyles);
-                for (Style style : matchingStyles) {
-                    CssContentMaker.CssPropertyState.CssStyle cssStyle = new CssContentMaker.CssPropertyState.CssStyle(style);
+                final var allStyles = Deprecation.getMatchingStyles(getStyleable(), target);
+                final var matchingStyles = CssContentMaker.removeUserAgentStyles(allStyles);
+                for (final var style : matchingStyles) {
+                    var cssStyle = new CssContentMaker.CssPropertyState.CssStyle(style);
                     if (cssStyle.getOrigin() == StyleOrigin.USER_AGENT && !notAppliedStyles.contains(cssStyle)) {
                         if (getStyleable().getProperty().equals(cssStyle.getCssProperty())) {
                             cssStyle = CssContentMaker.retrieveStyle(matchingStyles, style);
@@ -335,13 +333,13 @@ public class NodeCssState {
     }
 
     private CssContentMaker.CssPropertyState retrieveCssStyle(
-            CssMetaData<?, ?> cssMeta, Collection<CssContentMaker.CssPropertyState> styles) {
-        for (CssContentMaker.CssPropertyState prop : styles) {
+            final CssMetaData<?, ?> cssMeta, final Collection<CssContentMaker.CssPropertyState> styles) {
+        for (final var prop : styles) {
             if (prop.getCssProperty().equals(cssMeta.getProperty())) {
                 return prop;
             } else {
                 if (prop.getSubProperties() != null) {
-                    for (CssContentMaker.PropertyState sub : prop.getSubProperties()) {
+                    for (final var sub : prop.getSubProperties()) {
                         if (sub.getCssProperty().equals(cssMeta.getProperty())) {
                             return (CssContentMaker.CssPropertyState) sub;
                         }
@@ -360,36 +358,36 @@ public class NodeCssState {
     public final Collection<CssProperty> getAllStyleables() {
         if (props == null) {
             props = new TreeSet<>();
-            List<CssMetaData<? extends Styleable, ?>> cssMetaList = node.getCssMetaData();
-            for (CssMetaData<? extends Styleable, ?> cssMeta : cssMetaList) {
-                CssProperty mainProp = new CssProperty(this, cssMeta, node, fxomObject);
+            final var cssMetaList = node.getCssMetaData();
+            for (final var cssMeta : cssMetaList) {
+                final var mainProp = new CssProperty(this, cssMeta, node, fxomObject);
                 props.add(mainProp);
                 if (cssMeta.getSubProperties() != null) {
-                    for (CssMetaData sub : cssMeta.getSubProperties()) {
-                        CssProperty subProp = new CssProperty(this, mainProp, sub, node, fxomObject);
+                    for (final CssMetaData sub : cssMeta.getSubProperties()) {
+                        final var subProp = new CssProperty(this, mainProp, sub, node, fxomObject);
                         mainProp.getSubProperties().add(subProp);
                     }
                 }
             }
 
             if (node instanceof Skinnable) {
-                Skinnable skinnable = (Skinnable) node;
-                Node skinNode = skinnable.getSkin().getNode();
-                List<CssMetaData<? extends Styleable, ?>> skinList = skinNode.getCssMetaData();
-                for (CssMetaData<? extends Styleable, ?> skinCssMeta : skinList) {
-                    boolean found = false;
-                    for (CssMetaData cssMeta : cssMetaList) {
+                final var skinnable = (Skinnable) node;
+                final var skinNode = skinnable.getSkin().getNode();
+                final var skinList = skinNode.getCssMetaData();
+                for (final var skinCssMeta : skinList) {
+                    var found = false;
+                    for (final CssMetaData cssMeta : cssMetaList) {
                         if (skinCssMeta.getProperty().equals(cssMeta.getProperty())) {
                             found = true;
                             break;
                         }
                     }
                     if (!found) {
-                        CssProperty mainProp = new CssProperty(this, skinCssMeta, skinNode, fxomObject);
+                        final var mainProp = new CssProperty(this, skinCssMeta, skinNode, fxomObject);
                         props.add(mainProp);
                         if (skinCssMeta.getSubProperties() != null) {
-                            for (CssMetaData<? extends Styleable, ?> sub : skinCssMeta.getSubProperties()) {
-                                CssProperty subProp = new CssProperty(this, sub, node, fxomObject);
+                            for (final var sub : skinCssMeta.getSubProperties()) {
+                                final var subProp = new CssProperty(this, sub, node, fxomObject);
                                 mainProp.getSubProperties().add(subProp);
                             }
                         }
@@ -432,12 +430,12 @@ public class NodeCssState {
         }
 
         @Override
-        public int compare(MatchingRule t, MatchingRule t1) {
-            int originComparaison = compareOrigin(
+        public int compare(final MatchingRule t, final MatchingRule t1) {
+            final var originComparaison = compareOrigin(
                     t.getRule().getOrigin(), t1.rule.getOrigin());
-            int tnotApplied = countNotApplied(t.declarations);
-            int t1notApplied = countNotApplied(t1.declarations);
-            int notAppliedComparaisons = tnotApplied - t1notApplied;
+            final var tnotApplied = countNotApplied(t.declarations);
+            final var t1notApplied = countNotApplied(t1.declarations);
+            final var notAppliedComparaisons = tnotApplied - t1notApplied;
 
             if (originComparaison == 0) {// Same origin, not Applied count is what is important. The less, the stronger
                 return notAppliedComparaisons;
@@ -448,16 +446,16 @@ public class NodeCssState {
 
     }
 
-    private static int compareOrigin(StyleOrigin toCompare, StyleOrigin other) {
-        int index1 = ORDERED_ORIGIN.indexOf(toCompare);
-        int index2 = ORDERED_ORIGIN.indexOf(other);
+    private static int compareOrigin(final StyleOrigin toCompare, final StyleOrigin other) {
+        final var index1 = ORDERED_ORIGIN.indexOf(toCompare);
+        final var index2 = ORDERED_ORIGIN.indexOf(other);
         return index2 - index1;
 
     }
 
-    private static int countNotApplied(List<MatchingDeclaration> declarations) {
-        int count = 0;
-        for (MatchingDeclaration decl : declarations) {
+    private static int countNotApplied(final List<MatchingDeclaration> declarations) {
+        var count = 0;
+        for (final var decl : declarations) {
             if (!decl.isApplied()) {
                 count += 1;
             }
@@ -475,7 +473,7 @@ public class NodeCssState {
         private final String selector;
         private final List<MatchingDeclaration> declarations = new ArrayList<>();
 
-        private MatchingRule(Rule rule, String selector) {
+        private MatchingRule(final Rule rule, final String selector) {
             this.rule = rule;
             this.selector = selector;
         }
@@ -490,21 +488,21 @@ public class NodeCssState {
 
         @Override
         public int hashCode() {
-            int hash = 7;
+            var hash = 7;
             hash = 59 * hash + (this.rule != null ? this.rule.hashCode() : 0);
             return hash;
         }
 
         @Override
-        public boolean equals(Object obj) {
+        public boolean equals(final Object obj) {
             if (!(obj instanceof MatchingRule)) {
                 return false;
             }
-            MatchingRule mr = (MatchingRule) obj;
+            final var mr = (MatchingRule) obj;
             return rule.equals(mr.rule);
         }
 
-        private void addDeclarations(List<MatchingDeclaration> values) {
+        private void addDeclarations(final List<MatchingDeclaration> values) {
             declarations.addAll(values);
         }
 
@@ -529,8 +527,8 @@ public class NodeCssState {
         private final boolean applied;
         private final boolean lookup;
 
-        MatchingDeclaration(CssContentMaker.CssPropertyState.CssStyle style, 
-                CssContentMaker.CssPropertyState prop, boolean applied, boolean lookup) {
+        MatchingDeclaration(final CssContentMaker.CssPropertyState.CssStyle style,
+                            final CssContentMaker.CssPropertyState prop, final boolean applied, final boolean lookup) {
             this.style = style;
             this.prop = prop;
             this.applied = applied;
@@ -565,13 +563,13 @@ public class NodeCssState {
 
     // This method add sub properties instead of compund property.
     private static void addSubProperties(
-            Collection<CssContentMaker.CssPropertyState> source, 
-            Collection<CssContentMaker.CssPropertyState> target) {
-        for (CssContentMaker.CssPropertyState p : source) {
+            final Collection<CssContentMaker.CssPropertyState> source,
+            final Collection<CssContentMaker.CssPropertyState> target) {
+        for (final var p : source) {
             if (p.getSubProperties().isEmpty()) {
                 target.add(p);
             } else {
-                for (CssContentMaker.PropertyState sub : p.getSubProperties()) {
+                for (final var sub : p.getSubProperties()) {
                     target.add((CssContentMaker.CssPropertyState) sub);
                 }
             }
@@ -581,26 +579,26 @@ public class NodeCssState {
     // Sorted according to Author/User Agent and applied / not applied
     public final List<MatchingRule> getMatchingRules() {
         if (matchingRules == null) {
-            Collection<CssContentMaker.CssPropertyState> styledProperties = new TreeSet<>();
+            final Collection<CssContentMaker.CssPropertyState> styledProperties = new TreeSet<>();
             addSubProperties(getUserAgentStyles(), styledProperties);
             addSubProperties(getAuthorStyles(), styledProperties);
                 // We need them to have the exhaustive set of styled properties.
             // We compute the rules based on the set of properties.
             addSubProperties(getInlineStyles(), styledProperties);
             matchingRules = new HashMap<>();
-            for (CssContentMaker.CssPropertyState cssP : styledProperties) {
-                List<CssContentMaker.PropertyState> l = cssP.getSubProperties();
+            for (final var cssP : styledProperties) {
+                final var l = cssP.getSubProperties();
                 if (l.isEmpty()) {
                     addMatchingDeclaration(cssP);
                 } else {
-                    for (CssContentMaker.PropertyState pp : l) {
-                        CssContentMaker.CssPropertyState cssSubP = (CssContentMaker.CssPropertyState) pp;
+                    for (final var pp : l) {
+                        final var cssSubP = (CssContentMaker.CssPropertyState) pp;
                         addMatchingDeclaration(cssSubP);
                     }
                 }
             }
-            for (Map.Entry<MatchingRule, List<MatchingDeclaration>> entry : matchingRules.entrySet()) {
-                MatchingRule rule = entry.getKey();
+            for (final var entry : matchingRules.entrySet()) {
+                final var rule = entry.getKey();
                 // Filterout the Inline
                 if (rule.getRule().getOrigin() != StyleOrigin.INLINE) {
                     rule.addDeclarations(entry.getValue());
@@ -612,24 +610,24 @@ public class NodeCssState {
         return sortedMatchingRules;
     }
 
-    private void addMatchingDeclaration(CssPropertyState cssP) {
+    private void addMatchingDeclaration(final CssPropertyState cssP) {
         addMatchingDeclaration(cssP, cssP.getStyle(), true, false);
-        for (CssPropertyState.CssStyle s : cssP.getNotAppliedStyles()) {
+        for (final var s : cssP.getNotAppliedStyles()) {
             addMatchingDeclaration(cssP, s, false, false);
         }
     }
 
     private void addMatchingDeclaration(
-            CssPropertyState cssP, CssPropertyState.CssStyle style, boolean applied, boolean isLookup) {
-        MatchingRule mr = new MatchingRule(style.getCssRule(), style.getSelector());
-        List<MatchingDeclaration> lst = matchingRules.get(mr);
+            final CssPropertyState cssP, final CssPropertyState.CssStyle style, final boolean applied, final boolean isLookup) {
+        final var mr = new MatchingRule(style.getCssRule(), style.getSelector());
+        var lst = matchingRules.get(mr);
         if (lst == null) {
             lst = new ArrayList<>();
             matchingRules.put(mr, lst);
         }
-        MatchingDeclaration pmr = new MatchingDeclaration(style, cssP, applied, isLookup);
-        boolean found = false;
-        for (MatchingDeclaration d : lst) {
+        final var pmr = new MatchingDeclaration(style, cssP, applied, isLookup);
+        var found = false;
+        for (final var d : lst) {
             if (d.style.getCssProperty().equals(style.getCssProperty())) {
                 found = true;
                 break;
@@ -639,14 +637,14 @@ public class NodeCssState {
         if (!found) {
             lst.add(pmr);
         }
-        for (CssContentMaker.CssPropertyState.CssStyle lookup : style.getLookupChain()) {
+        for (final var lookup : style.getLookupChain()) {
             addMatchingDeclaration(cssP, lookup, applied, true);
         }
     }
 
     @SuppressWarnings("rawtypes")
-    private Set<CssContentMaker.CssPropertyState> getAppliedStyles(StyleOrigin origin) {
-        SortedSet<CssContentMaker.CssPropertyState> propertyStates = new TreeSet<>();
+    private Set<CssContentMaker.CssPropertyState> getAppliedStyles(final StyleOrigin origin) {
+        final SortedSet<CssContentMaker.CssPropertyState> propertyStates = new TreeSet<>();
 
 //            if (origin == StyleOrigin.USER_AGENT) {
 //                System.out.println("===========================");
@@ -661,26 +659,26 @@ public class NodeCssState {
 //                }
 //                System.out.println("\n\n\n");
 //            }
-        for (Map.Entry<StyleableProperty, List<Style>> entry : map.entrySet()) {//NOI18N
-            StyleableProperty<?> value = entry.getKey();
+        for (final var entry : map.entrySet()) {//NOI18N
+            final StyleableProperty<?> value = entry.getKey();
 //                System.out.println("\nStyleable property: " + value);
             assert entry.getValue() != null;
             assert !entry.getValue().isEmpty();
-            Style st = entry.getValue().get(0);
-            StyleOrigin o = CssInternal.getOrigin(st);
+            final var st = entry.getValue().getFirst();
+            final var o = CssInternal.getOrigin(st);
 //                printStyle(st);
                 /* If this origin is equals to the passed one, this is the nominal case.
              * If this property contains sub properties (eg:background-fills), then we need to check
              * each sub property.
              */
-            CssMetaData<? extends Styleable, ?> cssMetaList = value.getCssMetaData();
+            final var cssMetaList = value.getCssMetaData();
             if (o == origin || cssMetaList.getSubProperties() != null) {
                     // Need the first style to compute the value
                 // We have at least a style. The first one is the winner.
-                String cssValue = CssValueConverter.toCssString(cssMetaList.getProperty(),
+                final var cssValue = CssValueConverter.toCssString(cssMetaList.getProperty(),
                         st.getDeclaration().getRule(), value.getValue());
 
-                CssContentMaker.CssPropertyState pState = new CssContentMaker.CssPropertyState(value, cssMetaList, cssValue);
+                final var pState = new CssContentMaker.CssPropertyState(value, cssMetaList, cssValue);
 
                 /* 
                  * Each sub property can be ruled by a specific Origin, 
@@ -689,15 +687,15 @@ public class NodeCssState {
                  * and background-color set by inline or author.
                  */
                 if (cssMetaList.getSubProperties() != null) {
-                    for (CssMetaData sub : cssMetaList.getSubProperties()) {
-                        List<CssContentMaker.CssPropertyState.CssStyle> notApplied = CssContentMaker.getNotAppliedStyles(entry.getValue(), node, sub);
-                        for (Style style : entry.getValue()) {
-                            StyleOrigin styleOrigin = CssInternal.getOrigin(style);
+                    for (final CssMetaData sub : cssMetaList.getSubProperties()) {
+                        final var notApplied = CssContentMaker.getNotAppliedStyles(entry.getValue(), node, sub);
+                        for (final var style : entry.getValue()) {
+                            final var styleOrigin = CssInternal.getOrigin(style);
                             if (style.getDeclaration().getProperty().equals(sub.getProperty())
                                     && (styleOrigin == origin)) {
-                                CssContentMaker.CssPropertyState.CssStyle cssStyle = CssContentMaker.retrieveStyle(entry.getValue(), style);
-                                String subCssValue = CssValueConverter.toCssString(sub.getProperty(), style.getDeclaration().getRule(), value.getValue());
-                                CssContentMaker.CssSubPropertyState subCss = new CssContentMaker.CssSubPropertyState(value, sub, subCssValue);
+                                final var cssStyle = CssContentMaker.retrieveStyle(entry.getValue(), style);
+                                final var subCssValue = CssValueConverter.toCssString(sub.getProperty(), style.getDeclaration().getRule(), value.getValue());
+                                final var subCss = new CssContentMaker.CssSubPropertyState(value, sub, subCssValue);
                                 subCss.setStyle(cssStyle);
                                 subCss.getNotAppliedStyles().addAll(notApplied);
                                 pState.getSubProperties().add(subCss);
@@ -705,7 +703,7 @@ public class NodeCssState {
                         }
                     }
                     // eg: -fx-font set
-                    CssContentMaker.CssPropertyState.CssStyle style = CssContentMaker.retrieveStyle(entry.getValue(), st);
+                    final var style = CssContentMaker.retrieveStyle(entry.getValue(), st);
                     pState.setStyle(style);
                     if (!st.getDeclaration().getProperty().equals(cssMetaList.getProperty())) {
                         style.setUnused();
@@ -713,10 +711,10 @@ public class NodeCssState {
                 } else {
                         // Single style for this single property.
                     // Transform the flat list into a chain of lookup.
-                    CssContentMaker.CssPropertyState.CssStyle style = CssContentMaker.retrieveStyle(entry.getValue(), st);
+                    final var style = CssContentMaker.retrieveStyle(entry.getValue(), st);
                     pState.setStyle(style);
                 }
-                List<Style> applied = new ArrayList<>();
+                final List<Style> applied = new ArrayList<>();
                 applied.add(st);
                 pState.getNotAppliedStyles().addAll(CssContentMaker.getNotAppliedStyles(applied, node, cssMetaList));
                 /*

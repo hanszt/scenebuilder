@@ -62,8 +62,8 @@ public class SpotLightPropertyMetadata extends ComplexPropertyMetadata<Light.Spo
             = new DoublePropertyMetadata(new PropertyName("specularExponent"), //NOI18N
             DoublePropertyMetadata.DoubleKind.COORDINATE, true, 1.0, InspectorPath.UNUSED);
     
-    public SpotLightPropertyMetadata(PropertyName name, boolean readWrite, 
-            Light.Spot defaultValue, InspectorPath inspectorPath) {
+    public SpotLightPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                     final Light.Spot defaultValue, final InspectorPath inspectorPath) {
         super(name, Light.Spot.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -72,8 +72,8 @@ public class SpotLightPropertyMetadata extends ComplexPropertyMetadata<Light.Spo
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(Light.Spot value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, getValueClass());
+    public FXOMInstance makeFxomInstanceFromValue(final Light.Spot value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, getValueClass());
         
         colorMetadata.setValue(result, value.getColor());
         pointsAtXMetadata.setValue(result, value.getX());

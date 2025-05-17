@@ -55,8 +55,8 @@ public class Rectangle2DPropertyMetadata extends ComplexPropertyMetadata<Rectang
             = new DoublePropertyMetadata(new PropertyName("height"), 
             DoublePropertyMetadata.DoubleKind.SIZE, true, 0.0, InspectorPath.UNUSED);
 
-    public Rectangle2DPropertyMetadata(PropertyName name, boolean readWrite, 
-            Rectangle2D defaultValue, InspectorPath inspectorPath) {
+    public Rectangle2DPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                       final Rectangle2D defaultValue, final InspectorPath inspectorPath) {
         super(name, Rectangle2D.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -66,8 +66,8 @@ public class Rectangle2DPropertyMetadata extends ComplexPropertyMetadata<Rectang
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(Rectangle2D value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, value.getClass());
+    public FXOMInstance makeFxomInstanceFromValue(final Rectangle2D value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, value.getClass());
         
         minXMetadata.setValue(result, value.getMinX());
         minYMetadata.setValue(result, value.getMinY());

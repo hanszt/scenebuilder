@@ -33,11 +33,8 @@
 package com.oracle.javafx.scenebuilder.kit.editor.job.gridpane;
 
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.AbstractSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.GridSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.GridSelectionGroup.Type;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
 import java.util.ArrayList;
@@ -68,8 +65,8 @@ public class GridPaneJobUtils {
     static List<FXOMObject> getTargetGridPanes(
             final EditorController editorController) {
 
-        final Selection selection = editorController.getSelection();
-        final AbstractSelectionGroup asg = selection.getGroup();
+        final var selection = editorController.getSelection();
+        final var asg = selection.getGroup();
         assert asg instanceof ObjectSelectionGroup
                 || asg instanceof GridSelectionGroup;
 
@@ -77,12 +74,12 @@ public class GridPaneJobUtils {
 
         // Selection == GridPanes
         if (asg instanceof ObjectSelectionGroup) {
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) asg;
+            final var osg = (ObjectSelectionGroup) asg;
             result.addAll(osg.getItems());
         } //
         // Selection == GridPane rows or columns
         else if (asg instanceof GridSelectionGroup) {
-            final GridSelectionGroup gsg = (GridSelectionGroup) asg;
+            final var gsg = (GridSelectionGroup) asg;
             result.add(gsg.getParentObject());
         }
 
@@ -98,10 +95,10 @@ public class GridPaneJobUtils {
      * @param toIndex
      * @return
      */
-    static List<Integer> getIndexes(int fromIndex, int toIndex) {
+    static List<Integer> getIndexes(final int fromIndex, final int toIndex) {
         assert fromIndex <= toIndex;
         final List<Integer> result = new ArrayList<>();
-        int index = fromIndex;
+        var index = fromIndex;
         while (index <= toIndex) {
             result.add(index++);
         }
@@ -119,9 +116,9 @@ public class GridPaneJobUtils {
             final Set<Integer> targetIndexes,
             final Position position) {
         final Set<Integer> result = new HashSet<>();
-        int shiftIndex = 0;
-        for (int targetIndex : targetIndexes) {
-            int addedIndex = targetIndex + shiftIndex++;
+        var shiftIndex = 0;
+        for (final int targetIndex : targetIndexes) {
+            var addedIndex = targetIndex + shiftIndex++;
             if (position == Position.BELOW || position == Position.AFTER) {
                 addedIndex++;
             }
@@ -141,14 +138,14 @@ public class GridPaneJobUtils {
     static boolean canPerformAdd(final EditorController editorController) {
 
         boolean result;
-        final Selection selection = editorController.getSelection();
-        final AbstractSelectionGroup asg = selection.getGroup();
+        final var selection = editorController.getSelection();
+        final var asg = selection.getGroup();
 
         if (asg instanceof ObjectSelectionGroup) {
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) asg;
+            final var osg = (ObjectSelectionGroup) asg;
             result = true;
-            for (FXOMObject obj : osg.getItems()) {
-                if ((obj.getSceneGraphObject() instanceof GridPane) == false) {
+            for (final var obj : osg.getItems()) {
+                if (!(obj.getSceneGraphObject() instanceof GridPane)) {
                     result = false;
                     break;
                 }
@@ -168,8 +165,8 @@ public class GridPaneJobUtils {
      */
     static boolean canPerformRemove(final EditorController editorController) {
 
-        final Selection selection = editorController.getSelection();
-        final AbstractSelectionGroup asg = selection.getGroup();
+        final var selection = editorController.getSelection();
+        final var asg = selection.getGroup();
 
         return asg instanceof GridSelectionGroup;
     }
@@ -186,20 +183,20 @@ public class GridPaneJobUtils {
             final Position position) {
 
         boolean result;
-        final Selection selection = editorController.getSelection();
-        final AbstractSelectionGroup asg = selection.getGroup();
+        final var selection = editorController.getSelection();
+        final var asg = selection.getGroup();
 
         if (asg instanceof GridSelectionGroup) {
-            final GridSelectionGroup gsg = (GridSelectionGroup) asg;
-            final FXOMObject gridPane = gsg.getParentObject();
-            final Type type = gsg.getType();
-            final DesignHierarchyMask mask = new DesignHierarchyMask(gridPane);
+            final var gsg = (GridSelectionGroup) asg;
+            final var gridPane = gsg.getParentObject();
+            final var type = gsg.getType();
+            final var mask = new DesignHierarchyMask(gridPane);
 
             switch (type) {
                 case COLUMN:
                     if (position == Position.BEFORE) {
                         result = true;
-                        for (int index : gsg.getIndexes()) {
+                        for (final int index : gsg.getIndexes()) {
                             // First index column cannot be moved before
                             if (index == 0) {
                                 result = false;
@@ -208,7 +205,7 @@ public class GridPaneJobUtils {
                         }
                     } else if (position == Position.AFTER) {
                         result = true;
-                        for (int index : gsg.getIndexes()) {
+                        for (final int index : gsg.getIndexes()) {
                             // Last index column cannot be moved after
                             if (index == (mask.getColumnsSize() - 1)) {
                                 result = false;
@@ -222,7 +219,7 @@ public class GridPaneJobUtils {
                 case ROW:
                     if (position == Position.ABOVE) {
                         result = true;
-                        for (int index : gsg.getIndexes()) {
+                        for (final int index : gsg.getIndexes()) {
                             // First index row cannot be moved above
                             if (index == 0) {
                                 result = false;
@@ -231,7 +228,7 @@ public class GridPaneJobUtils {
                         }
                     } else if (position == Position.BELOW) {
                         result = true;
-                        for (int index : gsg.getIndexes()) {
+                        for (final int index : gsg.getIndexes()) {
                             // Last index row cannot be moved below
                             if (index == (mask.getRowsSize() - 1)) {
                                 result = false;

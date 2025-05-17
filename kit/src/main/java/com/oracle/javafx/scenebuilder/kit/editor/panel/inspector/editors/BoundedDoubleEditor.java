@@ -76,11 +76,11 @@ public class BoundedDoubleEditor extends AutoSuggestEditor {
     private boolean updateFromTextField = false;
     private boolean updateFromSlider = false;
 
-    public BoundedDoubleEditor(String name, String defaultValue, List<String> suggestedList) {
+    public BoundedDoubleEditor(final String name, final String defaultValue, final List<String> suggestedList) {
         this(name, defaultValue, suggestedList, null, null, false);
     }
 
-    public BoundedDoubleEditor(String name, String defaultValue, List<String> suggestedList, Double min, Double max, boolean minMaxForSliderOnly) {
+    public BoundedDoubleEditor(final String name, final String defaultValue, final List<String> suggestedList, final Double min, final Double max, final boolean minMaxForSliderOnly) {
         super(name, defaultValue, suggestedList, AutoSuggestEditor.Type.DOUBLE);
         if (min != null) {
             this.min = min;
@@ -93,7 +93,7 @@ public class BoundedDoubleEditor extends AutoSuggestEditor {
         initialize();
     }
 
-    public BoundedDoubleEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses, Set<FXOMInstance> selectedInstances, Map<String, Object> constantsMap) {
+    public BoundedDoubleEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses, final Set<FXOMInstance> selectedInstances, final Map<String, Object> constantsMap) {
         super(propMeta, selectedClasses, new ArrayList<>(constantsMap.keySet()), AutoSuggestEditor.Type.DOUBLE);
         this.constants = constantsMap;
         handleSpecificCases(propMeta, selectedInstances);
@@ -107,7 +107,7 @@ public class BoundedDoubleEditor extends AutoSuggestEditor {
         //
         // Text field
         //
-        EventHandler<ActionEvent> onActionListener = event -> {
+        final EventHandler<ActionEvent> onActionListener = event -> {
             if (isHandlingError()) {
                 // Event received because of focus lost due to error dialog
                 return;
@@ -117,7 +117,7 @@ public class BoundedDoubleEditor extends AutoSuggestEditor {
                 return;
             }
 
-            Object value = getValue();
+            final var value = getValue();
             if (getPropertyMeta() != null) {
                 if ((value == null)
                         || !((DoublePropertyMetadata) getPropertyMeta()).isValidValue((Double) value)) {
@@ -127,9 +127,9 @@ public class BoundedDoubleEditor extends AutoSuggestEditor {
             assert value instanceof Double;
             double valDouble = (Double) value;
             // Check if the entered value is a constant string
-            boolean isConstant = constants.get(getTextField().getText().toUpperCase(Locale.ROOT)) != null;
+            var isConstant = constants.get(getTextField().getText().toUpperCase(Locale.ROOT)) != null;
             // Check if the entered value is a constant value
-            for (Map.Entry<String, Object> entry : constants.entrySet()) {
+            for (final var entry : constants.entrySet()) {
                 if (value.equals(entry.getValue())) {
                     isConstant = true;
                     break;
@@ -169,7 +169,7 @@ public class BoundedDoubleEditor extends AutoSuggestEditor {
             // Slider button moved or left/right key typed.
             // In this case, we want to round the value,
             // since the Slider may returns many decimals.
-            double value = EditorUtils.round(slider.getValue(), roundingFactor);
+            final var value = EditorUtils.round(slider.getValue(), roundingFactor);
             updateFromSlider = true;
             getTextField().setText(EditorUtils.valAsStr(value));
             updateFromSlider = false;
@@ -178,7 +178,7 @@ public class BoundedDoubleEditor extends AutoSuggestEditor {
 
         slider.pressedProperty().addListener((InvalidationListener) valueModel -> {
             if (!slider.isPressed()) {
-                double value = EditorUtils.round(slider.getValue(), roundingFactor);
+                final var value = EditorUtils.round(slider.getValue(), roundingFactor);
                 userUpdateValueProperty(value);
             }
         });
@@ -193,19 +193,19 @@ public class BoundedDoubleEditor extends AutoSuggestEditor {
 
     @Override
     public Object getValue() {
-        String val = getTextField().getText();
+        var val = getTextField().getText();
         if (val.isEmpty()) {
             val = "0"; //NOI18N
             getTextField().setText(val);
             return Double.valueOf(val);
         }
-        Object constantValue = constants.get(val.toUpperCase(Locale.ROOT));
+        final var constantValue = constants.get(val.toUpperCase(Locale.ROOT));
         if (constantValue != null) {
             val = EditorUtils.valAsStr(constantValue);
         }
         try {
             return Double.parseDouble(val);
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             return null;
         }
     }
@@ -220,7 +220,7 @@ public class BoundedDoubleEditor extends AutoSuggestEditor {
         assert (value instanceof Double);
         slider.setValue((Double) value);
         // Get the corresponding constant if any
-        for (Map.Entry<String, Object> entry : constants.entrySet()) {
+        for (final var entry : constants.entrySet()) {
             if (value.equals(entry.getValue())) {
                 value = entry.getKey();
             }
@@ -228,8 +228,8 @@ public class BoundedDoubleEditor extends AutoSuggestEditor {
         getTextField().setText(EditorUtils.valAsStr(value));
     }
 
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses, Set<FXOMInstance> selectedInstances,
-            Map<String, Object> constants) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses, final Set<FXOMInstance> selectedInstances,
+                      final Map<String, Object> constants) {
         super.reset(propMeta, selectedClasses, new ArrayList<>(constants.keySet()));
         this.constants = constants;
         handleSpecificCases(propMeta, selectedInstances);
@@ -241,11 +241,11 @@ public class BoundedDoubleEditor extends AutoSuggestEditor {
         handleIndeterminate(getTextField());
     }
 
-    private void configureSlider(ValuePropertyMetadata propMeta) {
+    private void configureSlider(final ValuePropertyMetadata propMeta) {
         if (propMeta != null) {
             assert propMeta instanceof DoublePropertyMetadata;
-            DoublePropertyMetadata doublePropMeta = (DoublePropertyMetadata) propMeta;
-            DoublePropertyMetadata.DoubleKind kind = doublePropMeta.getKind();
+            final var doublePropMeta = (DoublePropertyMetadata) propMeta;
+            final var kind = doublePropMeta.getKind();
             if ((kind == DoublePropertyMetadata.DoubleKind.OPACITY)
                     || (kind == DoublePropertyMetadata.DoubleKind.PROGRESS)) {
                 min = 0;
@@ -269,32 +269,32 @@ public class BoundedDoubleEditor extends AutoSuggestEditor {
         EditorUtils.doNextFrame(() -> getTextField().requestFocus());
     }
     
-    private void handleSpecificCases(ValuePropertyMetadata propMeta, Set<FXOMInstance> selectedInstances) {
+    private void handleSpecificCases(final ValuePropertyMetadata propMeta, final Set<FXOMInstance> selectedInstances) {
         // Specific case for ScrollPane hValue/vValue, that have their bounds
         // related to properties (hMin/hMax, vMin/Vmax)
         // Since we only have one case of this, the generic case
         // (bounds=properties) has not been implemented.
         // (to avoid to add complexity for a single case)
-        String[] scrollBarPropsArray = { Editor.hValuePropName, Editor.vValuePropName };
-        String[] scrollBarHprops = { Editor.hMinPropName, Editor.hMaxPropName };
-        String[] scrollBarVprops = { Editor.vMinPropName, Editor.vMaxPropName };
-        List<String> scrollBarProps = Arrays.asList(scrollBarPropsArray);
+        final var scrollBarPropsArray = new String[]{Editor.hValuePropName, Editor.vValuePropName};
+        final var scrollBarHprops = new String[]{Editor.hMinPropName, Editor.hMaxPropName};
+        final var scrollBarVprops = new String[]{Editor.vMinPropName, Editor.vMaxPropName};
+        final var scrollBarProps = Arrays.asList(scrollBarPropsArray);
         if (!scrollBarProps.contains(propMeta.getName().toString())) {
             return;
         }
-        String[] minMaxProps;
+        final String[] minMaxProps;
         if (propMeta.getName().toString().equals(Editor.hValuePropName)) {
             minMaxProps = scrollBarHprops;
         } else {
             minMaxProps = scrollBarVprops;
         }
 
-        for (String minMaxProp : minMaxProps) {
+        for (final var minMaxProp : minMaxProps) {
             // Set min and max
             Object propValue = null;
-            boolean different = false;
-            for (FXOMInstance instance : selectedInstances) {
-                Object valueCurr = Metadata.getMetadata().queryValueProperty(instance, new PropertyName(minMaxProp))
+            var different = false;
+            for (final var instance : selectedInstances) {
+                final var valueCurr = Metadata.getMetadata().queryValueProperty(instance, new PropertyName(minMaxProp))
                         .getValueInSceneGraphObject(instance);
                 if (propValue != null && valueCurr != propValue) {
                     different = true;

@@ -77,8 +77,8 @@ public class InnerShadowPropertyMetadata extends ComplexPropertyMetadata<InnerSh
             = new DoublePropertyMetadata(new PropertyName("width"), //NOI18N
             DoublePropertyMetadata.DoubleKind.OPACITY, true /* readWrite */, 21.0, InspectorPath.UNUSED);
 
-    public InnerShadowPropertyMetadata(PropertyName name, boolean readWrite, 
-            InnerShadow defaultValue, InspectorPath inspectorPath) {
+    public InnerShadowPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                       final InnerShadow defaultValue, final InspectorPath inspectorPath) {
         super(name, InnerShadow.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -87,8 +87,8 @@ public class InnerShadowPropertyMetadata extends ComplexPropertyMetadata<InnerSh
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(InnerShadow value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, value.getClass());
+    public FXOMInstance makeFxomInstanceFromValue(final InnerShadow value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, value.getClass());
         
         blurTypeMetadata.setValue(result, value.getBlurType().toString());
         chokeMetadata.setValue(result, value.getChoke());

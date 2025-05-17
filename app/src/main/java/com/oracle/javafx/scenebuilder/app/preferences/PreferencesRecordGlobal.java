@@ -157,27 +157,27 @@ public class PreferencesRecordGlobal extends PreferencesRecordGlobalBase {
         return toolTheme;
     }
     
-    public void setToolTheme(ToolTheme value) {
+    public void setToolTheme(final ToolTheme value) {
         toolTheme = value;
     }
 
     public EditorPlatform.Theme getSwatch() { return gluonSwatch; }
 
-    public void setSwatch(EditorPlatform.Theme swatch) { this.gluonSwatch = swatch; }
+    public void setSwatch(final EditorPlatform.Theme swatch) { this.gluonSwatch = swatch; }
 
     public EditorPlatform.Theme getGluonTheme() { return gluonTheme; }
 
-    public void setGluonTheme(EditorPlatform.Theme theme) { this.gluonTheme = theme; }
+    public void setGluonTheme(final EditorPlatform.Theme theme) { this.gluonTheme = theme; }
     
     public DISPLAY_MODE getLibraryDisplayOption() {
         return libraryDisplayOption;
     }
 
-    public void setLibraryDisplayOption(DISPLAY_MODE value) {
+    public void setLibraryDisplayOption(final DISPLAY_MODE value) {
         libraryDisplayOption = value;
     }
 
-    public void updateLibraryDisplayOption(DISPLAY_MODE value) {
+    public void updateLibraryDisplayOption(final DISPLAY_MODE value) {
         libraryDisplayOption = value;
         writeToJavaPreferences(PreferencesControllerBase.LIBRARY_DISPLAY_OPTION);
     }
@@ -186,11 +186,11 @@ public class PreferencesRecordGlobal extends PreferencesRecordGlobalBase {
         return hierarchyDisplayOption;
     }
 
-    public void setHierarchyDisplayOption(DisplayOption value) {
+    public void setHierarchyDisplayOption(final DisplayOption value) {
         hierarchyDisplayOption = value;
     }
 
-    public void updateHierarchyDisplayOption(DisplayOption value) {
+    public void updateHierarchyDisplayOption(final DisplayOption value) {
         hierarchyDisplayOption = value;
         writeToJavaPreferences(PreferencesControllerBase.HIERARCHY_DISPLAY_OPTION);
     }
@@ -211,7 +211,7 @@ public class PreferencesRecordGlobal extends PreferencesRecordGlobalBase {
         }
     }
 
-    public void setCSSAnalyzerColumnsOrder(CSSAnalyzerColumnsOrder value) {
+    public void setCSSAnalyzerColumnsOrder(final CSSAnalyzerColumnsOrder value) {
         switch (value) {
             case DEFAULTS_FIRST:
                 setCssTableColumnsOrderingReversed(false);
@@ -228,7 +228,7 @@ public class PreferencesRecordGlobal extends PreferencesRecordGlobalBase {
         return cssTableColumnsOrderingReversed;
     }
 
-    public void setCssTableColumnsOrderingReversed(boolean value) {
+    public void setCssTableColumnsOrderingReversed(final boolean value) {
         cssTableColumnsOrderingReversed = value;
     }
 
@@ -236,11 +236,11 @@ public class PreferencesRecordGlobal extends PreferencesRecordGlobalBase {
         return recentItemsSize;
     }
 
-    public void setRecentItemsSize(int value) {
+    public void setRecentItemsSize(final int value) {
         recentItemsSize = value;
         // Remove last items depending on the size
         while (recentItems.size() > recentItemsSize) {
-            recentItems.remove(recentItems.size() - 1);
+            recentItems.removeLast();
         }
     }
 
@@ -248,57 +248,57 @@ public class PreferencesRecordGlobal extends PreferencesRecordGlobalBase {
         return recentItems;
     }
 
-    public boolean containsRecentItem(File file) {
-        final String path = file.getPath();
+    public boolean containsRecentItem(final File file) {
+        final var path = file.getPath();
         return recentItems.contains(path);
     }
 
-    public boolean containsRecentItem(URL url) {
+    public boolean containsRecentItem(final URL url) {
         final File fxmlFile;
         try {
             fxmlFile = new File(url.toURI());
             return containsRecentItem(fxmlFile);
-        } catch (URISyntaxException ex) {
+        } catch (final URISyntaxException ex) {
             Logger.getLogger(PreferencesRecordGlobal.class.getName()).log(Level.SEVERE, null, ex);
             return false;
         }
     }
 
-    public void addRecentItem(File file) {
+    public void addRecentItem(final File file) {
         final List<File> files = new ArrayList<>();
         files.add(file);
         addRecentItems(files);
     }
 
-    public void addRecentItem(URL url) {
+    public void addRecentItem(final URL url) {
         final File fxmlFile;
         try {
             fxmlFile = new File(url.toURI());
             addRecentItem(fxmlFile);
-        } catch (URISyntaxException ex) {
+        } catch (final URISyntaxException ex) {
             Logger.getLogger(PreferencesRecordGlobal.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public void addRecentItems(List<File> files) {
-        for (File file : files) {
-            final String path = file.getPath();
+    public void addRecentItems(final List<File> files) {
+        for (final var file : files) {
+            final var path = file.getPath();
             if (recentItems.contains(path)) {
                 recentItems.remove(path);
             }
             // Add the specified file to the recent items at first position
-            recentItems.add(0, path);
+            recentItems.addFirst(path);
         }
         // Remove last items depending on the size
         while (recentItems.size() > recentItemsSize) {
-            recentItems.remove(recentItems.size() - 1);
+            recentItems.removeLast();
         }
         writeToJavaPreferences(RECENT_ITEMS);
     }
 
-    public void removeRecentItems(List<String> filePaths) {
+    public void removeRecentItems(final List<String> filePaths) {
         // Remove the specified files from the recent items
-        for (String filePath : filePaths) {
+        for (final var filePath : filePaths) {
             recentItems.remove(filePath);
         }
         writeToJavaPreferences(RECENT_ITEMS);
@@ -309,7 +309,7 @@ public class PreferencesRecordGlobal extends PreferencesRecordGlobalBase {
         writeToJavaPreferences(RECENT_ITEMS);
     }
 
-    public void updateRegistrationFields(String hash, String email, Boolean optIn) {
+    public void updateRegistrationFields(final String hash, final String email, final Boolean optIn) {
         registrationHash = hash;
         writeToJavaPreferences(REGISTRATION_HASH);
 
@@ -328,7 +328,7 @@ public class PreferencesRecordGlobal extends PreferencesRecordGlobalBase {
         return registrationHash;
     }
 
-    public void setRegistrationHash(String registrationHash) {
+    public void setRegistrationHash(final String registrationHash) {
         this.registrationHash = registrationHash;
     }
 
@@ -336,7 +336,7 @@ public class PreferencesRecordGlobal extends PreferencesRecordGlobalBase {
         return registrationEmail;
     }
 
-    public void setRegistrationEmail(String registrationEmail) {
+    public void setRegistrationEmail(final String registrationEmail) {
         this.registrationEmail = registrationEmail;
     }
 
@@ -344,11 +344,11 @@ public class PreferencesRecordGlobal extends PreferencesRecordGlobalBase {
         return registrationOptIn;
     }
 
-    public void setRegistrationOptIn(boolean registrationOptIn) {
+    public void setRegistrationOptIn(final boolean registrationOptIn) {
         this.registrationOptIn = registrationOptIn;
     }
 
-    public void setShowUpdateDialogAfter(LocalDate showUpdateDialogDate) {
+    public void setShowUpdateDialogAfter(final LocalDate showUpdateDialogDate) {
         this.showUpdateDialogDate = showUpdateDialogDate;
         writeToJavaPreferences(UPDATE_DIALOG_DATE);
     }
@@ -357,7 +357,7 @@ public class PreferencesRecordGlobal extends PreferencesRecordGlobalBase {
         return showUpdateDialogDate;
     }
 
-    public void setIgnoreVersion(String ignoreVersion) {
+    public void setIgnoreVersion(final String ignoreVersion) {
         this.ignoreVersion = ignoreVersion;
         writeToJavaPreferences(IGNORE_VERSION);
     }
@@ -366,7 +366,7 @@ public class PreferencesRecordGlobal extends PreferencesRecordGlobalBase {
         return ignoreVersion;
     }
 
-    public void setImportedGluonJars(String[] importedJars) {
+    public void setImportedGluonJars(final String[] importedJars) {
         this.importedGluonJars = importedJars;
         writeToJavaPreferences(IMPORTED_GLUON_JARS);
     }
@@ -379,7 +379,7 @@ public class PreferencesRecordGlobal extends PreferencesRecordGlobalBase {
         return lastSentTrackingInfoDate;
     }
 
-    public void setLastSentTrackingInfoDate(LocalDate date) {
+    public void setLastSentTrackingInfoDate(final LocalDate date) {
         lastSentTrackingInfoDate = date;
         writeToJavaPreferences(LAST_SENT_TRACKING_INFO_DATE);
     }
@@ -388,7 +388,7 @@ public class PreferencesRecordGlobal extends PreferencesRecordGlobalBase {
         return accordionAnimation;
     }
 
-    public void setAccordionAnimation(boolean accordionAnimation) {
+    public void setAccordionAnimation(final boolean accordionAnimation) {
         this.accordionAnimation = accordionAnimation;
     }
 
@@ -396,7 +396,7 @@ public class PreferencesRecordGlobal extends PreferencesRecordGlobalBase {
         return wildcardImports;
     }
 
-    public void setWildcardImports(boolean wildcardImports) {
+    public void setWildcardImports(final boolean wildcardImports) {
         this.wildcardImports = wildcardImports;
     }
 
@@ -404,7 +404,7 @@ public class PreferencesRecordGlobal extends PreferencesRecordGlobalBase {
         return alternatePasteBehavior;
     }
     
-    public void setAlternateTextInputControlPaste(boolean alternatePasteBehavior) {
+    public void setAlternateTextInputControlPaste(final boolean alternatePasteBehavior) {
         this.alternatePasteBehavior = alternatePasteBehavior;
     }
 
@@ -424,55 +424,55 @@ public class PreferencesRecordGlobal extends PreferencesRecordGlobalBase {
         }
 
         // Gluon themes
-        String swatchName = applicationRootPreferences.get(PreferencesController.GLUON_SWATCH, DEFAULT_GLUON_SWATCH.name());
+        final var swatchName = applicationRootPreferences.get(PreferencesController.GLUON_SWATCH, DEFAULT_GLUON_SWATCH.name());
         gluonSwatch = GluonEditorPlatform.swatchValueOf(swatchName);
-        String gluonThemeName = applicationRootPreferences.get(PreferencesController.GLUON_THEME, DEFAULT_GLUON_THEME.name());
+        final var gluonThemeName = applicationRootPreferences.get(PreferencesController.GLUON_THEME, DEFAULT_GLUON_THEME.name());
         gluonTheme = EditorPlatform.Theme.valueOf(gluonThemeName);
 
         // Tool Theme
-        final String tool_theme = applicationRootPreferences.get(TOOL_THEME,
+        final var tool_theme = applicationRootPreferences.get(TOOL_THEME,
                 DEFAULT_TOOL_THEME.name());
         setToolTheme(ToolTheme.valueOf(tool_theme));
 
         // Library display option
-        final String library_DisplayOption = applicationRootPreferences.get(PreferencesControllerBase.LIBRARY_DISPLAY_OPTION,
+        final var library_DisplayOption = applicationRootPreferences.get(PreferencesControllerBase.LIBRARY_DISPLAY_OPTION,
                 DEFAULT_LIBRARY_DISPLAY_OPTION.name());
         setLibraryDisplayOption(DISPLAY_MODE.valueOf(library_DisplayOption));
 
         // Hierarchy display option
-        final String hierarchy_DisplayOption = applicationRootPreferences.get(PreferencesControllerBase.HIERARCHY_DISPLAY_OPTION,
+        final var hierarchy_DisplayOption = applicationRootPreferences.get(PreferencesControllerBase.HIERARCHY_DISPLAY_OPTION,
                 DEFAULT_HIERARCHY_DISPLAY_OPTION.name());
         setHierarchyDisplayOption(DisplayOption.valueOf(hierarchy_DisplayOption));
 
         // CSS analyzer column order
-        final boolean reversed = applicationRootPreferences.getBoolean(
+        final var reversed = applicationRootPreferences.getBoolean(
                 CSS_TABLE_COLUMNS_ORDERING_REVERSED, DEFAULT_CSS_TABLE_COLUMNS_ORDERING_REVERSED);
         setCssTableColumnsOrderingReversed(reversed);
 
         // Recent items size
-        final int size = applicationRootPreferences.getInt(
+        final var size = applicationRootPreferences.getInt(
                 RECENT_ITEMS_SIZE, DEFAULT_RECENT_ITEMS_SIZE);
         setRecentItemsSize(size);
 
         // Recent items list
-        final String items = applicationRootPreferences.get(RECENT_ITEMS, null);
+        final var items = applicationRootPreferences.get(RECENT_ITEMS, null);
         assert recentItems.isEmpty();
         if (items != null && !items.isEmpty()) {
-            final String[] itemsArray = items.split(File.pathSeparator); //NOI18N
+            final var itemsArray = items.split(File.pathSeparator); //NOI18N
             assert itemsArray.length <= recentItemsSize;
             recentItems.addAll(Arrays.asList(itemsArray));
         }
 
         // Registration information
-        final String registrationHash = applicationRootPreferences.get(REGISTRATION_HASH, null);
+        final var registrationHash = applicationRootPreferences.get(REGISTRATION_HASH, null);
         setRegistrationHash(registrationHash);
-        final String registrationEmail = applicationRootPreferences.get(REGISTRATION_EMAIL, null);
+        final var registrationEmail = applicationRootPreferences.get(REGISTRATION_EMAIL, null);
         setRegistrationEmail(registrationEmail);
-        final boolean registrationOptIn = applicationRootPreferences.getBoolean(REGISTRATION_OPT_IN, false);
+        final var registrationOptIn = applicationRootPreferences.getBoolean(REGISTRATION_OPT_IN, false);
         setRegistrationOptIn(registrationOptIn);
 
         // Update dialog
-        String updateDialogDate = applicationRootPreferences.get(UPDATE_DIALOG_DATE, null);
+        final var updateDialogDate = applicationRootPreferences.get(UPDATE_DIALOG_DATE, null);
         if (updateDialogDate == null) {
             showUpdateDialogDate = null;
         } else {
@@ -480,7 +480,7 @@ public class PreferencesRecordGlobal extends PreferencesRecordGlobalBase {
         }
         ignoreVersion = applicationRootPreferences.get(IGNORE_VERSION, null);
 
-        String dateString = applicationRootPreferences.get(LAST_SENT_TRACKING_INFO_DATE, null);
+        final var dateString = applicationRootPreferences.get(LAST_SENT_TRACKING_INFO_DATE, null);
         if (dateString == null) {
             lastSentTrackingInfoDate = null;
         } else {
@@ -488,7 +488,7 @@ public class PreferencesRecordGlobal extends PreferencesRecordGlobalBase {
         }
 
         // Import Gluon Controls Alert
-        final String importedGluonJarsString = applicationRootPreferences.get(IMPORTED_GLUON_JARS, null);
+        final var importedGluonJarsString = applicationRootPreferences.get(IMPORTED_GLUON_JARS, null);
         if (importedGluonJarsString == null) {
             this.importedGluonJars = new String[0];
         } else {
@@ -505,7 +505,7 @@ public class PreferencesRecordGlobal extends PreferencesRecordGlobalBase {
         setAlternateTextInputControlPaste(applicationRootPreferences.getBoolean(ALTERNATE_TEXT_INPUT_PASTE, DEFAULT_ALTERNATE_TEXT_INPUT_PASTE));
     }
 
-    public void writeToJavaPreferences(String key) {
+    public void writeToJavaPreferences(final String key) {
 
         assert applicationRootPreferences != null;
         assert key != null;
@@ -532,8 +532,8 @@ public class PreferencesRecordGlobal extends PreferencesRecordGlobalBase {
                 applicationRootPreferences.putInt(RECENT_ITEMS_SIZE, getRecentItemsSize());
                 break;
             case RECENT_ITEMS:
-                final StringBuilder sb = new StringBuilder();
-                for (String recentItem : getRecentItems()) {
+                final var sb = new StringBuilder();
+                for (final var recentItem : getRecentItems()) {
                     sb.append(recentItem);
                     sb.append(File.pathSeparator);
                 }
@@ -561,8 +561,8 @@ public class PreferencesRecordGlobal extends PreferencesRecordGlobalBase {
                 if (importedGluonJars.length == 0) {
                     applicationRootPreferences.put(IMPORTED_GLUON_JARS, "");
                 } else {
-                    StringBuilder stringBuilder = new StringBuilder();
-                    for (String s : importedGluonJars) {
+                    final var stringBuilder = new StringBuilder();
+                    for (final var s : importedGluonJars) {
                         stringBuilder.append(s);
                         stringBuilder.append(",");
                     }

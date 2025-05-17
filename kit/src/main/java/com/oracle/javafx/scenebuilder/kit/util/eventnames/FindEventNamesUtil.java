@@ -29,7 +29,7 @@ public class FindEventNamesUtil {
      * @param eventType event type name
      * @return event name
      */
-    public static String findEventName(String eventType) {
+    public static String findEventName(final String eventType) {
         return Optional.ofNullable(events.get(eventType)).orElse(EventNames.ACTION_EVENT);
     }
 

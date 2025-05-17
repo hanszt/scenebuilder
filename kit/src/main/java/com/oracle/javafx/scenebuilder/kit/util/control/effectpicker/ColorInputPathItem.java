@@ -38,7 +38,7 @@ import javafx.scene.effect.Effect;
  */
 public class ColorInputPathItem extends EffectPathItem {
 
-    public ColorInputPathItem(EffectPickerController epc, Effect effect, EffectPathItem hostPathItem) {
+    public ColorInputPathItem(final EffectPickerController epc, final Effect effect, final EffectPathItem hostPathItem) {
         super(epc, effect, hostPathItem);
         assert effect instanceof javafx.scene.effect.ColorInput;
         initialize();
@@ -50,7 +50,7 @@ public class ColorInputPathItem extends EffectPathItem {
     }
 
     @Override
-    void setSelectedInputEffect(Effect input) {
+    void setSelectedInputEffect(final Effect input) {
         // No input
     }
 

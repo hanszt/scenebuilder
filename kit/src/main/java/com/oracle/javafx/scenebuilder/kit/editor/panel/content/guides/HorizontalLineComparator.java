@@ -41,7 +41,7 @@ import java.util.Comparator;
 class HorizontalLineComparator implements Comparator<HorizontalSegment> {
 
     @Override
-    public int compare(HorizontalSegment o1, HorizontalSegment o2) {
+    public int compare(final HorizontalSegment o1, final HorizontalSegment o2) {
         assert o1 != null;
         assert o2 != null;
         assert MathUtils.equals(o1.getY1(), o1.getY2());

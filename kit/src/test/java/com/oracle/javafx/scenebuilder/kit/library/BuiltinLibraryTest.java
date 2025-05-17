@@ -40,12 +40,12 @@ public class BuiltinLibraryTest {
 
     @Test
     public void builtin_lib_has_default_items() {
-        var lib = BuiltinLibrary.getLibrary();
+        final var lib = BuiltinLibrary.getLibrary();
 
         assertNull(lib.getClassLoader());
         assertFalse(lib.getItems().isEmpty());
 
-        for (var item : lib.getItems()) {
+        for (final var item : lib.getItems()) {
             assertThat(item.getLibrary()).isEqualTo(lib);
             assertFalse(item.getName().isEmpty());
             assertFalse(item.getSection().isEmpty());

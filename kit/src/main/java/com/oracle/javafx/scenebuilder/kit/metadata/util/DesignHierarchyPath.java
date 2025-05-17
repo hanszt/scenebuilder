@@ -46,19 +46,19 @@ public class DesignHierarchyPath {
     public DesignHierarchyPath() {
     }
     
-    public DesignHierarchyPath(FXOMObject fxomObject) {
+    public DesignHierarchyPath(final FXOMObject fxomObject) {
         assert fxomObject != null;
-        FXOMObject o = fxomObject;
+        var o = fxomObject;
         do {
-            pathItems.add(0, o);
+            pathItems.addFirst(o);
             o = o.getParentObject();
         } while (o != null);
     }
     
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj instanceof DesignHierarchyPath) {
-            final DesignHierarchyPath path = (DesignHierarchyPath) obj;
+            final var path = (DesignHierarchyPath) obj;
             return this.pathItems.equals(path.pathItems);
         } else {
             return false;
@@ -67,7 +67,7 @@ public class DesignHierarchyPath {
 
     @Override
     public int hashCode() {
-        int hash = 7;
+        var hash = 7;
         hash = 29 * hash + Objects.hashCode(this.pathItems);
         return hash;
     }
@@ -86,7 +86,7 @@ public class DesignHierarchyPath {
         if (pathItems.isEmpty()) {
             result = null;
         } else {
-            result = pathItems.get(0);
+            result = pathItems.getFirst();
         }
         
         return result;
@@ -98,18 +98,19 @@ public class DesignHierarchyPath {
         if (pathItems.isEmpty()) {
             result = null;
         } else {
-            result = pathItems.get(pathItems.size()-1);
+            result = pathItems.getLast();
         }
         
         return result;
     }
     
-    public DesignHierarchyPath getCommonPathWith(DesignHierarchyPath another) {
-        final DesignHierarchyPath result = new DesignHierarchyPath();
+    public DesignHierarchyPath getCommonPathWith(final DesignHierarchyPath another) {
+        final var result = new DesignHierarchyPath();
         
         assert another != null;
         
-        int i = 0, count = Math.min(this.getSize(), another.getSize());
+        int i = 0;
+        final int count = Math.min(this.getSize(), another.getSize());
         while ((i < count) && this.pathItems.get(i) == another.pathItems.get(i)) {
             result.pathItems.add(this.pathItems.get(i));
             i++;

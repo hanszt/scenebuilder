@@ -51,7 +51,7 @@ public class StringPopupEditor extends PopupEditor {
 
     private Parent root;
 
-    public StringPopupEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public StringPopupEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super(propMeta, selectedClasses);
     }
 
@@ -68,7 +68,7 @@ public class StringPopupEditor extends PopupEditor {
     }
 
     @Override
-    public void setPopupContentValue(Object value) {
+    public void setPopupContentValue(final Object value) {
         if (value == null) {
             textField.setText(null);
         } else {
@@ -78,11 +78,11 @@ public class StringPopupEditor extends PopupEditor {
     }
 
     @Override
-    public String getPreviewString(Object value) {
+    public String getPreviewString(final Object value) {
         if (value == null) {
             return ""; //NOI18N
         }
-        String valueAsString;
+        final String valueAsString;
         if (isIndeterminate()) {
             valueAsString = "-"; //NOI18N
         } else {

@@ -34,7 +34,6 @@ package com.oracle.javafx.scenebuilder.kit.editor.job;
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.GridSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
@@ -48,7 +47,7 @@ import java.util.Set;
  */
 public class UseComputedSizesSelectionJob extends BatchDocumentJob {
 
-    public UseComputedSizesSelectionJob(EditorController editorController) {
+    public UseComputedSizesSelectionJob(final EditorController editorController) {
         super(editorController);
     }
 
@@ -58,19 +57,19 @@ public class UseComputedSizesSelectionJob extends BatchDocumentJob {
         final List<Job> result = new ArrayList<>();
 
         final Set<FXOMInstance> candidates = new HashSet<>();
-        final Selection selection = getEditorController().getSelection();
+        final var selection = getEditorController().getSelection();
         if (selection.getGroup() instanceof ObjectSelectionGroup) {
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) selection.getGroup();
-            for (FXOMObject fxomObject : osg.getItems()) {
+            final var osg = (ObjectSelectionGroup) selection.getGroup();
+            for (final var fxomObject : osg.getItems()) {
                 if (fxomObject instanceof FXOMInstance) {
                     candidates.add((FXOMInstance) fxomObject);
                 }
             }
         } else if (selection.getGroup() instanceof GridSelectionGroup) {
-            final GridSelectionGroup gsg = (GridSelectionGroup) selection.getGroup();
-            final FXOMObject gridPane = gsg.getParentObject();
-            final DesignHierarchyMask mask = new DesignHierarchyMask(gridPane);
-            for (int index : gsg.getIndexes()) {
+            final var gsg = (GridSelectionGroup) selection.getGroup();
+            final var gridPane = gsg.getParentObject();
+            final var mask = new DesignHierarchyMask(gridPane);
+            for (final int index : gsg.getIndexes()) {
                 final FXOMObject constraints;
                 switch (gsg.getType()) {
                     case COLUMN:
@@ -91,8 +90,8 @@ public class UseComputedSizesSelectionJob extends BatchDocumentJob {
                     "Add implementation for " + selection.getGroup();
         }
 
-        for (FXOMInstance candidate : candidates) {
-            final UseComputedSizesObjectJob subJob
+        for (final var candidate : candidates) {
+            final var subJob
                     = new UseComputedSizesObjectJob(candidate, getEditorController());
             if (subJob.isExecutable()) {
                 result.add(subJob);
@@ -110,7 +109,7 @@ public class UseComputedSizesSelectionJob extends BatchDocumentJob {
                 result = "Unexecutable Use Computed Sizes"; // NO18N
                 break;
             case 1:
-                result = getSubJobs().get(0).getDescription();
+                result = getSubJobs().getFirst().getDescription();
                 break;
             default:
                 result = makeMultipleSelectionDescription();
@@ -120,7 +119,7 @@ public class UseComputedSizesSelectionJob extends BatchDocumentJob {
     }
 
     private String makeMultipleSelectionDescription() {
-        final StringBuilder result = new StringBuilder();
+        final var result = new StringBuilder();
         result.append("Use Computed Sizes on ");
         result.append(getSubJobs().size());
         result.append(" Objects");

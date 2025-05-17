@@ -37,8 +37,6 @@ import com.oracle.javafx.scenebuilder.kit.util.control.effectpicker.EffectPicker
 import com.oracle.javafx.scenebuilder.kit.util.control.effectpicker.Utils;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -70,13 +68,13 @@ public class SliderControl extends GridPane {
     private final int roundingFactor = 100; // 2 decimals rounding
 
     public SliderControl(
-            EffectPickerController effectPickerController,
-            String labelString,
-            double min,
-            double max,
-            double initVal,
-            double incDec,
-            boolean integerMode) {
+            final EffectPickerController effectPickerController,
+            final String labelString,
+            final double min,
+            final double max,
+            final double initVal,
+            final double incDec,
+            final boolean integerMode) {
         this.effectPickerController = effectPickerController;
         initialize(labelString, min, max, initVal, incDec, integerMode);
     }
@@ -98,20 +96,20 @@ public class SliderControl extends GridPane {
     }
 
     @FXML
-    void textfieldTyped(KeyEvent e) {
+    void textfieldTyped(final KeyEvent e) {
         if (e.getCode() == KeyCode.UP) {
             incOrDecValue(incDecValue);
         } else if (e.getCode() == KeyCode.DOWN) {
             incOrDecValue(-incDecValue);
         } else if (e.getCode() == KeyCode.ENTER) {
-            double inputValue = Double.parseDouble(editor_textfield.getText());
+            final var inputValue = Double.parseDouble(editor_textfield.getText());
             setValue(inputValue);
             editor_slider.setValue(getValue());
             editor_textfield.selectAll();
         }
     }
 
-    private void incOrDecValue(double delta) {
+    private void incOrDecValue(final double delta) {
         setValue(getValue() + delta);
 //        Platform.runLater(new Runnable() {
 //            @Override
@@ -122,14 +120,14 @@ public class SliderControl extends GridPane {
 //        });
     }
 
-    private void setValue(Number n) {
+    private void setValue(final Number n) {
         if (intMode) {
-            long rounded = Math.round(n.doubleValue());
+            final var rounded = Math.round(n.doubleValue());
             value.set(rounded);
             editor_textfield.setText(Long.toString(rounded));
         } else {
-            double val = Utils.clamp(editor_slider.getMin(), n.doubleValue(), editor_slider.getMax());
-            double rounded = EditorUtils.round(val, roundingFactor);
+            final var val = Utils.clamp(editor_slider.getMin(), n.doubleValue(), editor_slider.getMax());
+            final var rounded = EditorUtils.round(val, roundingFactor);
             value.set(rounded);
             editor_textfield.setText(Double.toString(rounded));
         }
@@ -137,22 +135,22 @@ public class SliderControl extends GridPane {
     }
 
     private void initialize(
-            String labelString,
-            double min,
-            double max,
-            double initVal,
-            double incDec,
-            boolean integerMode) {
+            final String labelString,
+            final double min,
+            final double max,
+            final double initVal,
+            final double incDec,
+            final boolean integerMode) {
 
-        final URL layoutURL = SliderControl.class.getResource("SliderControl.fxml"); //NOI18N
-        try (InputStream is = layoutURL.openStream()) {
-            FXMLLoader loader = new FXMLLoader();
+        final var layoutURL = SliderControl.class.getResource("SliderControl.fxml"); //NOI18N
+        try (final var is = layoutURL.openStream()) {
+            final var loader = new FXMLLoader();
             loader.setController(this);
             loader.setRoot(this);
             loader.setLocation(layoutURL);
-            Parent p = (Parent) loader.load(is);
+            final var p = (Parent) loader.load(is);
             assert p == this;
-        } catch (IOException x) {
+        } catch (final IOException x) {
             throw new RuntimeException(x);
         }
 
@@ -174,7 +172,7 @@ public class SliderControl extends GridPane {
         editor_textfield.focusedProperty().addListener((ChangeListener<Boolean>) (ov, oldValue, newValue) -> {
             // Commit the value on focus lost
             if (newValue == false) {
-                double inputValue = Double.parseDouble(editor_textfield.getText());
+                final var inputValue = Double.parseDouble(editor_textfield.getText());
                 // First update the model
                 setValue(inputValue);
                 // Then notify the controller a change occured
@@ -182,7 +180,7 @@ public class SliderControl extends GridPane {
             }
         });
         
-        editor_textfield.setOnAction((ActionEvent e) -> {
+        editor_textfield.setOnAction((final ActionEvent e) -> {
             e.consume();
         });
     }

@@ -52,7 +52,7 @@ public class PreferencesRecordRepository {
     
     private final Repository repository;
     
-    public PreferencesRecordRepository(Preferences artifactsRootPreferences, Repository repository) {
+    public PreferencesRecordRepository(final Preferences artifactsRootPreferences, final Repository repository) {
         this.repositoriesRootPreferences = artifactsRootPreferences;
         this.repository = repository;
     }
@@ -69,13 +69,13 @@ public class PreferencesRecordRepository {
         
         // Check if there are some preferences for this artifact
         try {
-            final String[] childrenNames = repositoriesRootPreferences.childrenNames();
-            for (String child : childrenNames) {
+            final var childrenNames = repositoriesRootPreferences.childrenNames();
+            for (final var child : childrenNames) {
                 if (child.equals(repository.getId())) {
                     repositoryPreferences = repositoriesRootPreferences.node(child);
                 }
             }
-        } catch (BackingStoreException ex) {
+        } catch (final BackingStoreException ex) {
             Logger.getLogger(PreferencesRecordRepository.class.getName()).log(Level.SEVERE, null, ex);
         }
             
@@ -99,10 +99,10 @@ public class PreferencesRecordRepository {
         
         if (repositoryPreferences == null) {
             try {
-                assert repositoriesRootPreferences.nodeExists(repository.getId()) == false;
+                assert !repositoriesRootPreferences.nodeExists(repository.getId());
                 // Create a new document preference node under the document root node
                 repositoryPreferences = repositoriesRootPreferences.node(repository.getId());
-            } catch(BackingStoreException ex) {
+            } catch(final BackingStoreException ex) {
                 Logger.getLogger(PreferencesRecordRepository.class.getName()).log(Level.SEVERE, null, ex);
                 return;
             }

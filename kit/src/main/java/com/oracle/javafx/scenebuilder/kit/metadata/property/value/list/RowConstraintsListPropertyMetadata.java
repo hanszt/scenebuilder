@@ -49,8 +49,8 @@ public class RowConstraintsListPropertyMetadata extends ListValuePropertyMetadat
             = new RowConstraintsPropertyMetadata(new PropertyName("unused"), //NOI18N
             true /* readWrite */, null, InspectorPath.UNUSED);
     
-    public RowConstraintsListPropertyMetadata(PropertyName name, boolean readWrite, 
-            List<RowConstraints> defaultValue, InspectorPath inspectorPath) {
+    public RowConstraintsListPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                              final List<RowConstraints> defaultValue, final InspectorPath inspectorPath) {
         super(name, RowConstraints.class, itemMetadata, readWrite, defaultValue, inspectorPath);
     }
 
@@ -59,24 +59,24 @@ public class RowConstraintsListPropertyMetadata extends ListValuePropertyMetadat
                 Collections.emptyList(), InspectorPath.UNUSED);
     }
     
-    public void pack(FXOMInstance fxomInstance) {
-        final RowConstraints def = new RowConstraints();
+    public void pack(final FXOMInstance fxomInstance) {
+        final var def = new RowConstraints();
         final List<RowConstraints> v = new ArrayList<>(getValue(fxomInstance));
-        if (v.isEmpty() == false) {
-            RowConstraints last = v.get(v.size()-1);
+        if (!v.isEmpty()) {
+            var last = v.getLast();
             while ((last != null) && RowConstraintsPropertyMetadata.equals(last, def)) {
-                v.remove(v.size()-1);
+                v.removeLast();
                 if (v.isEmpty()) {
                     last = null;
                 } else {
-                    last = v.get(v.size()-1);
+                    last = v.getLast();
                 }
             }
             setValue(fxomInstance, v);
         }
     }
     
-    public void unpack(FXOMInstance fxomInstance, int rowCount) {
+    public void unpack(final FXOMInstance fxomInstance, final int rowCount) {
         final List<RowConstraints> value = new ArrayList<>(getValue(fxomInstance));
         if (value.size() < rowCount) {
             final List<RowConstraints> newValue = new ArrayList<>();
@@ -88,7 +88,7 @@ public class RowConstraintsListPropertyMetadata extends ListValuePropertyMetadat
         }
     }
     
-    public static boolean equals(List<RowConstraints> l1, List<RowConstraints> l2) {
+    public static boolean equals(final List<RowConstraints> l1, final List<RowConstraints> l2) {
         
         assert l1 != null;
         assert l2 != null;
@@ -99,8 +99,8 @@ public class RowConstraintsListPropertyMetadata extends ListValuePropertyMetadat
         } else {
             result = true;
             for (int i = 0, count = l1.size(); (i < count) && result; i++) {
-                final RowConstraints c1 = l1.get(i);
-                final RowConstraints c2 = l2.get(i);
+                final var c1 = l1.get(i);
+                final var c2 = l2.get(i);
                 result = RowConstraintsPropertyMetadata.equals(c1, c2);
             }
         }

@@ -45,8 +45,8 @@ public class DoubleField extends NumberField {
     }
 
     @Override
-    public void replaceText(int start, int end, String text) {
-        String newText = getNewText(start, end, text);
+    public void replaceText(final int start, final int end, String text) {
+        var newText = getNewText(start, end, text);
         if (!text.isEmpty() && // Always allow text deletion
                 !partOfConstants(newText)
                 && (!newText.equals("-") && !newText.equals(".") && !newText.equals("-."))) {
@@ -59,7 +59,7 @@ public class DoubleField extends NumberField {
                 // Replace ',' by '.'
                 newText = newText.replace(',', '.');
                 Double.parseDouble(newText);
-            } catch (NumberFormatException e) {
+            } catch (final NumberFormatException e) {
                 return;
             }
         }
@@ -70,10 +70,10 @@ public class DoubleField extends NumberField {
 
     @Override
     public void paste() {
-        String strToPaste = Clipboard.getSystemClipboard().getString();
+        final var strToPaste = Clipboard.getSystemClipboard().getString();
         try {
             Double.parseDouble(strToPaste);
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             return;
         }
         super.paste();

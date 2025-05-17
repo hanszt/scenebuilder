@@ -48,10 +48,10 @@ import javafx.scene.control.Label;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.DataFormat;
 import javafx.stage.Stage;
-import javafx.stage.Window;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import javafx.scene.Node;
+
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.WindowEvent;
@@ -67,11 +67,11 @@ public class JarAnalysisReportController extends AbstractFxmlWindowController {
     Label timestampLabel;
 
     @FXML
-    void onCopyAction(ActionEvent event) {
+    void onCopyAction(final ActionEvent event) {
         final Map<DataFormat, Object> content = new HashMap<>();
-        StringBuilder sb = new StringBuilder();
+        final var sb = new StringBuilder();
 
-        for (Node item : textFlow.getChildrenUnmodifiable()) {
+        for (final var item : textFlow.getChildrenUnmodifiable()) {
             if (item instanceof Text) {
                 sb.append(((Text)item).getText());
             }
@@ -87,13 +87,13 @@ public class JarAnalysisReportController extends AbstractFxmlWindowController {
     private int prefixCounter = 0;
     private boolean dirty = false;
 
-    public JarAnalysisReportController(EditorController editorController, Stage owner) {
+    public JarAnalysisReportController(final EditorController editorController, final Stage owner) {
         super(JarAnalysisReportController.class.getResource("JarAnalysisReport.fxml"), I18N.getBundle(), owner); //NOI18N
         this.editorController = editorController;
     }
 
     @Override
-    public void onCloseRequest(WindowEvent event) {
+    public void onCloseRequest(final WindowEvent event) {
         getStage().close();
     }
     
@@ -116,8 +116,8 @@ public class JarAnalysisReportController extends AbstractFxmlWindowController {
     protected void controllerDidLoadFxml() {
         assert textFlow != null;
         assert timestampLabel != null;
-                
-        UserLibrary lib = (UserLibrary)editorController.getLibrary();
+
+        final var lib = (UserLibrary)editorController.getLibrary();
         lib.getJarReports().addListener((ListChangeListener<JarReport>) change -> update());
         
         update();
@@ -129,35 +129,35 @@ public class JarAnalysisReportController extends AbstractFxmlWindowController {
             textFlow.getChildren().clear();
             
             updateTimeStampLabel();
+
+            final var lib = (UserLibrary)editorController.getLibrary();
             
-            UserLibrary lib = (UserLibrary)editorController.getLibrary();
-            
-            for (JarReport report : lib.getJarReports()) {
-                for (JarReportEntry entry : report.getEntries()) {
+            for (final var report : lib.getJarReports()) {
+                for (final var entry : report.getEntries()) {
                     if (entry.getStatus() != JarReportEntry.Status.OK) {
                         if (entry.getKlass() != null && entry.getException() != null) {
                             // We use a Text instance for header and another one
                             // for full stack in order to style them separately
-                            StringBuilder sb = new StringBuilder();
+                            final var sb = new StringBuilder();
                             sb.append(getSectionPrefix()).append(I18N.getString("jar.analysis.exception"));
                             sb.append(" ").append(entry.getName()); //NOI18N
-                            Text text = new Text();
+                            final var text = new Text();
                             text.setText(sb.toString());
                             text.getStyleClass().add("header"); //NOI18N
                             textFlow.getChildren().add(text);
-                            
-                            StringBuilder sb2 = new StringBuilder();
+
+                            final var sb2 = new StringBuilder();
                             sb2.append(getFullStack(entry.getException()));
-                            Text text2 = new Text();
+                            final var text2 = new Text();
                             text2.setText(sb2.toString());
                             text2.getStyleClass().add("body"); //NOI18N
                             textFlow.getChildren().add(text2);
                         }
                     } else if (! entry.isNode()) {
-                        StringBuilder sb = new StringBuilder();
+                        final var sb = new StringBuilder();
                         sb.append(getSectionPrefix()).append(I18N.getString("jar.analysis.not.node"));
                         sb.append(" ").append(entry.getName()); //NOI18N
-                        Text text = new Text();
+                        final var text = new Text();
                         text.setText(sb.toString());
                         text.getStyleClass().add("header"); //NOI18N
                         textFlow.getChildren().add(text);
@@ -182,18 +182,18 @@ public class JarAnalysisReportController extends AbstractFxmlWindowController {
         }
     }
     
-    private StringBuilder getFullStack(Throwable t) {
-        StringBuilder res = new StringBuilder("\n"); //NOI18N
-        StringWriter writer = new StringWriter();
+    private StringBuilder getFullStack(final Throwable t) {
+        final var res = new StringBuilder("\n"); //NOI18N
+        final var writer = new StringWriter();
             t.printStackTrace(new PrintWriter(writer, true));
             res.append(writer.getBuffer().toString());
         return res;
     }
     
     private void updateTimeStampLabel() {
-        UserLibrary lib = (UserLibrary)editorController.getLibrary();
-        Date date = (Date)lib.getExplorationDate();
-        String timestampValue = TIMESTAMP_DATE_FORMAT.format(date);
+        final var lib = (UserLibrary)editorController.getLibrary();
+        final var date = (Date)lib.getExplorationDate();
+        final var timestampValue = TIMESTAMP_DATE_FORMAT.format(date);
         timestampLabel.setText(I18N.getString("jar.analysis.report.timestamp", timestampValue));
     }
 }

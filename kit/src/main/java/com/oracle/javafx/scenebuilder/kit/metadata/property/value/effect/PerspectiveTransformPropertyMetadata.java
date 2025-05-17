@@ -73,8 +73,8 @@ public class PerspectiveTransformPropertyMetadata extends ComplexPropertyMetadat
             = new DoublePropertyMetadata(new PropertyName("ury"), //NOI18N
             DoublePropertyMetadata.DoubleKind.COORDINATE, true /* readWrite */, 0.0, InspectorPath.UNUSED);
 
-    public PerspectiveTransformPropertyMetadata(PropertyName name, boolean readWrite, 
-            PerspectiveTransform defaultValue, InspectorPath inspectorPath) {
+    public PerspectiveTransformPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                                final PerspectiveTransform defaultValue, final InspectorPath inspectorPath) {
         super(name, PerspectiveTransform.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -83,8 +83,8 @@ public class PerspectiveTransformPropertyMetadata extends ComplexPropertyMetadat
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(PerspectiveTransform value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, value.getClass());
+    public FXOMInstance makeFxomInstanceFromValue(final PerspectiveTransform value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, value.getClass());
         
         inputMetadata.setValue(result, value.getInput());
         llxMetadata.setValue(result, value.getLlx());

@@ -331,7 +331,7 @@ public class Popup extends Control {
                     return null == bubble.textFont || !bubble.textFont.isBound();
                 }
 
-                @Override public StyleableProperty<Font> getStyleableProperty(Popup bubble) {
+                @Override public StyleableProperty<Font> getStyleableProperty(final Popup bubble) {
                     return (StyleableProperty<Font>)(WritableValue<Font>)bubble.textFontProperty();
                 }
             };
@@ -416,7 +416,7 @@ public class PopupSkin extends SkinBase<Popup> {
     }
 
     @Override
-    protected void layoutChildren(double contentX, double contentY, double contentWidth, double contentHeight) {
+    protected void layoutChildren(double contentX, double contentY, final double contentWidth, final double contentHeight) {
         super.layoutChildren(contentX, contentY, contentWidth, contentHeight); 
         
         pane.resize(contentWidth, contentHeight);

@@ -33,7 +33,6 @@
 package com.oracle.javafx.scenebuilder.kit.editor.panel.hierarchy;
 
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
-import com.oracle.javafx.scenebuilder.kit.editor.drag.DragController;
 import com.oracle.javafx.scenebuilder.kit.editor.drag.source.DocumentDragSource;
 import com.oracle.javafx.scenebuilder.kit.editor.drag.source.ExternalDragSource;
 import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
@@ -41,8 +40,6 @@ import static com.oracle.javafx.scenebuilder.kit.editor.panel.hierarchy.treeview
 import com.oracle.javafx.scenebuilder.kit.editor.panel.util.AbstractFxmlPanelController;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.GridSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
-import com.oracle.javafx.scenebuilder.kit.editor.util.ContextMenuController;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
@@ -52,7 +49,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -66,16 +62,13 @@ import javafx.event.EventTarget;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Cell;
 import javafx.scene.control.Control;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollBar;
-import javafx.scene.control.Skin;
 import javafx.scene.control.SkinBase;
 import javafx.scene.control.TreeItem;
 import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -88,7 +81,6 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import javafx.stage.Window;
 
 /**
  * This class creates and controls the <b>Hierarchy Panel</b> of Scene Builder
@@ -178,13 +170,13 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
     /*
      * Public
      */
-    public AbstractHierarchyPanelController(URL fxmlURL, EditorController editorController) {
+    public AbstractHierarchyPanelController(final URL fxmlURL, final EditorController editorController) {
         super(fxmlURL, I18N.getBundle(), editorController);
         
-        final BorderStroke bs = new BorderStroke(Color.TRANSPARENT, BorderStrokeStyle.SOLID,
+        final var bs = new BorderStroke(Color.TRANSPARENT, BorderStrokeStyle.SOLID,
                 CornerRadii.EMPTY, cellBorderWidths, cellInsets);
         transparentBorder = new Border(bs);
-        final BorderStroke firstbs = new BorderStroke(Color.TRANSPARENT, BorderStrokeStyle.SOLID,
+        final var firstbs = new BorderStroke(Color.TRANSPARENT, BorderStrokeStyle.SOLID,
                 CornerRadii.EMPTY, cellBorderWidths, firstCellInsets);
         firstCellTransparentBorder = new Border(firstbs);
     }
@@ -230,7 +222,7 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
      *
      * @param displayOption the type of information displayed in the hierarchy.
      */
-    public final void setDisplayOption(DisplayOption displayOption) {
+    public final void setDisplayOption(final DisplayOption displayOption) {
         displayOptionProperty.setValue(displayOption);
     }
 
@@ -262,7 +254,7 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
      * @param enabled the enabled value
      * @treatAsPrivate
      */
-    public void setParentRingEnabled(boolean enabled) {
+    public void setParentRingEnabled(final boolean enabled) {
         parentRingEnabled = enabled;
     }
 
@@ -270,15 +262,15 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
         return parentRingColor;
     }
 
-    public void setParentRingColor(Paint value) {
+    public void setParentRingColor(final Paint value) {
         parentRingColor = value;
         updateParentRingColor();
     }
     
-    public void setBorder(Cell<?> cell, BorderSide side) {
+    public void setBorder(final Cell<?> cell, final BorderSide side) {
         assert cell != null;
-        boolean isFirstCell = cell.getStyleClass() != null
-                && cell.getStyleClass().contains(HIERARCHY_FIRST_CELL);
+        final var isFirstCell = cell.getStyleClass() != null
+                                && cell.getStyleClass().contains(HIERARCHY_FIRST_CELL);
         final Border border;
         switch (side) {
             case BOTTOM:
@@ -305,11 +297,11 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
         cell.setBorder(border);
     }
     
-    private void setTransparentBorder(Cell<?> cell) {
+    private void setTransparentBorder(final Cell<?> cell) {
         assert cell != null;
-        boolean isFirstCell = cell.getStyleClass() != null
-                && cell.getStyleClass().contains(HIERARCHY_FIRST_CELL);
-        final Border border = isFirstCell ? firstCellTransparentBorder : transparentBorder;
+        final var isFirstCell = cell.getStyleClass() != null
+                                && cell.getStyleClass().contains(HIERARCHY_FIRST_CELL);
+        final var border = isFirstCell ? firstCellTransparentBorder : transparentBorder;
         cell.setBorder(border);
     }
     
@@ -336,11 +328,11 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
      * @treatAsPrivate
      */
     public ScrollBar getScrollBar(final Orientation orientation) {
-        final Control panelControl = getPanelControl();
-        final Set<Node> scrollBars = panelControl.lookupAll(".scroll-bar"); //NOI18N
-        for (Node node : scrollBars) {
+        final var panelControl = getPanelControl();
+        final var scrollBars = panelControl.lookupAll(".scroll-bar"); //NOI18N
+        for (final var node : scrollBars) {
             if (node instanceof ScrollBar) {
-                final ScrollBar scrollBar = (ScrollBar) node;
+                final var scrollBar = (ScrollBar) node;
                 if (scrollBar.getOrientation() == orientation) {
                     return scrollBar;
                 }
@@ -375,7 +367,7 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
      * @treatAsPrivate
      */
     protected void select(final List<TreeItem<HierarchyItem>> treeItems) {
-        for (TreeItem<HierarchyItem> treeItem : treeItems) {
+        for (final var treeItem : treeItems) {
             select(treeItem);
         }
     }
@@ -392,7 +384,7 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
      * @treatAsPrivate
      */
     protected boolean isVisible(final TreeItem<HierarchyItem> treeItem) {
-        final Cell<?> cell = getCell(treeItem);
+        final var cell = getCell(treeItem);
         return (cell == null ? false : cell.isVisible());
     }
 
@@ -450,9 +442,9 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
      * @treatAsPrivate
      */
     public void addToPanelControlSkin(final Node node) {
-        final Skin<?> skin = getPanelControl().getSkin();
+        final var skin = getPanelControl().getSkin();
         assert skin instanceof SkinBase;
-        final SkinBase<?> skinbase = (SkinBase<?>) skin;
+        final var skinbase = (SkinBase<?>) skin;
         skinbase.getChildren().add(node);
     }
 
@@ -461,9 +453,9 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
      * @treatAsPrivate
      */
     public void removeFromPanelControlSkin(final Node node) {
-        final Skin<?> skin = getPanelControl().getSkin();
+        final var skin = getPanelControl().getSkin();
         assert skin instanceof SkinBase;
-        final SkinBase<?> skinbase = (SkinBase<?>) skin;
+        final var skinbase = (SkinBase<?>) skin;
         skinbase.getChildren().remove(node);
     }
 
@@ -482,7 +474,7 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
      * @treatAsPrivate
      */
     @Override
-    protected void fxomDocumentDidChange(FXOMDocument oldDocument) {
+    protected void fxomDocumentDidChange(final FXOMDocument oldDocument) {
         // Clear the map containing the TreeItems expanded property values
         treeItemsExpandedMapProperty.clear();
         updatePanel();
@@ -517,15 +509,15 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
         sceneGraphRevisionDidChange();
     }
 
-    private void updateTreeItemsExpandedMap(TreeItem<HierarchyItem> treeItem) {
+    private void updateTreeItemsExpandedMap(final TreeItem<HierarchyItem> treeItem) {
         assert treeItem != null;
-        final HierarchyItem item = treeItem.getValue();
+        final var item = treeItem.getValue();
         if (!item.isEmpty()) {
-            final FXOMObject fxomObject = item.getFxomObject();
+            final var fxomObject = item.getFxomObject();
             assert fxomObject != null;
             treeItemsExpandedMapProperty.put(fxomObject, treeItem.isExpanded());
             // Inspect TreeItem chidren
-            for (TreeItem<HierarchyItem> treeItemChild : treeItem.getChildren()) {
+            for (final var treeItemChild : treeItem.getChildren()) {
                 updateTreeItemsExpandedMap(treeItemChild);
             }
         }
@@ -564,15 +556,15 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
      */
     @Override
     protected void editorSelectionDidChange() {
-        final Selection selection = getEditorController().getSelection();
+        final var selection = getEditorController().getSelection();
         final List<FXOMObject> selectedFxomObjects = new ArrayList<>();
 
         if (getPanelControl() != null) {
             if (selection.getGroup() instanceof ObjectSelectionGroup) {
-                final ObjectSelectionGroup osg = (ObjectSelectionGroup) selection.getGroup();
+                final var osg = (ObjectSelectionGroup) selection.getGroup();
                 selectedFxomObjects.addAll(osg.getItems());
             } else if (selection.getGroup() instanceof GridSelectionGroup) {
-                final GridSelectionGroup gsg = (GridSelectionGroup) selection.getGroup();
+                final var gsg = (GridSelectionGroup) selection.getGroup();
                 selectedFxomObjects.add(gsg.getParentObject());
             }
 
@@ -580,18 +572,18 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
             stopListeningToTreeItemSelection();
             clearSelection();
             // Root TreeItem may be null
-            if (getRoot() != null && selectedFxomObjects.isEmpty() == false) {
-                final List<TreeItem<HierarchyItem>> selectedTreeItems
+            if (getRoot() != null && !selectedFxomObjects.isEmpty()) {
+                final var selectedTreeItems
                         = lookupTreeItem(selectedFxomObjects);
-                if (selectedTreeItems.isEmpty() == false) {
+                if (!selectedTreeItems.isEmpty()) {
                     select(selectedTreeItems);
                     // Scroll to the last TreeItem
-                    final TreeItem<HierarchyItem> lastTreeItem
-                            = selectedTreeItems.get(selectedTreeItems.size() - 1);
+                    final var lastTreeItem
+                            = selectedTreeItems.getLast();
                     // Call scrollTo only if the item is not visible.
                     // This avoid unexpected scrolling to occur in the hierarchy 
                     // TreeView / TreeTableView while changing some property in the inspector.
-                    if (isVisible(lastTreeItem) == false) {
+                    if (!isVisible(lastTreeItem)) {
                         scrollTo(lastTreeItem);
                     }
                 }
@@ -611,10 +603,10 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
          */
         if (getEditorController().canGetFxmlText()) {
             final Set<FXOMObject> selectedFxomObjects = new HashSet<>();
-            for (TreeItem<HierarchyItem> selectedItem : getSelectedItems()) {
+            for (final var selectedItem : getSelectedItems()) {
                 // TreeItems may be null when selection is updating
                 if (selectedItem != null) {
-                    final FXOMObject fxomObject = selectedItem.getValue().getFxomObject();
+                    final var fxomObject = selectedItem.getValue().getFxomObject();
                     // Placeholders may have a null fxom object
                     if (fxomObject != null) {
                         selectedFxomObjects.add(fxomObject);
@@ -638,10 +630,10 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
     }
 
     private TreeItem<HierarchyItem> makeTreeItem(final FXOMObject fxomObject) {
-        final HierarchyItem item = new HierarchyItem(fxomObject);
-        final TreeItem<HierarchyItem> treeItem = new TreeItem<>(item);
+        final var item = new HierarchyItem(fxomObject);
+        final var treeItem = new TreeItem<HierarchyItem>(item);
         // Set back the TreeItem expanded property if any
-        Boolean expanded = treeItemsExpandedMapProperty.get(fxomObject);
+        final var expanded = treeItemsExpandedMapProperty.get(fxomObject);
         if (expanded != null) {
             treeItem.setExpanded(expanded);
         }
@@ -649,10 +641,10 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
         return treeItem;
     }
 
-    private TreeItem<HierarchyItem> makeTreeItem(HierarchyItem item, final FXOMObject fxomObject) {
-        final TreeItem<HierarchyItem> treeItem = new TreeItem<>(item);
+    private TreeItem<HierarchyItem> makeTreeItem(final HierarchyItem item, final FXOMObject fxomObject) {
+        final var treeItem = new TreeItem<HierarchyItem>(item);
         // Set back the TreeItem expanded property if any
-        Boolean expanded = treeItemsExpandedMapProperty.get(fxomObject);
+        final var expanded = treeItemsExpandedMapProperty.get(fxomObject);
         if (expanded != null) {
             treeItem.setExpanded(expanded);
         }
@@ -667,7 +659,7 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
             final DesignHierarchyMask owner,
             final FXOMObject fxomObject,
             final Accessory accessory) {
-        final HierarchyItemBorderPane item = new HierarchyItemBorderPane(owner, fxomObject, accessory);
+        final var item = new HierarchyItemBorderPane(owner, fxomObject, accessory);
         return makeTreeItem(item, fxomObject);
     }
 
@@ -675,7 +667,7 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
             final DesignHierarchyMask owner,
             final FXOMObject fxomObject,
             final Accessory accessory) {
-        final HierarchyItemDialogPane item = new HierarchyItemDialogPane(owner, fxomObject, accessory);
+        final var item = new HierarchyItemDialogPane(owner, fxomObject, accessory);
         return makeTreeItem(item, fxomObject);
     }
 
@@ -688,18 +680,18 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
     protected TreeItem<HierarchyItem> makeTreeItemGraphic(
             final DesignHierarchyMask owner,
             final FXOMObject fxomObject) {
-        final HierarchyItemGraphic item = new HierarchyItemGraphic(owner, fxomObject);
+        final var item = new HierarchyItemGraphic(owner, fxomObject);
         return makeTreeItem(item, fxomObject);
     }
 
     protected void updateTreeItems() {
         assert getPanelControl() != null;
-        final Parent parent = getPanelControl().getParent();
+        final var parent = getPanelControl().getParent();
         assert parent instanceof Pane;
-        final Pane pane = (Pane) parent;
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
+        final var pane = (Pane) parent;
+        final var fxomDocument = getEditorController().getFxomDocument();
 
-        final Label label = getPromptLabel();
+        final var label = getPromptLabel();
         if (fxomDocument == null || fxomDocument.getFxomRoot() == null) {
             rootTreeItem = null;
             // Add placeholder to the parent
@@ -774,13 +766,13 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
 
     private void updateTreeItem(final TreeItem<HierarchyItem> treeItem) {
 
-        final DesignHierarchyMask mask = treeItem.getValue().getMask();
+        final var mask = treeItem.getValue().getMask();
         assert mask != null;
 
         // Graphic (displayed at first position)
         //---------------------------------
         if (mask.isAcceptingAccessory(Accessory.GRAPHIC)) {
-            final FXOMObject value = mask.getAccessory(Accessory.GRAPHIC);
+            final var value = mask.getAccessory(Accessory.GRAPHIC);
             if (value != null) {
                 treeItem.getChildren().add(makeTreeItemGraphic(mask, value));
             }
@@ -789,7 +781,7 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
         // Tooltip (displayed at second position)
         //---------------------------------
         if (mask.isAcceptingAccessory(Accessory.TOOLTIP)) {
-            final FXOMObject value = mask.getAccessory(Accessory.TOOLTIP);
+            final var value = mask.getAccessory(Accessory.TOOLTIP);
             if (value != null) {
                 treeItem.getChildren().add(makeTreeItem(value));
             }
@@ -798,7 +790,7 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
         // Context menu (displayed at third position)
         //---------------------------------
         if (mask.isAcceptingAccessory(Accessory.CONTEXT_MENU)) {
-            final FXOMObject value = mask.getAccessory(Accessory.CONTEXT_MENU);
+            final var value = mask.getAccessory(Accessory.CONTEXT_MENU);
             if (value != null) {
                 treeItem.getChildren().add(makeTreeItem(value));
             }
@@ -807,13 +799,13 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
         // Axis (chart)
         //---------------------------------
         if (mask.isAcceptingAccessory(Accessory.XAXIS)) {
-            final FXOMObject value = mask.getAccessory(Accessory.XAXIS);
+            final var value = mask.getAccessory(Accessory.XAXIS);
             if (value != null) {
                 treeItem.getChildren().add(makeTreeItem(value));
             }
         }
         if (mask.isAcceptingAccessory(Accessory.YAXIS)) {
-            final FXOMObject value = mask.getAccessory(Accessory.YAXIS);
+            final var value = mask.getAccessory(Accessory.YAXIS);
             if (value != null) {
                 treeItem.getChildren().add(makeTreeItem(value));
             }
@@ -822,7 +814,7 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
         // External Accessories
         mask.getExternalHierarchyItemGeneratorMap().forEach((accessory, biFunction) -> {
             if (mask.isAcceptingAccessory(accessory)) {
-                final FXOMObject fxom = mask.getAccessory(accessory);
+                final var fxom = mask.getAccessory(accessory);
                 treeItem.getChildren().add(makeTreeItem(biFunction.apply(mask, fxom), fxom));
             }
         });
@@ -830,21 +822,21 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
         // Content (ScrollPane, Tab...)
         //---------------------------------
         if (mask.isAcceptingAccessory(Accessory.CONTENT)) {
-            final FXOMObject value = mask.getAccessory(Accessory.CONTENT);
+            final var value = mask.getAccessory(Accessory.CONTENT);
             if (value != null) {
                 treeItem.getChildren().add(makeTreeItem(value));
             }
         }
 
         if (mask.isAcceptingAccessory(Accessory.ROOT)) {
-            final FXOMObject value = mask.getAccessory(Accessory.ROOT);
+            final var value = mask.getAccessory(Accessory.ROOT);
             if (value != null) {
                 treeItem.getChildren().add(makeTreeItem(value));
             }
         }
 
         if (mask.isAcceptingAccessory(Accessory.SCENE)) {
-            final FXOMObject value = mask.getAccessory(Accessory.SCENE);
+            final var value = mask.getAccessory(Accessory.SCENE);
             if (value != null) {
                 treeItem.getChildren().add(makeTreeItem(value));
             }
@@ -852,27 +844,27 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
 
         // Positioning
         //---------------------------------
-        for (Accessory accessory : new Accessory[]{
+        for (final var accessory : new Accessory[]{
             Accessory.TOP,
             Accessory.LEFT,
             Accessory.CENTER,
             Accessory.RIGHT,
             Accessory.BOTTOM}) {
             if (mask.isAcceptingAccessory(accessory)) {
-                final FXOMObject value = mask.getAccessory(accessory);
+                final var value = mask.getAccessory(accessory);
                 treeItem.getChildren().add(makeTreeItemBorderPane(mask, value, accessory));
             }
         }
 
         // DialogPane
         //---------------------------------
-        for (Accessory accessory : new Accessory[]{
+        for (final var accessory : new Accessory[]{
             Accessory.HEADER,
             Accessory.DP_GRAPHIC,
             Accessory.DP_CONTENT,
             Accessory.EXPANDABLE_CONTENT}) {
             if (mask.isAcceptingAccessory(accessory)) {
-                final FXOMObject value = mask.getAccessory(accessory);
+                final var value = mask.getAccessory(accessory);
                 treeItem.getChildren().add(makeTreeItemDialogPane(mask, value, accessory));
             }
         }
@@ -881,16 +873,16 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
         //---------------------------------
         if (mask.isAcceptingSubComponent()) {
             for (int i = 0, count = mask.getSubComponentCount(); i < count; i++) {
-                final FXOMObject value = mask.getSubComponentAtIndex(i);
+                final var value = mask.getSubComponentAtIndex(i);
                 treeItem.getChildren().add(makeTreeItem(value));
             }
         }
     }
 
-    private List<TreeItem<HierarchyItem>> lookupTreeItem(List<FXOMObject> fxomObjects) {
+    private List<TreeItem<HierarchyItem>> lookupTreeItem(final List<FXOMObject> fxomObjects) {
         final List<TreeItem<HierarchyItem>> result = new ArrayList<>();
-        for (FXOMObject fxomObject : fxomObjects) {
-            final TreeItem<HierarchyItem> treeItem = lookupTreeItem(fxomObject);
+        for (final var fxomObject : fxomObjects) {
+            final var treeItem = lookupTreeItem(fxomObject);
             // TreeItem may be null when selecting a GridPane column/row 
             // constraint in content panel
             if (treeItem != null) {
@@ -905,11 +897,11 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
      * @return the TreeItem corresponding to the specified FXOMObject
      * @treatAsPrivate
      */
-    public TreeItem<HierarchyItem> lookupTreeItem(FXOMObject fxomObject) {
+    public TreeItem<HierarchyItem> lookupTreeItem(final FXOMObject fxomObject) {
         return lookupTreeItem(fxomObject, getRoot());
     }
 
-    private TreeItem<HierarchyItem> lookupTreeItem(FXOMObject fxomObject, TreeItem<HierarchyItem> fromTreeItem) {
+    private TreeItem<HierarchyItem> lookupTreeItem(final FXOMObject fxomObject, final TreeItem<HierarchyItem> fromTreeItem) {
         TreeItem<HierarchyItem> result;
         assert fxomObject != null;
 
@@ -919,10 +911,10 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
             if (fromTreeItem.getValue().getFxomObject() == fxomObject) {
                 result = fromTreeItem;
             } else {
-                Iterator<TreeItem<HierarchyItem>> it = fromTreeItem.getChildren().iterator();
+                final var it = fromTreeItem.getChildren().iterator();
                 result = null;
                 while ((result == null) && it.hasNext()) {
-                    TreeItem<HierarchyItem> childItem = it.next();
+                    final var childItem = it.next();
                     result = lookupTreeItem(fxomObject, childItem);
                 }
             }
@@ -943,7 +935,7 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
     private <T> List<TreeItem<T>> getAllTreeItems(final TreeItem<T> parentTreeItem) {
         assert parentTreeItem != null;
         final List<TreeItem<T>> treeItems = new ArrayList<>();
-        for (TreeItem<T> child : parentTreeItem.getChildren()) {
+        for (final var child : parentTreeItem.getChildren()) {
             treeItems.add(child);
             treeItems.addAll(getAllTreeItems(child));
         }
@@ -961,8 +953,8 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
      */
     public <T> TreeItem<T> getLastVisibleTreeItem(final TreeItem<T> parentTreeItem) {
         assert parentTreeItem != null;
-        TreeItem<T> result = parentTreeItem;
-        int size = result.getChildren().size();
+        var result = parentTreeItem;
+        var size = result.getChildren().size();
         while (size != 0) {
             if (result.isExpanded()) {
                 result = result.getChildren().get(size - 1);
@@ -989,10 +981,10 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
             return null;
         } else if (treeItem.isExpanded() && !treeItem.getChildren().isEmpty()) {
             // Return first child
-            return treeItem.getChildren().get(0);
+            return treeItem.getChildren().getFirst();
         } else {
-            TreeItem<T> parentTreeItem = treeItem.getParent();
-            TreeItem<T> result = treeItem.nextSibling();
+            var parentTreeItem = treeItem.getParent();
+            var result = treeItem.nextSibling();
             while (result == null && parentTreeItem != getRoot()) {
                 result = parentTreeItem.nextSibling();
                 parentTreeItem = parentTreeItem.getParent();
@@ -1015,8 +1007,8 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
             // Root TreeItem has no previous TreeItem
             return null;
         } else {
-            TreeItem<T> parentTreeItem = treeItem.getParent();
-            TreeItem<T> result = treeItem.previousSibling();
+            var parentTreeItem = treeItem.getParent();
+            var result = treeItem.previousSibling();
             while (result == null && parentTreeItem != getRoot()) {
                 result = parentTreeItem.previousSibling();
                 parentTreeItem = parentTreeItem.getParent();
@@ -1054,7 +1046,7 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
         getPanelControl().setOnMousePressed(event -> handleOnMousePressed(event));
 
         // Setup the context menu
-        final ContextMenuController contextMenuController
+        final var contextMenuController
                 = getEditorController().getContextMenuController();
         getPanelControl().setContextMenu(contextMenuController.getContextMenu());
 
@@ -1063,40 +1055,40 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
     }
 
     private void handleOnDragDetected(final MouseEvent event) {
-        final ObservableList<TreeItem<HierarchyItem>> selectedTreeItems = getSelectedItems();
+        final var selectedTreeItems = getSelectedItems();
 
         // Do not start a DND gesture if there is an editing session on-going
         if (!getEditorController().canGetFxmlText()) {
             return;
         }
 
-        final Selection selection = getEditorController().getSelection();
+        final var selection = getEditorController().getSelection();
         if (!selection.isEmpty()) { // (1)
             if (selection.getGroup() instanceof ObjectSelectionGroup) {
                 // A set of regular component (ie fxom objects) are selected
-                final ObjectSelectionGroup osg = (ObjectSelectionGroup) selection.getGroup();
+                final var osg = (ObjectSelectionGroup) selection.getGroup();
                 
                 // Abort dragging an empty place holder
-                for (TreeItem<HierarchyItem> selectedTreeItem : selectedTreeItems) {
-                    final HierarchyItem item = selectedTreeItem.getValue();
+                for (final var selectedTreeItem : selectedTreeItems) {
+                    final var item = selectedTreeItem.getValue();
                     if (item.isEmpty()) {
                         return;
                     }
                 }
                 // Retrieve the hit object
-                final Cell<?> cell = lookupCell(event.getTarget());
-                final Object item = cell.getItem();
+                final var cell = lookupCell(event.getTarget());
+                final var item = cell.getItem();
                 assert item instanceof HierarchyItem;
-                final HierarchyItem hierarchyItem = (HierarchyItem) item;
-                final FXOMObject hitObject = hierarchyItem.getFxomObject();
+                final var hierarchyItem = (HierarchyItem) item;
+                final var hitObject = hierarchyItem.getFxomObject();
                 assert (hitObject != null); // Because we cannot drag placeholders
                 // Build drag source
-                final Window ownerWindow = getPanelRoot().getScene().getWindow();
-                final DocumentDragSource dragSource = new DocumentDragSource(
+                final var ownerWindow = getPanelRoot().getScene().getWindow();
+                final var dragSource = new DocumentDragSource(
                         osg.getSortedItems(), hitObject, ownerWindow);
                 if (dragSource.isAcceptable()) {
                     // Start drag and drop
-                    final Dragboard db = getPanelControl().startDragAndDrop(TransferMode.COPY_OR_MOVE);
+                    final var db = getPanelControl().startDragAndDrop(TransferMode.COPY_OR_MOVE);
                     db.setContent(dragSource.makeClipboardContent());
                     db.setDragView(dragSource.makeDragView());
                     // DragController.begin
@@ -1114,9 +1106,9 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
 
     private void handleOnDragDone(final DragEvent event) {
         // DragController update
-        final DragController dragController
+        final var dragController
                 = getEditorController().getDragController();
-        assert shouldEndOnExit == false;
+        assert !shouldEndOnExit;
         dragController.end();
         event.getDragboard().clear();
     }
@@ -1129,7 +1121,7 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
         }
 
         // DragController update
-        final DragController dragController
+        final var dragController
                 = getEditorController().getDragController();
         dragController.commit();
         // Do not invoke dragController.end here because we always receive a
@@ -1149,14 +1141,14 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
         // DragController update
         // The drag source is null if the drag gesture 
         // has been started from outside (from the explorer / finder)
-        final DragController dragController
+        final var dragController
                 = getEditorController().getDragController();
         if (dragController.getDragSource() == null) { // Drag started externally
-            final FXOMDocument fxomDocument
+            final var fxomDocument
                     = getEditorController().getFxomDocument();
             // Build drag source
-            final Window ownerWindow = getPanelRoot().getScene().getWindow();
-            final ExternalDragSource dragSource = new ExternalDragSource(
+            final var ownerWindow = getPanelRoot().getScene().getWindow();
+            final var dragSource = new ExternalDragSource(
                     event.getDragboard(), fxomDocument, ownerWindow);
             assert dragSource.isAcceptable();
             dragController.begin(dragSource);
@@ -1174,14 +1166,14 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
         animationScheduler.stopTimeline();
 
         // Retrieve the vertical scroll bar value before updating the TreeItems
-        double verticalScrollBarValue = 0.0;
-        final ScrollBar scrollBar = getScrollBar(Orientation.VERTICAL);
+        var verticalScrollBarValue = 0.0;
+        final var scrollBar = getScrollBar(Orientation.VERTICAL);
         if (scrollBar != null) {
             verticalScrollBarValue = scrollBar.getValue();
         }
 
         // DragController update
-        final DragController dragController
+        final var dragController
                 = getEditorController().getDragController();
         dragController.setDropTarget(null);
         if (shouldEndOnExit) {
@@ -1195,15 +1187,15 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
     }
 
     private void handleOnDragOver(final DragEvent event) {
-        final ScrollBar verticalScrollBar = getScrollBar(Orientation.VERTICAL);
+        final var verticalScrollBar = getScrollBar(Orientation.VERTICAL);
 
         // By dragging and hovering the cell within a few pixels 
         // of the top or bottom of the Hierarchy,
         // the user can cause it to auto-scroll until the desired cell is in view.
         if (verticalScrollBar != null && verticalScrollBar.isVisible()) {
-            final double eventY = event.getY();
-            final double topY = getContentTopY();
-            final double bottomY = getContentBottomY();
+            final var eventY = event.getY();
+            final var topY = getContentTopY();
+            final var bottomY = getContentBottomY();
 
             // TOP auto scrolling zone
             if (topY <= eventY && eventY < topY + AUTO_SCROLLING_ZONE_HEIGHT) {
@@ -1236,7 +1228,7 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
                 if (event.isAltDown()) {
                     final List<TreeItem<HierarchyItem>> treeItems = getSelectedItems();
                     if (!treeItems.isEmpty()) {
-                        for (TreeItem<HierarchyItem> treeItem : treeItems) {
+                        for (final var treeItem : treeItems) {
                             collapseAllTreeItems(treeItem);
                         }
                     }
@@ -1248,7 +1240,7 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
                 if (event.isAltDown()) {
                     final List<TreeItem<HierarchyItem>> treeItems = getSelectedItems();
                     if (!treeItems.isEmpty()) {
-                        for (TreeItem<HierarchyItem> treeItem : treeItems) {
+                        for (final var treeItem : treeItems) {
                             expandAllTreeItems(treeItem);
                         }
                     }
@@ -1263,7 +1255,7 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
     private void handleOnMousePressed(final MouseEvent event) {
 
         if (event.getButton() == MouseButton.SECONDARY) {
-            final ContextMenuController contextMenuController
+            final var contextMenuController
                     = getEditorController().getContextMenuController();
             // The context menu items depend on the selection so
             // we need to rebuild it each time it is invoked.
@@ -1274,9 +1266,9 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
     private <T> void expandAllTreeItems(final TreeItem<T> parentTreeItem) {
         assert parentTreeItem != null;
         parentTreeItem.setExpanded(true);
-        final List<TreeItem<T>> treeItems = getAllTreeItems(parentTreeItem);
+        final var treeItems = getAllTreeItems(parentTreeItem);
         assert treeItems != null;
-        for (TreeItem<T> treeItem : treeItems) {
+        for (final var treeItem : treeItems) {
             treeItem.setExpanded(true);
         }
     }
@@ -1284,9 +1276,9 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
     private <T> void collapseAllTreeItems(final TreeItem<T> parentTreeItem) {
         assert parentTreeItem != null;
         parentTreeItem.setExpanded(false);
-        final List<TreeItem<T>> treeItems = getAllTreeItems(parentTreeItem);
+        final var treeItems = getAllTreeItems(parentTreeItem);
         assert treeItems != null;
-        for (TreeItem<T> treeItem : treeItems) {
+        for (final var treeItem : treeItems) {
             treeItem.setExpanded(false);
         }
     }
@@ -1299,10 +1291,10 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
      * @param target
      * @return
      */
-    private Cell<?> lookupCell(EventTarget target) {
+    private Cell<?> lookupCell(final EventTarget target) {
         assert target instanceof Node;
-        Node node = (Node) target;
-        while ((node instanceof Cell) == false) {
+        var node = (Node) target;
+        while (!(node instanceof Cell)) {
             node = node.getParent();
         }
         return (Cell<?>) node;

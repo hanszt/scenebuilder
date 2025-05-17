@@ -49,8 +49,8 @@ public class ColumnConstraintsListPropertyMetadata extends ListValuePropertyMeta
             = new ColumnConstraintsPropertyMetadata(new PropertyName("unused"), //NOI18N
             true /* readWrite */, null, InspectorPath.UNUSED);
     
-    public ColumnConstraintsListPropertyMetadata(PropertyName name, boolean readWrite, 
-            List<ColumnConstraints> defaultValue, InspectorPath inspectorPath) {
+    public ColumnConstraintsListPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                                 final List<ColumnConstraints> defaultValue, final InspectorPath inspectorPath) {
         super(name, ColumnConstraints.class, itemMetadata, readWrite, defaultValue, inspectorPath);
     }
     
@@ -59,24 +59,24 @@ public class ColumnConstraintsListPropertyMetadata extends ListValuePropertyMeta
                 Collections.emptyList(), InspectorPath.UNUSED);
     }
     
-    public void pack(FXOMInstance fxomInstance) {
-        final ColumnConstraints def = new ColumnConstraints();
+    public void pack(final FXOMInstance fxomInstance) {
+        final var def = new ColumnConstraints();
         final List<ColumnConstraints> v = new ArrayList<>(getValue(fxomInstance));
-        if (v.isEmpty() == false) {
-            ColumnConstraints last = v.get(v.size()-1);
+        if (!v.isEmpty()) {
+            var last = v.getLast();
             while ((last != null) && ColumnConstraintsPropertyMetadata.equals(last, def)) {
-                v.remove(v.size()-1);
+                v.removeLast();
                 if (v.isEmpty()) {
                     last = null;
                 } else {
-                    last = v.get(v.size()-1);
+                    last = v.getLast();
                 }
             }
             setValue(fxomInstance, v);
         }
     }
     
-    public void unpack(FXOMInstance fxomInstance, int columnCount) {
+    public void unpack(final FXOMInstance fxomInstance, final int columnCount) {
         final List<ColumnConstraints> value = new ArrayList<>(getValue(fxomInstance));
         if (value.size() < columnCount) {
             final List<ColumnConstraints> newValue = new ArrayList<>();
@@ -88,7 +88,7 @@ public class ColumnConstraintsListPropertyMetadata extends ListValuePropertyMeta
         }
     }
     
-    public static boolean equals(List<ColumnConstraints> l1, List<ColumnConstraints> l2) {
+    public static boolean equals(final List<ColumnConstraints> l1, final List<ColumnConstraints> l2) {
         
         assert l1 != null;
         assert l2 != null;
@@ -99,8 +99,8 @@ public class ColumnConstraintsListPropertyMetadata extends ListValuePropertyMeta
         } else {
             result = true;
             for (int i = 0, count = l1.size(); (i < count) && result; i++) {
-                final ColumnConstraints c1 = l1.get(i);
-                final ColumnConstraints c2 = l2.get(i);
+                final var c1 = l1.get(i);
+                final var c2 = l2.get(i);
                 result = ColumnConstraintsPropertyMetadata.equals(c1, c2);
             }
         }

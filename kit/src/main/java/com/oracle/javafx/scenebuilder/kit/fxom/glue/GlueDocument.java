@@ -47,10 +47,10 @@ public class GlueDocument extends GlueNode {
     public GlueDocument() {
     }
     
-    public GlueDocument(String xmlText) throws IOException {
+    public GlueDocument(final String xmlText) throws IOException {
         assert xmlText != null;
-        if (isEmptyXmlText(xmlText) == false) {
-            final GlueLoader loader = new GlueLoader(this);
+        if (!isEmptyXmlText(xmlText)) {
+            final var loader = new GlueLoader(this);
             loader.load(xmlText);
             adjustRootElementIndentation();
         }
@@ -60,7 +60,7 @@ public class GlueDocument extends GlueNode {
         return rootElement;
     }
 
-    public void setRootElement(GlueElement newRootElement) {
+    public void setRootElement(final GlueElement newRootElement) {
         if ((newRootElement != null) && (newRootElement.getParent() != null)) {
             newRootElement.removeFromParent();
         }
@@ -82,14 +82,14 @@ public class GlueDocument extends GlueNode {
      * Utilities
      */
 
-    public List<GlueInstruction> collectInstructions(String target) {
+    public List<GlueInstruction> collectInstructions(final String target) {
         final List<GlueInstruction> result = new ArrayList<>();
         
         assert target != null;
         
-        for (GlueAuxiliary auxiliary : header) {
+        for (final var auxiliary : header) {
             if (auxiliary instanceof GlueInstruction) {
-                final GlueInstruction i = (GlueInstruction) auxiliary;
+                final var i = (GlueInstruction) auxiliary;
                 if (target.equals(i.getTarget())) {
                     result.add(i);
                 }
@@ -99,7 +99,7 @@ public class GlueDocument extends GlueNode {
         return result;
     }
     
-    public static boolean isEmptyXmlText(String xmlText) {
+    public static boolean isEmptyXmlText(final String xmlText) {
         assert xmlText != null;
         return xmlText.trim().isEmpty();
     }
@@ -114,7 +114,7 @@ public class GlueDocument extends GlueNode {
         if (rootElement == null) {
             result = ""; //NOI18N
         } else {
-            final GlueSerializer serializer = new GlueSerializer(this);
+            final var serializer = new GlueSerializer(this);
             result = serializer.toString();
         }
         return result;

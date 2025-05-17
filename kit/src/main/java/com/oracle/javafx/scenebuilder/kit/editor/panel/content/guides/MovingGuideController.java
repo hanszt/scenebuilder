@@ -53,26 +53,26 @@ public class MovingGuideController {
     private double suggestedDX;
     private double suggestedDY;
     
-    public MovingGuideController(Paint chromeColor, Bounds scopeInScene) {
+    public MovingGuideController(final Paint chromeColor, final Bounds scopeInScene) {
         this.renderer = new MovingGuideRenderer(chromeColor, scopeInScene);
     }
     
-    public void addSampleBounds(Node node) {
+    public void addSampleBounds(final Node node) {
         assert node != null;
         assert node.getScene() != null;
         
-        final Bounds layoutBounds = node.getLayoutBounds();
-        final Bounds boundsInScene = node.localToScene(layoutBounds, true /* rootScene */);
+        final var layoutBounds = node.getLayoutBounds();
+        final var boundsInScene = node.localToScene(layoutBounds, true /* rootScene */);
         addSampleBounds(boundsInScene, true /* addMiddle */);
     }
     
-    public void addSampleBounds(Bounds boundsInScene, boolean addMiddle) {
-        final double minX = boundsInScene.getMinX();
-        final double minY = boundsInScene.getMinY();
-        final double maxX = boundsInScene.getMaxX();
-        final double maxY = boundsInScene.getMaxY();
-        final double midX = (minX + maxX) / 2.0;
-        final double midY = (minY + maxY) / 2.0;
+    public void addSampleBounds(final Bounds boundsInScene, final boolean addMiddle) {
+        final var minX = boundsInScene.getMinX();
+        final var minY = boundsInScene.getMinY();
+        final var maxX = boundsInScene.getMaxX();
+        final var maxY = boundsInScene.getMaxY();
+        final var midX = (minX + maxX) / 2.0;
+        final var midY = (minY + maxY) / 2.0;
         
         horizontalLineIndex.addLine(new HorizontalSegment(minX, maxX, minY));
         horizontalLineIndex.addLine(new HorizontalSegment(minX, maxX, maxY));
@@ -92,98 +92,98 @@ public class MovingGuideController {
     }
     
     public boolean hasSampleBounds() {
-        return (horizontalLineIndex.isEmpty() == false) || (verticalLineIndex.isEmpty() == false);
+        return (!horizontalLineIndex.isEmpty()) || (!verticalLineIndex.isEmpty());
     }
     
     public void clear() {
         renderer.setLines(Collections.emptyList(), Collections.emptyList());
     }
     
-    public void match(Bounds targetBounds) {
+    public void match(final Bounds targetBounds) {
         List<HorizontalSegment> horizontalMatchingLines;
         List<VerticalSegment> verticalMatchingLines;
-        boolean matchedHorizontally = false;
-        boolean matchedVertically = false;
+        var matchedHorizontally = false;
+        var matchedVertically = false;
         
         // Match horizontal center line of targetBounds
         horizontalMatchingLines 
                 = horizontalLineIndex.matchCenter(targetBounds, MATCH_DISTANCE);
-        if (horizontalMatchingLines.isEmpty() == false) {
+        if (!horizontalMatchingLines.isEmpty()) {
             matchedHorizontally = true;
-            final HorizontalSegment line = horizontalMatchingLines.get(0);
+            final var line = horizontalMatchingLines.getFirst();
             assert MathUtils.equals(line.getY1(), line.getY2());
-            final double targetMinY = targetBounds.getMinY();
-            final double targetMaxY = targetBounds.getMaxY();
-            final double targetMidY = (targetMinY + targetMaxY) / 2.0;
+            final var targetMinY = targetBounds.getMinY();
+            final var targetMaxY = targetBounds.getMaxY();
+            final var targetMidY = (targetMinY + targetMaxY) / 2.0;
             suggestedDY = line.getY1() - targetMidY;
         }
         
         // Match north boundary of targetBounds
-        if (matchedHorizontally == false) {
+        if (!matchedHorizontally) {
             horizontalMatchingLines 
                     = horizontalLineIndex.matchNorth(targetBounds, MATCH_DISTANCE);
-            if (horizontalMatchingLines.isEmpty() == false) {
+            if (!horizontalMatchingLines.isEmpty()) {
                 matchedHorizontally = true;
-                final HorizontalSegment line = horizontalMatchingLines.get(0);
+                final var line = horizontalMatchingLines.getFirst();
                 assert MathUtils.equals(line.getY1(), line.getY2());
                 suggestedDY = line.getY1() - targetBounds.getMinY();
             }
         }
         
         // Match south boundary of targetBounds
-        if (matchedHorizontally == false) {
+        if (!matchedHorizontally) {
             horizontalMatchingLines 
                     = horizontalLineIndex.matchSouth(targetBounds, MATCH_DISTANCE);
-            if (horizontalMatchingLines.isEmpty() == false) {
+            if (!horizontalMatchingLines.isEmpty()) {
                 matchedHorizontally = true;
-                final HorizontalSegment line = horizontalMatchingLines.get(0);
+                final var line = horizontalMatchingLines.getFirst();
                 assert MathUtils.equals(line.getY1(), line.getY2());
                 suggestedDY = line.getY1() - targetBounds.getMaxY();
             }
         }
         
-        if (matchedHorizontally == false) {
+        if (!matchedHorizontally) {
             suggestedDY = 0.0;
         }
         
         // Match vertical center line of targetBounds
         verticalMatchingLines 
                 = verticalLineIndex.matchCenter(targetBounds, MATCH_DISTANCE);
-        if (verticalMatchingLines.isEmpty() == false) {
+        if (!verticalMatchingLines.isEmpty()) {
             matchedVertically = true;
-            final VerticalSegment line = verticalMatchingLines.get(0);
+            final var line = verticalMatchingLines.getFirst();
             assert MathUtils.equals(line.getX1(), line.getX2());
-            final double targetMinX = targetBounds.getMinX();
-            final double targetMaxX = targetBounds.getMaxX();
-            final double targetMidX = (targetMinX + targetMaxX) / 2.0;
+            final var targetMinX = targetBounds.getMinX();
+            final var targetMaxX = targetBounds.getMaxX();
+            final var targetMidX = (targetMinX + targetMaxX) / 2.0;
             suggestedDX = line.getX1() - targetMidX;
         }
         
         // Match west boundary of targetBounds
-        if (matchedVertically == false) {
+        if (!matchedVertically) {
             verticalMatchingLines 
                     = verticalLineIndex.matchWest(targetBounds, MATCH_DISTANCE);
-            if (verticalMatchingLines.isEmpty() == false) {
+            if (!verticalMatchingLines.isEmpty()) {
                 matchedVertically = true;
-                final VerticalSegment line = verticalMatchingLines.get(0);
+                final var line = verticalMatchingLines.getFirst();
                 assert MathUtils.equals(line.getX1(), line.getX2());
                 suggestedDX = line.getX1() - targetBounds.getMinX();
             }
         }
         
         // Match east boundary of targetBounds
-        if (matchedVertically == false) {
+        if (!matchedVertically) {
             verticalMatchingLines 
                     = verticalLineIndex.matchEast(targetBounds, MATCH_DISTANCE);
-            if (verticalMatchingLines.isEmpty() == false) {
+            if (!verticalMatchingLines.isEmpty()) {
                 matchedVertically = true;
-                final VerticalSegment line = verticalMatchingLines.get(0);
+                final var line = verticalMatchingLines.getFirst();
                 assert MathUtils.equals(line.getX1(), line.getX2());
                 suggestedDX = line.getX1() - targetBounds.getMaxX();
             }
         }
         
-        if (matchedVertically == false) {
+        if (!matchedVertically) {
             suggestedDX = 0.0;
         }
         

@@ -76,7 +76,7 @@ public class DurationEditor extends AutoSuggestEditor{
 
     private Parent root;
 
-    public DurationEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public DurationEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super(propMeta, selectedClasses, new ArrayList<>(constants.keySet()), AutoSuggestEditor.Type.DOUBLE);
         initialize();
     }
@@ -87,7 +87,7 @@ public class DurationEditor extends AutoSuggestEditor{
         //
         // Text field
         //
-        EventHandler<ActionEvent> onActionListener = event -> {
+        final EventHandler<ActionEvent> onActionListener = event -> {
             if (isHandlingError()) {
                 // Event received because of focus lost due to error dialog
                 return;
@@ -97,13 +97,13 @@ public class DurationEditor extends AutoSuggestEditor{
                 return;
             }
 
-            Object value = getValue();
+            final var value = getValue();
             assert value instanceof SBDuration;
-            SBDuration valDuration = (SBDuration) value;
+            final var valDuration = (SBDuration) value;
             // Check if the entered value is a constant string
-            boolean isConstant = constants.get(getTextField().getText().toUpperCase(Locale.ROOT)) != null;
+            var isConstant = constants.get(getTextField().getText().toUpperCase(Locale.ROOT)) != null;
             // Check if the entered value is a constant value
-            for (Map.Entry<String, SBDuration> entry : constants.entrySet()) {
+            for (final var entry : constants.entrySet()) {
                 if (value.equals(entry.getValue())) {
                     isConstant = true;
                     break;
@@ -120,7 +120,7 @@ public class DurationEditor extends AutoSuggestEditor{
         localizeComboBox();
         unitsComboBox.getSelectionModel().select(MILLISECONDS);
         unitsComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            SBDuration value = getValue(getTextField().getText(), (String)oldValue);
+            final var value = getValue(getTextField().getText(), (String)oldValue);
             getTextField().setText(getNumericValue(value, (String)newValue).toString());
         });
 
@@ -129,9 +129,9 @@ public class DurationEditor extends AutoSuggestEditor{
     }
 
     private void localizeComboBox() {
-        ArrayList<String> localizedStrings = new ArrayList<>();
-        for (Object item : unitsComboBox.getItems()) {
-            String itemString = (String) item;
+        final var localizedStrings = new ArrayList<String>();
+        for (final var item : unitsComboBox.getItems()) {
+            final var itemString = (String) item;
             if (itemString.charAt(0) == '%') {
                 localizedStrings.add(I18N.getString(itemString.substring(1)));
             } else {
@@ -152,13 +152,13 @@ public class DurationEditor extends AutoSuggestEditor{
         return getValue(getTextField().getText(), (String)unitsComboBox.getSelectionModel().getSelectedItem());
     }
 
-    private SBDuration getValue(String valueString, String units) {
+    private SBDuration getValue(String valueString, final String units) {
         if (valueString.isEmpty()) {
             valueString = "0"; //NOI18N
             getTextField().setText(valueString);
             return new SBDuration(Duration.ZERO);
         }
-        SBDuration constantValue = constants.get(valueString.toUpperCase(Locale.ROOT));
+        final var constantValue = constants.get(valueString.toUpperCase(Locale.ROOT));
         if (constantValue != null) {
             return constantValue;
         }
@@ -173,13 +173,13 @@ public class DurationEditor extends AutoSuggestEditor{
                 valueString = valueString + "h";
             }
             return SBDuration.valueOf(valueString);
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             return null;
         }
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(final Object value) {
         setValueGeneric(value);
         if (isSetValueDone()) {
             return;
@@ -190,20 +190,20 @@ public class DurationEditor extends AutoSuggestEditor{
         }
 
         assert (value instanceof SBDuration);
-        SBDuration durationValue = (SBDuration) value;
+        final var durationValue = (SBDuration) value;
 
         // Get the corresponding constant if any
-        for (Map.Entry<String, SBDuration> entry : constants.entrySet()) {
+        for (final var entry : constants.entrySet()) {
             if (value.equals(entry.getValue())) {
                 getTextField().setText(entry.getKey());
                 return;
             }
         }
-        String units = (String) unitsComboBox.getSelectionModel().getSelectedItem();
+        final var units = (String) unitsComboBox.getSelectionModel().getSelectedItem();
         getTextField().setText(getNumericValue(durationValue, units).toString());
     }
 
-    private Double getNumericValue(SBDuration durationValue, String units) {
+    private Double getNumericValue(final SBDuration durationValue, final String units) {
         Double convertedValue = null;
         if (units.equals(MILLISECONDS)) {
             convertedValue = durationValue.toMillis();
@@ -217,7 +217,7 @@ public class DurationEditor extends AutoSuggestEditor{
         return convertedValue;
     }
 
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super.reset(propMeta, selectedClasses, new ArrayList<>(constants.keySet()));
     }
 

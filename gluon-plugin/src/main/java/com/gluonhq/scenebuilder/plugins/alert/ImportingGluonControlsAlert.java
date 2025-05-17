@@ -42,14 +42,14 @@ import javafx.stage.Stage;
  */
 public class ImportingGluonControlsAlert extends SBAlert {
 
-    public ImportingGluonControlsAlert(Stage owner) {
+    public ImportingGluonControlsAlert(final Stage owner) {
         super(AlertType.WARNING, owner);
 
         setTitle(I18N.getString("alert.importing.gluon.title"));
         setHeaderText(I18N.getString("alert.importing.gluon.headertext"));
         setContentText(I18N.getString("alert.importing.gluon.contenttext"));
 
-        ButtonType OKButton = new ButtonType(I18N.getString("alert.importing.gluon.ok.button"), ButtonBar.ButtonData.OK_DONE);
+        final var OKButton = new ButtonType(I18N.getString("alert.importing.gluon.ok.button"), ButtonBar.ButtonData.OK_DONE);
 
         getButtonTypes().setAll(OKButton);
     }

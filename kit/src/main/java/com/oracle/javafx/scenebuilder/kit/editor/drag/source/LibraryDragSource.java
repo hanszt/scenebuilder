@@ -31,11 +31,9 @@
  */
 package com.oracle.javafx.scenebuilder.kit.editor.drag.source;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -65,7 +63,7 @@ public class LibraryDragSource extends AbstractDragSource {
     private FXOMObject libraryItemObject; // Populated lazily
     private List<FXOMObject> draggedObjects; // Opmization
 
-    public LibraryDragSource(LibraryItem libraryItem, FXOMDocument targetDocument, Window ownerWindow) {
+    public LibraryDragSource(final LibraryItem libraryItem, final FXOMDocument targetDocument, final Window ownerWindow) {
         super(ownerWindow);
         
         assert libraryItem != null;
@@ -81,7 +79,7 @@ public class LibraryDragSource extends AbstractDragSource {
     
     public FXOMObject getLibraryItemObject() {
         if (libraryItemObject == null) {
-            final FXOMDocument itemDocument = libraryItem.instantiate();
+            final var itemDocument = libraryItem.instantiate();
             assert itemDocument != null;
             assert itemDocument.getFxomRoot() != null;
             libraryItemObject = itemDocument.getFxomRoot();
@@ -92,10 +90,10 @@ public class LibraryDragSource extends AbstractDragSource {
                 // We put the library item node in a Scene and layout it.
                 // This will allow ContainerXYDropTarget to measure this
                 // library item by calling Node.getLayoutBounds().
-                final Node sceneGraphNode = (Node) libraryItemObject.getSceneGraphObject();
-                final Group group = new Group();
+                final var sceneGraphNode = (Node) libraryItemObject.getSceneGraphObject();
+                final var group = new Group();
                 group.getChildren().add(sceneGraphNode);
-                final Scene scene = new Scene(group); // Not used but required
+                final var scene = new Scene(group); // Not used but required
                 scene.getClass(); // used to dummy thing to silence FindBugs
                 group.applyCss();
                 group.layout();
@@ -128,19 +126,19 @@ public class LibraryDragSource extends AbstractDragSource {
     
     @Override
     public FXOMObject getHitObject() {
-        return getDraggedObjects().get(0);
+        return getDraggedObjects().getFirst();
     }
     
     @Override
     public double getHitX() {
         final double result;
         
-        final FXOMObject hitObject = getHitObject();
+        final var hitObject = getHitObject();
         if (hitObject == null) {
             result = Double.NaN;
         } else if (hitObject.isNode()) {
-            final Node hitNode = (Node) hitObject.getSceneGraphObject();
-            final Bounds b = hitNode.getLayoutBounds();
+            final var hitNode = (Node) hitObject.getSceneGraphObject();
+            final var b = hitNode.getLayoutBounds();
             result = (b.getMinX() + b.getMaxX()) / 2.0;
         } else {
             result = 0.0;
@@ -153,12 +151,12 @@ public class LibraryDragSource extends AbstractDragSource {
     public double getHitY() {
         final double result;
         
-        final FXOMObject hitObject = getHitObject();
+        final var hitObject = getHitObject();
         if (hitObject == null) {
             result = Double.NaN;
         } else if (hitObject.isNode()) {
-            final Node hitNode = (Node) hitObject.getSceneGraphObject();
-            final Bounds b = hitNode.getLayoutBounds();
+            final var hitNode = (Node) hitObject.getSceneGraphObject();
+            final var b = hitNode.getLayoutBounds();
             result = (b.getMinY() + b.getMaxY()) / 2.0;
         } else {
             result = 0.0;
@@ -169,7 +167,7 @@ public class LibraryDragSource extends AbstractDragSource {
 
     @Override
     public ClipboardContent makeClipboardContent() {
-        final ClipboardContent result = new ClipboardContent();
+        final var result = new ClipboardContent();
         
         // Add to content a string which is the Lib Item as an FXML string
         result.putString(libraryItem.getFxmlText());
@@ -181,15 +179,15 @@ public class LibraryDragSource extends AbstractDragSource {
     public Image makeDragView() {
         // We construct an image made of a Label that reads the class name
         // of the Library Item, and set as Label graphic the appropriate icon.
-        URL iconURL = libraryItem.getIconURL();
+        var iconURL = libraryItem.getIconURL();
 
         if (iconURL == null) {
             iconURL = ImageUtils.getNodeIconURL("MissingIcon.png"); //NOI18N
         }
 
-        final Image imageFromIcon = new Image(iconURL.toExternalForm());
+        final var imageFromIcon = new Image(iconURL.toExternalForm());
 //        final Label visualNode = new Label(libraryItem.getName());
-        final Label visualNode = new Label();
+        final var visualNode = new Label();
         visualNode.setGraphic(new ImageView(imageFromIcon));
         visualNode.getStylesheets().add(EditorController.getStylesheet().toString());
         visualNode.getStyleClass().add("drag-preview"); //NOI18N
@@ -199,21 +197,21 @@ public class LibraryDragSource extends AbstractDragSource {
 
     @Override
     public Node makeShadow() {
-        final Group result = new Group();
+        final var result = new Group();
         
         result.getStylesheets().add(EditorController.getStylesheet().toString());
 
         if (getLibraryItemObject().getSceneGraphObject() instanceof Node) {
-            final Node sceneGraphNode = (Node) getLibraryItemObject().getSceneGraphObject();
-            final DragSourceShadow shadowNode = new DragSourceShadow();
+            final var sceneGraphNode = (Node) getLibraryItemObject().getSceneGraphObject();
+            final var shadowNode = new DragSourceShadow();
             shadowNode.setupForNode(sceneGraphNode);
             result.getChildren().add(shadowNode);
         }
         
         // Translate the group so that it is centered above (layoutX, layoutY)
-        final Bounds b = result.getBoundsInParent();
-        final double centerX = (b.getMinX() + b.getMaxX()) / 2.0;
-        final double centerY = (b.getMinY() + b.getMaxY()) / 2.0;
+        final var b = result.getBoundsInParent();
+        final var centerX = (b.getMinX() + b.getMaxX()) / 2.0;
+        final var centerY = (b.getMinY() + b.getMaxY()) / 2.0;
         result.setTranslateX(-centerX);
         result.setTranslateY(-centerY);
         

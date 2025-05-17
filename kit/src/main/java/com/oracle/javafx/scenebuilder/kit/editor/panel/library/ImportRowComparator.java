@@ -49,7 +49,7 @@ class ImportRowComparator implements Comparator<ImportRow> {
      * @param ir2
      */
     @Override
-    public int compare(ImportRow ir1, ImportRow ir2) {
+    public int compare(final ImportRow ir1, final ImportRow ir2) {
         return ir1.getJarReportEntry().getKlass().getSimpleName().compareToIgnoreCase(ir2.getJarReportEntry().getKlass().getSimpleName());
     }
 }

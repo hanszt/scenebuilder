@@ -33,7 +33,6 @@ package com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.handles;
 
 import java.util.List;
 
-import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.shape.Circle;
@@ -54,8 +53,8 @@ public class LineHandles extends AbstractCurveHandles<Line> {
     private final Circle endHandle = new Circle(SELECTION_HANDLES_SIZE / 2.0);
 
     
-    public LineHandles(ContentPanelController contentPanelController,
-            FXOMInstance fxomInstance) {
+    public LineHandles(final ContentPanelController contentPanelController,
+                       final FXOMInstance fxomInstance) {
         super(contentPanelController, fxomInstance, Line.class);
         
         setupHandleState(startHandle);
@@ -78,11 +77,11 @@ public class LineHandles extends AbstractCurveHandles<Line> {
      */
     @Override
     protected void layoutDecoration() {
-        final Line l = getSceneGraphObject();
+        final var l = getSceneGraphObject();
         
-        final boolean snapToPixel = true;
-        final Point2D s = sceneGraphObjectToDecoration(l.getStartX(), l.getStartY(), snapToPixel);
-        final Point2D e = sceneGraphObjectToDecoration(l.getEndX(), l.getEndY(), snapToPixel);
+        final var snapToPixel = true;
+        final var s = sceneGraphObjectToDecoration(l.getStartX(), l.getStartY(), snapToPixel);
+        final var e = sceneGraphObjectToDecoration(l.getEndX(), l.getEndY(), snapToPixel);
 
         startHandle.setCenterX(s.getX());
         startHandle.setCenterY(s.getY());
@@ -94,7 +93,7 @@ public class LineHandles extends AbstractCurveHandles<Line> {
     protected void startListeningToSceneGraphObject() {
         super.startListeningToSceneGraphObject();
         
-        final Line l = getSceneGraphObject();
+        final var l = getSceneGraphObject();
         l.startXProperty().addListener(coordinateListener);
         l.startYProperty().addListener(coordinateListener);
         l.endXProperty().addListener(coordinateListener);
@@ -105,7 +104,7 @@ public class LineHandles extends AbstractCurveHandles<Line> {
     protected void stopListeningToSceneGraphObject() {
         super.stopListeningToSceneGraphObject();
         
-        final Line l = getSceneGraphObject();
+        final var l = getSceneGraphObject();
         l.startXProperty().removeListener(coordinateListener);
         l.startYProperty().removeListener(coordinateListener);
         l.endXProperty().removeListener(coordinateListener);
@@ -113,7 +112,7 @@ public class LineHandles extends AbstractCurveHandles<Line> {
     }
 
     @Override
-    public AbstractGesture findGesture(Node node) {
+    public AbstractGesture findGesture(final Node node) {
         final AbstractGesture result;
         
         if (node == startHandle) {
@@ -139,10 +138,10 @@ public class LineHandles extends AbstractCurveHandles<Line> {
      * Private
      */
     
-    private void setupHandleState(Circle handleCircle) {
+    private void setupHandleState(final Circle handleCircle) {
         
-        final String styleClass = isEnabled() ? SELECTION_HANDLES : SELECTION_HANDLES_DIM;
-        final Cursor cursor = isEnabled() ? Cursor.OPEN_HAND : Cursor.DEFAULT;
+        final var styleClass = isEnabled() ? SELECTION_HANDLES : SELECTION_HANDLES_DIM;
+        final var cursor = isEnabled() ? Cursor.OPEN_HAND : Cursor.DEFAULT;
         
         handleCircle.getStyleClass().add(styleClass);
         handleCircle.setCursor(cursor);
@@ -152,7 +151,7 @@ public class LineHandles extends AbstractCurveHandles<Line> {
     /* 
      * Wraper to avoid the 'leaking this in constructor' warning emitted by NB.
      */
-    private void setupHandles(Node node) {
+    private void setupHandles(final Node node) {
         attachHandles(node, this);
     }
 }

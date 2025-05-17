@@ -40,11 +40,9 @@ import com.oracle.javafx.scenebuilder.kit.metadata.property.ValuePropertyMetadat
 import com.oracle.javafx.scenebuilder.kit.util.CssInternal;
 import com.oracle.javafx.scenebuilder.kit.util.URLUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -78,13 +76,13 @@ public class StyleClassEditor extends InlineListEditor {
     private List<String> themeClasses;
     private EditorController editorController;
 
-    public StyleClassEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses,
-            Set<FXOMInstance> selectedInstances, EditorController editorController) {
+    public StyleClassEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses,
+                            final Set<FXOMInstance> selectedInstances, final EditorController editorController) {
         super(propMeta, selectedClasses);
         initialize(selectedInstances, editorController);
     }
     
-    private void initialize(Set<FXOMInstance> selectedInstances, EditorController editorController) {
+    private void initialize(final Set<FXOMInstance> selectedInstances, final EditorController editorController) {
         this.selectedInstances = selectedInstances;
         this.editorController = editorController;
         setLayoutFormat(PropertyEditor.LayoutFormat.DOUBLE_LINE);
@@ -99,7 +97,7 @@ public class StyleClassEditor extends InlineListEditor {
         if (cssClassesMap == null) {
             cssClassesMap = CssInternal.getStyleClassesMap(editorController, selectedInstances);
             // We don't want the theme classes to be suggested: remove them from the list
-            for (String themeClass : themeClasses) {
+            for (final var themeClass : themeClasses) {
                 cssClassesMap.remove(themeClass);
             }
         }
@@ -108,10 +106,10 @@ public class StyleClassEditor extends InlineListEditor {
 
     @Override
     public Object getValue() {
-        List<String> value = FXCollections.observableArrayList();
+        final List<String> value = FXCollections.observableArrayList();
         // Group all the item values in a list
-        for (EditorItem styleItem : getEditorItems()) {
-            String itemValue = EditorUtils.toString(styleItem.getValue());
+        for (final var styleItem : getEditorItems()) {
+            final var itemValue = EditorUtils.toString(styleItem.getValue());
             if (itemValue.isEmpty()) {
                 continue;
             }
@@ -127,7 +125,7 @@ public class StyleClassEditor extends InlineListEditor {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void setValue(Object value) {
+    public void setValue(final Object value) {
         setValueGeneric(value);
         if (value == null) {
             reset();
@@ -141,8 +139,8 @@ public class StyleClassEditor extends InlineListEditor {
             return;
         }
 
-        Iterator<EditorItem> itemsIter = new ArrayList<>(getEditorItems()).iterator();
-        for (String item : (List<String>) value) {
+        final var itemsIter = new ArrayList<>(getEditorItems()).iterator();
+        for (var item : (List<String>) value) {
             item = item.trim();
             if (item.isEmpty()) {
                 continue;
@@ -150,14 +148,14 @@ public class StyleClassEditor extends InlineListEditor {
             
             // We don't want to show the default theme classes
             // (e.g. combo-box, combo-box-base for ComboBox)
-            Object defaultValue = getPropertyMeta().getDefaultValueObject();
+            final var defaultValue = getPropertyMeta().getDefaultValueObject();
             assert defaultValue instanceof List;
-            List<String> defaultClasses = (List<String>) defaultValue;
+            final var defaultClasses = (List<String>) defaultValue;
             if (defaultClasses.contains(item)) {
                 continue;
             }
             
-            EditorItem editorItem;
+            final EditorItem editorItem;
             if (itemsIter.hasNext()) {
                 // re-use the current items first
                 editorItem = itemsIter.next();
@@ -169,13 +167,13 @@ public class StyleClassEditor extends InlineListEditor {
         }
         // Empty the remaining items, if needed
         while (itemsIter.hasNext()) {
-            EditorItem editorItem = itemsIter.next();
+            final var editorItem = itemsIter.next();
             removeItem(editorItem);
         }
     }
 
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses,
-            Set<FXOMInstance> selectedInstances, EditorController editorController) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses,
+                      final Set<FXOMInstance> selectedInstances, final EditorController editorController) {
         super.reset(propMeta, selectedClasses);
         this.selectedInstances = selectedInstances;
         this.editorController = editorController;
@@ -186,7 +184,7 @@ public class StyleClassEditor extends InlineListEditor {
 
     @Override
     public void requestFocus() {
-        EditorItem firstItem = getEditorItems().get(0);
+        final var firstItem = getEditorItems().getFirst();
         assert firstItem instanceof StyleClassItem;
         ((StyleClassItem) firstItem).requestFocus();
     }
@@ -223,7 +221,7 @@ public class StyleClassEditor extends InlineListEditor {
         private Map<String, String> cssClassesMap;
         private EditorItemDelegate editor;
 
-        public StyleClassItem(EditorItemDelegate editor, Map<String, String> cssClassesMap) {
+        public StyleClassItem(final EditorItemDelegate editor, final Map<String, String> cssClassesMap) {
 //            System.out.println("New StyleClassItem.");
             // It is an AutoSuggestEditor without MenuButton
             super("", "", new ArrayList<>(cssClassesMap.keySet()), false); //NOI18N
@@ -231,7 +229,7 @@ public class StyleClassEditor extends InlineListEditor {
         }
 
         // Method to please FindBugs
-        private void initialize(EditorItemDelegate editor, Map<String, String> cssClassesMap) {
+        private void initialize(final EditorItemDelegate editor, final Map<String, String> cssClassesMap) {
             this.editor = editor;
             this.cssClassesMap = cssClassesMap;
             root = EditorUtils.loadFxml("StyleClassEditorItem.fxml", this);//NOI18N
@@ -240,7 +238,7 @@ public class StyleClassEditor extends InlineListEditor {
             styleClassSp.getChildren().add(super.getRoot());
 
             styleClassTf = super.getTextField();
-            EventHandler<ActionEvent> onActionListener = event -> {
+            final EventHandler<ActionEvent> onActionListener = event -> {
 //                    System.out.println("StyleClassItem : onActionListener");
                 if (getValue().equals(currentValue)) {
                     // no change
@@ -258,7 +256,7 @@ public class StyleClassEditor extends InlineListEditor {
                 currentValue = EditorUtils.toString(getValue());
             };
 
-            ChangeListener<String> textPropertyChange = (ov, prevText, newText) -> {
+            final ChangeListener<String> textPropertyChange = (ov, prevText, newText) -> {
                 if (prevText.isEmpty() || newText.isEmpty()) {
                     // Text changed FROM empty value, or TO empty value: buttons status change
                     updateButtons();
@@ -268,7 +266,7 @@ public class StyleClassEditor extends InlineListEditor {
             updateButtons();
 
             setTextEditorBehavior(styleClassTf, onActionListener, false);
-            ChangeListener<Boolean> focusListener = (observable, oldValue, newValue) -> {
+            final ChangeListener<Boolean> focusListener = (observable, oldValue, newValue) -> {
                 if (!newValue) {
                     // focus lost: commit
                     editor.editing(false, onActionListener);
@@ -289,9 +287,9 @@ public class StyleClassEditor extends InlineListEditor {
             if (!cssClassesMap.isEmpty()) {
                 actionMb.getItems().add(new SeparatorMenuItem());
             }
-            for (String className : cssClassesMap.keySet()) {
+            for (final var className : cssClassesMap.keySet()) {
                 // css classes menu items
-                MenuItem menuItem = new MenuItem(className);
+                final var menuItem = new MenuItem(className);
                 menuItem.setMnemonicParsing(false);
                 menuItem.setOnAction(t -> {
                     styleClassTf.setText(className);
@@ -313,7 +311,7 @@ public class StyleClassEditor extends InlineListEditor {
         }
 
         @Override
-        public void setValue(Object styleClass) {
+        public void setValue(final Object styleClass) {
             styleClassTf.setText(EditorUtils.toString(styleClass).trim());
             updateButtons();
             currentValue = EditorUtils.toString(getValue());
@@ -362,62 +360,62 @@ public class StyleClassEditor extends InlineListEditor {
         }
 
         @FXML
-        void add(ActionEvent event) {
-            StyleClassEditor.StyleClassItem styleClassItem = getNewStyleClassItem();
+        void add(final ActionEvent event) {
+            final var styleClassItem = getNewStyleClassItem();
             editor.add(this, styleClassItem);
             styleClassItem.requestFocus();
 
         }
 
         @FXML
-        void remove(ActionEvent event) {
+        void remove(final ActionEvent event) {
             editor.remove(this);
         }
 
         @FXML
-        void up(ActionEvent event) {
+        void up(final ActionEvent event) {
             editor.up(this);
         }
 
         @FXML
-        void down(ActionEvent event) {
+        void down(final ActionEvent event) {
             editor.down(this);
         }
 
         @FXML
-        void plusBtTyped(KeyEvent event) {
+        void plusBtTyped(final KeyEvent event) {
             if (event.getCode() == KeyCode.ENTER) {
                 editor.add(this, getNewStyleClassItem());
             }
         }
 
         @FXML
-        void open(ActionEvent event) {
-            String urlStr = cssClassesMap.get(getValue());
+        void open(final ActionEvent event) {
+            final var urlStr = cssClassesMap.get(getValue());
             if (urlStr == null) {
                 return;
             }
             try {
                 EditorPlatform.open(urlStr);
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
                 editorController.getMessageLog().logWarningMessage(
                         "inspector.stylesheet.cannotopen", urlStr); //NOI18N
             }
         }
 
         @FXML
-        void reveal(ActionEvent event) {
-            String urlStr = cssClassesMap.get(getValue());
+        void reveal(final ActionEvent event) {
+            final var urlStr = cssClassesMap.get(getValue());
             if (urlStr == null) {
                 return;
             }
             try {
-                File file = URLUtils.getFile(urlStr);
+                final var file = URLUtils.getFile(urlStr);
                 if (file == null) { // urlStr is not a file URL
                     return;
                 }
                 EditorPlatform.revealInFileBrowser(file);
-            } catch (URISyntaxException | IOException ex) {
+            } catch (final URISyntaxException | IOException ex) {
                 editorController.getMessageLog().logWarningMessage(
                         "inspector.stylesheet.cannotreveal", urlStr); //NOI18N
             }
@@ -434,7 +432,7 @@ public class StyleClassEditor extends InlineListEditor {
                 removeMi.setDisable(false);
             }
             // set text of open / reveal menu items
-            String stylesheetUrl = cssClassesMap.get(getValue());
+            final var stylesheetUrl = cssClassesMap.get(getValue());
             if (stylesheetUrl == null) {
                 // className is unknown: open / reveal should not be visible
                 openMi.setVisible(false);
@@ -442,7 +440,7 @@ public class StyleClassEditor extends InlineListEditor {
             } else {
                 openMi.setVisible(true);
                 revealMi.setVisible(true);
-                String stylesheet = EditorUtils.getSimpleFileName(stylesheetUrl);
+                final var stylesheet = EditorUtils.getSimpleFileName(stylesheetUrl);
                 openMi.setText(I18N.getString("inspector.list.open", stylesheet));
                 if (EditorPlatform.IS_MAC) {
                     revealMi.setText(I18N.getString("inspector.list.reveal.finder", stylesheet));
@@ -453,12 +451,12 @@ public class StyleClassEditor extends InlineListEditor {
         }
 
         @SuppressWarnings("unused")
-        protected void disablePlusButton(boolean disable) {
+        protected void disablePlusButton(final boolean disable) {
             plusBt.setDisable(disable);
         }
 
         @SuppressWarnings("unused")
-        protected void disableRemove(boolean disable) {
+        protected void disableRemove(final boolean disable) {
             removeMi.setDisable(disable);
         }
     }

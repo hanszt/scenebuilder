@@ -47,7 +47,7 @@ class PointIndex {
     private boolean sorted;
 
 
-    public void addPoint(Point2D point) {
+    public void addPoint(final Point2D point) {
         points.add(point);
         sorted = false;
     }
@@ -60,16 +60,16 @@ class PointIndex {
         return points.isEmpty();
     }
 
-    public List<Point2D> match(Point2D target, double threshold) {
+    public List<Point2D> match(final Point2D target, final double threshold) {
         assert threshold >= 0;
 
-        if (sorted == false) {
+        if (!sorted) {
             Collections.sort(points, comparator);
         }
-        double bestDelta = Double.MAX_VALUE;
+        var bestDelta = Double.MAX_VALUE;
         final List<Point2D> result = new ArrayList<>();
-        for (Point2D point : points) {
-            final double delta = Math.sqrt(Math.pow(target.getX() - point.getX(), 2) + Math.pow(target.getY() - point.getY(), 2));
+        for (final var point : points) {
+            final var delta = Math.sqrt(Math.pow(target.getX() - point.getX(), 2) + Math.pow(target.getY() - point.getY(), 2));
             if (delta < threshold) {
                 if (MathUtils.equals(delta, bestDelta)) {
                     result.add(point);

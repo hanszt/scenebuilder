@@ -39,7 +39,6 @@ import com.oracle.javafx.scenebuilder.kit.util.Deprecation;
 import com.oracle.javafx.scenebuilder.kit.util.MathUtils;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.shape.Line;
@@ -55,8 +54,8 @@ public class GenericParentTring extends AbstractNodeTring<Parent> {
     private final int targetIndex;
     private final Line crackLine = new Line();
 
-    public GenericParentTring(ContentPanelController contentPanelController, 
-            FXOMInstance fxomInstance, int targetIndex) {
+    public GenericParentTring(final ContentPanelController contentPanelController,
+                              final FXOMInstance fxomInstance, final int targetIndex) {
         super(contentPanelController, fxomInstance, Parent.class);
         assert targetIndex >= -1;
         this.targetIndex = targetIndex;
@@ -67,14 +66,14 @@ public class GenericParentTring extends AbstractNodeTring<Parent> {
     }
 
     
-    public static int lookupCrackIndex(FXOMObject fxomObject, double sceneX, double sceneY) {
+    public static int lookupCrackIndex(final FXOMObject fxomObject, final double sceneX, final double sceneY) {
         assert fxomObject != null;
         assert fxomObject.getSceneGraphObject() instanceof Parent;
         
-        final DesignHierarchyMask m = new DesignHierarchyMask(fxomObject);
-        final Parent parent = (Parent) m.getFxomObject().getSceneGraphObject();
-        final Point2D hitPoint = parent.sceneToLocal(sceneX, sceneY, true /* rootScene */);
-        final int childCount = m.getSubComponentCount();
+        final var m = new DesignHierarchyMask(fxomObject);
+        final var parent = (Parent) m.getFxomObject().getSceneGraphObject();
+        final var hitPoint = parent.sceneToLocal(sceneX, sceneY, true /* rootScene */);
+        final var childCount = m.getSubComponentCount();
         
         final int targetIndex;
         if (childCount == 0) {
@@ -84,27 +83,27 @@ public class GenericParentTring extends AbstractNodeTring<Parent> {
         } else {
             assert childCount >= 1;
             
-            final double hitX = hitPoint.getX();
-            final double hitY = hitPoint.getY();
-            double minDistance = Double.MAX_VALUE;
-            int minIndex = -1;
+            final var hitX = hitPoint.getX();
+            final var hitY = hitPoint.getY();
+            var minDistance = Double.MAX_VALUE;
+            var minIndex = -1;
             for (int i = 0, count = childCount; i < count; i++) {
-                final Bounds cb 
+                final var cb
                         = GenericParentTring.computeCrackBounds(m, i);
-                final double midX = (cb.getMinX() + cb.getMaxX()) / 2.0;
-                final double midY = (cb.getMinY() + cb.getMaxY()) / 2.0;
-                final double d = MathUtils.distance(hitX, hitY, midX, midY);
+                final var midX = (cb.getMinX() + cb.getMaxX()) / 2.0;
+                final var midY = (cb.getMinY() + cb.getMaxY()) / 2.0;
+                final var d = MathUtils.distance(hitX, hitY, midX, midY);
                 if (d < minDistance) {
                     minIndex = i;
                     minDistance = d;
                 }
             }
 
-            final Bounds cb 
+            final var cb
                     = GenericParentTring.computeCrackBounds(m, -1);
-            final double midX = (cb.getMinX() + cb.getMaxX()) / 2.0;
-            final double midY = (cb.getMinY() + cb.getMaxY()) / 2.0;
-            final double d = MathUtils.distance(hitX, hitY, midX, midY);
+            final var midX = (cb.getMinX() + cb.getMaxX()) / 2.0;
+            final var midY = (cb.getMinY() + cb.getMaxY()) / 2.0;
+            final var d = MathUtils.distance(hitX, hitY, midX, midY);
             if (d < minDistance) {
                 minIndex = -1;
             }
@@ -124,8 +123,8 @@ public class GenericParentTring extends AbstractNodeTring<Parent> {
         
         super.layoutDecoration();
         
-        final DesignHierarchyMask m = new DesignHierarchyMask(getFxomObject());
-        final int childCount = m.getSubComponentCount();
+        final var m = new DesignHierarchyMask(getFxomObject());
+        final var childCount = m.getSubComponentCount();
         
         if (childCount == 0) {
             // No crack line
@@ -133,16 +132,16 @@ public class GenericParentTring extends AbstractNodeTring<Parent> {
             
         } else {
             // Computes the crack x
-            final Bounds crackBounds = computeCrackBounds(m, targetIndex);
-            final double crackX = (crackBounds.getMinX() + crackBounds.getMaxX()) / 2.0;
-            final double crackY0 = crackBounds.getMinY();
-            final double crackY1 = crackBounds.getMaxY();
-            final double strokeWidth = crackBounds.getWidth();
+            final var crackBounds = computeCrackBounds(m, targetIndex);
+            final var crackX = (crackBounds.getMinX() + crackBounds.getMaxX()) / 2.0;
+            final var crackY0 = crackBounds.getMinY();
+            final var crackY1 = crackBounds.getMaxY();
+            final var strokeWidth = crackBounds.getWidth();
             
             // Updates the crack line
-            final boolean snapToPixel = true;
-            final Point2D p0 = sceneGraphObjectToDecoration(crackX, crackY0, snapToPixel);
-            final Point2D p1 = sceneGraphObjectToDecoration(crackX, crackY1, snapToPixel);
+            final var snapToPixel = true;
+            final var p0 = sceneGraphObjectToDecoration(crackX, crackY0, snapToPixel);
+            final var p1 = sceneGraphObjectToDecoration(crackX, crackY1, snapToPixel);
 
             crackLine.setVisible(true);
             crackLine.setStartX(p0.getX());
@@ -157,7 +156,7 @@ public class GenericParentTring extends AbstractNodeTring<Parent> {
      * Private
      */
     
-    private static Bounds computeCrackBounds(DesignHierarchyMask m, int childIndex) {
+    private static Bounds computeCrackBounds(final DesignHierarchyMask m, final int childIndex) {
         assert m != null;
         assert m.isAcceptingSubComponent();
         assert childIndex >= -1;
@@ -165,12 +164,12 @@ public class GenericParentTring extends AbstractNodeTring<Parent> {
         
         
         final double crackX, crackY0, crackY1, crackWidth;
-        final int childCount = m.getSubComponentCount();
+        final var childCount = m.getSubComponentCount();
         final Node child, skinParent;
         if (childIndex == -1) {
             child = getChildNode(m, childCount-1);
             skinParent = child.getParent();
-            final Bounds cb = child.localToParent(child.getLayoutBounds());
+            final var cb = child.localToParent(child.getLayoutBounds());
             crackX = cb.getMaxX();
             crackY0 = cb.getMinY();
             crackY1 = cb.getMaxY();
@@ -178,7 +177,7 @@ public class GenericParentTring extends AbstractNodeTring<Parent> {
         } else if (childIndex == 0) {
             child = getChildNode(m, 0);
             skinParent = child.getParent();
-            final Bounds cb = child.localToParent(child.getLayoutBounds());
+            final var cb = child.localToParent(child.getLayoutBounds());
             crackX = cb.getMinX();
             crackY0 = cb.getMinY();
             crackY1 = cb.getMaxY();
@@ -202,7 +201,7 @@ public class GenericParentTring extends AbstractNodeTring<Parent> {
              */
             assert (1 <= childIndex) && (childIndex < childCount);
             child = getChildNode(m, childIndex);
-            final Node prevChild = getChildNode(m, childIndex-1);
+            final var prevChild = getChildNode(m, childIndex - 1);
             
             /*
              * child and prevChild may or may not be visible.
@@ -216,8 +215,8 @@ public class GenericParentTring extends AbstractNodeTring<Parent> {
                 assert child.getParent() == prevChild.getParent();
                 skinParent = child.getParent();
 
-                final Bounds prevBounds = prevChild.getBoundsInParent();
-                final Bounds bounds = child.getBoundsInParent();
+                final var prevBounds = prevChild.getBoundsInParent();
+                final var bounds = child.getBoundsInParent();
                 x0 = prevBounds.getMaxX();
                 x1 = bounds.getMinX();
                 y0 = bounds.getMinY();
@@ -226,13 +225,13 @@ public class GenericParentTring extends AbstractNodeTring<Parent> {
                 y3 = bounds.getMaxY();
             } else if (child.getParent() != null) {
                 skinParent = child.getParent();
-                final Bounds bounds = child.getBoundsInParent();
+                final var bounds = child.getBoundsInParent();
                 x0 = x1 = bounds.getMinX();
                 y0 = y1 = bounds.getMinY();
                 y2 = y3 = bounds.getMaxY();
             } else if (prevChild.getParent() != null) {
                 skinParent = prevChild.getParent();
-                final Bounds prevBounds = prevChild.getBoundsInParent();
+                final var prevBounds = prevChild.getBoundsInParent();
                 x0 = x1 = prevBounds.getMaxX();
                 y0 = y1 = prevBounds.getMinY();
                 y2 = y3 = prevBounds.getMaxY();
@@ -256,14 +255,14 @@ public class GenericParentTring extends AbstractNodeTring<Parent> {
         }
         
         assert m.getFxomObject().getSceneGraphObject() instanceof Parent;
-        final Parent parent = (Parent) m.getFxomObject().getSceneGraphObject();
+        final var parent = (Parent) m.getFxomObject().getSceneGraphObject();
         final double pCrackX, pCrackY0, pCrackY1;
         if (parent != skinParent) {
             // m.getFxomObject() is a skinned component : so its fxom children
             // are not the direct Node children.
             if (skinParent != null) {
-                final Point2D p0 = Deprecation.localToLocal(skinParent, crackX, crackY0, parent);
-                final Point2D p1 = Deprecation.localToLocal(skinParent, crackX, crackY1, parent);
+                final var p0 = Deprecation.localToLocal(skinParent, crackX, crackY0, parent);
+                final var p1 = Deprecation.localToLocal(skinParent, crackX, crackY1, parent);
                 assert MathUtils.equals(p0.getX(), p1.getX());
                 pCrackX = p0.getX();
                 pCrackY0 = p0.getY();
@@ -286,13 +285,13 @@ public class GenericParentTring extends AbstractNodeTring<Parent> {
     }
     
     
-    private static Node getChildNode(DesignHierarchyMask m, int childIndex) {
+    private static Node getChildNode(final DesignHierarchyMask m, final int childIndex) {
         assert m != null;
         assert m.isAcceptingSubComponent();
         assert 0 <= childIndex;
         assert childIndex < m.getSubComponentCount();
         
-        final FXOMObject childObject = m.getSubComponentAtIndex(childIndex);
+        final var childObject = m.getSubComponentAtIndex(childIndex);
         assert childObject.getSceneGraphObject() instanceof Node;
         
         return (Node)childObject.getSceneGraphObject();

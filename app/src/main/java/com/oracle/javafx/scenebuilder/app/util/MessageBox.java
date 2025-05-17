@@ -76,7 +76,7 @@ public class MessageBox<T extends Serializable> {
     private PollingThread<T> pollingThread;
     private Delegate<T> delegate;
     
-    public MessageBox(String folder, Class<T> messageClass, int pollingTime) {
+    public MessageBox(final String folder, final Class<T> messageClass, final int pollingTime) {
         assert folder != null;
         assert messageClass != null;
         assert pollingTime > 0;
@@ -88,7 +88,7 @@ public class MessageBox<T extends Serializable> {
         this.boxMutex = new FileMutex(Paths.get(folder, "box.mtx")); //NOI18N
         this.messageMutex = new FileMutex(Paths.get(folder,"message.mtx")); //NOI18N
         
-        if (Files.exists(Paths.get(folder)) == false) {
+        if (!Files.exists(Paths.get(folder))) {
             throw new IllegalArgumentException(folder + " does not exist"); //NOI18N
         }
     }
@@ -97,9 +97,9 @@ public class MessageBox<T extends Serializable> {
         return folder;
     }
     
-    public boolean grab(Delegate<T> delegate) 
+    public boolean grab(final Delegate<T> delegate)
     throws IOException {
-        assert boxMutex.isLocked() == false;
+        assert !boxMutex.isLocked();
         assert pollingThread == null;
         assert delegate != null;
         
@@ -124,29 +124,29 @@ public class MessageBox<T extends Serializable> {
         
         try {
             boxMutex.unlock();
-        } catch(IOException e) {
+        } catch(final IOException e) {
             // Strange
             Logger.getLogger(getClass().getName()).log(Level.WARNING, "Failed to unlock message box mutex: ", e);
         }
     }
     
     
-    public void sendMessage(T message) throws IOException, InterruptedException {
-        assert boxMutex.isLocked() == false;
-        assert messageMutex.isLocked() == false;
+    public void sendMessage(final T message) throws IOException, InterruptedException {
+        assert !boxMutex.isLocked();
+        assert !messageMutex.isLocked();
         
-        final Path transientFile = Files.createTempFile(Paths.get(folder), null, null);
+        final var transientFile = Files.createTempFile(Paths.get(folder), null, null);
         Files.write(transientFile, serializeMessage(message));
         
         messageMutex.lock(100L * pollingTime);
         boolean retry;
-        int accessDeniedCount = 0;
+        var accessDeniedCount = 0;
         do {
-            if (Files.exists(messageFile) == false) {
+            if (!Files.exists(messageFile)) {
                 try {
                     Files.move(transientFile, messageFile, StandardCopyOption.ATOMIC_MOVE);
                     retry = false;
-                } catch(AccessDeniedException x) {
+                } catch(final AccessDeniedException x) {
                     // Sometime on Windows, move is denied (?).
                     // So we retry a few times...
                     if (accessDeniedCount++ <= 10) {
@@ -187,11 +187,11 @@ public class MessageBox<T extends Serializable> {
      * Private
      */    
     
-    private byte[] serializeMessage(T message) throws IOException {
+    private byte[] serializeMessage(final T message) throws IOException {
         final byte[] result;
         
-        try (ByteArrayOutputStream bos = new ByteArrayOutputStream()) {
-            try (ObjectOutputStream oos = new ObjectOutputStream(bos)) {
+        try (final var bos = new ByteArrayOutputStream()) {
+            try (final var oos = new ObjectOutputStream(bos)) {
                 oos.writeObject(message);
                 result = bos.toByteArray();
             }
@@ -201,14 +201,14 @@ public class MessageBox<T extends Serializable> {
     }
     
     
-    private T unserializeMessage(byte[] bytes) throws IOException {
+    private T unserializeMessage(final byte[] bytes) throws IOException {
         final T result;
         
-        try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes)) {
-            try (ObjectInputStream ois = new ObjectInputStream(bis)) {
+        try (final var bis = new ByteArrayInputStream(bytes)) {
+            try (final var ois = new ObjectInputStream(bis)) {
                 try {
                     result = messageClass.cast(ois.readObject());
-                } catch(ClassNotFoundException x) {
+                } catch(final ClassNotFoundException x) {
                     // Strange
                     throw new IOException(x);
                 }
@@ -223,7 +223,7 @@ public class MessageBox<T extends Serializable> {
         
         private final MessageBox<T> messageBox;
 
-        public PollingThread(MessageBox<T> messageBox) {
+        public PollingThread(final MessageBox<T> messageBox) {
             super("MessageBox[" + messageBox.getFolder() + "]"); //NOI18N
             this.messageBox = messageBox;
         }
@@ -235,15 +235,15 @@ public class MessageBox<T extends Serializable> {
                 do {
                     if (Files.exists(messageBox.messageFile)) {
                         try {
-                            final byte[] messageBytes = Files.readAllBytes(messageBox.messageFile);
-                            final T message = messageBox.unserializeMessage(messageBytes);
+                            final var messageBytes = Files.readAllBytes(messageBox.messageFile);
+                            final var message = messageBox.unserializeMessage(messageBytes);
                             messageBox.delegate.messageBoxDidGetMessage(message);
-                        } catch(IOException x) {
+                        } catch(final IOException x) {
                             messageBox.delegate.messageBoxDidCatchException(x);
                         } finally {
                             try {
                                 Files.delete(messageBox.messageFile);
-                            } catch(IOException x) {
+                            } catch(final IOException x) {
                                 messageBox.delegate.messageBoxDidCatchException(x);
                             }
                         }
@@ -253,7 +253,7 @@ public class MessageBox<T extends Serializable> {
                     }
                 } while (true);
                 
-            } catch(InterruptedException x) {
+            } catch(final InterruptedException x) {
             }
         }
     }

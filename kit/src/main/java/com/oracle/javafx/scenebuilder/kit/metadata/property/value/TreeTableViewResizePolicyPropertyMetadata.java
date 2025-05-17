@@ -43,7 +43,7 @@ import javafx.util.Callback;
  */
 public class TreeTableViewResizePolicyPropertyMetadata extends CallbackPropertyMetadata {
     
-    public TreeTableViewResizePolicyPropertyMetadata(PropertyName name, boolean readWrite, Object defaultValue, InspectorPath inspectorPath) {
+    public TreeTableViewResizePolicyPropertyMetadata(final PropertyName name, final boolean readWrite, final Object defaultValue, final InspectorPath inspectorPath) {
         super(name, readWrite, defaultValue, inspectorPath);
         assert (defaultValue == TreeTableView.CONSTRAINED_RESIZE_POLICY)
                 || (defaultValue == TreeTableView.UNCONSTRAINED_RESIZE_POLICY);
@@ -53,7 +53,7 @@ public class TreeTableViewResizePolicyPropertyMetadata extends CallbackPropertyM
      * CallbackPropertyMetadata
      */
     @Override
-    protected Object castValue(Object value) {
+    protected Object castValue(final Object value) {
         assert value instanceof Callback<?,?> : "value=" + value;
         return value;
     }
@@ -64,7 +64,7 @@ public class TreeTableViewResizePolicyPropertyMetadata extends CallbackPropertyM
     }
     
     @Override
-    protected void updateFxomInstanceWithValue(FXOMInstance valueInstance, Object value) {
+    protected void updateFxomInstanceWithValue(final FXOMInstance valueInstance, final Object value) {
         final String fxConstant;
         
         if (value == TreeTableView.CONSTRAINED_RESIZE_POLICY) {

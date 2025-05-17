@@ -35,7 +35,6 @@ import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
 import com.oracle.javafx.scenebuilder.kit.metadata.property.ValuePropertyMetadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.property.value.CursorPropertyMetadata;
 
-import java.util.Map;
 import java.util.Set;
 
 import javafx.event.ActionEvent;
@@ -47,7 +46,6 @@ import javafx.scene.Parent;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
-import javafx.scene.control.MenuItem;
 
 /**
  * Insets editor (for top/right/bottom/left fields).
@@ -68,7 +66,7 @@ public class CursorEditor extends PropertyEditor {
     private Cursor cursor = Cursor.DEFAULT;
     private String inheritedText, inheritedParentText;
 
-    public CursorEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public CursorEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super(propMeta, selectedClasses);
         initialize();
     }
@@ -76,18 +74,18 @@ public class CursorEditor extends PropertyEditor {
     // Separate method to please FindBugs
     private void initialize() {
         root = EditorUtils.loadFxml("CursorEditor.fxml", this); //NOI18N
-        int index = 0;
-        Map<Cursor, String> predefinedCursors = CursorPropertyMetadata.getCursorMap();
+        var index = 0;
+        final var predefinedCursors = CursorPropertyMetadata.getCursorMap();
         // Order the cursors
-        Cursor[] cursorList = {Cursor.DEFAULT, Cursor.CLOSED_HAND, Cursor.OPEN_HAND, Cursor.HAND, Cursor.MOVE, Cursor.WAIT,
+        final var cursorList = new Cursor[]{Cursor.DEFAULT, Cursor.CLOSED_HAND, Cursor.OPEN_HAND, Cursor.HAND, Cursor.MOVE, Cursor.WAIT,
             Cursor.TEXT, Cursor.V_RESIZE, Cursor.H_RESIZE, Cursor.N_RESIZE, Cursor.NE_RESIZE, Cursor.E_RESIZE, Cursor.SE_RESIZE,
             Cursor.S_RESIZE, Cursor.SW_RESIZE, Cursor.W_RESIZE, Cursor.NW_RESIZE,
             Cursor.CROSSHAIR, Cursor.NONE, Cursor.DISAPPEAR};
-        for (Cursor cursorObj : cursorList) {
-            String cursorStr = predefinedCursors.get(cursorObj);
-            final Label cursorLabel = new Label(cursorStr);
+        for (final var cursorObj : cursorList) {
+            final var cursorStr = predefinedCursors.get(cursorObj);
+            final var cursorLabel = new Label(cursorStr);
             cursorLabel.setCursor(cursorObj);
-            CheckMenuItem menuItem = new CheckMenuItem();
+            final var menuItem = new CheckMenuItem();
             menuItem.setGraphic(cursorLabel);
             // add predefined cursors before "inherited" menu item
             cursorMb.getItems().add(index++, menuItem);
@@ -114,7 +112,7 @@ public class CursorEditor extends PropertyEditor {
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(final Object value) {
         setValueGeneric(value);
         if (isSetValueDone()) {
             return;
@@ -139,7 +137,7 @@ public class CursorEditor extends PropertyEditor {
     }
 
     @Override
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super.reset(propMeta, selectedClasses);
     }
 
@@ -152,20 +150,20 @@ public class CursorEditor extends PropertyEditor {
     // FXML methods
     //
     @FXML
-    void inherited(ActionEvent event) {
+    void inherited(final ActionEvent event) {
         cursor = null;
         selectCursor(inheritedParentText);
         userUpdateValueProperty(getValue());
     }
 
     // Select the menu item corresponding to a cursor string.
-    private void selectCursor(String cursorStr) {
-        for (MenuItem menuItem : cursorMb.getItems()) {
+    private void selectCursor(final String cursorStr) {
+        for (final var menuItem : cursorMb.getItems()) {
             if (!(menuItem instanceof CheckMenuItem)) {
                 // inherited action
                 continue;
             }
-            CheckMenuItem checkMenuItem = (CheckMenuItem) menuItem;
+            final var checkMenuItem = (CheckMenuItem) menuItem;
             assert checkMenuItem.getGraphic() instanceof Label;
             if (cursorStr.equals(((Label) checkMenuItem.getGraphic()).getText())) {
                 checkMenuItem.setSelected(true);

@@ -40,7 +40,7 @@ import javafx.scene.input.KeyEvent;
  */
 public class DiscardGesture extends AbstractMouseGesture {
 
-    public DiscardGesture(ContentPanelController contentPanelController) {
+    public DiscardGesture(final ContentPanelController contentPanelController) {
         super(contentPanelController);
     }
 
@@ -69,7 +69,7 @@ public class DiscardGesture extends AbstractMouseGesture {
     }
 
     @Override
-    protected void keyEvent(KeyEvent e) {
+    protected void keyEvent(final KeyEvent e) {
     }
 
     @Override

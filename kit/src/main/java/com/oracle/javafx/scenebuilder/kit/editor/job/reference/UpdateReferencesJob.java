@@ -33,7 +33,7 @@
 package com.oracle.javafx.scenebuilder.kit.editor.job.reference;
 
 import com.oracle.javafx.scenebuilder.kit.editor.job.Job;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -46,7 +46,7 @@ public class UpdateReferencesJob extends Job {
     private final Job subJob;
     private final List<Job> fixJobs = new ArrayList<>();
     
-    public UpdateReferencesJob(Job subJob) {
+    public UpdateReferencesJob(final Job subJob) {
         super(subJob.getEditorController());
         this.subJob = subJob;
     }
@@ -70,7 +70,7 @@ public class UpdateReferencesJob extends Job {
 
     @Override
     public void execute() {
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
+        final var fxomDocument = getEditorController().getFxomDocument();
         
         fxomDocument.beginUpdate();
         
@@ -78,7 +78,7 @@ public class UpdateReferencesJob extends Job {
         subJob.execute();
         
         // Now sorts the reference in the document and archives the sorting jobs
-        final ReferencesUpdater updater = new ReferencesUpdater(getEditorController());
+        final var updater = new ReferencesUpdater(getEditorController());
         updater.update();
         fixJobs.addAll(updater.getExecutedJobs());
         
@@ -87,10 +87,10 @@ public class UpdateReferencesJob extends Job {
 
     @Override
     public void undo() {
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
+        final var fxomDocument = getEditorController().getFxomDocument();
         
         fxomDocument.beginUpdate();
-        for (int i = fixJobs.size() - 1; i >= 0; i--) {
+        for (var i = fixJobs.size() - 1; i >= 0; i--) {
             fixJobs.get(i).undo();
         }
         subJob.undo();
@@ -99,11 +99,11 @@ public class UpdateReferencesJob extends Job {
 
     @Override
     public void redo() {
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
+        final var fxomDocument = getEditorController().getFxomDocument();
         
         fxomDocument.beginUpdate();
         subJob.redo();
-        for (Job fixJob : fixJobs) {
+        for (final var fixJob : fixJobs) {
             fixJob.redo();
         }
         fxomDocument.endUpdate();

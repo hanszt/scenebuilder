@@ -47,7 +47,7 @@ public class InspectorPath implements Comparable<InspectorPath> {
     
     public static final InspectorPath UNUSED = new InspectorPath("", "", 0);
     
-    public InspectorPath(String sectionTag, String subSectionTag, int subSectionIndex) {
+    public InspectorPath(final String sectionTag, final String subSectionTag, final int subSectionIndex) {
         assert sectionTag != null;
         assert subSectionTag != null;
         assert subSectionIndex >= 0;
@@ -76,7 +76,7 @@ public class InspectorPath implements Comparable<InspectorPath> {
 
     @Override
     public int hashCode() {
-        int hash = 7;
+        var hash = 7;
         hash = 97 * hash + Objects.hashCode(this.sectionTag);
         hash = 97 * hash + Objects.hashCode(this.subSectionTag);
         hash = 97 * hash + this.subSectionIndex;
@@ -84,14 +84,14 @@ public class InspectorPath implements Comparable<InspectorPath> {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         }
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final InspectorPath other = (InspectorPath) obj;
+        final var other = (InspectorPath) obj;
         if (!Objects.equals(this.sectionTag, other.sectionTag)) {
             return false;
         }
@@ -109,7 +109,7 @@ public class InspectorPath implements Comparable<InspectorPath> {
      * Comparable
      */
     @Override
-    public int compareTo(InspectorPath o) {
+    public int compareTo(final InspectorPath o) {
         int result;
         
         result = this.sectionTag.compareTo(o.sectionTag);

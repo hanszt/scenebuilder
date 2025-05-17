@@ -36,13 +36,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -80,12 +78,12 @@ public class FXOMSaverUpdateImportInstructionsTest {
     public void testNoWildcard() {
         setupTestCase(FxmlTestInfo.NO_WILDCARD);
 
-        Set<String> imports = new TreeSet<>();
+        final Set<String> imports = new TreeSet<>();
         fxomDocument.getFxomRoot().collectDeclaredClasses().forEach(dc -> {
             imports.add(dc.getName());
         });
 
-        Set<String> givenImports = new TreeSet<>();
+        final Set<String> givenImports = new TreeSet<>();
         givenImports.add("javafx.scene.control.Button");
         givenImports.add("javafx.scene.control.ComboBox");
         givenImports.add("javafx.scene.control.TextField");
@@ -98,12 +96,12 @@ public class FXOMSaverUpdateImportInstructionsTest {
     public void testUnusedImports() {
         setupTestCase(FxmlTestInfo.UNUSED_IMPORTS);
 
-        Set<String> imports = new TreeSet<>();
+        final Set<String> imports = new TreeSet<>();
         fxomDocument.getFxomRoot().collectDeclaredClasses().forEach(dc -> {
             imports.add(dc.getName());
         });
 
-        Set<String> unusedImports = new TreeSet<>();
+        final Set<String> unusedImports = new TreeSet<>();
         unusedImports.add("java.util.Date");
         unusedImports.add("java.math.*");
         unusedImports.add("java.util.Set");
@@ -116,7 +114,7 @@ public class FXOMSaverUpdateImportInstructionsTest {
     public void testWithWildcard() {
         setupTestCase(FxmlTestInfo.WITH_WILDCARD);
 
-        Set<String> imports = new TreeSet<>();
+        final Set<String> imports = new TreeSet<>();
         fxomDocument.getFxomRoot().collectDeclaredClasses().forEach(dc -> {
             imports.add(dc.getName());
         });
@@ -130,7 +128,7 @@ public class FXOMSaverUpdateImportInstructionsTest {
     public void testWithMoreWildcards() {
         setupTestCase(FxmlTestInfo.WITH_MORE_WILDCARDS);
 
-        Set<String> imports = new TreeSet<>();
+        final Set<String> imports = new TreeSet<>();
         // java.lang.* is not a declared class, therefore not in the imports Set
         fxomDocument.getFxomRoot().collectDeclaredClasses().forEach(dc -> {
             imports.add(dc.getName());
@@ -144,7 +142,7 @@ public class FXOMSaverUpdateImportInstructionsTest {
     public void testWithGlueElements() {
         setupTestCase(FxmlTestInfo.WITH_GLUE_ELEMENTS);
 
-        Set<String> imports = new TreeSet<>();
+        final Set<String> imports = new TreeSet<>();
         fxomDocument.getFxomRoot().collectDeclaredClasses().forEach(dc -> {
             imports.add(dc.getName());
         });
@@ -157,7 +155,7 @@ public class FXOMSaverUpdateImportInstructionsTest {
     public void testDuplicates() {
         setupTestCase(FxmlTestInfo.DUPLICATES);
 
-        Set<String> imports = new TreeSet<>();
+        final Set<String> imports = new TreeSet<>();
         fxomDocument.getFxomRoot().collectDeclaredClasses().forEach(dc -> {
             imports.add(dc.getName());
         });
@@ -170,7 +168,7 @@ public class FXOMSaverUpdateImportInstructionsTest {
     public void testWildcardsAndDuplicates() {
         setupTestCase(FxmlTestInfo.WILDCARDS_AND_DUPLICATES);
 
-        Set<String> imports = new TreeSet<>();
+        final Set<String> imports = new TreeSet<>();
         fxomDocument.getFxomRoot().collectDeclaredClasses().forEach(dc -> {
             imports.add(dc.getName());
         });
@@ -187,7 +185,7 @@ public class FXOMSaverUpdateImportInstructionsTest {
     public void testCustomButton() {
         setupTestCase(FxmlTestInfo.CUSTOM_BUTTON);
 
-        Set<String> imports = new TreeSet<>();
+        final Set<String> imports = new TreeSet<>();
         fxomDocument.getFxomRoot().collectDeclaredClasses().forEach(dc -> {
             imports.add(dc.getName());
         });
@@ -208,7 +206,7 @@ public class FXOMSaverUpdateImportInstructionsTest {
     public void testImportsWithComments() {
         setupTestCase(FxmlTestInfo.HEADER_WITH_NOT_ONLY_IMPORTS);
 
-        Set<String> imports = new TreeSet<>();
+        final Set<String> imports = new TreeSet<>();
         fxomDocument.getFxomRoot().collectDeclaredClasses().forEach(dc -> {
             imports.add(dc.getName());
         });
@@ -229,7 +227,7 @@ public class FXOMSaverUpdateImportInstructionsTest {
     public void testWildcardsAndStaticProperties() {
         setupTestCase(FxmlTestInfo.WILDCARDS_AND_STATIC_PROPERTIES);
 
-        ArrayList<String> imports = new ArrayList<>();
+        final var imports = new ArrayList<String>();
         fxomDocument.getGlue().collectInstructions("import").forEach(i -> imports.add(i.getData()));
 
         assertEquals(5, imports.size(), "imports length should be 5");
@@ -244,7 +242,7 @@ public class FXOMSaverUpdateImportInstructionsTest {
     public void testPublicStaticImport() {
         setupTestCase(FxmlTestInfo.PUBLIC_STATIC_IMPORT);
 
-        ArrayList<String> imports = new ArrayList<>();
+        final var imports = new ArrayList<String>();
         fxomDocument.getGlue().collectInstructions("import").forEach(i -> imports.add(i.getData()));
 
         assertEquals(4, imports.size(), "imports length should be 4");
@@ -258,42 +256,42 @@ public class FXOMSaverUpdateImportInstructionsTest {
         return serviceUnderTest.save(fxomDocument);
     }
 
-    private void setupTestCase(FxmlTestInfo n) {
-        Path pathToFXML = Paths.get("src/test/resources/com/oracle/javafx/scenebuilder/kit/fxom/" + n.getFilename() + ".fxml");
+    private void setupTestCase(final FxmlTestInfo n) {
+        final var pathToFXML = Paths.get("src/test/resources/com/oracle/javafx/scenebuilder/kit/fxom/" + n.getFilename() + ".fxml");
         try {
-            Path pathToTestFXML = temporaryFolder.resolve("testerFXML.fxml");
+            final var pathToTestFXML = temporaryFolder.resolve("testerFXML.fxml");
 
             // Setup for the fxomDocument from the FXML file that will be tested
             setupFXOMDocument(pathToFXML);
 
-            String savedFXML = callService();
+            final var savedFXML = callService();
 
             // Creates new FXML file with the new output
             Files.write(pathToTestFXML, savedFXML.getBytes(StandardCharsets.UTF_8));
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
 
     }
 
     // setup for the FXOMDocument that will be tested
-    private void setupFXOMDocument(Path fxmlTesterFile) {
+    private void setupFXOMDocument(final Path fxmlTesterFile) {
         serviceUnderTest = new FXOMSaver();
         try {
-            URL location = fxmlTesterFile.toFile().toURI().toURL();
-            String fxmlString = getFxmlAsString(fxmlTesterFile);
+            final var location = fxmlTesterFile.toFile().toURI().toURL();
+            final var fxmlString = getFxmlAsString(fxmlTesterFile);
 
             fxomDocument = new FXOMDocument(fxmlString, location, null, null, FXOMDocumentSwitch.NORMALIZED);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
         }
     }
 
     // reads FXML file and gives it back as a String
-    private static String getFxmlAsString(Path path) throws IOException {
-        List<String> fxml = Files.readAllLines(path, StandardCharsets.UTF_8);
+    private static String getFxmlAsString(final Path path) throws IOException {
+        final var fxml = Files.readAllLines(path, StandardCharsets.UTF_8);
 
-        StringBuilder sb = new StringBuilder();
+        final var sb = new StringBuilder();
         fxml.forEach(line -> {
             sb.append(line).append('\n');
         });
@@ -316,7 +314,7 @@ public class FXOMSaverUpdateImportInstructionsTest {
         PUBLIC_STATIC_IMPORT("PublicStaticImport");
 
         private String filename;
-        FxmlTestInfo(String filename) {
+        FxmlTestInfo(final String filename) {
             this.filename = filename;
         }
 

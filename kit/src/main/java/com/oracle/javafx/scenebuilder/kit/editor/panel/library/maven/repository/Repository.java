@@ -39,7 +39,7 @@ public class Repository {
     private String user;
     private String password;
 
-    public Repository(String id, String type, String URL) {
+    public Repository(final String id, final String type, final String URL) {
         this.id = id;
         this.type = type;
         this.URL = URL;
@@ -47,7 +47,7 @@ public class Repository {
         this.password = null;
     }
 
-    public Repository(String id, String type, String URL, String user, String password) {
+    public Repository(final String id, final String type, final String URL, final String user, final String password) {
         this.id = id;
         this.type = type;
         this.URL = URL;
@@ -59,7 +59,7 @@ public class Repository {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(final String id) {
         this.id = id;
     }
 
@@ -67,7 +67,7 @@ public class Repository {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(final String type) {
         this.type = type;
     }
 
@@ -75,7 +75,7 @@ public class Repository {
         return URL;
     }
 
-    public void setURL(String URL) {
+    public void setURL(final String URL) {
         this.URL = URL;
     }
 
@@ -83,7 +83,7 @@ public class Repository {
         return user;
     }
 
-    public void setUser(String user) {
+    public void setUser(final String user) {
         this.user = user;
     }
 
@@ -91,7 +91,7 @@ public class Repository {
         return password;
     }
 
-    public void setPassword(String password) {
+    public void setPassword(final String password) {
         this.password = password;
     }
 

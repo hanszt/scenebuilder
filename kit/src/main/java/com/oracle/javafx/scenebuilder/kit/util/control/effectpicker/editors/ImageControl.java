@@ -37,11 +37,9 @@ import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
 import com.oracle.javafx.scenebuilder.kit.util.control.effectpicker.EffectPickerController;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -71,8 +69,8 @@ public class ImageControl extends GridPane {
     private final ObjectProperty<Image> value = new SimpleObjectProperty<>();
     private final EffectPickerController effectPickerController;
 
-    public ImageControl(EffectPickerController effectPickerController,
-            String labelString, Image initVal) {
+    public ImageControl(final EffectPickerController effectPickerController,
+                        final String labelString, final Image initVal) {
         this.effectPickerController = effectPickerController;
         initialize(labelString, initVal);
         if (EditorPlatform.IS_MAC) {
@@ -89,7 +87,7 @@ public class ImageControl extends GridPane {
         return value.get();
     }
 
-    public void setValue(Image image) {
+    public void setValue(final Image image) {
         value.set(image);
     }
 
@@ -102,13 +100,13 @@ public class ImageControl extends GridPane {
     }
 
     @FXML
-    void textfieldOnAction(ActionEvent e) {
-        final String location = editor_textfield.getText();
+    void textfieldOnAction(final ActionEvent e) {
+        final var location = editor_textfield.getText();
         try {
-            final URI uri = new URI(location);
-            final File file = new File(uri);
+            final var uri = new URI(location);
+            final var file = new File(uri);
             if (file.exists()) {
-                final Image image = new Image(uri.toURL().toExternalForm());
+                final var image = new Image(uri.toURL().toExternalForm());
                 // First update the model
                 setValue(image);
                 // Then notify the controller a change occured
@@ -118,7 +116,7 @@ public class ImageControl extends GridPane {
                         "log.warning.image.location.does.not.exist", location);
             }
             editor_textfield.selectAll();
-        } catch (URISyntaxException | MalformedURLException ex) {
+        } catch (final URISyntaxException | MalformedURLException ex) {
             effectPickerController.getEffectPickerDelegate().handleError(
                     "log.warning.image.location.does.not.exist", location);
         } finally {
@@ -127,43 +125,43 @@ public class ImageControl extends GridPane {
     }
 
     @FXML
-    void buttonOnAction(ActionEvent e) {
+    void buttonOnAction(final ActionEvent e) {
         try {
-            final String[] extensions = {"*.jpg", "*.jpeg", "*.png", "*.gif"}; //NOI18N
-            final FileChooser fileChooser = new FileChooser();
+            final var extensions = new String[]{"*.jpg", "*.jpeg", "*.png", "*.gif"}; //NOI18N
+            final var fileChooser = new FileChooser();
             fileChooser.getExtensionFilters().add(
                     new FileChooser.ExtensionFilter(
                             I18N.getString("inspector.select.image"),
                             Arrays.asList(extensions)));
-            final File file = fileChooser.showOpenDialog(getScene().getWindow());
+            final var file = fileChooser.showOpenDialog(getScene().getWindow());
             if ((file == null)) {
                 return;
             }
-            String url;
+            final String url;
             url = file.toURI().toURL().toExternalForm();
-            final Image image = new Image(url);
+            final var image = new Image(url);
             // First update the model
             setValue(image);
             // Then notify the controller a change occured
             effectPickerController.incrementRevision();
-        } catch (MalformedURLException ex) {
+        } catch (final MalformedURLException ex) {
             Logger.getLogger(ImageControl.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             e.consume();
         }
     }
 
-    private void initialize(String labelString, Image initVal) {
+    private void initialize(final String labelString, final Image initVal) {
 
-        final URL layoutURL = ImageControl.class.getResource("ImageControl.fxml"); //NOI18N
-        try (InputStream is = layoutURL.openStream()) {
-            FXMLLoader loader = new FXMLLoader();
+        final var layoutURL = ImageControl.class.getResource("ImageControl.fxml"); //NOI18N
+        try (final var is = layoutURL.openStream()) {
+            final var loader = new FXMLLoader();
             loader.setController(this);
             loader.setRoot(this);
             loader.setLocation(layoutURL);
-            Parent p = (Parent) loader.load(is);
+            final var p = (Parent) loader.load(is);
             assert p == this;
-        } catch (IOException x) {
+        } catch (final IOException x) {
             throw new RuntimeException(x);
         }
 

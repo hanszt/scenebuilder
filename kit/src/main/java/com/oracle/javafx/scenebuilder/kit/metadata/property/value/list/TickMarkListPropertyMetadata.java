@@ -45,8 +45,8 @@ public class TickMarkListPropertyMetadata extends ListValuePropertyMetadata<Obje
             = new ObjectPropertyMetadata(new PropertyName("unused"), //NOI18N
                     true, null, InspectorPath.UNUSED);
 
-    public TickMarkListPropertyMetadata(PropertyName name, boolean readWrite, 
-            List<Object> defaultValue, InspectorPath inspectorPath) {
+    public TickMarkListPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                        final List<Object> defaultValue, final InspectorPath inspectorPath) {
         super(name, Object.class, itemMetadata, readWrite, defaultValue, inspectorPath);
     }
 

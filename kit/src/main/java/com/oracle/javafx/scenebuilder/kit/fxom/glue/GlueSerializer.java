@@ -52,7 +52,7 @@ class GlueSerializer {
     
     private final GlueDocument document;
     
-    public GlueSerializer(GlueDocument document) {
+    public GlueSerializer(final GlueDocument document) {
         assert document.getRootElement() != null;
         this.document = document;
     }
@@ -64,13 +64,13 @@ class GlueSerializer {
     
     @Override
     public String toString() {
-        final XMLBuffer result = new XMLBuffer();
+        final var result = new XMLBuffer();
         
         result.addLineSeparator();
         result.addLineSeparator();
         
         Class<? extends GlueAuxiliary> lastAuxiliaryClass = null;
-        for (GlueAuxiliary auxiliary : document.getHeader()) {
+        for (final var auxiliary : document.getHeader()) {
             if ((lastAuxiliaryClass != null) && (lastAuxiliaryClass != auxiliary.getClass())) {
                 // We insert an extra empty line to separate
                 // sequences of processing instructions, comments ...
@@ -91,26 +91,26 @@ class GlueSerializer {
         return result.toString();
     }
     
-    private void serializeElement(GlueElement element, XMLBuffer xmlBuffer) {
+    private void serializeElement(final GlueElement element, final XMLBuffer xmlBuffer) {
         if (element.isSynthetic()) {
-            for (GlueElement child : element.getChildren()) {
+            for (final var child : element.getChildren()) {
                 serializeElement(child, xmlBuffer);
             }
         } else {
-            for (GlueAuxiliary auxiliary : element.getFront()) {
+            for (final var auxiliary : element.getFront()) {
                 serializeAuxiliary(auxiliary, xmlBuffer);
             }
             xmlBuffer.beginElement(element.getTagName());
             serializeAttributes(element, xmlBuffer);
             if (element.getChildren().isEmpty()) {
-                for (GlueAuxiliary auxiliary : element.getContent()) {
+                for (final var auxiliary : element.getContent()) {
                     serializeAuxiliary(auxiliary, xmlBuffer);
                 }
             } else {
-                for (GlueElement child : element.getChildren()) {
+                for (final var child : element.getChildren()) {
                     serializeElement(child, xmlBuffer);
                 }
-                for (GlueAuxiliary auxiliary : element.getTail()) {
+                for (final var auxiliary : element.getTail()) {
                     serializeAuxiliary(auxiliary, xmlBuffer);
                 }
             }
@@ -118,9 +118,9 @@ class GlueSerializer {
         }
     }
     
-    private void serializeAuxiliary(GlueAuxiliary auxiliary, XMLBuffer xmlBuffer) {
+    private void serializeAuxiliary(final GlueAuxiliary auxiliary, final XMLBuffer xmlBuffer) {
         if (auxiliary instanceof GlueCharacters) {
-            final GlueCharacters characters = (GlueCharacters) auxiliary;
+            final var characters = (GlueCharacters) auxiliary;
             switch(characters.getType()) {
                 case TEXT:
                     xmlBuffer.addText(characters.getData());
@@ -134,17 +134,17 @@ class GlueSerializer {
             }
         } else {
             assert auxiliary instanceof GlueInstruction;
-            final GlueInstruction instruction = (GlueInstruction) auxiliary;
+            final var instruction = (GlueInstruction) auxiliary;
             xmlBuffer.addProcessingInstruction(instruction.getTarget(), instruction.getData());
         }
     }
     
     
-    private void serializeAttributes(GlueElement element, XMLBuffer xmlBuffer) {
+    private void serializeAttributes(final GlueElement element, final XMLBuffer xmlBuffer) {
         
-        final Map<String, String> attributes = element.getAttributes();
+        final var attributes = element.getAttributes();
         final List<Map.Entry<String,String>> attrNames = new ArrayList<>();
-        for (Map.Entry<String, String> entry : attributes.entrySet()) {
+        for (final var entry : attributes.entrySet()) {
             attrNames.add(new SimpleEntry<>(entry.getKey(), entry.getValue()));
         }
         if (element.getTagName().equals("Color")) {
@@ -153,7 +153,7 @@ class GlueSerializer {
             Collections.sort(attrNames, attrComparator);
         }
 
-        for (Map.Entry<String,String> e : attrNames) {
+        for (final var e : attrNames) {
             xmlBuffer.addAttribute(e.getKey(), e.getValue());
         }
     }

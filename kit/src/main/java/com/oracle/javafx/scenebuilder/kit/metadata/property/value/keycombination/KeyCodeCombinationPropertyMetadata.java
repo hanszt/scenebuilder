@@ -88,8 +88,8 @@ public class KeyCodeCombinationPropertyMetadata extends ComplexPropertyMetadata<
             KeyCode.class, DUMMY, true, 
             InspectorPath.UNUSED);
 
-    public KeyCodeCombinationPropertyMetadata(PropertyName name, boolean readWrite, 
-            KeyCodeCombination defaultValue, InspectorPath inspectorPath) {
+    public KeyCodeCombinationPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                              final KeyCodeCombination defaultValue, final InspectorPath inspectorPath) {
         super(name, KeyCodeCombination.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -97,8 +97,8 @@ public class KeyCodeCombinationPropertyMetadata extends ComplexPropertyMetadata<
      * ComplexPropertyMetadata
      */
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(KeyCodeCombination value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, value.getClass());
+    public FXOMInstance makeFxomInstanceFromValue(final KeyCodeCombination value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, value.getClass());
         
         altMetadata.setValue(result, value.getAlt().toString());
         controlMetadata.setValue(result, value.getControl().toString());

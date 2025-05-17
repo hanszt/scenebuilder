@@ -59,7 +59,7 @@ public abstract class AbstractFxmlController extends AbstractPanelController {
      * @param fxmlURL the URL of the FXML file to be loaded (cannot be null)
      * @param editorController  the editor controller (cannot be null)
      */
-    protected AbstractFxmlController(URL fxmlURL, EditorController editorController) {
+    protected AbstractFxmlController(final URL fxmlURL, final EditorController editorController) {
         super(editorController);
         this.fxmlURL = fxmlURL;
         assert fxmlURL != null : "Check the name of the FXML file used by " 
@@ -78,7 +78,7 @@ public abstract class AbstractFxmlController extends AbstractPanelController {
      */
     @Override
     protected void makePanel() {
-        final FXMLLoader loader = new FXMLLoader();
+        final var loader = new FXMLLoader();
 
         loader.setController(this);
         loader.setLocation(fxmlURL);
@@ -86,7 +86,7 @@ public abstract class AbstractFxmlController extends AbstractPanelController {
         try {
             setPanelRoot((Parent)loader.load());
             controllerDidLoadFxml();
-        } catch (RuntimeException | IOException x) {
+        } catch (final RuntimeException | IOException x) {
             System.out.println("loader.getController()=" + loader.getController());
             System.out.println("loader.getLocation()=" + loader.getLocation());
             throw new RuntimeException("Failed to load " + fxmlURL.getFile(), x); //NOI18N
@@ -110,7 +110,7 @@ public abstract class AbstractFxmlController extends AbstractPanelController {
         // 3) getPanelRoot().getScene().getWindow() might be null
 
     @Override
-    protected void fxomDocumentDidChange(FXOMDocument oldDocument) {
+    protected void fxomDocumentDidChange(final FXOMDocument oldDocument) {
         // Ignored
     }
 

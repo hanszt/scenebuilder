@@ -59,7 +59,7 @@ public abstract class AbstractMouseGesture extends AbstractGesture {
     protected abstract void keyEvent(KeyEvent e);
     protected abstract void userDidCancel();
 
-    public AbstractMouseGesture(ContentPanelController contentPanelController) {
+    public AbstractMouseGesture(final ContentPanelController contentPanelController) {
         super(contentPanelController);
     }
     
@@ -88,12 +88,12 @@ public abstract class AbstractMouseGesture extends AbstractGesture {
      */
     
     @Override
-    public void start(InputEvent e, Observer observer) {
+    public void start(final InputEvent e, final Observer observer) {
         assert e != null;
         assert e instanceof MouseEvent;
         assert e.getEventType() == MouseEvent.MOUSE_PRESSED;
         assert observer != null;
-        assert mouseDidDrag == false;
+        assert !mouseDidDrag;
         
         final Node glassLayer = contentPanelController.getGlassLayer();
         assert glassLayer.getOnDragDetected()== null;
@@ -136,7 +136,7 @@ public abstract class AbstractMouseGesture extends AbstractGesture {
         
         try {
             mousePressed();
-        } catch(RuntimeException x) {
+        } catch(final RuntimeException x) {
             performTermination();
             throw x;
         }
@@ -147,7 +147,7 @@ public abstract class AbstractMouseGesture extends AbstractGesture {
      * Private
      */
     
-    private void handleKeyPressed(KeyEvent e) {
+    private void handleKeyPressed(final KeyEvent e) {
         if (e.getCode() == KeyCode.ESCAPE) {
             if (mouseDidDrag) {
                 contentPanelController.getGlassLayer().setOnMouseDragged(null);
@@ -160,7 +160,7 @@ public abstract class AbstractMouseGesture extends AbstractGesture {
     }
     
     
-    private void handleKeyReleased(KeyEvent e) {
+    private void handleKeyReleased(final KeyEvent e) {
         keyEvent(e);
     }
     

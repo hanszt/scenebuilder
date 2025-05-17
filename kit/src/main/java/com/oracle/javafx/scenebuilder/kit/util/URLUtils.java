@@ -48,7 +48,7 @@ public class URLUtils {
         // no-op
     }
 
-    public static boolean equals(URL url1, URL url2) {
+    public static boolean equals(final URL url1, final URL url2) {
         boolean result;
         
         if (url1 == url2) {
@@ -57,10 +57,10 @@ public class URLUtils {
             result = false;
         } else {
             try {
-                final URI uri1 = url1.toURI();
-                final URI uri2 = url2.toURI();
+                final var uri1 = url1.toURI();
+                final var uri2 = url2.toURI();
                 result = uri1.equals(uri2);
-            } catch(URISyntaxException x) {
+            } catch(final URISyntaxException x) {
                 result = false; // Emergency code
             }
         }
@@ -75,17 +75,17 @@ public class URLUtils {
      * @param uri a URI instance (never null).
      * @return null if uri is not a file URI or a File instance
      */
-    public static File getFile(URI uri) {
+    public static File getFile(final URI uri) {
         assert uri != null;
         
         File result;
-        final String scheme = uri.getScheme();
+        final var scheme = uri.getScheme();
         if ((scheme == null) || ! scheme.toLowerCase(Locale.ROOT).equals("file")) { //NOI18N
             result = null;
         } else {
             try {
                 result = new File(uri);
-            } catch(IllegalArgumentException x) {
+            } catch(final IllegalArgumentException x) {
                 result = null;
             }
         }
@@ -100,7 +100,7 @@ public class URLUtils {
      * @return null or the matching File instance.
      * @throws URISyntaxException if urlString is not a valid URI.
      */
-    public static File getFile(String urlString) throws URISyntaxException {
+    public static File getFile(final String urlString) throws URISyntaxException {
         return getFile(new URI(urlString));
     }
     
@@ -111,7 +111,7 @@ public class URLUtils {
      * @return null or the matching File instance.
      * @throws URISyntaxException if url cannot be converted to URI.
      */
-    public static File getFile(URL url) throws URISyntaxException {
+    public static File getFile(final URL url) throws URISyntaxException {
         return getFile(url.toURI());
     }
 }

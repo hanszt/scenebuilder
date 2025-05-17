@@ -34,9 +34,8 @@ package com.oracle.javafx.scenebuilder.kit.editor.job;
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.GridSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -47,7 +46,7 @@ import java.util.Set;
  */
 public class FitToParentSelectionJob extends BatchDocumentJob {
 
-    public FitToParentSelectionJob(EditorController editorController) {
+    public FitToParentSelectionJob(final EditorController editorController) {
         super(editorController);
     }
 
@@ -57,10 +56,10 @@ public class FitToParentSelectionJob extends BatchDocumentJob {
         final List<Job> result = new ArrayList<>();
 
         final Set<FXOMInstance> candidates = new HashSet<>();
-        final Selection selection = getEditorController().getSelection();
+        final var selection = getEditorController().getSelection();
         if (selection.getGroup() instanceof ObjectSelectionGroup) {
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) selection.getGroup();
-            for (FXOMObject fxomObject : osg.getItems()) {
+            final var osg = (ObjectSelectionGroup) selection.getGroup();
+            for (final var fxomObject : osg.getItems()) {
                 if (fxomObject instanceof FXOMInstance) {
                     candidates.add((FXOMInstance) fxomObject);
                 }
@@ -73,8 +72,8 @@ public class FitToParentSelectionJob extends BatchDocumentJob {
                     "Add implementation for " + selection.getGroup();
         }
 
-        for (FXOMInstance candidate : candidates) {
-            final FitToParentObjectJob subJob
+        for (final var candidate : candidates) {
+            final var subJob
                     = new FitToParentObjectJob(candidate, getEditorController());
             if (subJob.isExecutable()) {
                 result.add(subJob);
@@ -96,7 +95,7 @@ public class FitToParentSelectionJob extends BatchDocumentJob {
                 result = "Unexecutable Fit To Parent"; // NO18N
                 break;
             case 1:
-                result = getSubJobs().get(0).getDescription();
+                result = getSubJobs().getFirst().getDescription();
                 break;
             default:
                 result = makeMultipleSelectionDescription();
@@ -106,7 +105,7 @@ public class FitToParentSelectionJob extends BatchDocumentJob {
     }
 
     private String makeMultipleSelectionDescription() {
-        final StringBuilder result = new StringBuilder();
+        final var result = new StringBuilder();
         result.append("Fit To Parent ");
         result.append(getSubJobs().size());
         result.append(" Objects");

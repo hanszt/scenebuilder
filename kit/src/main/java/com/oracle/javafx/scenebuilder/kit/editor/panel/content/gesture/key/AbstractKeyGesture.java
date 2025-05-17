@@ -49,7 +49,7 @@ public abstract class AbstractKeyGesture extends AbstractGesture {
     private Observer observer;
     
     
-    public AbstractKeyGesture(ContentPanelController contentPanelController) {
+    public AbstractKeyGesture(final ContentPanelController contentPanelController) {
         super(contentPanelController);
     }
 
@@ -74,7 +74,7 @@ public abstract class AbstractKeyGesture extends AbstractGesture {
      */
     
     @Override
-    public void start(InputEvent e, Observer observer) {
+    public void start(final InputEvent e, final Observer observer) {
         assert e != null;
         assert e instanceof KeyEvent;
         assert e.getEventType() == KeyEvent.KEY_PRESSED;
@@ -113,7 +113,7 @@ public abstract class AbstractKeyGesture extends AbstractGesture {
         
         try {
             keyPressed();
-        } catch(RuntimeException x) {
+        } catch(final RuntimeException x) {
             performTermination();
             throw x;
         }

@@ -44,7 +44,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Hyperlink;
-import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 
@@ -64,23 +63,23 @@ public class SelectionPath extends HBox {
         setSpacing(5);
     }
 
-    public void select(Object obj) {
+    public void select(final Object obj) {
         assert currentPath != null && !currentPath.getItems().isEmpty();
-        Path newPath = new Path(lookupPath(currentPath.getItems().get(0), obj));
+        final var newPath = new Path(lookupPath(currentPath.getItems().getFirst(), obj));
         setSelectionPath(newPath);
-        int lastIndex = newPath.getItems().size() - 1;
+        final var lastIndex = newPath.getItems().size() - 1;
         selected.set(newPath.getItems().get(lastIndex));
     }
 
-    public static List<Item> lookupPath(Item current, Object obj) {
+    public static List<Item> lookupPath(final Item current, final Object obj) {
         List<Item> ret = new ArrayList<>();
         if (current.getItem() == obj) {
             ret.add(current);
         } else {
-            for (Item c : current.getChildren()) {
-                List<Item> branch = lookupPath(c, obj);
+            for (final var c : current.getChildren()) {
+                final var branch = lookupPath(c, obj);
                 if (!branch.isEmpty()) {
-                    branch.add(0, current);
+                    branch.addFirst(current);
                     ret = branch;
                     break;
                 }
@@ -89,16 +88,16 @@ public class SelectionPath extends HBox {
         return ret;
     }
 
-    public void setSelectionPath(Path selection) {
+    public void setSelectionPath(final Path selection) {
         assert selection != null;
         currentPath = selection;
         getChildren().clear();
         final List<Item> iterationPath = new ArrayList<>();
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < selection.getItems().size(); i++) {
-            final Item item = selection.getItems().get(i);
+        final var builder = new StringBuilder();
+        for (var i = 0; i < selection.getItems().size(); i++) {
+            final var item = selection.getItems().get(i);
             iterationPath.add(item);
-            final Hyperlink label = new Hyperlink(item.getName());
+            final var label = new Hyperlink(item.getName());
             label.setMaxHeight(Double.MAX_VALUE);
             builder.append(item.getName());
             final List<Item> myPath = new ArrayList<>(iterationPath);
@@ -110,11 +109,11 @@ public class SelectionPath extends HBox {
             };
             label.setOnAction(eh);
 
-            String optional = item.getOptional();
+            final var optional = item.getOptional();
             if (optional != null) {
-                HBox hbox = new HBox(0);
+                final var hbox = new HBox(0);
                 hbox.getChildren().add(label);
-                final Hyperlink opt = new Hyperlink(" " + optional);//NOI18N
+                final var opt = new Hyperlink(" " + optional);//NOI18N
                 opt.setOnAction(eh);
                 hbox.setOnMouseEntered(new MouseEnterListener(opt, label));
                 hbox.setOnMouseExited(new MouseExitedListener(opt, label));
@@ -131,7 +130,7 @@ public class SelectionPath extends HBox {
                 if (i < selection.getItems().size() - 1) {
                     next = selection.getItems().get(i + 1);
                 }
-                ChildButton mb = new ChildButton(item.getChildren(), new ArrayList<>(iterationPath), next);
+                final var mb = new ChildButton(item.getChildren(), new ArrayList<>(iterationPath), next);
                 getChildren().add(mb);
             }
             if (i < selection.getItems().size() - 1) {
@@ -145,13 +144,13 @@ public class SelectionPath extends HBox {
 
         Hyperlink opt, label;
 
-        public MouseEnterListener(Hyperlink opt, Hyperlink label) {
+        public MouseEnterListener(final Hyperlink opt, final Hyperlink label) {
             this.opt = opt;
             this.label = label;
         }
 
         @Override
-        public void handle(MouseEvent event) {
+        public void handle(final MouseEvent event) {
             opt.setUnderline(true);
             label.setUnderline(true);
         }
@@ -161,13 +160,13 @@ public class SelectionPath extends HBox {
 
         Hyperlink opt, label;
 
-        public MouseExitedListener(Hyperlink opt, Hyperlink label) {
+        public MouseExitedListener(final Hyperlink opt, final Hyperlink label) {
             this.opt = opt;
             this.label = label;
         }
 
         @Override
-        public void handle(MouseEvent event) {
+        public void handle(final MouseEvent event) {
             opt.setUnderline(false);
             label.setUnderline(false);
         }
@@ -188,16 +187,16 @@ public class SelectionPath extends HBox {
         private double yOffset;
         private Button pathButton = new Button();
 
-        private ChildButton(List<Item> children, final List<Item> childrenPath, final Item selectedChild) {
-            
-            Region pathButtonGraphic = new Region();
+        private ChildButton(final List<Item> children, final List<Item> childrenPath, final Item selectedChild) {
+
+            final var pathButtonGraphic = new Region();
             pathButtonGraphic.getStyleClass().add("styleable-path-button-shape");//NOI18N
             pathButton.setGraphic(pathButtonGraphic);
             
             getChildren().add(pathButton);
-            final ContextMenu menu = new ContextMenu();
-            for (final Item c : children) {
-                CheckMenuItem mi = new ChildMenuItem(c);
+            final var menu = new ContextMenu();
+            for (final var c : children) {
+                final CheckMenuItem mi = new ChildMenuItem(c);
                 final List<Item> childPath = new ArrayList<>(childrenPath);
                 childPath.add(c);
                 mi.setOnAction(event -> {
@@ -207,9 +206,9 @@ public class SelectionPath extends HBox {
                 menu.getItems().add(mi);
             }
             menu.setOnShowing(event -> {
-                for (MenuItem m : menu.getItems()) {
+                for (final var m : menu.getItems()) {
                     assert m instanceof ChildMenuItem;
-                    ChildMenuItem cm = (ChildMenuItem) m;
+                    final var cm = (ChildMenuItem) m;
                     cm.setSelected(cm.item == selectedChild);
                 }
                 positionMenu(menu);
@@ -219,12 +218,12 @@ public class SelectionPath extends HBox {
                 if (newValue.doubleValue() <= 0) {
                     return;
                 }
-                double singleHeight = newValue.doubleValue() / menu.getItems().size();
-                int index = 0;
-                boolean found = false;
-                for (MenuItem m : menu.getItems()) {
+                final var singleHeight = newValue.doubleValue() / menu.getItems().size();
+                var index = 0;
+                var found = false;
+                for (final var m : menu.getItems()) {
                     assert m instanceof ChildMenuItem;
-                    ChildMenuItem cm = (ChildMenuItem) m;
+                    final var cm = (ChildMenuItem) m;
                     index += 1;
                     if (cm.isSelected()) {
                         found = true;
@@ -245,7 +244,7 @@ public class SelectionPath extends HBox {
             });
         }
 
-        private void positionMenu(ContextMenu menu) {
+        private void positionMenu(final ContextMenu menu) {
             if (yOffset != 0) {
                 menu.setY(menu.getY() - yOffset);
             }
@@ -255,7 +254,7 @@ public class SelectionPath extends HBox {
 
             private final Item item;
 
-            ChildMenuItem(Item item) {
+            ChildMenuItem(final Item item) {
                 super(item.getName());
                 this.item = item;
             }
@@ -273,7 +272,7 @@ public class SelectionPath extends HBox {
         private final String optional;
         private final List<Item> children = new ArrayList<>();
 
-        public Item(Object item, String name, String optional) {
+        public Item(final Object item, final String name, final String optional) {
             this.item = item;
             this.name = name;
             this.optional = optional;
@@ -316,7 +315,7 @@ public class SelectionPath extends HBox {
 
         private final List<Item> items;
 
-        public Path(List<Item> items) {
+        public Path(final List<Item> items) {
             this.items = items;
         }
 

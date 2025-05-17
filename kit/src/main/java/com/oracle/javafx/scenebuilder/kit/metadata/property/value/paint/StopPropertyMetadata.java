@@ -51,8 +51,8 @@ public class StopPropertyMetadata extends ComplexPropertyMetadata<Stop> {
             = new ColorPropertyMetadata(new PropertyName("color"), //NOI18N
             true, null, InspectorPath.UNUSED);
     
-    public StopPropertyMetadata(PropertyName name, boolean readWrite, 
-            Stop defaultValue, InspectorPath inspectorPath) {
+    public StopPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                final Stop defaultValue, final InspectorPath inspectorPath) {
         super(name, Stop.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -61,8 +61,8 @@ public class StopPropertyMetadata extends ComplexPropertyMetadata<Stop> {
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(Stop value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, getValueClass());
+    public FXOMInstance makeFxomInstanceFromValue(final Stop value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, getValueClass());
         
         offsetMetadata.setValue(result, value.getOffset());
         colorMetadata.setValue(result, value.getColor());

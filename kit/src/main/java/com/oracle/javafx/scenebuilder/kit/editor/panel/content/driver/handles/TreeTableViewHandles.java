@@ -36,15 +36,12 @@ import com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.TreeTableV
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.gesture.AbstractGesture;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.gesture.mouse.ResizeTreeTableColumnGesture;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
 import java.util.List;
-import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
+
 import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -57,8 +54,8 @@ public class TreeTableViewHandles extends AbstractNodeHandles<Node> {
     
     private final Group grips = new Group();
     
-    public TreeTableViewHandles(ContentPanelController contentPanelController,
-            FXOMInstance fxomInstance) {
+    public TreeTableViewHandles(final ContentPanelController contentPanelController,
+                                final FXOMInstance fxomInstance) {
         super(contentPanelController, fxomInstance, Node.class);
         assert fxomInstance.getSceneGraphObject() instanceof TreeTableView;
         
@@ -86,13 +83,13 @@ public class TreeTableViewHandles extends AbstractNodeHandles<Node> {
     }
 
     @Override
-    public AbstractGesture findGesture(Node node) {
+    public AbstractGesture findGesture(final Node node) {
         final AbstractGesture result;
         
-        final int gripIndex = grips.getChildren().indexOf(node);
+        final var gripIndex = grips.getChildren().indexOf(node);
         if (gripIndex != -1) {
-            final DesignHierarchyMask m = new DesignHierarchyMask(getFxomInstance());
-            final FXOMObject columnObject = m.getSubComponentAtIndex(gripIndex);
+            final var m = new DesignHierarchyMask(getFxomInstance());
+            final var columnObject = m.getSubComponentAtIndex(gripIndex);
             assert columnObject instanceof FXOMInstance;
             result = new ResizeTreeTableColumnGesture(getContentPanelController(), 
                     (FXOMInstance) columnObject);
@@ -109,19 +106,19 @@ public class TreeTableViewHandles extends AbstractNodeHandles<Node> {
      */
     
     private void adjustGripCount() {
-        final int columnCount = getTreeTableView().getColumns().size();
+        final var columnCount = getTreeTableView().getColumns().size();
         final List<Node> gripChildren = grips.getChildren();
         
         while (gripChildren.size() < columnCount) {
             gripChildren.add(makeGripLine());
         }
         while (gripChildren.size() > columnCount) {
-            gripChildren.remove(gripChildren.size()-1);
+            gripChildren.removeLast();
         }
     }
     
     private Line makeGripLine() {
-        final Line result = new Line();
+        final var result = new Line();
         result.setStrokeWidth(SELECTION_HANDLES_SIZE);
         result.setStroke(Color.TRANSPARENT);
         result.setCursor(Cursor.H_RESIZE);
@@ -129,23 +126,23 @@ public class TreeTableViewHandles extends AbstractNodeHandles<Node> {
         return result;
     }
     
-    private void layoutGrip(int gripIndex) {
+    private void layoutGrip(final int gripIndex) {
         assert grips.getChildren().get(gripIndex) instanceof Line;
         
-        final TreeTableColumn<?,?> tc = getTreeTableView().getColumns().get(gripIndex);
+        final var tc = getTreeTableView().getColumns().get(gripIndex);
         
         if (tc.isVisible()) {
-            final TreeTableViewDesignInfoX di = new TreeTableViewDesignInfoX();
-            final Bounds b = di.getColumnHeaderBounds(tc);
-            final double startX = b.getMaxX();
-            final double startY = b.getMinY();
-            final double endY = b.getMaxY();
+            final var di = new TreeTableViewDesignInfoX();
+            final var b = di.getColumnHeaderBounds(tc);
+            final var startX = b.getMaxX();
+            final var startY = b.getMinY();
+            final var endY = b.getMaxY();
 
-            final boolean snapToPixel = true;
-            final Point2D startPoint = sceneGraphObjectToDecoration(startX, startY, snapToPixel);
-            final Point2D endPoint = sceneGraphObjectToDecoration(startX, endY, snapToPixel);
+            final var snapToPixel = true;
+            final var startPoint = sceneGraphObjectToDecoration(startX, startY, snapToPixel);
+            final var endPoint = sceneGraphObjectToDecoration(startX, endY, snapToPixel);
 
-            final Line gripLine = (Line) grips.getChildren().get(gripIndex);
+            final var gripLine = (Line) grips.getChildren().get(gripIndex);
             gripLine.setVisible(true);
             gripLine.setManaged(true);
             gripLine.setStartX(startPoint.getX());
@@ -153,7 +150,7 @@ public class TreeTableViewHandles extends AbstractNodeHandles<Node> {
             gripLine.setEndX(endPoint.getX());
             gripLine.setEndY(endPoint.getY());
         } else {
-            final Line gripLine = (Line) grips.getChildren().get(gripIndex);
+            final var gripLine = (Line) grips.getChildren().get(gripIndex);
             gripLine.setVisible(false);
             gripLine.setManaged(false);
         }
@@ -163,7 +160,7 @@ public class TreeTableViewHandles extends AbstractNodeHandles<Node> {
     /* 
      * Wrapper to avoid the 'leaking this in constructor' warning emitted by NB.
      */
-    private void attachHandles(Node node) {
+    private void attachHandles(final Node node) {
         attachHandles(node, this);
     }
 }

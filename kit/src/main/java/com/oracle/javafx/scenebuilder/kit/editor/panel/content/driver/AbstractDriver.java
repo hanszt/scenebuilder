@@ -50,7 +50,7 @@ public abstract class AbstractDriver {
     
     protected final ContentPanelController contentPanelController;
     
-    public AbstractDriver(ContentPanelController contentPanelController) {
+    public AbstractDriver(final ContentPanelController contentPanelController) {
         assert contentPanelController != null;
         this.contentPanelController = contentPanelController;
     } 

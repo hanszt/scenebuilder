@@ -50,22 +50,22 @@ public class GridPaneTring extends AbstractNodeTring<GridPane> {
                     false /* shouldShowTray */,
                     false /* shouldCreateSensors */ );
     
-    public GridPaneTring(ContentPanelController contentPanelController, 
-            FXOMInstance fxomObject) {
+    public GridPaneTring(final ContentPanelController contentPanelController,
+                         final FXOMInstance fxomObject) {
         super(contentPanelController, fxomObject, GridPane.class);
-        getRootNode().getChildren().add(0, mosaic.getTopGroup()); // Below handles
+        getRootNode().getChildren().addFirst(mosaic.getTopGroup()); // Below handles
     }
 
-    public void setupWithDropTarget(GridPaneDropTarget dropTarget) {
+    public void setupWithDropTarget(final GridPaneDropTarget dropTarget) {
         assert dropTarget != null;
         
-        final int targetColumnIndex
+        final var targetColumnIndex
                 = dropTarget.getTargetColumnIndex();
-        final int targetRowIndex
+        final var targetRowIndex
                 = dropTarget.getTargetRowIndex();
-        final ColumnArea targetColumnArea
+        final var targetColumnArea
                 = dropTarget.getTargetColumnArea();
-        final RowArea targetRowArea
+        final var targetRowArea
                 = dropTarget.getTargetRowArea();
 
         if ((targetColumnArea == ColumnArea.CENTER) && (targetRowArea == RowArea.CENTER)) {

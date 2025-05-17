@@ -37,7 +37,7 @@ import com.oracle.javafx.scenebuilder.kit.metadata.util.InspectorPath;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
 import com.oracle.javafx.scenebuilder.kit.util.MathUtils;
 import java.util.Objects;
-import javafx.geometry.HPos;
+
 import javafx.geometry.VPos;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.ColumnConstraints;
@@ -75,8 +75,8 @@ public class ColumnConstraintsPropertyMetadata extends ComplexPropertyMetadata<C
             = new EnumerationPropertyMetadata(new PropertyName("hgrow"),
             Priority.class, EnumerationPropertyMetadata.EQUIV_INHERITED, true, InspectorPath.UNUSED);
     
-    public ColumnConstraintsPropertyMetadata(PropertyName name, boolean readWrite, 
-            ColumnConstraints defaultValue, InspectorPath inspectorPath) {
+    public ColumnConstraintsPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                             final ColumnConstraints defaultValue, final InspectorPath inspectorPath) {
         super(name, ColumnConstraints.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -84,7 +84,7 @@ public class ColumnConstraintsPropertyMetadata extends ComplexPropertyMetadata<C
      * Utility
      */
     
-    public static boolean equals(ColumnConstraints c1, ColumnConstraints c2) {
+    public static boolean equals(final ColumnConstraints c1, final ColumnConstraints c2) {
         assert c1 != null;
         assert c2 != null;
 
@@ -108,8 +108,8 @@ public class ColumnConstraintsPropertyMetadata extends ComplexPropertyMetadata<C
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(ColumnConstraints value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, value.getClass());
+    public FXOMInstance makeFxomInstanceFromValue(final ColumnConstraints value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, value.getClass());
         
         fillWidthMetadata.setValue(result, value.isFillWidth());
         maxWidthMetadata.setValue(result, value.getMaxWidth());
@@ -117,14 +117,14 @@ public class ColumnConstraintsPropertyMetadata extends ComplexPropertyMetadata<C
         percentWidthMetadata.setValue(result, value.getPercentWidth());
         prefWidthMetadata.setValue(result, value.getPrefWidth());
         
-        final HPos halignment = value.getHalignment();
+        final var halignment = value.getHalignment();
         if (halignment == null) {
             halignmentMetadata.setValue(result, halignmentMetadata.getDefaultValue());
         } else {
             halignmentMetadata.setValue(result, halignment.toString());
         }
         
-        final Priority hgrow = value.getHgrow();
+        final var hgrow = value.getHgrow();
         if (hgrow == null) {
             hgrowMetadata.setValue(result, hgrowMetadata.getDefaultValue());
         } else {

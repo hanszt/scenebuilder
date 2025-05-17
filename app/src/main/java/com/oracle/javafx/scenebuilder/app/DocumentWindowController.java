@@ -38,7 +38,6 @@ import com.oracle.javafx.scenebuilder.app.i18n.I18N;
 import com.oracle.javafx.scenebuilder.app.menubar.MenuBarController;
 import com.oracle.javafx.scenebuilder.app.message.MessageBarController;
 import com.oracle.javafx.scenebuilder.app.preferences.PreferencesController;
-import com.oracle.javafx.scenebuilder.app.preferences.PreferencesRecordDocument;
 import com.oracle.javafx.scenebuilder.app.preferences.PreferencesRecordGlobal;
 import com.oracle.javafx.scenebuilder.app.report.JarAnalysisReportController;
 import com.oracle.javafx.scenebuilder.app.util.AppSettings;
@@ -66,12 +65,10 @@ import com.oracle.javafx.scenebuilder.kit.editor.panel.util.dialog.AbstractModal
 import com.oracle.javafx.scenebuilder.kit.editor.panel.util.dialog.AlertDialog;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.util.dialog.ErrorDialog;
 import com.oracle.javafx.scenebuilder.kit.editor.search.SearchController;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.AbstractSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMNodes;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
-import com.oracle.javafx.scenebuilder.kit.library.Library;
 import com.oracle.javafx.scenebuilder.kit.library.user.UserLibrary;
 import com.oracle.javafx.scenebuilder.kit.preview.PreviewWindowController;
 import com.oracle.javafx.scenebuilder.kit.selectionbar.SelectionBarController;
@@ -123,7 +120,6 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Window;
@@ -277,8 +273,8 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
         //
         // This may be revisit when platform implementation will be more reliable.
         //
-        final Node focusOwner = getScene().getFocusOwner();
-        final KeyCombination accelerator = getAccelerator(event);
+        final var focusOwner = getScene().getFocusOwner();
+        final var accelerator = getAccelerator(event);
         if (isTextInputControlEditing(focusOwner) && accelerator != null) {
 
 //            focusOwner.getInputMap()
@@ -301,8 +297,8 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
         // Hierarchy TreeView + select all
         //------------------------------------------------------------------
         // Select all is handled natively by TreeView (= hierarchy panel control).
-        boolean modifierDown = (EditorPlatform.IS_MAC ? event.isMetaDown() : event.isControlDown());
-        boolean isSelectAll = KeyCode.A.equals(event.getCode()) && modifierDown;
+        var modifierDown = (EditorPlatform.IS_MAC ? event.isMetaDown() : event.isControlDown());
+        var isSelectAll = KeyCode.A.equals(event.getCode()) && modifierDown;
         if (getHierarchyPanelController().getPanelControl().isFocused() && isSelectAll) {
             // Consume the event so the control action is not performed natively.
             event.consume();
@@ -316,7 +312,7 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
 
         // MenuItems define a single accelerator.
         // BACK_SPACE key must be handled same way as DELETE key.
-        boolean isBackspace = KeyCode.BACK_SPACE.equals(event.getCode());
+        var isBackspace = KeyCode.BACK_SPACE.equals(event.getCode());
         if (!isTextInputControlEditing(focusOwner) && isBackspace) {
             if (canPerformEditAction(DocumentEditAction.DELETE)) {
                 performEditAction(DocumentEditAction.DELETE);
@@ -406,9 +402,9 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
         return documentSplitController;
     }
     
-    public void loadFromFile(File fxmlFile) throws IOException {
-        final URL fxmlURL = fxmlFile.toURI().toURL();
-        final String fxmlText = FXOMDocument.readContentFromURL(fxmlURL);
+    public void loadFromFile(final File fxmlFile) throws IOException {
+        final var fxmlURL = fxmlFile.toURI().toURL();
+        final var fxmlText = FXOMDocument.readContentFromURL(fxmlURL);
         editorController.setFxmlTextAndLocation(fxmlText, fxmlURL, false);
         updateLoadFileTime();
         updateStageTitle(); // No-op if fxml has not been loaded yet
@@ -420,16 +416,16 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
         }
     }
     
-    public void loadFromURL(URL fxmlURL, boolean refreshThemeFromDocumentPreferences) {
+    public void loadFromURL(final URL fxmlURL, final boolean refreshThemeFromDocumentPreferences) {
         assert fxmlURL != null;
         try {
-            final String fxmlText = FXOMDocument.readContentFromURL(fxmlURL);
+            final var fxmlText = FXOMDocument.readContentFromURL(fxmlURL);
             editorController.setFxmlTextAndLocation(fxmlText, null, false);
             updateLoadFileTime();
             updateStageTitle(); // No-op if fxml has not been loaded yet
             updateFromDocumentPreferences(refreshThemeFromDocumentPreferences);
             watchingController.update();
-        } catch(IOException x) {
+        } catch(final IOException x) {
             throw new IllegalStateException(x);
         }
     }
@@ -440,27 +436,27 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
             updateLoadFileTime();
             updateStageTitle(); // No-op if fxml has not been loaded yet
             watchingController.update();
-        } catch (IOException x) {
+        } catch (final IOException x) {
             throw new IllegalStateException(x);
         }
     }
     
     public void reload() throws IOException {
-        final FXOMDocument fxomDocument = editorController.getFxomDocument();
+        final var fxomDocument = editorController.getFxomDocument();
         assert (fxomDocument != null) && (fxomDocument.getLocation() != null);
-        final URL fxmlURL = fxomDocument.getLocation();
-        final String fxmlText = FXOMDocument.readContentFromURL(fxmlURL);
+        final var fxmlURL = fxomDocument.getLocation();
+        final var fxmlText = FXOMDocument.readContentFromURL(fxmlURL);
         editorController.setFxmlTextAndLocation(fxmlText, fxmlURL, true);
         updateLoadFileTime();
         // Here we do not invoke updateStageTitleAndPreferences() neither watchingController.update()
     }
     
     public String getFxmlText() {
-        var recordGlobal = getPreferencesRecordGlobal();
+        final var recordGlobal = getPreferencesRecordGlobal();
         return editorController.getFxmlText(recordGlobal.isWildcardImports());
     }
 
-    public void refreshLibraryDisplayOption(LibraryPanelController.DISPLAY_MODE option) {
+    public void refreshLibraryDisplayOption(final LibraryPanelController.DISPLAY_MODE option) {
         switch (option) {
             case LIST:
                 libraryViewAsList.setSelected(true);
@@ -475,7 +471,7 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
         libraryPanelController.setDisplayMode(option);
     }
     
-    public void refreshHierarchyDisplayOption(DisplayOption option) {
+    public void refreshHierarchyDisplayOption(final DisplayOption option) {
         switch(option) {
             case INFO:
                 showInfoMenuItem.setSelected(true);
@@ -493,32 +489,32 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
         hierarchyPanelController.setDisplayOption(option);
     }
 
-    public void refreshCssTableColumnsOrderingReversed(boolean cssTableColumnsOrderingReversed) {
+    public void refreshCssTableColumnsOrderingReversed(final boolean cssTableColumnsOrderingReversed) {
         cssPanelController.setTableColumnsOrderingReversed(cssTableColumnsOrderingReversed);
     }
 
-    public void refreshCssTableColumnsOrderingReversed(PreferencesRecordGlobal preferences) {
+    public void refreshCssTableColumnsOrderingReversed(final PreferencesRecordGlobal preferences) {
         refreshCssTableColumnsOrderingReversed(preferences.isCssTableColumnsOrderingReversed());
     }
 
-    public void refreshAlignmentGuidesColor(PreferencesRecordGlobal preferences) {
-        final ContentPanelController cpc = getContentPanelController();
+    public void refreshAlignmentGuidesColor(final PreferencesRecordGlobal preferences) {
+        final var cpc = getContentPanelController();
         cpc.setGuidesColor(preferences.getAlignmentGuidesColor());
     }
 
-    public void animateAccordion(boolean animate) {
+    public void animateAccordion(final boolean animate) {
         libraryPanelController.animateAccordion(animate);
         inspectorPanelController.animateAccordion(animate);
         documentAccordion.getPanes().forEach(tp -> tp.setAnimated(animate));
     }
 
-    public void refreshBackgroundImage(PreferencesRecordGlobal preferences) {
+    public void refreshBackgroundImage(final PreferencesRecordGlobal preferences) {
         // Background images
         getContentPanelController().setWorkspaceBackground(preferences.getBackgroundImageImage());
     }
 
-    public void refreshToolTheme(PreferencesRecordGlobal preferences) {
-        final SceneBuilderApp app = SceneBuilderApp.getSingleton();
+    public void refreshToolTheme(final PreferencesRecordGlobal preferences) {
+        final var app = SceneBuilderApp.getSingleton();
         final SceneBuilderApp.ApplicationControlAction aca;
         switch(preferences.getToolTheme()) {
             case DEFAULT:
@@ -535,50 +531,50 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
         app.performControlAction(aca, this);
     }
 
-    public void refreshLibraryDisplayOption(PreferencesRecordGlobal preferences) {
+    public void refreshLibraryDisplayOption(final PreferencesRecordGlobal preferences) {
         refreshLibraryDisplayOption(preferences.getLibraryDisplayOption());
     }
 
-    public void refreshHierarchyDisplayOption(PreferencesRecordGlobal preferences) {
+    public void refreshHierarchyDisplayOption(final PreferencesRecordGlobal preferences) {
         refreshHierarchyDisplayOption(preferences.getHierarchyDisplayOption());
     }
 
-    public void refreshParentRingColor(PreferencesRecordGlobal preferences) {
-        Color parentRingColor = preferences.getParentRingColor();
-        final ContentPanelController cpc = getContentPanelController();
+    public void refreshParentRingColor(final PreferencesRecordGlobal preferences) {
+        final var parentRingColor = preferences.getParentRingColor();
+        final var cpc = getContentPanelController();
         cpc.setPringColor(parentRingColor);
-        final AbstractHierarchyPanelController hpc = getHierarchyPanelController();
+        final var hpc = getHierarchyPanelController();
         hpc.setParentRingColor(parentRingColor);
     }
 
-    public void refreshRootContainerHeight(PreferencesRecordGlobal preferencesRecordGlobal) {
-        final EditorController ec = getEditorController();
+    public void refreshRootContainerHeight(final PreferencesRecordGlobal preferencesRecordGlobal) {
+        final var ec = getEditorController();
         ec.setDefaultRootContainerHeight(preferencesRecordGlobal.getRootContainerHeight());
     }
 
-    public void refreshRootContainerWidth(PreferencesRecordGlobal preferencesRecordGlobal) {
-        final EditorController ec = getEditorController();
+    public void refreshRootContainerWidth(final PreferencesRecordGlobal preferencesRecordGlobal) {
+        final var ec = getEditorController();
         ec.setDefaultRootContainerWidth(preferencesRecordGlobal.getRootContainerWidth());
     }
 
-    public void refreshTheme(PreferencesRecordGlobal preferencesRecordGlobal) {
-        final EditorController ec = getEditorController();
+    public void refreshTheme(final PreferencesRecordGlobal preferencesRecordGlobal) {
+        final var ec = getEditorController();
         ec.setTheme(preferencesRecordGlobal.getTheme());
     }
 
-    public void refreshSwatch(PreferencesRecordGlobal preferencesRecordGlobal) {
+    public void refreshSwatch(final PreferencesRecordGlobal preferencesRecordGlobal) {
         GluonEditorController.getInstance().setGluonSwatch(preferencesRecordGlobal.getSwatch());
     }
 
-    public void refreshGluonTheme(PreferencesRecordGlobal preferencesRecordGlobal) {
+    public void refreshGluonTheme(final PreferencesRecordGlobal preferencesRecordGlobal) {
         GluonEditorController.getInstance().setGluonTheme(preferencesRecordGlobal.getGluonTheme());
     }
 
-    public void refreshAccordionAnimation(PreferencesRecordGlobal preferencesRecordGlobal) {
+    public void refreshAccordionAnimation(final PreferencesRecordGlobal preferencesRecordGlobal) {
         animateAccordion(preferencesRecordGlobal.isAccordionAnimation());
     }
 
-    public boolean canPerformControlAction(DocumentControlAction controlAction) {
+    public boolean canPerformControlAction(final DocumentControlAction controlAction) {
         final boolean result;
         
         switch(controlAction) {
@@ -610,9 +606,9 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
                 break;
                 
             case SHOW_PREVIEW_DIALOG:
-                final FXOMDocument fxomDocument = editorController.getFxomDocument();
+                final var fxomDocument = editorController.getFxomDocument();
                 if (fxomDocument != null) {
-                    Object sceneGraphRoot = fxomDocument.getSceneGraphRoot();
+                    final var sceneGraphRoot = fxomDocument.getSceneGraphRoot();
                     return sceneGraphRoot instanceof DialogPane;
                 }
                 result = false;
@@ -682,11 +678,11 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
         return result;
     }
     
-    public void performControlAction(DocumentControlAction controlAction) {
+    public void performControlAction(final DocumentControlAction controlAction) {
         assert canPerformControlAction(controlAction);
         
-        final PreferencesController pc = PreferencesController.getSingleton();
-        final PreferencesRecordDocument recordDocument = pc.getRecordDocument(this);
+        final var pc = PreferencesController.getSingleton();
+        final var recordDocument = pc.getRecordDocument(this);
         
         switch(controlAction) {
             case COPY:
@@ -793,7 +789,7 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
                 if (bottomSplitController.isTargetVisible()) {
                     // CSS panel is built lazely
                     // Need to update its table column ordering with preference value
-                    final PreferencesRecordGlobal recordGlobal = pc.getRecordGlobal();
+                    final var recordGlobal = pc.getRecordGlobal();
                     refreshCssTableColumnsOrderingReversed(recordGlobal.isCssTableColumnsOrderingReversed());
                     // Enable pick mode
                     editorController.setPickModeEnabled(true);
@@ -918,7 +914,7 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
         }
     }
     
-    public boolean canPerformEditAction(DocumentEditAction editAction) {
+    public boolean canPerformEditAction(final DocumentEditAction editAction) {
         final boolean result;
         
         switch(editAction) {
@@ -937,7 +933,7 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
 
             case INCLUDE_FXML:
                 // Cannot include as root or if the document is not saved yet
-                final FXOMDocument fxomDocument = editorController.getFxomDocument();
+                final var fxomDocument = editorController.getFxomDocument();
                 result = (fxomDocument != null) 
                         && (fxomDocument.getFxomRoot() != null)
                         && (fxomDocument.getLocation() != null);
@@ -956,7 +952,7 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
         return result;
     }
     
-    public void performEditAction(DocumentEditAction editAction) {
+    public void performEditAction(final DocumentEditAction editAction) {
         assert canPerformEditAction(editAction);
         
         switch(editAction) {
@@ -1018,7 +1014,7 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
         return resourceController.getResourceFile();
     }
     
-    public void setResourceFile(File file) {
+    public void setResourceFile(final File file) {
         resourceController.setResourceFile(file);
     }
     
@@ -1034,10 +1030,10 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
          *  3) it is unamed
          */
         
-        final FXOMDocument fxomDocument = editorController.getFxomDocument();
-        final boolean noFxmlText = (fxomDocument == null) || (fxomDocument.getFxomRoot() == null);
-        final boolean clean = !isDocumentDirty();
-        final boolean noName = (fxomDocument != null) && (fxomDocument.getLocation() == null);
+        final var fxomDocument = editorController.getFxomDocument();
+        final var noFxmlText = (fxomDocument == null) || (fxomDocument.getFxomRoot() == null);
+        final var clean = !isDocumentDirty();
+        final var noName = (fxomDocument != null) && (fxomDocument.getLocation() == null);
         
         return noFxmlText && clean && noName;
     }
@@ -1049,7 +1045,7 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
         }
 
         @Override
-        public int compare(DocumentWindowController d1, DocumentWindowController d2) {
+        public int compare(final DocumentWindowController d1, final DocumentWindowController d2) {
             final int result;
             
             assert d1 != null;
@@ -1058,8 +1054,8 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
             if (d1 == d2) {
                 result = 0;
             } else {
-                final String t1 = d1.getStage().getTitle();
-                final String t2 = d2.getStage().getTitle();
+                final var t1 = d1.getStage().getTitle();
+                final var t2 = d2.getStage().getTitle();
                 assert t1 != null;
                 assert t2 != null;
                 result = t1.compareTo(t2);
@@ -1083,18 +1079,18 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
     }
 
     public void updatePreferences() {
-        final PreferencesController pc = PreferencesController.getSingleton();
-        final URL fxmlLocation = getEditorController().getFxmlLocation();
+        final var pc = PreferencesController.getSingleton();
+        final var fxmlLocation = getEditorController().getFxmlLocation();
         if (fxmlLocation == null) {
             // Document has not been saved => nothing to write
             // This is the case with initial empty document 
             return;
         }
         // Update record document
-        final PreferencesRecordDocument recordDocument = pc.getRecordDocument(this);
+        final var recordDocument = pc.getRecordDocument(this);
         recordDocument.writeToJavaPreferences();
         // Update record global
-        final PreferencesRecordGlobal recordGlobal = pc.getRecordGlobal();
+        final var recordGlobal = pc.getRecordGlobal();
         // recentItems may not contain the current document
         // if the Open Recent -> Clear menu has been invoked
         if (!recordGlobal.containsRecentItem(fxmlLocation)) {
@@ -1141,8 +1137,8 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
         
         // Insert the menu bar
         assert getRoot() instanceof VBox;
-        final VBox rootVBox = (VBox) getRoot();
-        rootVBox.getChildren().add(0, menuBarController.getMenuBar());
+        final var rootVBox = (VBox) getRoot();
+        rootVBox.getChildren().addFirst(menuBarController.getMenuBar());
         
         libraryPanelHost.getChildren().add(libraryPanelController.getPanelRoot());
         librarySearchPanelHost.getChildren().add(librarySearchController.getPanelRoot());
@@ -1167,11 +1163,11 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
         documentSplitController = new SplitController(libraryDocumentSplitPane, SplitController.Target.LAST);
         
         messageBarHost.heightProperty().addListener((InvalidationListener) o -> {
-            final double h = messageBarHost.getHeight();
+            final var h = messageBarHost.getHeight();
             contentPanelHost.setPadding(new Insets(h, 0.0, 0.0, 0.0));
         });
         
-        documentAccordion.setExpandedPane(documentAccordion.getPanes().get(0));
+        documentAccordion.setExpandedPane(documentAccordion.getPanes().getFirst());
         
         // Monitor the status of the document to set status icon accordingly in message bar
         getEditorController().getJobManager().revisionProperty().addListener((ChangeListener<Number>) (ov, t, t1) -> messageBarController.setDocumentDirty(isDocumentDirty()));
@@ -1192,7 +1188,7 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
         // or not a selection likely to be dropped onto Library panel.
         libraryMenuButton.showingProperty().addListener((ChangeListener<Boolean>) (ov, t, t1) -> {
             if (t1) {
-                AbstractSelectionGroup asg = getEditorController().getSelection().getGroup();
+                final var asg = getEditorController().getSelection().getGroup();
                 libraryImportSelection.setDisable(true);
 
                 if (asg instanceof ObjectSelectionGroup) {
@@ -1203,9 +1199,9 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
                 
                 // DTL-6439. The custom library menu shall be enabled only
                 // in the case there is a user library directory on disk.
-                Library lib = getEditorController().getLibrary();
+                final var lib = getEditorController().getLibrary();
                 if (lib instanceof UserLibrary) {
-                    File userLibDir = new File(((UserLibrary)lib).getPath());
+                    final var userLibDir = new File(((UserLibrary)lib).getPath());
                     if (userLibDir.canRead()) {
                         customLibraryMenu.setDisable(false);
                     } else {
@@ -1262,7 +1258,7 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
     }
     
     @Override 
-    public void onCloseRequest(WindowEvent event) {
+    public void onCloseRequest(final WindowEvent event) {
         performCloseAction();
     }
 
@@ -1290,7 +1286,7 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
 
     
     @Override
-    protected void toolStylesheetDidChange(String oldStylesheet) {
+    protected void toolStylesheetDidChange(final String oldStylesheet) {
         super.toolStylesheetDidChange(oldStylesheet);
         editorController.setToolStylesheet(getToolStylesheet());
         // previewWindowController should not be affected by tool style sheet
@@ -1307,28 +1303,28 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
     // Inspector menu
     //
     @FXML
-    void onInspectorShowAllAction(ActionEvent event) {
+    void onInspectorShowAllAction(final ActionEvent event) {
         inspectorPanelController.setShowMode(InspectorPanelController.ShowMode.ALL);
         
     }
     
     @FXML
-    void onInspectorShowEditedAction(ActionEvent event) {
+    void onInspectorShowEditedAction(final ActionEvent event) {
         inspectorPanelController.setShowMode(InspectorPanelController.ShowMode.EDITED);
     }
     
     @FXML
-    void onInspectorViewSectionsAction(ActionEvent event) {
+    void onInspectorViewSectionsAction(final ActionEvent event) {
         inspectorPanelController.setViewMode(InspectorPanelController.ViewMode.SECTION);
     }
     
     @FXML
-    void onInspectorViewByPropertyNameAction(ActionEvent event) {
+    void onInspectorViewByPropertyNameAction(final ActionEvent event) {
         inspectorPanelController.setViewMode(InspectorPanelController.ViewMode.PROPERTY_NAME);
     }
     
     @FXML
-    void onInspectorViewByPropertyTypeAction(ActionEvent event) {
+    void onInspectorViewByPropertyTypeAction(final ActionEvent event) {
         inspectorPanelController.setViewMode(InspectorPanelController.ViewMode.PROPERTY_TYPE);
     }
     
@@ -1337,38 +1333,38 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
     //
     
     @FXML
-    void onCssPanelViewRulesAction(ActionEvent event) {
+    void onCssPanelViewRulesAction(final ActionEvent event) {
         cssPanelMenuController.viewRules();
         cssPanelSplitDefaultsMi.setDisable(true);
         cssPanelShowStyledOnlyMi.setDisable(true);
     }
 
     @FXML
-    void onCssPanelViewTableAction(ActionEvent event) {
+    void onCssPanelViewTableAction(final ActionEvent event) {
         cssPanelMenuController.viewTable();
         cssPanelSplitDefaultsMi.setDisable(false);
         cssPanelShowStyledOnlyMi.setDisable(false);
     }
 
     @FXML
-    void onCssPanelViewTextAction(ActionEvent event) {
+    void onCssPanelViewTextAction(final ActionEvent event) {
         cssPanelMenuController.viewText();
         cssPanelSplitDefaultsMi.setDisable(true);
         cssPanelShowStyledOnlyMi.setDisable(true);
     }
 
     @FXML
-    void onCssPanelCopyStyleablePathAction(ActionEvent event) {
+    void onCssPanelCopyStyleablePathAction(final ActionEvent event) {
         cssPanelMenuController.copyStyleablePath();
     }
 
     @FXML
-    void onCssPanelSplitDefaultsAction(ActionEvent event) {
+    void onCssPanelSplitDefaultsAction(final ActionEvent event) {
         cssPanelMenuController.splitDefaultsAction(cssPanelSplitDefaultsMi);
     }
 
     @FXML
-    void onCssPanelShowStyledOnlyAction(ActionEvent event) {
+    void onCssPanelShowStyledOnlyAction(final ActionEvent event) {
         cssPanelMenuController.showStyledOnly(cssPanelShowStyledOnlyMi);
     }
     
@@ -1376,32 +1372,32 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
     // Hierarchy menu
     //
     @FXML
-    void onHierarchyShowInfo(ActionEvent event) {
+    void onHierarchyShowInfo(final ActionEvent event) {
         hierarchyPanelController.setDisplayOption(AbstractHierarchyPanelController.DisplayOption.INFO);
-        documentAccordion.setExpandedPane(documentAccordion.getPanes().get(0));
+        documentAccordion.setExpandedPane(documentAccordion.getPanes().getFirst());
 
         updateHierarchyDisplayOption();
     }
     
     @FXML
-    void onHierarchyShowFxId(ActionEvent event) {
+    void onHierarchyShowFxId(final ActionEvent event) {
         hierarchyPanelController.setDisplayOption(AbstractHierarchyPanelController.DisplayOption.FXID);
-        documentAccordion.setExpandedPane(documentAccordion.getPanes().get(0));
+        documentAccordion.setExpandedPane(documentAccordion.getPanes().getFirst());
 
         updateHierarchyDisplayOption();
     }
     
     @FXML
-    void onHierarchyShowNodeId(ActionEvent event) {
+    void onHierarchyShowNodeId(final ActionEvent event) {
         hierarchyPanelController.setDisplayOption(AbstractHierarchyPanelController.DisplayOption.NODEID);
-        documentAccordion.setExpandedPane(documentAccordion.getPanes().get(0));
+        documentAccordion.setExpandedPane(documentAccordion.getPanes().getFirst());
 
         updateHierarchyDisplayOption();
     }
 
     private void updateHierarchyDisplayOption() {
         // Update preferences
-        var recordGlobal = getPreferencesRecordGlobal();
+        final var recordGlobal = getPreferencesRecordGlobal();
         recordGlobal.updateHierarchyDisplayOption(hierarchyPanelController.getDisplayOption());
     }
 
@@ -1409,7 +1405,7 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
     // Library menu
     //
     @FXML
-    public void onManageJarFxml(ActionEvent event) {
+    public void onManageJarFxml(final ActionEvent event) {
         if(libraryDialogController==null){
             libraryDialogController = new LibraryDialogController(editorController, AppSettings.getUserM2Repository(),
                     PreferencesController.getSingleton(), getStage());
@@ -1427,16 +1423,16 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
         libraryDialogController.openWindow();
     }
     
-    public void onImportJarFxml(Window owner) {
+    public void onImportJarFxml(final Window owner) {
         libraryPanelController.performImportJarFxml(owner);
     }
     
-    public void onImportFromFolder(Window owner) {
+    public void onImportFromFolder(final Window owner) {
         libraryPanelController.performImportFromFolder(owner);
     }
     
     @FXML
-    void onLibraryViewAsList(ActionEvent event) {
+    void onLibraryViewAsList(final ActionEvent event) {
         if (libraryPanelController.getDisplayMode() != LibraryPanelController.DISPLAY_MODE.SEARCH) {
             libraryPanelController.setDisplayMode(LibraryPanelController.DISPLAY_MODE.LIST);
         } else {
@@ -1447,7 +1443,7 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
     }
     
     @FXML
-    void onLibraryViewAsSections(ActionEvent event) {
+    void onLibraryViewAsSections(final ActionEvent event) {
         if (libraryPanelController.getDisplayMode() != LibraryPanelController.DISPLAY_MODE.SEARCH) {
             libraryPanelController.setDisplayMode(LibraryPanelController.DISPLAY_MODE.SECTIONS);
         } else {
@@ -1459,39 +1455,39 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
 
     private void updateLibraryDisplayOption() {
         // Update preferences
-        var recordGlobal = getPreferencesRecordGlobal();
+        final var recordGlobal = getPreferencesRecordGlobal();
         recordGlobal.updateLibraryDisplayOption(libraryPanelController.getDisplayMode());
     }
 
     // This method cannot be called if there is not a valid selection, a selection
     // eligible for being dropped onto Library panel.
     @FXML
-    void onLibraryImportSelection(ActionEvent event) {
-        AbstractSelectionGroup asg = getEditorController().getSelection().getGroup();
+    void onLibraryImportSelection(final ActionEvent event) {
+        final var asg = getEditorController().getSelection().getGroup();
 
         if (asg instanceof ObjectSelectionGroup) {
-            ObjectSelectionGroup osg = (ObjectSelectionGroup)asg;
+            final var osg = (ObjectSelectionGroup)asg;
             assert !osg.getItems().isEmpty();
-            List<FXOMObject> selection = new ArrayList<>(osg.getItems());
+            final List<FXOMObject> selection = new ArrayList<>(osg.getItems());
             libraryPanelController.performImportSelection(selection);
         }
     }
     
     @FXML
-    void onLibraryRevealCustomFolder(ActionEvent event) {
-        String userLibraryPath = ((UserLibrary) getEditorController().getLibrary()).getPath();
+    void onLibraryRevealCustomFolder(final ActionEvent event) {
+        final var userLibraryPath = ((UserLibrary) getEditorController().getLibrary()).getPath();
         
         // ensure that there is no mixup of forward and backward slashes.
-        File libraryPath = Paths.get(userLibraryPath).normalize().toFile();
+        final var libraryPath = Paths.get(userLibraryPath).normalize().toFile();
         try {
             EditorPlatform.revealInFileBrowser(libraryPath);
-        } catch (Exception revealError) {
+        } catch (final Exception revealError) {
             handleRevealFolderException(revealError, String.valueOf(libraryPath));
         }
     }
     
     @FXML
-    void onLibraryShowJarAnalysisReport(ActionEvent event) {
+    void onLibraryShowJarAnalysisReport(final ActionEvent event) {
         if (jarAnalysisReportController == null) {
             jarAnalysisReportController = new JarAnalysisReportController(getEditorController(), getStage());
             jarAnalysisReportController.setToolStylesheet(getToolStylesheet());
@@ -1505,13 +1501,13 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
 
     private boolean canPerformSelectAll() {
         final boolean result;
-        final Node focusOwner = this.getScene().getFocusOwner();
+        final var focusOwner = this.getScene().getFocusOwner();
         if (isPopupEditing(focusOwner)) {
             return false;
         } else if (isTextInputControlEditing(focusOwner)) {
-            final TextInputControl tic = getTextInputControl(focusOwner);
-            final String text = tic.getText();
-            final String selectedText = tic.getSelectedText();
+            final var tic = getTextInputControl(focusOwner);
+            final var text = tic.getText();
+            final var selectedText = tic.getSelectedText();
             if (text == null || text.isEmpty()) {
                 result = false;
             } else {
@@ -1526,9 +1522,9 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
     }
 
     private void performSelectAll() {
-        final Node focusOwner = this.getScene().getFocusOwner();
+        final var focusOwner = this.getScene().getFocusOwner();
         if (isTextInputControlEditing(focusOwner)) {
-            final TextInputControl tic = getTextInputControl(focusOwner);
+            final var tic = getTextInputControl(focusOwner);
             tic.selectAll();
         } else {
             this.getEditorController().performControlAction(ControlAction.SELECT_ALL);
@@ -1536,12 +1532,12 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
     }
 
     private boolean canPerformSelectNone() {
-        boolean result;
-        final Node focusOwner = this.getScene().getFocusOwner();
+        final boolean result;
+        final var focusOwner = this.getScene().getFocusOwner();
         if (isPopupEditing(focusOwner)) {
             return false;
         } else if (isTextInputControlEditing(focusOwner)) {
-            final TextInputControl tic = getTextInputControl(focusOwner);
+            final var tic = getTextInputControl(focusOwner);
             result = tic.getSelectedText() != null && !tic.getSelectedText().isEmpty();
         } else {
             result = getEditorController().canPerformControlAction(ControlAction.SELECT_NONE);
@@ -1550,9 +1546,9 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
     }
 
     private void performSelectNone() {
-        final Node focusOwner = this.getScene().getFocusOwner();
+        final var focusOwner = this.getScene().getFocusOwner();
         if (isTextInputControlEditing(focusOwner)) {
-            final TextInputControl tic = getTextInputControl(focusOwner);
+            final var tic = getTextInputControl(focusOwner);
             tic.deselect();
         } else {
             this.getEditorController().performControlAction(ControlAction.SELECT_NONE);
@@ -1560,12 +1556,12 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
     }
     
     private boolean canPerformCopy() {
-        boolean result;
-        final Node focusOwner = this.getScene().getFocusOwner();
+        final boolean result;
+        final var focusOwner = this.getScene().getFocusOwner();
         if (isPopupEditing(focusOwner)) {
             return false;
         } else if (isTextInputControlEditing(focusOwner)) {
-            final TextInputControl tic = getTextInputControl(focusOwner);
+            final var tic = getTextInputControl(focusOwner);
             result = tic.getSelectedText() != null && !tic.getSelectedText().isEmpty();
         } else if (isCssRulesEditing(focusOwner) || isCssTextEditing(focusOwner)) {
             result = true;
@@ -1576,9 +1572,9 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
     }
 
     private void performCopy() {
-        final Node focusOwner = this.getScene().getFocusOwner();
+        final var focusOwner = this.getScene().getFocusOwner();
         if (isTextInputControlEditing(focusOwner)) {
-            final TextInputControl tic = getTextInputControl(focusOwner);
+            final var tic = getTextInputControl(focusOwner);
             tic.copy();
         } else if (isCssRulesEditing(focusOwner)) {
             cssPanelController.copyRules();
@@ -1591,12 +1587,12 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
     }
 
     private boolean canPerformCut() {
-        boolean result;
-        final Node focusOwner = this.getScene().getFocusOwner();
+        final boolean result;
+        final var focusOwner = this.getScene().getFocusOwner();
         if (isPopupEditing(focusOwner)) {
             return false;
         } else if (isTextInputControlEditing(focusOwner)) {
-            final TextInputControl tic = getTextInputControl(focusOwner);
+            final var tic = getTextInputControl(focusOwner);
             result = tic.getSelectedText() != null && !tic.getSelectedText().isEmpty();
         } else {
             result = getEditorController().canPerformEditAction(EditAction.CUT);
@@ -1605,9 +1601,9 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
     }
     
     private void performCut() {
-        final Node focusOwner = this.getScene().getFocusOwner();
+        final var focusOwner = this.getScene().getFocusOwner();
         if (isTextInputControlEditing(focusOwner)) {
-            final TextInputControl tic = getTextInputControl(focusOwner);
+            final var tic = getTextInputControl(focusOwner);
             tic.cut();
         } else {
             this.getEditorController().performEditAction(EditAction.CUT);
@@ -1615,8 +1611,8 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
     }
 
     private boolean canPerformPaste() {
-        boolean result;
-        final Node focusOwner = this.getScene().getFocusOwner();
+        final boolean result;
+        final var focusOwner = this.getScene().getFocusOwner();
         // If there is FXML in the clipboard, we paste the FXML whatever the focus owner is
         if (getEditorController().canPerformEditAction(EditAction.PASTE)) {
             result = true;
@@ -1629,7 +1625,7 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
     }
     
     private void performPaste() {
-        final Node focusOwner = this.getScene().getFocusOwner();
+        final var focusOwner = this.getScene().getFocusOwner();
         // If there is FXML in the clipboard, we paste the FXML whatever the focus owner is
         if (getEditorController().canPerformEditAction(EditAction.PASTE)) {
             this.getEditorController().performEditAction(EditAction.PASTE);
@@ -1637,8 +1633,8 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
             contentPanelController.getGlassLayer().requestFocus();
         } else {
             assert isTextInputControlEditing(focusOwner);
-            final TextInputControl tic = getTextInputControl(focusOwner);
-            boolean alternatePaste = PreferencesController.getSingleton()
+            final var tic = getTextInputControl(focusOwner);
+            final var alternatePaste = PreferencesController.getSingleton()
                                                           .getRecordGlobal()
                                                           .isAlternateTextInputControlPaste();
             if (alternatePaste) {
@@ -1654,10 +1650,10 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
     }
 
     private boolean canPerformDelete() {
-        boolean result;
-        final Node focusOwner = this.getScene().getFocusOwner();
+        final boolean result;
+        final var focusOwner = this.getScene().getFocusOwner();
         if (isTextInputControlEditing(focusOwner)) {
-            final TextInputControl tic = getTextInputControl(focusOwner);
+            final var tic = getTextInputControl(focusOwner);
             result = tic.getCaretPosition() < tic.getLength();
         } else {
             result = getEditorController().canPerformEditAction(EditAction.DELETE);
@@ -1667,17 +1663,17 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
 
     private void performDelete() {
 
-        final Node focusOwner = this.getScene().getFocusOwner();
+        final var focusOwner = this.getScene().getFocusOwner();
         if (isTextInputControlEditing(focusOwner)) {
-            final TextInputControl tic = getTextInputControl(focusOwner);
+            final var tic = getTextInputControl(focusOwner);
             tic.deleteNextChar();
         } else {
-            final List<FXOMObject> selectedObjects = editorController.getSelectedObjects();
+            final var selectedObjects = editorController.getSelectedObjects();
 
             // Collects fx:ids in selected objects and their descendants.
             // We filter out toggle groups because their fx:ids are managed automatically.
             final Map<String, FXOMObject> fxIdMap = new HashMap<>();
-            for (FXOMObject selectedObject : selectedObjects) {
+            for (final var selectedObject : selectedObjects) {
                 fxIdMap.putAll(selectedObject.collectFxIds());
             }
             FXOMNodes.removeToggleGroups(fxIdMap);
@@ -1703,7 +1699,7 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
                     }
                 }
 
-                final AlertDialog d = new AlertDialog(getStage());
+                final var d = new AlertDialog(getStage());
                 d.setMessage(message);
                 d.setDetails(I18N.getString("alert.delete.fxid.details"));
                 d.setOKButtonTitle(I18N.getString("label.delete"));
@@ -1726,15 +1722,15 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
     }
 
     private Optional<File> fetchFXMLFile() {
-        var fileChooser = new FileChooser();
-        var f = new ExtensionFilter(I18N.getString("file.filter.label.fxml"), "*.fxml"); //NOI18N
+        final var fileChooser = new FileChooser();
+        final var f = new ExtensionFilter(I18N.getString("file.filter.label.fxml"), "*.fxml"); //NOI18N
         fileChooser.getExtensionFilters().add(f);
         fileChooser.setInitialDirectory(EditorController.getNextInitialDirectory());
 
         var fxmlFile = fileChooser.showOpenDialog(getStage());
         if (fxmlFile != null) {
             // See DTL-5948: on Linux we anticipate an extension less path.
-            final String path = fxmlFile.getPath();
+            final var path = fxmlFile.getPath();
             if (!path.endsWith(".fxml")) { //NOI18N
                 fxmlFile = new File(path + ".fxml"); //NOI18N
             }
@@ -1747,17 +1743,17 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
 
     private void performImportMedia() {
 
-        final FileChooser fileChooser = new FileChooser();
-        final ExtensionFilter imageFilter
+        final var fileChooser = new FileChooser();
+        final var imageFilter
                 = new ExtensionFilter(I18N.getString("file.filter.label.image"),
                         ResourceUtils.getSupportedImageExtensions());
-        final ExtensionFilter audioFilter
+        final var audioFilter
                 = new ExtensionFilter(I18N.getString("file.filter.label.audio"),
                         ResourceUtils.getSupportedAudioExtensions());
-        final ExtensionFilter videoFilter
+        final var videoFilter
                 = new ExtensionFilter(I18N.getString("file.filter.label.video"),
                         ResourceUtils.getSupportedVideoExtensions());
-        final ExtensionFilter mediaFilter
+        final var mediaFilter
                 = new ExtensionFilter(I18N.getString("file.filter.label.media"),
                         ResourceUtils.getSupportedMediaExtensions());
 
@@ -1768,7 +1764,7 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
 
         fileChooser.setInitialDirectory(EditorController.getNextInitialDirectory());
 
-        File mediaFile = fileChooser.showOpenDialog(getStage());
+        final var mediaFile = fileChooser.showOpenDialog(getStage());
         if (mediaFile != null) {
 
             // Keep track of the user choice for next time
@@ -1785,19 +1781,19 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
      * @param node the focused node of the main scene
      * @return 
      */
-    private boolean isTextInputControlEditing(Node node) {
+    private boolean isTextInputControlEditing(final Node node) {
         return (node instanceof TextInputControl
                 || node instanceof ComboBox);
     }
 
-    private TextInputControl getTextInputControl(Node node) {
+    private TextInputControl getTextInputControl(final Node node) {
         assert isTextInputControlEditing(node);
         final TextInputControl tic;
         if (node instanceof TextInputControl) {
             tic = (TextInputControl) node;
         } else {
             assert node instanceof ComboBox;
-            final ComboBox<?> cb = (ComboBox<?>) node;
+            final var cb = (ComboBox<?>) node;
             tic = cb.getEditor();
         }
         return tic;
@@ -1811,29 +1807,29 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
      * @param node the focused node of the main scene
      * @return
      */
-    private boolean isPopupEditing(Node node) {
+    private boolean isPopupEditing(final Node node) {
         return (node instanceof MenuButton && ((MenuButton) node).isShowing())
                 || editorController.getInlineEditController().isWindowOpened();
     }
     
-    private boolean isCssRulesEditing(Node node) {
-        final Node cssRules = cssPanelController.getRulesPane();
+    private boolean isCssRulesEditing(final Node node) {
+        final var cssRules = cssPanelController.getRulesPane();
         if (cssRules != null) {
             return isDescendantOf(cssRules, node);
         }
         return false;
     }
 
-    private boolean isCssTextEditing(Node node) {
-        final Node cssText = cssPanelController.getTextPane();
+    private boolean isCssTextEditing(final Node node) {
+        final var cssText = cssPanelController.getTextPane();
         if (cssText != null) {
             return isDescendantOf(cssText, node);
         }
         return false;
     }
 
-    private boolean isDescendantOf(Node container, Node node) {
-        Node child = node;
+    private boolean isDescendantOf(final Node container, final Node node) {
+        var child = node;
         while (child != null) {
             if (child == container) {
                 return true;
@@ -1845,7 +1841,7 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
 
     private KeyCombination getAccelerator(final KeyEvent event) {
         KeyCombination result = null;
-        for (KeyCombination kc : menuBarController.getAccelerators()) {
+        for (final var kc : menuBarController.getAccelerators()) {
             if (kc.match(event)) {
                 result = kc;
                 break;
@@ -1860,23 +1856,23 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
         } // else controllerDidLoadFxml() will invoke me again
     }
     
-    private void updateFromDocumentPreferences(boolean refreshTheme) {
+    private void updateFromDocumentPreferences(final boolean refreshTheme) {
         if (libraryPanelHost != null) { // Layout is over
             // Refresh UI with preferences 
-            final PreferencesController pc = PreferencesController.getSingleton();
+            final var pc = PreferencesController.getSingleton();
             // Preferences global to the application
-            final PreferencesRecordGlobal recordGlobal = pc.getRecordGlobal();
+            final var recordGlobal = pc.getRecordGlobal();
 //            recordGlobal.refresh(this, refreshTheme);
             refreshFromPreferencesRecordGlobal(recordGlobal, refreshTheme);
             // Preferences specific to the document
-            final PreferencesRecordDocument recordDocument = pc.getRecordDocument(this);
+            final var recordDocument = pc.getRecordDocument(this);
             recordDocument.readFromJavaPreferences();
             // Update UI accordingly
             recordDocument.refresh();
         }
     }
 
-    public void refreshFromPreferencesRecordGlobal(PreferencesRecordGlobal recordGlobal, boolean refreshTheme) {
+    public void refreshFromPreferencesRecordGlobal(final PreferencesRecordGlobal recordGlobal, final boolean refreshTheme) {
         refreshAlignmentGuidesColor(recordGlobal);
         refreshBackgroundImage(recordGlobal);
         refreshCssTableColumnsOrderingReversed(recordGlobal);
@@ -1895,8 +1891,8 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
     }
 
     private void resetDocumentPreferences() {
-        final PreferencesController pc = PreferencesController.getSingleton();
-        final PreferencesRecordDocument recordDocument = pc.getRecordDocument(this);
+        final var pc = PreferencesController.getSingleton();
+        final var recordDocument = pc.getRecordDocument(this);
         recordDocument.resetDocumentPreferences();
     }
     
@@ -1921,7 +1917,7 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
         cssPanelSearchController.textProperty().addListener((ChangeListener<String>) (ov, oldStr, newStr) -> cssPanelController.setSearchPattern(newStr));
     }
     
-    private void performGoToSection(SectionId sectionId) {
+    private void performGoToSection(final SectionId sectionId) {
         // First make the right panel visible if not already the case
         if (!isRightPanelVisible()) {
             performControlAction(DocumentControlAction.TOGGLE_RIGHT_PANEL);
@@ -1930,7 +1926,7 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
     }
     
     private ActionStatus performSaveAction() {
-        final FXOMDocument fxomDocument = editorController.getFxomDocument();
+        final var fxomDocument = editorController.getFxomDocument();
         assert fxomDocument != null;
         assert fxomDocument.getLocation() != null;
         
@@ -1939,18 +1935,18 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
             final Path fxmlPath;
             try {
                 fxmlPath = Paths.get(fxomDocument.getLocation().toURI());
-            } catch(URISyntaxException x) {
+            } catch(final URISyntaxException x) {
                 // Should not happen
                 throw new RuntimeException("Bug in " + getClass().getSimpleName(), x); //NOI18N
             }
-            final String fileName = fxmlPath.getFileName().toString();
+            final var fileName = fxmlPath.getFileName().toString();
             
             try {
                 final boolean saveConfirmed;
                 if (checkLoadFileTime()) {
                     saveConfirmed = true;
                 } else {
-                    final AlertDialog d = new AlertDialog(getStage());
+                    final var d = new AlertDialog(getStage());
                     d.setMessage(I18N.getString("alert.overwrite.message", fileName));
                     d.setDetails(I18N.getString("alert.overwrite.details"));
                     d.setOKButtonVisible(true);
@@ -1963,8 +1959,8 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
                 if (saveConfirmed) {
                     try {
                         watchingController.removeDocumentTarget();
-                        var recordGlobal = getPreferencesRecordGlobal();
-                        final byte[] fxmlBytes = editorController.getFxmlText(recordGlobal.isWildcardImports()).getBytes(StandardCharsets.UTF_8); //NOI18N
+                        final var recordGlobal = getPreferencesRecordGlobal();
+                        final var fxmlBytes = editorController.getFxmlText(recordGlobal.isWildcardImports()).getBytes(StandardCharsets.UTF_8); //NOI18N
                         Files.write(fxmlPath, fxmlBytes);
                         updateLoadFileTime();
                         watchingController.update();
@@ -1972,15 +1968,15 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
                         editorController.getMessageLog().logInfoMessage(
                                 "log.info.save.confirmation", I18N.getBundle(), fileName);
                         result = ActionStatus.DONE;
-                    } catch(UnsupportedEncodingException x) {
+                    } catch(final UnsupportedEncodingException x) {
                         // Should not happen
                         throw new RuntimeException("Bug", x); //NOI18N
                     }
                 } else {
                     result = ActionStatus.CANCELLED;
                 }
-            } catch(IOException x) {
-                final ErrorDialog d = new ErrorDialog(getStage());
+            } catch(final IOException x) {
+                final var d = new ErrorDialog(getStage());
                 d.setMessage(I18N.getString("alert.save.failure.message", fileName));
                 d.setDetails(I18N.getString("alert.save.failure.details"));
                 d.setDebugInfoWithThrowable(x);
@@ -1999,31 +1995,31 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
         
         final ActionStatus result;
         if (editorController.canGetFxmlText()) {
-            final FileChooser fileChooser = new FileChooser();
-            final FileChooser.ExtensionFilter f 
+            final var fileChooser = new FileChooser();
+            final var f
                     = new FileChooser.ExtensionFilter(I18N.getString("file.filter.label.fxml"),
                             "*.fxml"); //NOI18N
             fileChooser.getExtensionFilters().add(f);
             fileChooser.setInitialDirectory(EditorController.getNextInitialDirectory());
 
-            File fxmlFile = fileChooser.showSaveDialog(getStage());
+            var fxmlFile = fileChooser.showSaveDialog(getStage());
             if (fxmlFile == null) {
                 result = ActionStatus.CANCELLED;
             } else {
-                boolean forgetSave = false;
+                var forgetSave = false;
                 // It is only on Linux where you can get the case the path doesn't
                 // end with the extension, thanks the behavior of the FX 8 FileChooser
                 // on this specific OS (see RT-31956).
                 // Below we ask the user if the extension shall be added or not.
                 // See DTL-5948.
-                final String path = fxmlFile.getPath();
+                final var path = fxmlFile.getPath();
                 if (!path.endsWith(".fxml")) { //NOI18N
                     try {
-                        URL alternateURL = new URL(fxmlFile.toURI().toURL().toExternalForm() + ".fxml"); //NOI18N
-                        File alternateFxmlFile = new File(alternateURL.toURI());
-                        final AlertDialog d = new AlertDialog(getStage());
+                        final var alternateURL = new URL(fxmlFile.toURI().toURL().toExternalForm() + ".fxml"); //NOI18N
+                        final var alternateFxmlFile = new File(alternateURL.toURI());
+                        final var d = new AlertDialog(getStage());
                         d.setMessage(I18N.getString("alert.save.noextension.message", fxmlFile.getName()));
-                        String details = I18N.getString("alert.save.noextension.details");
+                        var details = I18N.getString("alert.save.noextension.details");
 
                         if (alternateFxmlFile.exists()) {
                             details += "\n" //NOI18N
@@ -2050,7 +2046,7 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
                                 fxmlFile = alternateFxmlFile;
                                 break;
                         }
-                    } catch (MalformedURLException | URISyntaxException ex) {
+                    } catch (final MalformedURLException | URISyntaxException ex) {
                         forgetSave = true;
                     }
                 }
@@ -2059,18 +2055,18 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
                 final URL newLocation;
                 try {
                     newLocation = fxmlFile.toURI().toURL();
-                } catch(MalformedURLException x) {
+                } catch(final MalformedURLException x) {
                     // Should not happen
                     throw new RuntimeException("Bug in " + getClass().getSimpleName(), x); //NOI18N
                 }
                 
                 // Checks if fxmlFile is the name of an already opened document
-                final DocumentWindowController dwc
+                final var dwc
                         = SceneBuilderApp.getSingleton().lookupDocumentWindowControllers(newLocation);
                 if (dwc != null && dwc != this) {
-                    final Path fxmlPath = Paths.get(fxmlFile.toString());
-                    final String fileName = fxmlPath.getFileName().toString();
-                    final ErrorDialog d = new ErrorDialog(getStage());
+                    final var fxmlPath = Paths.get(fxmlFile.toString());
+                    final var fileName = fxmlPath.getFileName().toString();
+                    final var d = new ErrorDialog(getStage());
                     d.setMessage(I18N.getString("alert.save.conflict.message", fileName));
                     d.setDetails(I18N.getString("alert.save.conflict.details"));
                     d.showAndWait();
@@ -2102,7 +2098,7 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
                     EditorController.updateNextInitialDirectory(fxmlFile);
 
                     // Update recent items with just saved file
-                    var recordGlobal = getPreferencesRecordGlobal();
+                    final var recordGlobal = getPreferencesRecordGlobal();
                     recordGlobal.addRecentItem(fxmlFile);
                 }
             }
@@ -2118,7 +2114,7 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
         assert editorController.getFxomDocument() != null;
         assert editorController.getFxomDocument().getLocation() != null;
         
-        final AlertDialog d = new AlertDialog(getStage());
+        final var d = new AlertDialog(getStage());
         d.setMessage(I18N.getString("alert.revert.question.message", getStage().getTitle()));
         d.setDetails(I18N.getString("alert.revert.question.details"));
         d.setOKButtonTitle(I18N.getString("label.revert"));
@@ -2126,8 +2122,8 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
         if (d.showAndWait() == AlertDialog.ButtonID.OK) {
             try {
                 reload();
-            } catch(IOException x) {
-                final ErrorDialog errorDialog = new ErrorDialog(null);
+            } catch(final IOException x) {
+                final var errorDialog = new ErrorDialog(null);
                 errorDialog.setMessage(I18N.getString("alert.open.failure1.message", getStage().getTitle()));
                 errorDialog.setDetails(I18N.getString("alert.open.failure1.details"));
                 errorDialog.setDebugInfoWithThrowable(x);
@@ -2156,7 +2152,7 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
         // Checks if there are some pending changes
         final boolean closeConfirmed;
         if (isDocumentDirty()) {
-            final AlertDialog d = new AlertDialog(getStage());
+            final var d = new AlertDialog(getStage());
             d.setTitle(I18N.getString("alert.save.question.title"));
             d.setMessage(I18N.getString("alert.save.question.message", getStage().getTitle()));
             d.setDetails(I18N.getString("alert.save.question.details"));
@@ -2201,7 +2197,7 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
         assert editorController.getFxomDocument() != null;
         assert editorController.getFxomDocument().getLocation() != null;
 
-        final URL location = editorController.getFxomDocument().getLocation();
+        final var location = editorController.getFxomDocument().getLocation();
 
         File fxmlFile = null;
         try {
@@ -2211,35 +2207,35 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
              * removed from paths and users can directly use the path in their attempt to investigate the error.
              */
             fxmlFile = Path.of(location.toURI()).normalize().toAbsolutePath().toFile();
-        } catch (URISyntaxException e) {
+        } catch (final URISyntaxException e) {
             handleRevealResourceException(e, String.valueOf(location));
         }
 
         try {
             EditorPlatform.revealInFileBrowser(fxmlFile);
-        } catch (FileBrowserRevealException re) {
+        } catch (final FileBrowserRevealException re) {
             handleRevealFileException(re, String.valueOf(fxmlFile));
-        } catch (IOException x) {
+        } catch (final IOException x) {
             handleRevealResourceException(x, String.valueOf(fxmlFile));
         }
     }
     
     private void updateLoadFileTime() {
         
-        final URL fxmlURL = editorController.getFxmlLocation();
+        final var fxmlURL = editorController.getFxmlLocation();
         if (fxmlURL == null) {
             loadFileTime = null;
         } else {
             try {
-                final Path fxmlPath = Paths.get(fxmlURL.toURI());
+                final var fxmlPath = Paths.get(fxmlURL.toURI());
                 if (Files.exists(fxmlPath)) {
                     loadFileTime = Files.getLastModifiedTime(fxmlPath);
                 } else {
                     loadFileTime = null;
                 }
-            } catch(URISyntaxException x) {
+            } catch(final URISyntaxException x) {
                 throw new RuntimeException("Bug", x); //NOI18N
-            } catch(IOException x) {
+            } catch(final IOException x) {
                 loadFileTime = null;
             }
         }
@@ -2274,13 +2270,13 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
             try {
                 // editorController.getFxmlLocation() still exists
                 // Check if its file time matches loadFileTime
-                Path fxmlPath = Paths.get(editorController.getFxmlLocation().toURI());
-                FileTime currentFileTime = Files.getLastModifiedTime(fxmlPath);
+                final var fxmlPath = Paths.get(editorController.getFxmlLocation().toURI());
+                final var currentFileTime = Files.getLastModifiedTime(fxmlPath);
                 result = loadFileTime.compareTo(currentFileTime) == 0;
-            } catch(NoSuchFileException x) {
+            } catch(final NoSuchFileException x) {
                 // editorController.getFxmlLocation() no longer exists
                 result = true;
-            } catch(URISyntaxException x) {
+            } catch(final URISyntaxException x) {
                 throw new RuntimeException("Bug", x); //NOI18N
             }
         }
@@ -2292,11 +2288,11 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
         openURL(DocumentationUrls.ORACLE_DOCUMENTATION.toString());
     }
     
-    private void openURL(String url) {
+    private void openURL(final String url) {
         try {
             LOGGER.log(Level.FINE, "Attempting to open URL: {0}", url);
             EditorPlatform.open(url);
-        } catch (IOException ioe) {
+        } catch (final IOException ioe) {
             LOGGER.log(Level.WARNING, "Error during attempt to open URL!", ioe);
             handleRevealResourceException(ioe, url);
         }
@@ -2310,8 +2306,8 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
      * @param fileRevealException {@link FileBrowserRevealException}
      * @param locationToBeRevealed {@link String}
      */
-    private void handleRevealFileException(FileBrowserRevealException fileRevealException, String locationToBeRevealed) {
-        final ErrorDialog errorDialog = new ErrorDialog(this.getStage());
+    private void handleRevealFileException(final FileBrowserRevealException fileRevealException, final String locationToBeRevealed) {
+        final var errorDialog = new ErrorDialog(this.getStage());
         errorDialog.setTitle(I18N.getString("alert.error.file.reveal.title"));
         errorDialog.setMessage(I18N.getString("alert.error.file.reveal.message"));
         errorDialog.setDetails(I18N.getString("alert.error.file.reveal.details", locationToBeRevealed));
@@ -2328,8 +2324,8 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
      * @param revealException {@link Exception}
      * @param locationToBeRevealed {@link String}
      */
-    private void handleRevealResourceException(Exception revealException, String locationToBeRevealed) {
-        final ErrorDialog errorDialog = new ErrorDialog(this.getStage());
+    private void handleRevealResourceException(final Exception revealException, final String locationToBeRevealed) {
+        final var errorDialog = new ErrorDialog(this.getStage());
         errorDialog.setTitle(I18N.getString("alert.error.resource.reveal.title"));
         errorDialog.setMessage(I18N.getString("alert.error.resource.reveal.message"));
         errorDialog.setDetails(I18N.getString("alert.error.resource.reveal.details", locationToBeRevealed));
@@ -2345,8 +2341,8 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
      * @param revealException {@link Exception}
      * @param directoryToBeRevealed {@link String}
      */
-    private void handleRevealFolderException(Exception revealException, String directoryToBeRevealed) {
-        final ErrorDialog errorDialog = new ErrorDialog(this.getStage());
+    private void handleRevealFolderException(final Exception revealException, final String directoryToBeRevealed) {
+        final var errorDialog = new ErrorDialog(this.getStage());
         errorDialog.setTitle(I18N.getString("alert.error.directory.reveal.title"));
         errorDialog.setMessage(I18N.getString("alert.error.directory.reveal.message"));
         errorDialog.setDetails(I18N.getString("alert.error.directory.reveal.details", directoryToBeRevealed));
@@ -2357,7 +2353,7 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
 
     private PreferencesRecordGlobal getPreferencesRecordGlobal() {
         if (recordGlobal == null) {
-            final PreferencesController preferencesController = PreferencesController.getSingleton();
+            final var preferencesController = PreferencesController.getSingleton();
             recordGlobal = preferencesController.getRecordGlobal();
         }
         return recordGlobal;

@@ -52,7 +52,7 @@ public class DividerPositionsEditor extends PropertyEditor {
 
     private final VBox vbox = new VBox(5);
 
-    public DividerPositionsEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public DividerPositionsEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super(propMeta, selectedClasses);
         setLayoutFormat(PropertyEditor.LayoutFormat.SIMPLE_LINE_TOP);
     }
@@ -64,19 +64,19 @@ public class DividerPositionsEditor extends PropertyEditor {
 
     @Override
     public Object getValue() {
-        Double[] values = new Double[getDoubleFields().size()];
-        int index = 0;
-        for (Node node : getDoubleFields()) {
+        final var values = new Double[getDoubleFields().size()];
+        var index = 0;
+        for (final var node : getDoubleFields()) {
             assert node instanceof DoubleField;
-            DoubleField doubleField = (DoubleField) node;
-            String val = doubleField.getText();
+            final var doubleField = (DoubleField) node;
+            var val = doubleField.getText();
             if (val.isEmpty()) {
                 val = "0"; //NOI18N
                 doubleField.setText(val);
             } else {
                 try {
                     Double.parseDouble(val);
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                     // should not happen, DoubleField should prevent any error
                     return null;
                 }
@@ -89,7 +89,7 @@ public class DividerPositionsEditor extends PropertyEditor {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void setValue(Object value) {
+    public void setValue(final Object value) {
         setValueGeneric(value);
         if (isSetValueDone()) {
             return;
@@ -97,11 +97,11 @@ public class DividerPositionsEditor extends PropertyEditor {
 
         assert value != null;
         assert value instanceof List;
-        List<Double> doubleList = (List<Double>) value;
+        final var doubleList = (List<Double>) value;
 
         // Round values : 4 decimals seems enough
-        List<Double> roundedValues = new ArrayList<>();
-        for (double val : doubleList) {
+        final List<Double> roundedValues = new ArrayList<>();
+        for (final double val : doubleList) {
             roundedValues.add(EditorUtils.round(val, 10000));
         }
 
@@ -109,7 +109,7 @@ public class DividerPositionsEditor extends PropertyEditor {
     }
 
     @Override
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super.reset(propMeta, selectedClasses);
         vbox.getChildren().clear();
         setLayoutFormat(PropertyEditor.LayoutFormat.SIMPLE_LINE_TOP);
@@ -118,25 +118,25 @@ public class DividerPositionsEditor extends PropertyEditor {
     @Override
     protected void valueIsIndeterminate() {
         // Add a simple text field with the indeterminate char
-        List<Double> value = new ArrayList<>();
+        final List<Double> value = new ArrayList<>();
         value.add(0.0);
         fillVBox(value);
-        handleIndeterminate(getDoubleFields().get(0));
+        handleIndeterminate(getDoubleFields().getFirst());
     }
 
     @Override
     public void requestFocus() {
-        EditorUtils.doNextFrame(() -> getDoubleFields().get(0).requestFocus());
+        EditorUtils.doNextFrame(() -> getDoubleFields().getFirst().requestFocus());
     }
 
-    private void fillVBox(List<Double> values) {
+    private void fillVBox(final List<Double> values) {
         vbox.getChildren().clear();
-        for (Double value : values) {
-            double val = (value != null) ? value : 0;
-            DoubleField doubleField = new DoubleField();
+        for (final var value : values) {
+            final var val = (value != null) ? value : 0;
+            final var doubleField = new DoubleField();
             doubleField.setText(EditorUtils.valAsStr(val));
             vbox.getChildren().add(doubleField);
-            EventHandler<ActionEvent> valueListener = event -> userUpdateValueProperty(getValue());
+            final EventHandler<ActionEvent> valueListener = event -> userUpdateValueProperty(getValue());
             setNumericEditorBehavior(this, doubleField, valueListener, false);
         }
     }

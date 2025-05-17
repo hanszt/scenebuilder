@@ -37,7 +37,6 @@ import com.oracle.javafx.scenebuilder.kit.metadata.property.ValuePropertyMetadat
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PrefixedValue;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
@@ -47,9 +46,7 @@ import javafx.stage.FileChooser;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Path;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -66,15 +63,15 @@ public class IncludeFxmlEditor extends InlineListEditor {
     @FXML
     private TextField includeFxmlField;
 
-    public IncludeFxmlEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses, EditorController editorController) {
+    public IncludeFxmlEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses, final EditorController editorController) {
         super(propMeta, selectedClasses);
         this.editorController = editorController;
         initialize();
     }
 
     private void initialize() {
-        Parent rootInitialBt = EditorUtils.loadFxml("IncludeFXMLButton.fxml", this);
-        Tooltip tooltip = new Tooltip("Include FXML");
+        final var rootInitialBt = EditorUtils.loadFxml("IncludeFXMLButton.fxml", this);
+        final var tooltip = new Tooltip("Include FXML");
         includeFxmlButton.setTooltip(tooltip);
         root.getChildren().add(rootInitialBt);
         super.disableResetValueMenuItem();
@@ -86,12 +83,12 @@ public class IncludeFxmlEditor extends InlineListEditor {
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(final Object value) {
         if (value instanceof Collection) {
-            Collection<?> collection = (Collection<?>) value;
-            Iterator<?> it = collection.iterator();
+            final var collection = (Collection<?>) value;
+            final var it = collection.iterator();
             while (it.hasNext()) {
-                Object obj = it.next();
+                final var obj = it.next();
                 includeFxmlField.setText(obj.toString());
             }
         }
@@ -109,7 +106,7 @@ public class IncludeFxmlEditor extends InlineListEditor {
 
     @FXML
     public void addIncludeFile() {
-        File fxmlFile = chooseFxml();
+        final var fxmlFile = chooseFxml();
         if (fxmlFile != null) {
             EditorController.updateNextInitialDirectory(fxmlFile);
             editorController.performIncludeFxml(fxmlFile);
@@ -118,37 +115,37 @@ public class IncludeFxmlEditor extends InlineListEditor {
     }
 
     private File chooseFxml() {
-        final FileChooser fileChooser = new FileChooser();
-        final FileChooser.ExtensionFilter filter
+        final var fileChooser = new FileChooser();
+        final var filter
                 = new FileChooser.ExtensionFilter(I18N.getString("file.filter.label.fxml"), "*.fxml");
         fileChooser.getExtensionFilters().add(filter);
         setInitialDirectory(fileChooser);
         return fileChooser.showOpenDialog(root.getScene().getWindow());
     }
 
-    private void setInitialDirectory(FileChooser fileChooser) {
+    private void setInitialDirectory(final FileChooser fileChooser) {
         if (editorController.getIncludedFile() != null) {
-            File file = editorController.getIncludedFile();
-            final Path chosenFolder = file.toPath().getParent();
+            final var file = editorController.getIncludedFile();
+            final var chosenFolder = file.toPath().getParent();
             fileChooser.setInitialDirectory(chosenFolder.toFile());
         } else {
             fileChooser.setInitialDirectory(EditorController.getNextInitialDirectory());
         }
     }
 
-    private String getRelativePath(File includedFile) {
+    private String getRelativePath(final File includedFile) {
         URL url = null;
         try {
             url = includedFile.toURI().toURL();
-        } catch (MalformedURLException ex) {
+        } catch (final MalformedURLException ex) {
             Logger.getLogger(IncludeFxmlEditor.class.getName()).log(Level.SEVERE, "Path could not be determined.", ex);
         }
-        String prefixedValue = PrefixedValue.makePrefixedValue(url, editorController.getFxmlLocation()).toString();
+        final var prefixedValue = PrefixedValue.makePrefixedValue(url, editorController.getFxmlLocation()).toString();
         return removeAtSign(prefixedValue);
     }
 
-    private static String removeAtSign(String prefixedValue) {
-        String prefixedValueWithNoAt = "";
+    private static String removeAtSign(final String prefixedValue) {
+        var prefixedValueWithNoAt = "";
         if (prefixedValue.contains("@")) {
             prefixedValueWithNoAt = prefixedValue.replace("@", "");
         }

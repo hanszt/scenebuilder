@@ -39,7 +39,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
@@ -57,18 +56,18 @@ public class MovingGuideRenderer {
     private final Paint chromeColor;
     private final Bounds scopeInScene;
     
-    public MovingGuideRenderer(Paint chromeColor, Bounds scopeInScene) {
+    public MovingGuideRenderer(final Paint chromeColor, final Bounds scopeInScene) {
         this.chromeColor = chromeColor;
         this.scopeInScene = scopeInScene;
         guideGroup.setMouseTransparent(true);
     }
     
-    public void setLines(List<? extends AbstractSegment> lines1, List<? extends AbstractSegment> lines2) {
+    public void setLines(final List<? extends AbstractSegment> lines1, final List<? extends AbstractSegment> lines2) {
         assert lines1 != null;
         assert lines2 != null;
         assert guideGroup.getScene() != null;
         
-        final Set<AbstractSegment> currentLines = chromeMap.keySet();
+        final var currentLines = chromeMap.keySet();
         
         final Set<AbstractSegment> newLines = new HashSet<>();
         newLines.addAll(lines1);
@@ -80,16 +79,16 @@ public class MovingGuideRenderer {
         obsoleteLines.removeAll(lines1);
         obsoleteLines.removeAll(lines2);
         
-        for (AbstractSegment s : obsoleteLines) {
-            final Line chrome = chromeMap.get(s);
+        for (final var s : obsoleteLines) {
+            final var chrome = chromeMap.get(s);
             assert chrome != null;
             reusableChromes.add(chrome);
             chromeMap.remove(s);
             chrome.setVisible(false);
         }
         
-        final Bounds scope = guideGroup.sceneToLocal(scopeInScene, true /* rootScene */);
-        for (AbstractSegment s : newLines) {
+        final var scope = guideGroup.sceneToLocal(scopeInScene, true /* rootScene */);
+        for (final var s : newLines) {
             final Line chrome;
             if (reusableChromes.isEmpty()) {
                 chrome = new Line();
@@ -101,8 +100,8 @@ public class MovingGuideRenderer {
                 reusableChromes.remove(chrome);
                 chrome.setVisible(true);
             }
-            final Point2D p1 = guideGroup.sceneToLocal(s.getX1(), s.getY1(), true /* rootScene */);
-            final Point2D p2 = guideGroup.sceneToLocal(s.getX2(), s.getY2(), true /* rootScene */);
+            final var p1 = guideGroup.sceneToLocal(s.getX1(), s.getY1(), true /* rootScene */);
+            final var p2 = guideGroup.sceneToLocal(s.getX2(), s.getY2(), true /* rootScene */);
             final double startX, startY, endX, endY;
             if (s instanceof HorizontalSegment) {
                 assert MathUtils.equals(p1.getY(), p2.getY());
@@ -122,7 +121,7 @@ public class MovingGuideRenderer {
             chrome.setStartY(startY);
             chrome.setEndX(endX);
             chrome.setEndY(endY);
-            assert chromeMap.containsKey(s) == false;
+            assert !chromeMap.containsKey(s);
             chromeMap.put(s, chrome);
         }
         

@@ -58,17 +58,17 @@ public class RootDropTarget extends AbstractDropTarget {
     }
 
     @Override
-    public boolean acceptDragSource(AbstractDragSource dragSource) {
+    public boolean acceptDragSource(final AbstractDragSource dragSource) {
         assert dragSource != null;
         return dragSource.getDraggedObjects().size() == 1;
     }
 
     @Override
-    public Job makeDropJob(AbstractDragSource dragSource, EditorController editorController) {
+    public Job makeDropJob(final AbstractDragSource dragSource, final EditorController editorController) {
         assert dragSource != null;
         assert dragSource.getDraggedObjects().size() == 1;
         
-        final FXOMObject newRoot = dragSource.getDraggedObjects().get(0);
+        final var newRoot = dragSource.getDraggedObjects().getFirst();
         return new SetDocumentRootJob(newRoot, true /* usePredefinedSize */, 
                 dragSource.makeDropJobDescription(), editorController);
     }

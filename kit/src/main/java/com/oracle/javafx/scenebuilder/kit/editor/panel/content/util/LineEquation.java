@@ -45,18 +45,18 @@ public class LineEquation {
     private final double y1;
     private final double distance;
     
-    public LineEquation(double x0, double y0, double x1, double y1) {
+    public LineEquation(final double x0, final double y0, final double x1, final double y1) {
         assert ! ((x0 == x1) && (y0 == y1));
         this.x0 = x0;
         this.y0 = y0;
         this.x1 = x1;
         this.y1 = y1;
-        final double dx = x1 - x0;
-        final double dy = y1 - y0;
+        final var dx = x1 - x0;
+        final var dy = y1 - y0;
         this.distance = Math.sqrt(dx * dx + dy * dy);
     }
     
-    public LineEquation(Point2D p0, Point2D p1) {
+    public LineEquation(final Point2D p0, final Point2D p1) {
         this(p0.getX(), p0.getY(), p1.getX(), p1.getY());
     }
     
@@ -74,7 +74,7 @@ public class LineEquation {
      * @param offset offset of the target point
      * @return the coordinates of the target point
      */
-    public Point2D pointAtOffset(double offset) {
+    public Point2D pointAtOffset(final double offset) {
         /*
          *  - offset=0           matches p0
          *  - offset=+D          matches p1
@@ -94,18 +94,18 @@ public class LineEquation {
      * @param y target point y
      * @return the offset of p projection on this line.
      */
-    public double offsetAtPoint(double x, double y) {
+    public double offsetAtPoint(final double x, final double y) {
         /*
          * offset is the dot product of:
          *      - v1 : vector ((x0, y0), (x, y))
          *      - v2 : normalized vector ((x0, y0), (x1, y1))
          */
         
-        final double dx1 = x - x0;
-        final double dy1 = y - y0;
-        final double dx2 = (x1 - x0) / distance;
-        final double dy2 = (y1 - y0) / distance;
-        final double result = dx1 * dx2 + dy1 * dy2;
+        final var dx1 = x - x0;
+        final var dy1 = y - y0;
+        final var dx2 = (x1 - x0) / distance;
+        final var dy2 = (y1 - y0) / distance;
+        final var result = dx1 * dx2 + dy1 * dy2;
         
         return result;
     }
@@ -116,7 +116,7 @@ public class LineEquation {
      * @param p parametric position of the target point
      * @return the coordinates of the target point
      */
-    public Point2D pointAtP(double p) {
+    public Point2D pointAtP(final double p) {
         final double x, y;
         
         /*
@@ -141,7 +141,7 @@ public class LineEquation {
      * @param offset an offset along this line
      * @return the matching parametric position
      */
-    public double offsetToP(double offset) {
+    public double offsetToP(final double offset) {
         assert isValid();
         return offset / distance;
     }
@@ -152,7 +152,7 @@ public class LineEquation {
      * @param p a parametric position
      * @return the matching offset
      */
-    public double pToOffset(double p) {
+    public double pToOffset(final double p) {
         assert isValid();
         return p * distance;
     }

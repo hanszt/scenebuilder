@@ -37,7 +37,7 @@ import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.AddPropertyJob;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyC;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
-import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -48,7 +48,7 @@ import java.util.List;
  */
 public abstract class AbstractWrapInSubComponentJob extends AbstractWrapInJob {
 
-    public AbstractWrapInSubComponentJob(EditorController editorController) {
+    public AbstractWrapInSubComponentJob(final EditorController editorController) {
         super(editorController);
     }
 
@@ -57,22 +57,22 @@ public abstract class AbstractWrapInSubComponentJob extends AbstractWrapInJob {
 
         final List<Job> jobs = new ArrayList<>();
 
-        final DesignHierarchyMask newContainerMask
+        final var newContainerMask
                 = new DesignHierarchyMask(newContainer);
         assert newContainerMask.isAcceptingSubComponent();
 
         // Retrieve the new container property name to be used
-        final PropertyName newContainerPropertyName
+        final var newContainerPropertyName
                 = newContainerMask.getSubComponentPropertyName();
         // Create the new container property
-        final FXOMPropertyC newContainerProperty = new FXOMPropertyC(
+        final var newContainerProperty = new FXOMPropertyC(
                 newContainer.getFxomDocument(), newContainerPropertyName);
 
         // Update children before adding them to the new container
         jobs.addAll(modifyChildrenJobs(children));
 
         // Sort the children before adding them to their new container
-        final Collection<FXOMObject> sorted = sortChildren(children);
+        final var sorted = sortChildren(children);
         // Add the children to the new container
         jobs.addAll(addChildrenJobs(newContainerProperty, sorted));
 
@@ -87,7 +87,7 @@ public abstract class AbstractWrapInSubComponentJob extends AbstractWrapInJob {
         return jobs;
     }
 
-    protected Collection<FXOMObject> sortChildren(List<FXOMObject> children) {
+    protected Collection<FXOMObject> sortChildren(final List<FXOMObject> children) {
         return children;
     }
 }

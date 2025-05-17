@@ -63,7 +63,7 @@ public abstract class Library {
         return classLoaderProperty.getValue();
     }
 
-    protected void setClassLoader(ClassLoader loader) {
+    protected void setClassLoader(final ClassLoader loader) {
         classLoaderProperty.set(loader);
     }
     

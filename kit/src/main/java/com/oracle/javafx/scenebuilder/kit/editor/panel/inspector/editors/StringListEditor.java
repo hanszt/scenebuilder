@@ -44,7 +44,6 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
@@ -54,14 +53,13 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 public class StringListEditor extends InlineListEditor {
 
 
-    public StringListEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public StringListEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super(propMeta, selectedClasses);
         initialize();
     }
@@ -78,10 +76,10 @@ public class StringListEditor extends InlineListEditor {
 
     @Override
     public Object getValue() {
-        List<String> value = FXCollections.observableArrayList();
+        final List<String> value = FXCollections.observableArrayList();
         // Group all the item values in a list
-        for (EditorItem styleItem : getEditorItems()) {
-            String itemValue = EditorUtils.toString(styleItem.getValue());
+        for (final var styleItem : getEditorItems()) {
+            final var itemValue = EditorUtils.toString(styleItem.getValue());
             if (itemValue.isEmpty()) {
                 continue;
             }
@@ -96,7 +94,7 @@ public class StringListEditor extends InlineListEditor {
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(final Object value) {
         setValueGeneric(value);
         if (value == null) {
             reset();
@@ -110,9 +108,9 @@ public class StringListEditor extends InlineListEditor {
             return;
         }
 
-        Iterator<EditorItem> itemsIter = new ArrayList<>(getEditorItems()).iterator();
-        for (String item : (List<String>) value) {
-            EditorItem editorItem;
+        final var itemsIter = new ArrayList<>(getEditorItems()).iterator();
+        for (final var item : (List<String>) value) {
+            final EditorItem editorItem;
             if (itemsIter.hasNext()) {
                 // re-use the current items first
                 editorItem = itemsIter.next();
@@ -124,20 +122,20 @@ public class StringListEditor extends InlineListEditor {
         }
         // Empty the remaining items, if needed
         while (itemsIter.hasNext()) {
-            EditorItem editorItem = itemsIter.next();
+            final var editorItem = itemsIter.next();
             removeItem(editorItem);
         }
     }
 
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses,
-                      Set<FXOMInstance> selectedInstances) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses,
+                      final Set<FXOMInstance> selectedInstances) {
         super.reset(propMeta, selectedClasses);
         addItem(getNewStringListItem());
     }
 
     @Override
     public void requestFocus() {
-        EditorItem firstItem = getEditorItems().get(0);
+        final var firstItem = getEditorItems().getFirst();
         assert firstItem instanceof StringListItem;
         ((StringListItem) firstItem).requestFocus();
     }
@@ -169,18 +167,18 @@ public class StringListEditor extends InlineListEditor {
         private EditorItemDelegate editor;
         private PrefixedValue.Type itemType = PrefixedValue.Type.PLAIN_STRING;
 
-        public StringListItem(EditorItemDelegate editor, String text) {
+        public StringListItem(final EditorItemDelegate editor, final String text) {
             initialize(editor, text);
         }
 
-        private void initialize(EditorItemDelegate editor, String text) {
+        private void initialize(final EditorItemDelegate editor, final String text) {
             this.editor = editor;
-            Parent parentRoot = EditorUtils.loadFxml("StringListEditorItem.fxml", this);
+            final var parentRoot = EditorUtils.loadFxml("StringListEditorItem.fxml", this);
             assert parentRoot instanceof Pane;
             root = (Pane) parentRoot;
 
             setValue(text);
-            EventHandler<ActionEvent> onActionListener = event -> {
+            final EventHandler<ActionEvent> onActionListener = event -> {
                 if (getValue().equals(currentValue)) {
                     // no change
                     return;
@@ -193,7 +191,7 @@ public class StringListEditor extends InlineListEditor {
                 currentValue = EditorUtils.toString(getValue());
             };
 
-            ChangeListener<String> textPropertyChange = (ov, prevText, newText) -> {
+            final ChangeListener<String> textPropertyChange = (ov, prevText, newText) -> {
                 if (prevText.isEmpty() || newText.isEmpty()) {
                     // Text changed FROM empty value, or TO empty value: buttons status change
                     updateButtons();
@@ -224,7 +222,7 @@ public class StringListEditor extends InlineListEditor {
 
         @Override
         public Object getValue() {
-            String suffix;
+            final String suffix;
             if (textTextfield.getText().isEmpty()) {
                 return "";
             } else {
@@ -234,8 +232,8 @@ public class StringListEditor extends InlineListEditor {
         }
 
         @Override
-        public void setValue(Object text) {
-            PrefixedValue prefixedValue = new PrefixedValue(EditorUtils.toString(text));
+        public void setValue(final Object text) {
+            final var prefixedValue = new PrefixedValue(EditorUtils.toString(text));
             itemType = prefixedValue.getType();
             handlePrefix(itemType);
             if (prefixedValue.getSuffix() != null) {
@@ -289,31 +287,31 @@ public class StringListEditor extends InlineListEditor {
         }
 
         @FXML
-        void add(ActionEvent event) {
-            StringListEditor.StringListItem styleClassItem = getNewStringListItem();
+        void add(final ActionEvent event) {
+            final var styleClassItem = getNewStringListItem();
             editor.add(this, styleClassItem);
             styleClassItem.requestFocus();
 
         }
 
         @FXML
-        void remove(ActionEvent event) {
+        void remove(final ActionEvent event) {
             editor.remove(this);
         }
 
         @FXML
-        void up(ActionEvent event) {
+        void up(final ActionEvent event) {
             editor.up(this);
         }
 
         @FXML
-        void down(ActionEvent event) {
+        void down(final ActionEvent event) {
             editor.down(this);
         }
 
 
         @FXML
-        void plusBtTyped(KeyEvent event) {
+        void plusBtTyped(final KeyEvent event) {
             if (event.getCode() == KeyCode.ENTER) {
                 add(null);
             }
@@ -331,15 +329,15 @@ public class StringListEditor extends InlineListEditor {
             }
         }
 
-        protected void disablePlusButton(boolean disable) {
+        protected void disablePlusButton(final boolean disable) {
             plusBt.setDisable(disable);
         }
 
-        protected void disableRemove(boolean disable) {
+        protected void disableRemove(final boolean disable) {
             removeMi.setDisable(disable);
         }
 
-        protected void handlePrefix(PrefixedValue.Type type) {
+        protected void handlePrefix(final PrefixedValue.Type type) {
             this.itemType = type;
             if (type == PrefixedValue.Type.DOCUMENT_RELATIVE_PATH) {
                 setPrefix(FXMLLoader.RELATIVE_PATH_PREFIX);
@@ -351,7 +349,7 @@ public class StringListEditor extends InlineListEditor {
             }
         }
 
-        private void setPrefix(String str) {
+        private void setPrefix(final String str) {
             if (!prefixLb.isVisible()) {
                 prefixLb.setVisible(true);
                 prefixLb.setManaged(true);

@@ -50,7 +50,7 @@ public class ReplacePropertyValueJobT extends Job {
     private FXOMInstance hostInstance;
     private FXOMPropertyC newProperty;
 
-    public ReplacePropertyValueJobT(FXOMPropertyT hostProperty, FXOMObject newValue, EditorController editorController) {
+    public ReplacePropertyValueJobT(final FXOMPropertyT hostProperty, final FXOMObject newValue, final EditorController editorController) {
         super(editorController);
         
         assert hostProperty != null;

@@ -65,17 +65,17 @@ public class EventHandlerEditor extends AutoSuggestEditor {
     private HBox hbox = null;
     private List<String> suggestedMethods;
 
-    public EventHandlerEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses, List<String> suggestedMethods) {
+    public EventHandlerEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses, final List<String> suggestedMethods) {
         super(propMeta, selectedClasses, suggestedMethods); //NOI18N
         initialize(suggestedMethods);
     }
 
-    private void initialize(List<String> suggestedMethods) {
+    private void initialize(final List<String> suggestedMethods) {
         this.suggestedMethods = suggestedMethods;
 
         // text field events handling
-        EventHandler<ActionEvent> onActionListener = event -> {
-            String tfValue = getTextField().getText();
+        final EventHandler<ActionEvent> onActionListener = event -> {
+            final var tfValue = getTextField().getText();
             if (tfValue == null || tfValue.isEmpty()) {
                 userUpdateValueProperty(null);
                 return;
@@ -88,7 +88,7 @@ public class EventHandlerEditor extends AutoSuggestEditor {
                     return;
                 }
             }
-            Object value = getValue();
+            final var value = getValue();
             assert value instanceof String;
             userUpdateValueProperty((String) value);
             getTextField().selectAll();
@@ -114,11 +114,11 @@ public class EventHandlerEditor extends AutoSuggestEditor {
     
     @Override
     public Object getValue() {
-        String valueTf = getTextField().getText();
+        final var valueTf = getTextField().getText();
         if (valueTf == null || valueTf.isEmpty()) {
             return null; // default value
         }
-        String value;
+        final String value;
         if (methodNameMode) {
             value = HASH_STR + getTextField().getText();
         } else {
@@ -129,7 +129,7 @@ public class EventHandlerEditor extends AutoSuggestEditor {
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(final Object value) {
 //        System.out.println("EventHandlerEditor : setValue to '" + value + "'");
         setValueGeneric(value);
         if (isSetValueDone()) {
@@ -163,7 +163,7 @@ public class EventHandlerEditor extends AutoSuggestEditor {
     }
 
     @Override
-    public void reset(String name, String defaultValue, List<String> suggestedList) {
+    public void reset(final String name, final String defaultValue, final List<String> suggestedList) {
         super.reset(name, defaultValue, suggestedList);
         switchToMethodNameMode();
     }
@@ -171,7 +171,7 @@ public class EventHandlerEditor extends AutoSuggestEditor {
     private void wrapInHBox() {
         hbox = new HBox();
         hbox.setAlignment(Pos.CENTER);
-        Label hashLabel = new Label(HASH_STR);
+        final var hashLabel = new Label(HASH_STR);
         hashLabel.getStyleClass().add("symbol-prefix");
         hbox.getChildren().addAll(hashLabel, getRoot());
         HBox.setHgrow(hashLabel, Priority.NEVER);

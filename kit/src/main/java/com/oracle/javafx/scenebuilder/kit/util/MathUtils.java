@@ -47,7 +47,7 @@ public class MathUtils {
      * @param v2 second double to check
      * @return true if the two specified double values are approximately equals.
      */
-    public static boolean equals(double v1, double v2) {
+    public static boolean equals(final double v1, final double v2) {
         return Math.abs(v1 - v2) < 0.0000001;
     }
     
@@ -60,7 +60,7 @@ public class MathUtils {
      * @param tolerance a strictly positive value
      * @return true if the two specified double values are approximately equals.
      */
-    public static boolean equals(double v1, double v2, double tolerance) {
+    public static boolean equals(final double v1, final double v2, final double tolerance) {
         assert tolerance > 0.0;
         return Math.abs(v1 - v2) <= tolerance;
     }
@@ -74,9 +74,9 @@ public class MathUtils {
      * @param y2 x coordinate of the second point
      * @return the distance between (x1, y1) and (x2, y2)
      */
-    public static double distance(double x1, double y1, double x2, double y2) {
-        final double dx = x2 - x1;
-        final double dy = y2 - y1;
+    public static double distance(final double x1, final double y1, final double x2, final double y2) {
+        final var dx = x2 - x1;
+        final var dy = y2 - y1;
         return Math.sqrt(dx * dx + dy * dy);
     }
 }

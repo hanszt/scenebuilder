@@ -40,12 +40,12 @@ import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
  */
 public class IntegerPropertyMetadata extends TextEncodablePropertyMetadata<Integer> {
 
-    public IntegerPropertyMetadata(PropertyName name, boolean readWrite, 
-            Integer defaultValue, InspectorPath inspectorPath) {
+    public IntegerPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                   final Integer defaultValue, final InspectorPath inspectorPath) {
         super(name, Integer.class, readWrite, defaultValue, inspectorPath);
     }
     
-    public boolean isValidValue(Integer value) {
+    public boolean isValidValue(final Integer value) {
         return (value != null) && (0 <= value);
     }
 
@@ -53,7 +53,7 @@ public class IntegerPropertyMetadata extends TextEncodablePropertyMetadata<Integ
      * TextEncodablePropertyMetadata
      */
     @Override
-    public Integer makeValueFromString(String string) {
+    public Integer makeValueFromString(final String string) {
         return Integer.valueOf(string);
     }
     

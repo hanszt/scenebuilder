@@ -36,7 +36,6 @@ import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -46,7 +45,6 @@ import javafx.collections.ListChangeListener;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -67,7 +65,6 @@ import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
@@ -124,8 +121,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.panel.content.util.Picker;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.util.ScrollPaneBooster;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.util.AbstractFxmlPanelController;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
-import com.oracle.javafx.scenebuilder.kit.editor.util.ContextMenuController;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
@@ -182,7 +177,7 @@ public class ContentPanelController extends AbstractFxmlPanelController
      * 
      * @param editorController the editor controller (never null).
      */
-    public ContentPanelController(EditorController editorController) {
+    public ContentPanelController(final EditorController editorController) {
         super(ContentPanelController.class.getResource("ContentPanel.fxml"), I18N.getBundle(), editorController); //NOI18N
         this.editModeController = new EditModeController(this);
         this.pickModeController = new PickModeController(this);
@@ -201,14 +196,14 @@ public class ContentPanelController extends AbstractFxmlPanelController
      * @return true if this content panel displays outlines.
      */
     public boolean isOutlinesVisible() {
-        return (contentGroup != null) && (contentGroup.isVisible() == false);
+        return (contentGroup != null) && (!contentGroup.isVisible());
     }
 
     /**
      * Enables or disables outline display in this content panel.
      * @param outlinesVisible true if outlines should be visible.
      */
-    public void setOutlinesVisible(boolean outlinesVisible) {
+    public void setOutlinesVisible(final boolean outlinesVisible) {
         if (outlinesVisible != isOutlinesVisible()) {
             if (outlinesVisible) {
                 beginShowingOutlines();
@@ -232,7 +227,7 @@ public class ContentPanelController extends AbstractFxmlPanelController
      * 
      * @param guidesVisible  true if alignment guides should be visible.
      */
-    public void setGuidesVisible(boolean guidesVisible) {
+    public void setGuidesVisible(final boolean guidesVisible) {
         this.guidesVisible = guidesVisible;
     }
     
@@ -250,7 +245,7 @@ public class ContentPanelController extends AbstractFxmlPanelController
      * 
      * @param pringColor the color used by this content panel to draw parent rings.
      */
-    public void setPringColor(Paint pringColor) {
+    public void setPringColor(final Paint pringColor) {
         this.pringColor = pringColor;
     }
 
@@ -268,7 +263,7 @@ public class ContentPanelController extends AbstractFxmlPanelController
      * 
      * @param guidesColor the color used by this content panel to draw alignment guides.
      */
-    public void setGuidesColor(Paint guidesColor) {
+    public void setGuidesColor(final Paint guidesColor) {
         this.guidesColor = guidesColor;
     }
     
@@ -286,7 +281,7 @@ public class ContentPanelController extends AbstractFxmlPanelController
      * 
      * @param scaling the scaling factor to be used by this content panel.
      */
-    public void setScaling(double scaling) {
+    public void setScaling(final double scaling) {
         this.workspaceController.setScaling(scaling);
     }
     
@@ -305,7 +300,7 @@ public class ContentPanelController extends AbstractFxmlPanelController
      * 
      * @param autoResize3DContent  true if this content panel should autoresize 3D content.
      */
-    public void setAutoResize3DContent(boolean autoResize3DContent) {
+    public void setAutoResize3DContent(final boolean autoResize3DContent) {
         workspaceController.setAutoResize3DContent(autoResize3DContent);
     }
     
@@ -317,12 +312,12 @@ public class ContentPanelController extends AbstractFxmlPanelController
     public Image getWorkspaceBackground() {
         final Image result;
         
-        final Background bg = workspacePane.getBackground();
+        final var bg = workspacePane.getBackground();
         if (bg == null) {
             result = null;
         } else {
             assert bg.getImages().size() == 1;
-            result = bg.getImages().get(0).getImage();
+            result = bg.getImages().getFirst().getImage();
         }
         
         return result;
@@ -333,12 +328,12 @@ public class ContentPanelController extends AbstractFxmlPanelController
      * 
      * @param image null or the image for tiling the background of this content panel.
      */
-    public void setWorkspaceBackground(Image image) {
+    public void setWorkspaceBackground(final Image image) {
         final Background bg;
         if (image == null) {
             bg = null;
         } else {
-            final BackgroundImage bgi = new javafx.scene.layout.BackgroundImage(image,
+            final var bgi = new javafx.scene.layout.BackgroundImage(image,
                 BackgroundRepeat.REPEAT, BackgroundRepeat.REPEAT,
                 BackgroundPosition.CENTER, BackgroundSize.DEFAULT);
             bg = new Background(bgi);
@@ -361,17 +356,17 @@ public class ContentPanelController extends AbstractFxmlPanelController
      */
     public void scrollToSelection() {
         // Walk through the selected objects and computes the enclosing bounds.
-        final BoundsUnion union = new BoundsUnion();
-        final Selection selection = getEditorController().getSelection();
+        final var union = new BoundsUnion();
+        final var selection = getEditorController().getSelection();
         if (selection.getGroup() instanceof ObjectSelectionGroup) {
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) selection.getGroup();
-            for (FXOMObject i : osg.getItems()) {
-                final DesignHierarchyMask mask = new DesignHierarchyMask(i);
-                final FXOMObject nodeFxomObject = mask.getClosestFxNode();
+            final var osg = (ObjectSelectionGroup) selection.getGroup();
+            for (final var i : osg.getItems()) {
+                final var mask = new DesignHierarchyMask(i);
+                final var nodeFxomObject = mask.getClosestFxNode();
                 if (nodeFxomObject != null) {
-                    final Node node = (Node) nodeFxomObject.getSceneGraphObject();
+                    final var node = (Node) nodeFxomObject.getSceneGraphObject();
                     assert node.getLayoutBounds() != null;
-                    final Bounds nodeBounds = node.localToScene(node.getLayoutBounds(), true /* rootScene */);
+                    final var nodeBounds = node.localToScene(node.getLayoutBounds(), true /* rootScene */);
                     assert nodeBounds != null;
                     union.add(nodeBounds);
                 }
@@ -379,38 +374,38 @@ public class ContentPanelController extends AbstractFxmlPanelController
         }
 
         if (union.getResult() != null) {
-            final Node content = scrollPane.getContent();
-            final Bounds sceneEnclosing = union.getResult();
+            final var content = scrollPane.getContent();
+            final var sceneEnclosing = union.getResult();
             assert sceneEnclosing.getMinZ() == 0.0; // Side effect of SubScene
             assert sceneEnclosing.getMaxZ() == 0.0;
-            final Bounds localEnclosing = content.sceneToLocal(sceneEnclosing, true /* rootScene */);
+            final var localEnclosing = content.sceneToLocal(sceneEnclosing, true /* rootScene */);
             assert localEnclosing != null;
-            final ScrollPaneBooster spb = new ScrollPaneBooster(scrollPane);
+            final var spb = new ScrollPaneBooster(scrollPane);
             spb.scrollTo(localEnclosing);
         }
     }
 
     
-    public void reveal(FXOMObject targetFxomObject) {
-        FXOMObject fxomObject = targetFxomObject;
+    public void reveal(final FXOMObject targetFxomObject) {
+        var fxomObject = targetFxomObject;
         
         while (fxomObject != null) {
-            final Object sceneGraphObject = fxomObject.getSceneGraphObject();
+            final var sceneGraphObject = fxomObject.getSceneGraphObject();
             
             if (sceneGraphObject instanceof Tab) {
-                final Tab tab = (Tab) sceneGraphObject;
-                final TabPane tabPane = tab.getTabPane();
+                final var tab = (Tab) sceneGraphObject;
+                final var tabPane = tab.getTabPane();
                 assert tabPane != null;
                 tabPane.getSelectionModel().select(tab);
             } else if (sceneGraphObject instanceof TitledPane) {
-                final TitledPane titledPane = (TitledPane) sceneGraphObject;
+                final var titledPane = (TitledPane) sceneGraphObject;
                 if (titledPane.getParent() instanceof Accordion) {
-                    final Accordion accordion = (Accordion) titledPane.getParent();
+                    final var accordion = (Accordion) titledPane.getParent();
                     accordion.setExpandedPane(titledPane);
                 }
             }
-            
-            DesignHierarchyMask mask = new DesignHierarchyMask(fxomObject);
+
+            final var mask = new DesignHierarchyMask(fxomObject);
             fxomObject = mask.getParentFXOMObject();
         }
     }
@@ -422,7 +417,7 @@ public class ContentPanelController extends AbstractFxmlPanelController
      * @param sceneY y coordinate of a scene point
      * @return null or the topmost FXOMObject located at (sceneX, sceneY)
      */
-    public FXOMObject pick(double sceneX, double sceneY) {
+    public FXOMObject pick(final double sceneX, final double sceneY) {
         return pick(sceneX, sceneY, Collections.emptySet());
     }
     
@@ -436,11 +431,11 @@ public class ContentPanelController extends AbstractFxmlPanelController
      * @param excludes null or a set of FXOMObject to be excluded from the pick.
      * @return null or the topmost FXOMObject located at (sceneX, sceneY)
      */
-    public FXOMObject pick(double sceneX, double sceneY, Set<FXOMObject> excludes) {
+    public FXOMObject pick(final double sceneX, final double sceneY, final Set<FXOMObject> excludes) {
         final FXOMObject result;
         
         if (isContentDisplayable()) {
-            final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
+            final var fxomDocument = getEditorController().getFxomDocument();
             result = pick(fxomDocument, sceneX, sceneY, excludes);
         } else {
             result = null;
@@ -449,16 +444,16 @@ public class ContentPanelController extends AbstractFxmlPanelController
         return result;
     }
     
-    public FXOMObject pick(FXOMDocument fxomDocument, double sceneX, double sceneY, Set<FXOMObject> excludes) {
+    public FXOMObject pick(final FXOMDocument fxomDocument, final double sceneX, final double sceneY, final Set<FXOMObject> excludes) {
         assert fxomDocument != null;
 
         if (fxomDocument.getFxomRoot() == null) {
             return null;
         }
 
-        Node displayNode = fxomDocument.getDisplayNode();
+        final var displayNode = fxomDocument.getDisplayNode();
         if (displayNode != null) {
-            FXOMObject startObject = fxomDocument.getFxomRoot().searchWithSceneGraphObject(displayNode);
+            final var startObject = fxomDocument.getFxomRoot().searchWithSceneGraphObject(displayNode);
             if (startObject == null || excludes.contains(startObject)) {
                 return null;
             }
@@ -483,10 +478,10 @@ public class ContentPanelController extends AbstractFxmlPanelController
      * @return null or the topmost FXOMObject located at (sceneX, sceneY)
      */
     public FXOMObject pick(
-            FXOMObject startObject, 
-            double sceneX, 
-            double sceneY,
-            Set<FXOMObject> excludes) {
+        final FXOMObject startObject,
+        final double sceneX,
+        final double sceneY,
+        final Set<FXOMObject> excludes) {
         
         final FXOMObject result;
         
@@ -494,26 +489,26 @@ public class ContentPanelController extends AbstractFxmlPanelController
         assert startObject != null;
         assert startObject.getSceneGraphObject() instanceof Node;
         assert excludes != null;
-        assert excludes.contains(startObject) == false;
+        assert !excludes.contains(startObject);
         
         picker.getExcludes().clear();
-        for (FXOMObject exclude : excludes) {
+        for (final var exclude : excludes) {
             if (exclude.getSceneGraphObject() instanceof Node) {
                 picker.getExcludes().add((Node) exclude.getSceneGraphObject());
             }
         }
 
-        final Node startNode = (Node) startObject.getSceneGraphObject();
-        final List<Node> hitNodes = picker.pick(startNode, sceneX, sceneY);
+        final var startNode = (Node) startObject.getSceneGraphObject();
+        final var hitNodes = picker.pick(startNode, sceneX, sceneY);
         if (hitNodes == null) {
             result = null;
         } else {
-            assert hitNodes.isEmpty() == false;
+            assert !hitNodes.isEmpty();
 
             FXOMObject hitObject = null;
-            final Iterator<Node> it = hitNodes.iterator();
+            final var it = hitNodes.iterator();
             while ((hitObject == null) && it.hasNext()) {
-                final Node hitNode = it.next();
+                final var hitNode = it.next();
                 hitObject = searchWithNode(hitNode, sceneX, sceneY);
                 if (excludes.contains(hitObject)) {
                     hitObject = null;
@@ -533,12 +528,12 @@ public class ContentPanelController extends AbstractFxmlPanelController
      * @param sceneY y coordinate of a scene point
      * @return an FXOMObject that matches (sceneGraphNode, sceneX, sceneY)
      */
-    public FXOMObject searchWithNode(Node sceneGraphNode, double sceneX, double sceneY) {
+    public FXOMObject searchWithNode(final Node sceneGraphNode, final double sceneX, final double sceneY) {
        final FXOMObject result;
         
-        final FXOMDocument fxomDocument 
+        final var fxomDocument
                 = getEditorController().getFxomDocument();
-        final FXOMObject match
+        final var match
                 = fxomDocument.searchWithSceneGraphObject(sceneGraphNode);
          /*
          * Refine the search.
@@ -549,7 +544,7 @@ public class ContentPanelController extends AbstractFxmlPanelController
          * is available in AbstractDriver.
          */
         if (match != null) {
-            final AbstractDriver driver = lookupDriver(match);
+            final var driver = lookupDriver(match);
             result = driver.refinePick(sceneGraphNode, sceneX, sceneY, match);
         } else {
             result = null;
@@ -562,14 +557,14 @@ public class ContentPanelController extends AbstractFxmlPanelController
         return tracingEvents;
     }
 
-    public void setTracingEvents(boolean tracingEvents) {
+    public void setTracingEvents(final boolean tracingEvents) {
         if (this.tracingEvents != tracingEvents) {
             this.tracingEvents = tracingEvents;
             setupEventTracingFilter();
         }
     }
     
-    public void layoutContent(boolean applyCSS) {
+    public void layoutContent(final boolean applyCSS) {
         workspaceController.layoutContent(applyCSS);
     }
     
@@ -654,19 +649,19 @@ public class ContentPanelController extends AbstractFxmlPanelController
      * @param sceneGraphObject a scene graph object
      * @return transform from sceneGraphObject local coordinates to rudder local coordinates
      */
-    public Transform computeSceneGraphToRudderLayerTransform(Node sceneGraphObject) {
+    public Transform computeSceneGraphToRudderLayerTransform(final Node sceneGraphObject) {
         assert sceneGraphObject != null;
         assert sceneGraphObject.getScene() == rudderLayer.getScene();
         
-        final Transform t1 = sceneGraphObject.getLocalToSceneTransform();
-        final Transform t2 = contentSubScene.getLocalToSceneTransform();
-        final Transform t3 = rudderLayer.getLocalToSceneTransform();
+        final var t1 = sceneGraphObject.getLocalToSceneTransform();
+        final var t2 = contentSubScene.getLocalToSceneTransform();
+        final var t3 = rudderLayer.getLocalToSceneTransform();
         final Transform result;
         
         try {
-            final Transform i3 = t3.createInverse();
+            final var i3 = t3.createInverse();
             result = i3.createConcatenation(t2).createConcatenation(t1);
-        } catch(NonInvertibleTransformException x) {
+        } catch(final NonInvertibleTransformException x) {
             throw new RuntimeException(x);
         }
         
@@ -697,7 +692,7 @@ public class ContentPanelController extends AbstractFxmlPanelController
      * @param fxomObject an fxom object
      * @return null or the associated handles
      */
-    public AbstractHandles<?> lookupHandles(FXOMObject fxomObject) {
+    public AbstractHandles<?> lookupHandles(final FXOMObject fxomObject) {
         final AbstractHandles<?> result;
         
         if (currentModeController != editModeController) {
@@ -721,7 +716,7 @@ public class ContentPanelController extends AbstractFxmlPanelController
     public boolean isContentDisplayable() {
         final boolean result;
         
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
+        final var fxomDocument = getEditorController().getFxomDocument();
         if (fxomDocument == null) {
             result = false;
         } else if (fxomDocument.getFxomRoot() == null) {
@@ -743,12 +738,12 @@ public class ContentPanelController extends AbstractFxmlPanelController
      * @param oldDocument old fxom document
      */
     @Override
-    protected void fxomDocumentDidChange(FXOMDocument oldDocument) {
+    protected void fxomDocumentDidChange(final FXOMDocument oldDocument) {
         if (oldDocument != null) {
             assert oldDocument.getSceneGraphHolder() == this;
             oldDocument.endHoldingSceneGraph();
         }
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
+        final var fxomDocument = getEditorController().getFxomDocument();
         if (fxomDocument != null) {
             assert fxomDocument.getSceneGraphHolder() == null;
             fxomDocument.beginHoldingSceneGraph(this);
@@ -851,20 +846,20 @@ public class ContentPanelController extends AbstractFxmlPanelController
         assert contentGroup.getLayoutX() == 0.0;
         assert contentGroup.getLayoutY() == 0.0;
         assert glassLayer != null;
-        assert glassLayer.isMouseTransparent() == false;
+        assert !glassLayer.isMouseTransparent();
         assert glassLayer.isFocusTraversable();
         assert outlineLayer != null;
         assert outlineLayer.isMouseTransparent();
-        assert outlineLayer.isFocusTraversable() == false;
+        assert !outlineLayer.isFocusTraversable();
         assert pringLayer != null;
-        assert pringLayer.isMouseTransparent() == false;
-        assert pringLayer.isFocusTraversable() == false;
+        assert !pringLayer.isMouseTransparent();
+        assert !pringLayer.isFocusTraversable();
         assert handleLayer != null;
-        assert handleLayer.isMouseTransparent() == false;
-        assert handleLayer.isFocusTraversable() == false;
+        assert !handleLayer.isMouseTransparent();
+        assert !handleLayer.isFocusTraversable();
         assert rudderLayer != null;
-        assert rudderLayer.isMouseTransparent() == true;
-        assert rudderLayer.isFocusTraversable() == false;
+        assert rudderLayer.isMouseTransparent();
+        assert !rudderLayer.isFocusTraversable();
         
         outlineLayer.setManaged(false);
         pringLayer.setManaged(false);
@@ -892,7 +887,7 @@ public class ContentPanelController extends AbstractFxmlPanelController
         setupEventTracingFilter();
         
         // Setup the context menu
-        final ContextMenuController contextMenuController
+        final var contextMenuController
                 = getEditorController().getContextMenuController();
         scrollPane.setContextMenu(contextMenuController.getContextMenu());
         
@@ -900,8 +895,8 @@ public class ContentPanelController extends AbstractFxmlPanelController
         	
             if (e.getCode() == KeyCode.ESCAPE) {
                 // on ESC we select the parent of current selected item
-                Selection selection = getEditorController().getSelection();
-                FXOMObject parent = selection.getAncestor();
+                final var selection = getEditorController().getSelection();
+                final var parent = selection.getAncestor();
                 
                 if (parent != null) {
                     selection.clear();
@@ -922,7 +917,7 @@ public class ContentPanelController extends AbstractFxmlPanelController
      * @treatAsPrivate fxom document will reconstruct the user scene graph
      */
     @Override
-    public void fxomDocumentWillRefreshSceneGraph(FXOMDocument fxomDocument) {
+    public void fxomDocumentWillRefreshSceneGraph(final FXOMDocument fxomDocument) {
         // Nothing special to do 
     }
 
@@ -930,7 +925,7 @@ public class ContentPanelController extends AbstractFxmlPanelController
      * @treatAsPrivate fxom document did reconstruct the user scene graph
      */
     @Override
-    public void fxomDocumentDidRefreshSceneGraph(FXOMDocument fxomDocument) {
+    public void fxomDocumentDidRefreshSceneGraph(final FXOMDocument fxomDocument) {
         // Scene graph has been reconstructed so:
         //  - new scene graph must replace the old one below contentHook
         //  - mode controller must be informed so that it can updates handles
@@ -948,14 +943,14 @@ public class ContentPanelController extends AbstractFxmlPanelController
      * Private
      */
     
-    private void changeModeController(AbstractModeController nextModeController) {
+    private void changeModeController(final AbstractModeController nextModeController) {
         assert nextModeController != currentModeController;
         assert nextModeController != null;
         
         if (currentModeController != null) {
             currentModeController.willResignActive(nextModeController);
         }
-        final AbstractModeController previousModeController = currentModeController;
+        final var previousModeController = currentModeController;
         currentModeController = nextModeController;
         currentModeController.didBecomeActive(previousModeController);
     }
@@ -965,8 +960,8 @@ public class ContentPanelController extends AbstractFxmlPanelController
      * @param fxomObject an fxom object (never null)
      * @return null or the driver adapted to fxomObject
      */
-    public AbstractDriver lookupDriver(FXOMObject fxomObject) {
-        final Object sceneGraphObject = fxomObject.getSceneGraphObject();
+    public AbstractDriver lookupDriver(final FXOMObject fxomObject) {
+        final var sceneGraphObject = fxomObject.getSceneGraphObject();
         final AbstractDriver result;
         
         if (sceneGraphObject instanceof HBox) {
@@ -1038,15 +1033,15 @@ public class ContentPanelController extends AbstractFxmlPanelController
         }
     }
     
-    private void traceEvent(Event e) {
-        final StringBuilder sb = new StringBuilder();
+    private void traceEvent(final Event e) {
+        final var sb = new StringBuilder();
         
         sb.append("ContentPanelController: eventType="); //NOI18N
         sb.append(e.getEventType());
         sb.append(", target="); //NOI18N
         sb.append(e.getTarget());
         if (e instanceof KeyEvent) {
-            final KeyEvent ke = (KeyEvent) e;
+            final var ke = (KeyEvent) e;
             sb.append(", keyCode="); //NOI18N
             sb.append(ke.getCode());
         }
@@ -1072,8 +1067,8 @@ public class ContentPanelController extends AbstractFxmlPanelController
     
     private void themeDidChange() {
         if (contentGroup != null) {
-            final EditorPlatform.Theme theme = getEditorController().getTheme();
-            List<String> themeStylesheets = new ArrayList<>(EditorPlatform.getStylesheetsForTheme(theme));
+            final var theme = getEditorController().getTheme();
+            final List<String> themeStylesheets = new ArrayList<>(EditorPlatform.getStylesheetsForTheme(theme));
             if (theme != null) {
                 themeStylesheets.addAll(theme.getStylesheetURLs());
             }
@@ -1085,7 +1080,7 @@ public class ContentPanelController extends AbstractFxmlPanelController
         if (contentGroup != null) {
             final List<File> sceneStyleSheets = getEditorController().getSceneStyleSheets();
             final List<String> sceneStyleSheetURLs = new ArrayList<>();
-            for (File f : sceneStyleSheets) {
+            for (final var f : sceneStyleSheets) {
                 sceneStyleSheetURLs.add(f.toURI().toString());
             }
             workspaceController.setPreviewStyleSheets(sceneStyleSheetURLs);
@@ -1114,10 +1109,10 @@ public class ContentPanelController extends AbstractFxmlPanelController
     }
     
     private void endShowingOutlines() {
-        assert contentGroup.isVisible() == false;
+        assert !contentGroup.isVisible();
 
         final List<Node> outlineNodes = outlineLayer.getChildren();
-        for (NodeOutline o : outlines) {
+        for (final var o : outlines) {
             assert outlineNodes.contains(o.getRootNode());
             outlineNodes.remove(o.getRootNode());
         }
@@ -1129,13 +1124,13 @@ public class ContentPanelController extends AbstractFxmlPanelController
         assert isOutlinesVisible();
         
         // Collects fxom objects associated to a node in the fxom document
-        final List<FXOMObject> allNodes = collectNodes();
+        final var allNodes = collectNodes();
         
         for (int i = 0, count = allNodes.size(); i < count; i++) {
             assert allNodes.get(i) instanceof FXOMInstance;
-            final FXOMInstance nodeInstance = (FXOMInstance) allNodes.get(i);
+            final var nodeInstance = (FXOMInstance) allNodes.get(i);
             if (i < outlines.size()) {
-                final NodeOutline currentOutline = outlines.get(i);
+                final var currentOutline = outlines.get(i);
                 if (currentOutline.getFxomObject() != nodeInstance) {
                     replaceOutline(i, nodeInstance);
                } else {
@@ -1162,10 +1157,10 @@ public class ContentPanelController extends AbstractFxmlPanelController
         assert outlines.size() == allNodes.size();
     }
     
-    private void addOutline(int i, FXOMInstance nodeInstance) {
+    private void addOutline(final int i, final FXOMInstance nodeInstance) {
         assert outlines.size() == outlineLayer.getChildren().size();
         
-        final NodeOutline newOutline = new NodeOutline(this, nodeInstance);
+        final var newOutline = new NodeOutline(this, nodeInstance);
         outlines.add(i, newOutline);
         outlineLayer.getChildren().add(i, newOutline.getRootNode());
         
@@ -1173,13 +1168,13 @@ public class ContentPanelController extends AbstractFxmlPanelController
         assert outlines.get(i).getRootNode() == outlineLayer.getChildren().get(i);
     }
     
-    private void replaceOutline(int i, FXOMInstance nodeInstance) {
+    private void replaceOutline(final int i, final FXOMInstance nodeInstance) {
         removeOutline(i);
         addOutline(i, nodeInstance);
     }
     
     
-    private void removeOutline(int i) {
+    private void removeOutline(final int i) {
         assert outlines.size() == outlineLayer.getChildren().size();
         assert outlines.get(i).getRootNode() == outlineLayer.getChildren().get(i);
         
@@ -1193,30 +1188,30 @@ public class ContentPanelController extends AbstractFxmlPanelController
         final List<FXOMObject> result = new ArrayList<>();
         
         final List<FXOMObject> candidates = new ArrayList<>();
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
+        final var fxomDocument = getEditorController().getFxomDocument();
         if ((fxomDocument != null) && (fxomDocument.getFxomRoot() != null)) {
             candidates.add(fxomDocument.getFxomRoot());
         } 
         
-        while (candidates.isEmpty() == false) {
-            final FXOMObject candidate = candidates.get(0);
-            candidates.remove(0);
+        while (!candidates.isEmpty()) {
+            final var candidate = candidates.getFirst();
+            candidates.removeFirst();
             if (candidate.isNode()) {
-                final Node sgo = (Node) candidate.getSceneGraphObject();
+                final var sgo = (Node) candidate.getSceneGraphObject();
                 if (sgo.getScene() == getPanelRoot().getScene()) {
                     result.add(candidate);
                 }
             }
-            final DesignHierarchyMask m = new DesignHierarchyMask(candidate);
+            final var m = new DesignHierarchyMask(candidate);
             if (m.isAcceptingSubComponent()) {
                 for (int i = 0, c = m.getSubComponentCount(); i < c; i++) {
-                    final FXOMObject subComponent = m.getSubComponentAtIndex(i);
+                    final var subComponent = m.getSubComponentAtIndex(i);
                     candidates.add(subComponent);
                 }
             }
-            for (DesignHierarchyMask.Accessory a : m.getAccessoryList()) {
+            for (final var a : m.getAccessoryList()) {
                 if (m.isAcceptingAccessory(a)) {
-                    final FXOMObject accessoryObject = m.getAccessory(a);
+                    final var accessoryObject = m.getAccessory(a);
                     if ((accessoryObject != null) && accessoryObject.isNode()) {
                         candidates.add(accessoryObject);
                     }

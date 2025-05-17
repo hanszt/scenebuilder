@@ -34,7 +34,6 @@ package com.oracle.javafx.scenebuilder.kit.editor.job.atomic;
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.editor.job.Job;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMCollection;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 
@@ -50,9 +49,9 @@ public class ReIndexObjectJob extends Job {
     
 
     public ReIndexObjectJob(
-            FXOMObject reindexedObject, 
-            FXOMObject beforeObject, 
-            EditorController editorController) {
+            final FXOMObject reindexedObject,
+            final FXOMObject beforeObject,
+            final EditorController editorController) {
         super(editorController);
         assert reindexedObject != null;
         
@@ -80,7 +79,7 @@ public class ReIndexObjectJob extends Job {
     public void undo() {
         assert isExecutable();
 
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
+        final var fxomDocument = getEditorController().getFxomDocument();
         fxomDocument.beginUpdate();
         reindexedObject.moveBeforeSibling(oldBeforeObject);
         fxomDocument.endUpdate();
@@ -90,7 +89,7 @@ public class ReIndexObjectJob extends Job {
     public void redo() {
         assert isExecutable();
 
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
+        final var fxomDocument = getEditorController().getFxomDocument();
         fxomDocument.beginUpdate();
         reindexedObject.moveBeforeSibling(beforeObject);
         fxomDocument.endUpdate();
@@ -99,12 +98,12 @@ public class ReIndexObjectJob extends Job {
     @Override
     public String getDescription() {
         if (description == null) {
-            final StringBuilder sb = new StringBuilder();
+            final var sb = new StringBuilder();
 
             sb.append("Move ");
 
             if (reindexedObject instanceof FXOMInstance) {
-                final Object sceneGraphObject = reindexedObject.getSceneGraphObject();
+                final var sceneGraphObject = reindexedObject.getSceneGraphObject();
                 if (sceneGraphObject != null) {
                     sb.append(sceneGraphObject.getClass().getSimpleName());
                 } else {

@@ -36,7 +36,6 @@ import com.oracle.javafx.scenebuilder.kit.library.util.JarReportEntry.Status;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -48,21 +47,21 @@ public class JarExplorer extends ExplorerBase {
     
     private final Path jar;
     
-    public JarExplorer(Path jar) {
+    public JarExplorer(final Path jar) {
         assert jar != null;
         assert jar.isAbsolute();
         
         this.jar = jar;
     }
     
-    public JarReport explore(ClassLoader classLoader) throws IOException {
-        final JarReport result = new JarReport(jar);
+    public JarReport explore(final ClassLoader classLoader) throws IOException {
+        final var result = new JarReport(jar);
         
-        try (JarFile jarFile = new JarFile(jar.toFile())) {
-            final Enumeration<JarEntry> e = jarFile.entries();
+        try (final var jarFile = new JarFile(jar.toFile())) {
+            final var e = jarFile.entries();
             while (e.hasMoreElements()) {
-                final JarEntry entry = e.nextElement();
-                JarReportEntry explored = exploreEntry(entry, classLoader);
+                final var entry = e.nextElement();
+                final var explored = exploreEntry(entry, classLoader);
                 if (explored.getStatus() != Status.IGNORED)
                     result.getEntries().add(explored);
             }
@@ -75,11 +74,11 @@ public class JarExplorer extends ExplorerBase {
      * Private
      */
     
-    private JarReportEntry exploreEntry(JarEntry entry, ClassLoader classLoader) {
+    private JarReportEntry exploreEntry(final JarEntry entry, final ClassLoader classLoader) {
         if (entry.isDirectory()) {
             return new JarReportEntry(entry.getName(), JarReportEntry.Status.IGNORED, null, null, null);
         } else {
-            String className = makeClassName(entry.getName(), "/");
+            final var className = makeClassName(entry.getName(), "/");
             return super.exploreEntry(entry.getName(), classLoader, className);
         }
     }

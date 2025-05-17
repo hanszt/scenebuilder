@@ -52,8 +52,8 @@ public class BloomPropertyMetadata extends ComplexPropertyMetadata<Bloom> {
             = new DoublePropertyMetadata(new PropertyName("threshold"), //NOI18N
             DoublePropertyMetadata.DoubleKind.OPACITY, true /* readWrite */, 0.3, InspectorPath.UNUSED);
 
-    public BloomPropertyMetadata(PropertyName name, boolean readWrite, 
-            Bloom defaultValue, InspectorPath inspectorPath) {
+    public BloomPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                 final Bloom defaultValue, final InspectorPath inspectorPath) {
         super(name, Bloom.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -62,8 +62,8 @@ public class BloomPropertyMetadata extends ComplexPropertyMetadata<Bloom> {
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(Bloom value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, value.getClass());
+    public FXOMInstance makeFxomInstanceFromValue(final Bloom value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, value.getClass());
         
         inputMetadata.setValue(result, value.getInput());
         thresholdMetadata.setValue(result, value.getThreshold());

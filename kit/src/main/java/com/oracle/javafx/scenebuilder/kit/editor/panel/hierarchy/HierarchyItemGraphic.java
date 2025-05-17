@@ -67,14 +67,14 @@ public class HierarchyItemGraphic extends HierarchyItem {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         }
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final HierarchyItemGraphic item = (HierarchyItemGraphic) obj;
+        final var item = (HierarchyItemGraphic) obj;
         if (!isEmpty()) {
             // If the place holder is not empty, we compare the fxom object
             assert getFxomObject() != null;
@@ -87,7 +87,7 @@ public class HierarchyItemGraphic extends HierarchyItem {
 
     @Override
     public int hashCode() {
-        int hash = 7;
+        var hash = 7;
         hash = 37 * hash + Objects.hashCode(this.mask);
         hash = 37 * hash + Objects.hashCode(this.owner);
         return hash;

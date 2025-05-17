@@ -39,13 +39,11 @@ import com.oracle.javafx.scenebuilder.kit.editor.selection.AbstractSelectionGrou
 import com.oracle.javafx.scenebuilder.kit.editor.selection.GridSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.GridSelectionGroup.Type;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -83,11 +81,11 @@ public class AddRowJob extends BatchSelectionJob {
         if (GridPaneJobUtils.canPerformAdd(getEditorController())) {
 
             // Populate the target GridPane map
-            assert targetGridPanes.isEmpty() == true;
-            final List<FXOMObject> objectList
+            assert targetGridPanes.isEmpty();
+            final var objectList
                     = GridPaneJobUtils.getTargetGridPanes(getEditorController());
-            for (FXOMObject object : objectList) {
-                final Set<Integer> indexList
+            for (final var object : objectList) {
+                final var indexList
                         = getTargetIndexes(getEditorController(), object);
                 targetGridPanes.put(object, indexList);
             }
@@ -115,15 +113,15 @@ public class AddRowJob extends BatchSelectionJob {
         // - if there is more than 1 GridPane, we select the GridPane instances
         // - if there is a single GridPane, we select the added rows
         if (targetGridPanes.size() > 1) {
-            Set<FXOMObject> objects = targetGridPanes.keySet();
+            final var objects = targetGridPanes.keySet();
             asg = new ObjectSelectionGroup(objects, objects.iterator().next(), null);
         } else {
             assert targetGridPanes.size() == 1;
-            final FXOMInstance targetGridPane
+            final var targetGridPane
                     = (FXOMInstance) targetGridPanes.keySet().iterator().next();
-            final Set<Integer> targetIndexes = targetGridPanes.get(targetGridPane);
+            final var targetIndexes = targetGridPanes.get(targetGridPane);
             assert targetIndexes.size() >= 1;
-            final Set<Integer> addedIndexes
+            final var addedIndexes
                     = GridPaneJobUtils.getAddedIndexes(targetIndexes, position);
 
             asg = new GridSelectionGroup(targetGridPane, Type.ROW, addedIndexes);
@@ -135,21 +133,22 @@ public class AddRowJob extends BatchSelectionJob {
 
         final List<Job> result = new ArrayList<>();
 
-        for (FXOMObject targetGridPane : targetGridPanes.keySet()) {
+        for (final var targetGridPane : targetGridPanes.keySet()) {
 
-            final Set<Integer> targetIndexes = targetGridPanes.get(targetGridPane);
+            final var targetIndexes = targetGridPanes.get(targetGridPane);
 
-            final DesignHierarchyMask mask = new DesignHierarchyMask(targetGridPane);
-            final int rowsSize = mask.getRowsSize();
-            final Iterator<Integer> iterator = targetIndexes.iterator();
+            final var mask = new DesignHierarchyMask(targetGridPane);
+            final var rowsSize = mask.getRowsSize();
+            final var iterator = targetIndexes.iterator();
 
-            int shiftIndex = 0;
+            var shiftIndex = 0;
             int targetIndex = iterator.next();
             while (targetIndex != -1) {
                 // Move the rows content :
                 // - from the target index 
                 // - to the next target index if any or the last row index otherwise
-                int fromIndex, toIndex;
+                final int fromIndex;
+                final int toIndex;
 
                 switch (position) {
                     case ABOVE:
@@ -184,10 +183,10 @@ public class AddRowJob extends BatchSelectionJob {
                 // If fromIndex >= rowsSize, we are below the last existing row 
                 // => no row content to move
                 if (fromIndex < rowsSize) {
-                    final int offset = 1 + shiftIndex;
-                    final List<Integer> indexes
+                    final var offset = 1 + shiftIndex;
+                    final var indexes
                             = GridPaneJobUtils.getIndexes(fromIndex, toIndex);
-                    final ReIndexRowContentJob reIndexJob = new ReIndexRowContentJob(
+                    final var reIndexJob = new ReIndexRowContentJob(
                             getEditorController(), offset, targetGridPane, indexes);
                     result.add(reIndexJob);
                 }
@@ -208,8 +207,8 @@ public class AddRowJob extends BatchSelectionJob {
             final EditorController editorController,
             final FXOMObject targetGridPane) {
 
-        final Selection selection = editorController.getSelection();
-        final AbstractSelectionGroup asg = selection.getGroup();
+        final var selection = editorController.getSelection();
+        final var asg = selection.getGroup();
 
         final Set<Integer> result = new LinkedHashSet<>();
 
@@ -217,7 +216,7 @@ public class AddRowJob extends BatchSelectionJob {
         // => return the list of selected rows
         if (asg instanceof GridSelectionGroup
                 && ((GridSelectionGroup) asg).getType() == Type.ROW) {
-            final GridSelectionGroup gsg = (GridSelectionGroup) asg;
+            final var gsg = (GridSelectionGroup) asg;
             result.addAll(gsg.getIndexes());
         } //
         // Selection == GridPanes or Selection == GridPane columns
@@ -228,9 +227,9 @@ public class AddRowJob extends BatchSelectionJob {
                     result.add(0);
                     break;
                 case BELOW:
-                    final DesignHierarchyMask mask
+                    final var mask
                             = new DesignHierarchyMask(targetGridPane);
-                    final int size = mask.getRowsSize();
+                    final var size = mask.getRowsSize();
                     result.add(size - 1);
                     break;
                 default:

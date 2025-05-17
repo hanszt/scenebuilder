@@ -57,8 +57,8 @@ public class ImageInputPropertyMetadata extends ComplexPropertyMetadata<ImageInp
             = new DoublePropertyMetadata(new PropertyName("y"), //NOI18N
             DoublePropertyMetadata.DoubleKind.COORDINATE, true /* readWrite */, 0.0, InspectorPath.UNUSED);
 
-    public ImageInputPropertyMetadata(PropertyName name, boolean readWrite, 
-            ImageInput defaultValue, InspectorPath inspectorPath) {
+    public ImageInputPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                      final ImageInput defaultValue, final InspectorPath inspectorPath) {
         super(name, ImageInput.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -67,8 +67,8 @@ public class ImageInputPropertyMetadata extends ComplexPropertyMetadata<ImageInp
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(ImageInput value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, value.getClass());
+    public FXOMInstance makeFxomInstanceFromValue(final ImageInput value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, value.getClass());
         
         final DesignImage designImage;
         if (value.getSource() == null) {

@@ -39,8 +39,8 @@ public class CustomComponentClassMetadata extends ComponentClassMetadata {
     
     private final Exception introspectionException;
 
-    public CustomComponentClassMetadata(Class<?> klass, 
-            ComponentClassMetadata parentMetadata, Exception introspectionException) {
+    public CustomComponentClassMetadata(final Class<?> klass,
+                                        final ComponentClassMetadata parentMetadata, final Exception introspectionException) {
         super(klass, parentMetadata);
         this.introspectionException = introspectionException;
     }
@@ -60,7 +60,7 @@ public class CustomComponentClassMetadata extends ComponentClassMetadata {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         return super.equals(obj); // Only to please FindBugs
     }
     

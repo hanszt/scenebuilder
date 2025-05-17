@@ -39,7 +39,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -80,14 +79,14 @@ public class FXOMPropertyT extends FXOMProperty {
     private final GlueElement propertyElement;
     private final GlueElement valueElement;
 
-    public FXOMPropertyT(FXOMDocument document, PropertyName name, GlueElement propertyElement, GlueElement valueElement, String value) {
+    public FXOMPropertyT(final FXOMDocument document, final PropertyName name, final GlueElement propertyElement, final GlueElement valueElement, final String value) {
         super(document, name);
         this.propertyElement = propertyElement;
         this.valueElement = valueElement;
         this.value = value;
     }
     
-    public FXOMPropertyT(FXOMDocument document, PropertyName name, String value) {
+    public FXOMPropertyT(final FXOMDocument document, final PropertyName name, final String value) {
         super(document, name);
         assert value != null;
         this.propertyElement = null;
@@ -99,13 +98,13 @@ public class FXOMPropertyT extends FXOMProperty {
         return value;
     }
     
-    public void setValue(String newValue) {
+    public void setValue(final String newValue) {
         assert newValue != null;
         
         
         if (propertyElement != null) {
             if (valueElement != null) { // Case #3
-                final Map<String,String> attributes = valueElement.getAttributes();
+                final var attributes = valueElement.getAttributes();
                 assert attributes.get("fx:value") != null;
                 assert attributes.get("fx:value").equals(value);
                 attributes.put("fx:value", newValue);
@@ -116,10 +115,10 @@ public class FXOMPropertyT extends FXOMProperty {
                 propertyElement.setContentText(newValue);
             }
         } else { // Case #1
-            final FXOMInstance parentInstance = getParentInstance();
+            final var parentInstance = getParentInstance();
             if (parentInstance != null) {
-                final GlueElement parentElement = parentInstance.getGlueElement();
-                final Map<String, String> parentAttributes = parentElement.getAttributes();
+                final var parentElement = parentInstance.getGlueElement();
+                final var parentAttributes = parentElement.getAttributes();
                 assert parentAttributes.get(getName().toString()).equals(value);
                 parentAttributes.put(getName().toString(), newValue);
             }
@@ -141,7 +140,7 @@ public class FXOMPropertyT extends FXOMProperty {
      */
     
     @Override
-    public void addToParentInstance(int index, FXOMInstance newParentInstance) {
+    public void addToParentInstance(final int index, final FXOMInstance newParentInstance) {
         
         assert newParentInstance != null;
         
@@ -152,11 +151,11 @@ public class FXOMPropertyT extends FXOMProperty {
         setParentInstance(newParentInstance);
         newParentInstance.addProperty(this);
         
-        final GlueElement newParentElement = newParentInstance.getGlueElement();
+        final var newParentElement = newParentInstance.getGlueElement();
         
         if (propertyElement == null) { // Case #1
             // index is ignored
-            final Map<String,String> attributes = newParentElement.getAttributes();
+            final var attributes = newParentElement.getAttributes();
             assert attributes.get(getName().toString()) == null;
             attributes.put(getName().toString(), value);
         } else { // Case #2 or #3
@@ -172,11 +171,11 @@ public class FXOMPropertyT extends FXOMProperty {
         
         assert getParentInstance() != null;
         
-        final FXOMInstance currentParentInstance = getParentInstance();
-        final GlueElement currentParentElement = currentParentInstance.getGlueElement();
+        final var currentParentInstance = getParentInstance();
+        final var currentParentElement = currentParentInstance.getGlueElement();
         
         if (propertyElement == null) { // Case #1
-            final Map<String,String> attributes = currentParentElement.getAttributes();
+            final var attributes = currentParentElement.getAttributes();
             assert attributes.get(getName().toString()) != null;
             attributes.remove(getName().toString());
         } else { // Case #2 or #3
@@ -197,7 +196,7 @@ public class FXOMPropertyT extends FXOMProperty {
         } else if (propertyElement == null) { // Case #1
             result = -1;
         } else { // Case #2 or #3
-            final GlueElement parentElement = getParentInstance().getGlueElement();
+            final var parentElement = getParentInstance().getGlueElement();
             result = parentElement.getChildren().indexOf(propertyElement);
             assert result != -1;
         }
@@ -211,7 +210,7 @@ public class FXOMPropertyT extends FXOMProperty {
      */
     
     @Override
-    public void moveToFxomDocument(FXOMDocument destination) {
+    public void moveToFxomDocument(final FXOMDocument destination) {
         assert destination != null;
         assert destination != getFxomDocument();
         
@@ -234,7 +233,7 @@ public class FXOMPropertyT extends FXOMProperty {
 
     
     @Override
-    protected void changeFxomDocument(FXOMDocument destination) {
+    protected void changeFxomDocument(final FXOMDocument destination) {
         assert destination != null;
         assert destination != getFxomDocument();
         assert (propertyElement == null) || (destination.getGlue() == propertyElement.getDocument());
@@ -243,14 +242,14 @@ public class FXOMPropertyT extends FXOMProperty {
     }
     
     @Override
-    public void documentLocationWillChange(URL newLocation) {
-        final URL currentLocation = getFxomDocument().getLocation();
+    public void documentLocationWillChange(final URL newLocation) {
+        final var currentLocation = getFxomDocument().getLocation();
         
-        final List<String> currentItems = StringListPropertyMetadata.splitValue(getValue());
+        final var currentItems = StringListPropertyMetadata.splitValue(getValue());
         final List<String> newItems = new ArrayList<>();
-        int changeCount = 0;
-        for (String currentItem : currentItems) {
-            final PrefixedValue pv = new PrefixedValue(currentItem);
+        var changeCount = 0;
+        for (final var currentItem : currentItems) {
+            final var pv = new PrefixedValue(currentItem);
             if (pv.isDocumentRelativePath()) {
                 assert currentLocation != null;
 
@@ -260,12 +259,12 @@ public class FXOMPropertyT extends FXOMProperty {
                  * is non null, we relativize the absolute path against
                  * newLocation.
                  */
-                final URL assetURL = pv.resolveDocumentRelativePath(currentLocation);
+                final var assetURL = pv.resolveDocumentRelativePath(currentLocation);
                 final String newValue;
                 if (newLocation == null) {
                     newValue = assetURL.toString();
                 } else {
-                    final PrefixedValue pv2 
+                    final var pv2
                             = PrefixedValue.makePrefixedValue(assetURL, newLocation);
                     newValue = pv2.toString();
                 }
@@ -282,11 +281,11 @@ public class FXOMPropertyT extends FXOMProperty {
                  */
                 assert newLocation != null;
                 try {
-                    final URL assetURL = new URL(pv.getSuffix());
-                    final PrefixedValue pv2 = PrefixedValue.makePrefixedValue(assetURL, newLocation);
+                    final var assetURL = new URL(pv.getSuffix());
+                    final var pv2 = PrefixedValue.makePrefixedValue(assetURL, newLocation);
                     newItems.add(pv2.toString());
                     changeCount++;
-                } catch(MalformedURLException x) {
+                } catch(final MalformedURLException x) {
                     // p.getValue() is not an URL
                     // We keep currentItem unchanged.
                     newItems.add(currentItem);

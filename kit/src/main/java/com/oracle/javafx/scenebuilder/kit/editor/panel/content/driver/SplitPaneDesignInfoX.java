@@ -33,9 +33,8 @@
 package com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver;
 
 import java.util.List;
-import javafx.geometry.Bounds;
+
 import javafx.geometry.Orientation;
-import javafx.geometry.Point2D;
 import javafx.scene.control.SplitPane;
 
 /**
@@ -59,9 +58,9 @@ public class SplitPaneDesignInfoX  {
      * @param snap true if resulting divider position should be rounded to 2 decimals.
      * @return a divider position (between [0, 1] if clamped == true).
      */
-    public double splitPaneLocalToDividerPosition(SplitPane splitPane, double x, double y, boolean clamp, boolean snap) {
-        final boolean verticalSplit = splitPane.getOrientation() == Orientation.VERTICAL;
-        final Bounds lb = splitPane.getLayoutBounds();
+    public double splitPaneLocalToDividerPosition(final SplitPane splitPane, final double x, final double y, final boolean clamp, final boolean snap) {
+        final var verticalSplit = splitPane.getOrientation() == Orientation.VERTICAL;
+        final var lb = splitPane.getLayoutBounds();
         double result;
 
         if (verticalSplit) {
@@ -90,10 +89,10 @@ public class SplitPaneDesignInfoX  {
      * @param position a divider position
      * @return
      */
-    public double dividerPositionToSplitPaneLocal(SplitPane splitPane, double position) {
-        final boolean verticalSplit = splitPane.getOrientation() == Orientation.VERTICAL;
-        final Bounds lb = splitPane.getLayoutBounds();
-        double result;
+    public double dividerPositionToSplitPaneLocal(final SplitPane splitPane, final double position) {
+        final var verticalSplit = splitPane.getOrientation() == Orientation.VERTICAL;
+        final var lb = splitPane.getLayoutBounds();
+        final double result;
 
         if (verticalSplit) {
             result = lb.getMinY() + position * lb.getHeight();
@@ -118,12 +117,14 @@ public class SplitPaneDesignInfoX  {
      * @return the array of divider positions after the simulated move
      */
 
-    public double[] simulateDividerMove(SplitPane splitPane, int dividerIndex, double sceneX, double sceneY) {
+    public double[] simulateDividerMove(final SplitPane splitPane, final int dividerIndex, final double sceneX, final double sceneY) {
         final List<SplitPane.Divider> dividers = splitPane.getDividers();
-        final double currentPos = dividers.get(dividerIndex).getPosition();
-        final Point2D p = splitPane.sceneToLocal(sceneX, sceneY, true /* rootScene */);
-        final double claimedPos = splitPaneLocalToDividerPosition(splitPane, p.getX(), p.getY(), true /* clamp */, false /* snap */);
-        double minPos, maxPos, newPos;
+        final var currentPos = dividers.get(dividerIndex).getPosition();
+        final var p = splitPane.sceneToLocal(sceneX, sceneY, true /* rootScene */);
+        final var claimedPos = splitPaneLocalToDividerPosition(splitPane, p.getX(), p.getY(), true /* clamp */, false /* snap */);
+        final double minPos;
+        double maxPos;
+        final double newPos;
         final double[] result;
 
         if (0 <= dividerIndex-1) {
@@ -154,7 +155,7 @@ public class SplitPaneDesignInfoX  {
 
         // Clone dividerPositions and update position at dividerIndex
         result = new double[dividers.size()];
-        for (int i = 0; i < dividers.size(); i++) {
+        for (var i = 0; i < dividers.size(); i++) {
             result[i] = dividers.get(i).getPosition();
         }
         result[dividerIndex] = newPos;

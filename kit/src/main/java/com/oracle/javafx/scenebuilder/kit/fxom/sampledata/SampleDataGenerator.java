@@ -36,7 +36,6 @@ package com.oracle.javafx.scenebuilder.kit.fxom.sampledata;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMCollection;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMProperty;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyC;
 import java.util.HashMap;
 import java.util.Map;
@@ -61,20 +60,20 @@ public class SampleDataGenerator {
         // no-op
     }
 
-    public void assignSampleData(FXOMObject startObject) {
+    public void assignSampleData(final FXOMObject startObject) {
         assert startObject != null;
         
-        final Object sceneGraphObject = startObject.getSceneGraphObject();
-        final AbstractSampleData currentData = sampleDataMap.get(startObject);
+        final var sceneGraphObject = startObject.getSceneGraphObject();
+        final var currentData = sampleDataMap.get(startObject);
         final AbstractSampleData newData;
         
         if (sceneGraphObject == null) {
             // startObject is unresolved
             newData = null;
         } else {
-            final Class<?> sceneGraphClass = sceneGraphObject.getClass();
+            final var sceneGraphClass = sceneGraphObject.getClass();
             if (sceneGraphClass == ChoiceBox.class) {
-                final ChoiceBox<?> choiceBox = (ChoiceBox<?>) sceneGraphObject;
+                final var choiceBox = (ChoiceBox<?>) sceneGraphObject;
                 if (choiceBox.getItems().isEmpty()) {
                     if (currentData instanceof ChoiceBoxSampleData) {
                         newData = currentData;
@@ -85,7 +84,7 @@ public class SampleDataGenerator {
                     newData = null;
                 }
             } else if (sceneGraphClass == ComboBox.class) {
-                final ComboBox<?> comboBox = (ComboBox<?>) sceneGraphObject;
+                final var comboBox = (ComboBox<?>) sceneGraphObject;
                 if (comboBox.getItems().isEmpty()) {
                     if (currentData instanceof ComboBoxSampleData) {
                         newData = currentData;
@@ -96,7 +95,7 @@ public class SampleDataGenerator {
                     newData = null;
                 }
             } else if (sceneGraphClass == ListView.class) {
-                final ListView<?> listView = (ListView<?>) sceneGraphObject;
+                final var listView = (ListView<?>) sceneGraphObject;
                 if (listView.getItems().isEmpty()) {
                     if (currentData instanceof ListViewSampleData) {
                         newData = currentData;
@@ -107,7 +106,7 @@ public class SampleDataGenerator {
                     newData = null;
                 }
             } else if (sceneGraphClass == TreeView.class) {
-                final TreeView<?> treeView = (TreeView<?>) sceneGraphObject;
+                final var treeView = (TreeView<?>) sceneGraphObject;
                 if (treeView.getRoot() == null) {
                     if (currentData instanceof TreeViewSampleData) {
                         newData = currentData;
@@ -118,7 +117,7 @@ public class SampleDataGenerator {
                     newData = null;
                 }
             } else if (sceneGraphClass == TableView.class) {
-                final TableView<?> treeView = (TableView<?>) sceneGraphObject;
+                final var treeView = (TableView<?>) sceneGraphObject;
                 if (TableViewSampleData.canApplyTo(treeView)) {
                     if (currentData instanceof TableViewSampleData) {
                         newData = currentData;
@@ -129,7 +128,7 @@ public class SampleDataGenerator {
                     newData = null;
                 }
             } else if (sceneGraphClass == TreeTableView.class) {
-                final TreeTableView<?> treeTableView = (TreeTableView<?>) sceneGraphObject;
+                final var treeTableView = (TreeTableView<?>) sceneGraphObject;
                 if (treeTableView.getRoot() == null) {
                     if (currentData instanceof TreeTableViewSampleData) {
                         newData = currentData;
@@ -140,7 +139,7 @@ public class SampleDataGenerator {
                     newData = null;
                 }
             } else if (sceneGraphClass == PieChart.class) {
-                final PieChart pieChart = (PieChart) sceneGraphObject;
+                final var pieChart = (PieChart) sceneGraphObject;
                 if (pieChart.getData().isEmpty()) {
                     if (currentData instanceof PieChartSampleData) {
                         newData = currentData;
@@ -151,7 +150,7 @@ public class SampleDataGenerator {
                     newData = null;
                 }
             } else if (sceneGraphClass == Spinner.class) {
-                final Spinner<?> spinner = (Spinner<?>) sceneGraphObject;
+                final var spinner = (Spinner<?>) sceneGraphObject;
                 if (spinner.getValue() == null) {
                     if (currentData instanceof SpinnerSampleData) {
                         newData = currentData;
@@ -162,7 +161,7 @@ public class SampleDataGenerator {
                     newData = null;
                 }
             } else if (XYChartSampleData.isKnownXYChart(sceneGraphObject)) {
-                final XYChart<?,?> xyChart = (XYChart<?,?>) sceneGraphObject;
+                final var xyChart = (XYChart<?,?>) sceneGraphObject;
                 if (xyChart.getData().isEmpty()) {
                     if (currentData instanceof XYChartSampleData) {
                         newData = currentData;
@@ -187,43 +186,43 @@ public class SampleDataGenerator {
         }
         
         if (startObject instanceof FXOMInstance) {
-            final FXOMInstance fxomInstance = (FXOMInstance) startObject;
-            for (FXOMProperty p : fxomInstance.getProperties().values()) {
+            final var fxomInstance = (FXOMInstance) startObject;
+            for (final var p : fxomInstance.getProperties().values()) {
                 if (p instanceof FXOMPropertyC) {
-                    final FXOMPropertyC pc = (FXOMPropertyC) p;
-                    for (FXOMObject v : pc.getValues()) {
+                    final var pc = (FXOMPropertyC) p;
+                    for (final var v : pc.getValues()) {
                         assignSampleData(v);
                     }
                 }
             }
         } else if (startObject instanceof FXOMCollection) {
-            final FXOMCollection fxomCollection = (FXOMCollection) startObject;
-            for (FXOMObject i : fxomCollection.getItems()) {
+            final var fxomCollection = (FXOMCollection) startObject;
+            for (final var i : fxomCollection.getItems()) {
                 assignSampleData(i);
             }
         } 
     }
     
     
-    public void removeSampleData(FXOMObject startObject) {
-        final AbstractSampleData currentData = sampleDataMap.get(startObject);
+    public void removeSampleData(final FXOMObject startObject) {
+        final var currentData = sampleDataMap.get(startObject);
         if (currentData != null) {
             currentData.removeFrom(startObject.getSceneGraphObject());
         }
         
         if (startObject instanceof FXOMInstance) {
-            final FXOMInstance fxomInstance = (FXOMInstance) startObject;
-            for (FXOMProperty p : fxomInstance.getProperties().values()) {
+            final var fxomInstance = (FXOMInstance) startObject;
+            for (final var p : fxomInstance.getProperties().values()) {
                 if (p instanceof FXOMPropertyC) {
-                    final FXOMPropertyC pc = (FXOMPropertyC) p;
-                    for (FXOMObject v : pc.getValues()) {
+                    final var pc = (FXOMPropertyC) p;
+                    for (final var v : pc.getValues()) {
                         removeSampleData(v);
                     }
                 }
             }
         } else if (startObject instanceof FXOMCollection) {
-            final FXOMCollection fxomCollection = (FXOMCollection) startObject;
-            for (FXOMObject i : fxomCollection.getItems()) {
+            final var fxomCollection = (FXOMCollection) startObject;
+            for (final var i : fxomCollection.getItems()) {
                 removeSampleData(i);
             }
         } 

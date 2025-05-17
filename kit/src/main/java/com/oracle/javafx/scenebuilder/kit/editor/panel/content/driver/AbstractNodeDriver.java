@@ -79,7 +79,7 @@ import javafx.scene.web.WebView;
  */
 public abstract class AbstractNodeDriver extends AbstractDriver {
 
-    public AbstractNodeDriver(ContentPanelController contentPanelController) {
+    public AbstractNodeDriver(final ContentPanelController contentPanelController) {
         super(contentPanelController);
     }
 
@@ -88,21 +88,21 @@ public abstract class AbstractNodeDriver extends AbstractDriver {
      */
     
     @Override
-    public AbstractHandles<?> makeHandles(FXOMObject fxomObject) {
+    public AbstractHandles<?> makeHandles(final FXOMObject fxomObject) {
         assert fxomObject.getSceneGraphObject() instanceof Node;
         assert fxomObject instanceof FXOMInstance;
         return new NodeHandles(contentPanelController, (FXOMInstance)fxomObject);
     }
     
     @Override
-    public AbstractPring<?> makePring(FXOMObject fxomObject) {
+    public AbstractPring<?> makePring(final FXOMObject fxomObject) {
         assert fxomObject.getSceneGraphObject() instanceof Node;
         assert fxomObject instanceof FXOMInstance;
         return new NodePring(contentPanelController, (FXOMInstance)fxomObject);
     }
 
     @Override
-    public AbstractTring<?> makeTring(AbstractDropTarget dropTarget) {
+    public AbstractTring<?> makeTring(final AbstractDropTarget dropTarget) {
         assert dropTarget != null;
         assert dropTarget.getTargetObject() instanceof FXOMInstance;
         assert dropTarget.getTargetObject().getSceneGraphObject() instanceof Node;
@@ -110,7 +110,7 @@ public abstract class AbstractNodeDriver extends AbstractDriver {
     }
 
     @Override
-    public AbstractResizer<?> makeResizer(FXOMObject fxomObject) {
+    public AbstractResizer<?> makeResizer(final FXOMObject fxomObject) {
         final AbstractResizer<?> result;
         
         /*
@@ -118,7 +118,7 @@ public abstract class AbstractNodeDriver extends AbstractDriver {
          * we make the dispatch here:
          */
         
-        final Object sceneGraphObject = fxomObject.getSceneGraphObject();
+        final var sceneGraphObject = fxomObject.getSceneGraphObject();
         if (sceneGraphObject instanceof ImageView) {
             result = new ImageViewResizer((ImageView) sceneGraphObject);
         } else if (sceneGraphObject instanceof Region) {
@@ -147,24 +147,24 @@ public abstract class AbstractNodeDriver extends AbstractDriver {
     }
     
     @Override
-    public AbstractCurveEditor<?> makeCurveEditor(FXOMObject fxomObject) {
+    public AbstractCurveEditor<?> makeCurveEditor(final FXOMObject fxomObject) {
         return null;
     }
     
     @Override
-    public FXOMObject refinePick(Node hitNode, double sceneX, double sceneY, FXOMObject fxomObject) {
+    public FXOMObject refinePick(final Node hitNode, final double sceneX, final double sceneY, final FXOMObject fxomObject) {
         return fxomObject;
     }
 
     @Override
-    public AbstractDropTarget makeDropTarget(FXOMObject fxomObject, double sceneX, double sceneY) {
+    public AbstractDropTarget makeDropTarget(final FXOMObject fxomObject, final double sceneX, final double sceneY) {
         assert fxomObject instanceof FXOMInstance;
         assert fxomObject.getSceneGraphObject() != null; // Because mouse cannot be above a unresolved component
         
         final AbstractDropTarget result;
         
-        final FXOMInstance fxomInstance = (FXOMInstance) fxomObject;
-        final DesignHierarchyMask mask = new DesignHierarchyMask(fxomObject);
+        final var fxomInstance = (FXOMInstance) fxomObject;
+        final var mask = new DesignHierarchyMask(fxomObject);
         if (mask.isFreeChildPositioning()) {
             result = new ContainerXYDropTarget(fxomInstance, sceneX, sceneY);
         } else {
@@ -179,10 +179,10 @@ public abstract class AbstractNodeDriver extends AbstractDriver {
     }
 
     @Override
-    public Node getInlineEditorBounds(FXOMObject fxomObject) {
+    public Node getInlineEditorBounds(final FXOMObject fxomObject) {
         final Node result;
         
-        final Object sceneGraphObject = fxomObject.getSceneGraphObject();
+        final var sceneGraphObject = fxomObject.getSceneGraphObject();
         if (sceneGraphObject instanceof ComboBox) {
             result = (ComboBox<?>) sceneGraphObject;
         } else if (sceneGraphObject instanceof Labeled) {
@@ -201,13 +201,13 @@ public abstract class AbstractNodeDriver extends AbstractDriver {
     }
 
     @Override
-    public boolean intersectsBounds(FXOMObject fxomObject, Bounds bounds) {
+    public boolean intersectsBounds(final FXOMObject fxomObject, final Bounds bounds) {
         assert fxomObject.getSceneGraphObject() instanceof Node;
         
         // Note: bounds are in root scene coordinates
-        final Node sceneGraphNode 
+        final var sceneGraphNode
                 = (Node) fxomObject.getSceneGraphObject();
-        final Bounds sceneGraphNodeBounds 
+        final var sceneGraphNodeBounds
                 = sceneGraphNode.localToScene(sceneGraphNode.getLayoutBounds(), true /* rootScene */);
 
         return sceneGraphNodeBounds.intersects(bounds);

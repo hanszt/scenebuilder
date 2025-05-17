@@ -52,17 +52,17 @@ public class DeleteObjectJobTest {
 
     @Test
     public void executing_job_deletes_fxom_object() throws Exception {
-        var editor = new EditorController();
+        final var editor = new EditorController();
         editor.setFxmlText(
                 Files.readString(Paths.get(getClass().getResource("basic.fxml").toURI())),
                 false
         );
 
-        var fxomObject = editor.getFxomDocument().searchWithFxId("button");
+        final var fxomObject = editor.getFxomDocument().searchWithFxId("button");
 
         assertNotNull(fxomObject);
 
-        var job = new DeleteObjectJob(fxomObject, editor);
+        final var job = new DeleteObjectJob(fxomObject, editor);
 
         editor.getJobManager().push(job);
 

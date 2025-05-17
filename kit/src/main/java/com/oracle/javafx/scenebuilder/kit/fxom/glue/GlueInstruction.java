@@ -40,7 +40,7 @@ public class GlueInstruction extends GlueAuxiliary {
     private final String target;
     private final String data;
 
-    public GlueInstruction(GlueDocument document, String target, String data) {
+    public GlueInstruction(final GlueDocument document, final String target, final String data) {
         super(document);
         this.target = target;
         this.data = data;

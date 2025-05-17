@@ -131,7 +131,7 @@ public abstract class PropertyEditor extends Editor {
     private FadeTransition fadeTransition = null;
     private boolean genericModesHandled = false;
 
-    public PropertyEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public PropertyEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         this.propMeta = propMeta;
         initialize();
         setSelectedClasses(selectedClasses);
@@ -141,7 +141,7 @@ public abstract class PropertyEditor extends Editor {
 
     // Special constructor for elements which are not JavaFX properties (e.g fx:id, controllerClass)
     // In this case, propMeta and selectedClasses are null.
-    public PropertyEditor(String name, String defaultValue) {
+    public PropertyEditor(final String name, final String defaultValue) {
         initialize();
         propName.setText(name);
         this.defaultValue = defaultValue;
@@ -162,7 +162,7 @@ public abstract class PropertyEditor extends Editor {
                             + "javafx.fxml/javafx/fxml/doc-files/introduction_to_fxml.html"); //NOI18N
                 }
                 // Selection of multiple different classes ==> no link
-            } catch (IOException ex) {
+            } catch (final IOException ex) {
                 System.err.println(ex.getMessage());
             }
         });
@@ -193,7 +193,7 @@ public abstract class PropertyEditor extends Editor {
         return propName.getText();
     }
 
-    public void setPropertyText(String text) {
+    public void setPropertyText(final String text) {
         propName.setText(text);
     }
 
@@ -202,7 +202,7 @@ public abstract class PropertyEditor extends Editor {
         if (menu == null) {
             menu = new MenuButton();
 
-            Region region = new Region();
+            final var region = new Region();
             menu.setGraphic(region);
             region.getStyleClass().add("cog-shape"); //NOI18N
 
@@ -232,53 +232,53 @@ public abstract class PropertyEditor extends Editor {
         return menu;
     }
 
-    public void replaceMenuItem(MenuItem item, MenuItem newItem) {
-        MenuButton cogMenu = getMenu();
-        int index = cogMenu.getItems().indexOf(item);
+    public void replaceMenuItem(final MenuItem item, final MenuItem newItem) {
+        final var cogMenu = getMenu();
+        final var index = cogMenu.getItems().indexOf(item);
         cogMenu.getItems().set(index, newItem);
     }
 
-    public void setPropertyMetadata(ValuePropertyMetadata propMeta) {
+    public void setPropertyMetadata(final ValuePropertyMetadata propMeta) {
         this.propMeta = propMeta;
     }
 
-    public void addValueListener(ChangeListener<Object> listener) {
+    public void addValueListener(final ChangeListener<Object> listener) {
         if (!valueListeners.contains(listener)) {
             valueProperty().addListener(listener);
             valueListeners.add(listener);
         }
     }
 
-    public void removeValueListener(ChangeListener<Object> listener) {
+    public void removeValueListener(final ChangeListener<Object> listener) {
         valueProperty().removeListener(listener);
         valueListeners.remove(listener);
     }
 
-    public void addTransientValueListener(ChangeListener<Object> listener) {
+    public void addTransientValueListener(final ChangeListener<Object> listener) {
         if (!transientValueListeners.contains(listener)) {
             transientValueProperty().addListener(listener);
             transientValueListeners.add(listener);
         }
     }
 
-    public void removeTransientValueListener(ChangeListener<Object> listener) {
+    public void removeTransientValueListener(final ChangeListener<Object> listener) {
         transientValueProperty().removeListener(listener);
         transientValueListeners.remove(listener);
     }
 
-    public void addEditingListener(ChangeListener<Boolean> listener) {
+    public void addEditingListener(final ChangeListener<Boolean> listener) {
         if (!editingListeners.contains(listener)) {
             editingProperty().addListener(listener);
             editingListeners.add(listener);
         }
     }
 
-    public void removeEditingListener(ChangeListener<Boolean> listener) {
+    public void removeEditingListener(final ChangeListener<Boolean> listener) {
         editingProperty().removeListener(listener);
         editingListeners.remove(listener);
     }
 
-    public void addNavigateListener(ChangeListener<String> listener) {
+    public void addNavigateListener(final ChangeListener<String> listener) {
         // We should have a single listener here
         if (navigateRequestListener == null) {
             navigateRequestProperty.addListener(listener);
@@ -286,23 +286,23 @@ public abstract class PropertyEditor extends Editor {
         }
     }
 
-    public void removeNavigateListener(ChangeListener<String> listener) {
+    public void removeNavigateListener(final ChangeListener<String> listener) {
         navigateRequestProperty.removeListener(listener);
         navigateRequestListener = null;
     }
 
     @Override
     public void removeAllListeners() {
-        Set<ChangeListener<Object>> valListeners = new HashSet<>(valueListeners);
-        for (ChangeListener<Object> listener : valListeners) {
+        final Set<ChangeListener<Object>> valListeners = new HashSet<>(valueListeners);
+        for (final var listener : valListeners) {
             removeValueListener(listener);
         }
-        Set<ChangeListener<Object>> transientValListeners = new HashSet<>(transientValueListeners);
-        for (ChangeListener<Object> listener : transientValListeners) {
+        final Set<ChangeListener<Object>> transientValListeners = new HashSet<>(transientValueListeners);
+        for (final var listener : transientValListeners) {
             removeTransientValueListener(listener);
         }
-        Set<ChangeListener<Boolean>> editListeners = new HashSet<>(editingListeners);
-        for (ChangeListener<Boolean> listener : editListeners) {
+        final Set<ChangeListener<Boolean>> editListeners = new HashSet<>(editingListeners);
+        for (final var listener : editListeners) {
             removeEditingListener(listener);
         }
         removeNavigateListener(navigateRequestListener);
@@ -319,7 +319,7 @@ public abstract class PropertyEditor extends Editor {
 
     public abstract void requestFocus();
 
-    public void setValueGeneric(Object value) {
+    public void setValueGeneric(final Object value) {
         // Should be called (first line) from editors setValue()
 //        System.out.println(getPropertyNameText() + " - setValue() to : " + value);
         if (!isUpdateFromModel()) {
@@ -338,7 +338,7 @@ public abstract class PropertyEditor extends Editor {
         if (!(value instanceof String)) {
             return;
         }
-        String val = (String) value;
+        final var val = (String) value;
 
         // Handle generic binding case
         if (isBindingExpression(val)) {
@@ -346,7 +346,7 @@ public abstract class PropertyEditor extends Editor {
         }
     }
 
-    private void resetMenuUpdate(Object value) {
+    private void resetMenuUpdate(final Object value) {
         // "Reset value" menu item update
         if (value == null) {
             if (defaultValue == null) {
@@ -368,7 +368,7 @@ public abstract class PropertyEditor extends Editor {
     }
 
     protected boolean isSetValueDone() {
-        boolean done = !isHandlingError() && (isBinding() || isEditing());
+        final var done = !isHandlingError() && (isBinding() || isEditing());
         return done;
     }
 
@@ -380,7 +380,7 @@ public abstract class PropertyEditor extends Editor {
         return disableProperty.getValue();
     }
 
-    public void setDisable(boolean disabled) {
+    public void setDisable(final boolean disabled) {
         disableProperty.setValue(disabled);
     }
 
@@ -404,7 +404,7 @@ public abstract class PropertyEditor extends Editor {
         return indeterminateProperty.getValue();
     }
 
-    public void setIndeterminate(boolean indeterminate) {
+    public void setIndeterminate(final boolean indeterminate) {
 //        System.out.println(propName.getText() + " : setIndeterminate() to " + indeterminate);
         if (!indeterminateProperty.getValue() && indeterminate) {
             valueIsIndeterminate();
@@ -416,11 +416,11 @@ public abstract class PropertyEditor extends Editor {
         return ruledByCss;
     }
 
-    public void setRuledByCss(boolean ruledByCss) {
+    public void setRuledByCss(final boolean ruledByCss) {
         this.ruledByCss = ruledByCss;
     }
 
-    public void setCssInfo(CssPropAuthorInfo cssInfo) {
+    public void setCssInfo(final CssPropAuthorInfo cssInfo) {
         this.cssInfo = cssInfo;
     }
 
@@ -428,7 +428,7 @@ public abstract class PropertyEditor extends Editor {
         return updateFromModel;
     }
 
-    public void setUpdateFromModel(boolean updateFromModel) {
+    public void setUpdateFromModel(final boolean updateFromModel) {
         this.updateFromModel = updateFromModel;
     }
 
@@ -445,7 +445,7 @@ public abstract class PropertyEditor extends Editor {
     }
 
     // Reset everything so that the editor can be re-used for another property
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selClasses) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selClasses) {
         resetStates();
         this.propMeta = propMeta;
         setSelectedClasses(selClasses);
@@ -453,7 +453,7 @@ public abstract class PropertyEditor extends Editor {
         this.defaultValue = propMeta.getDefaultValueObject();
     }
 
-    public void reset(String name, String defaultValue) {
+    public void reset(final String name, final String defaultValue) {
         resetStates();
         propName.setText(name);
         this.defaultValue = defaultValue;
@@ -471,19 +471,19 @@ public abstract class PropertyEditor extends Editor {
         return layoutFormat;
     }
 
-    public void setLayoutFormat(LayoutFormat layoutFormat) {
+    public void setLayoutFormat(final LayoutFormat layoutFormat) {
         this.layoutFormat = layoutFormat;
     }
 
-    public void userUpdateValueProperty(Object value) {
+    public void userUpdateValueProperty(final Object value) {
         userUpdateValueProperty(value, false);
     }
 
-    public void userUpdateTransientValueProperty(Object value) {
+    public void userUpdateTransientValueProperty(final Object value) {
         userUpdateValueProperty(value, true);
     }
 
-    private void userUpdateValueProperty(Object value, boolean transientValue) {
+    private void userUpdateValueProperty(final Object value, final boolean transientValue) {
         if (!transientValue && !isValueChanged(value)) {
             return;
         }
@@ -498,13 +498,13 @@ public abstract class PropertyEditor extends Editor {
     }
 
     @SuppressWarnings("unchecked")
-    boolean isValueChanged(Object value) {
+    boolean isValueChanged(final Object value) {
         if (value == null || valueProperty.getValue() == null) {
             return value != valueProperty.getValue();
         }
         if (value instanceof List) {
-            List<Object> valueList = (List<Object>) value;
-            List<Object> valuePropertyList = (List<Object>) valueProperty.getValue();
+            final var valueList = (List<Object>) value;
+            final var valuePropertyList = (List<Object>) valueProperty.getValue();
             return isIndeterminate() || !Objects.equals(valueList, valuePropertyList);
         } else {
             return isIndeterminate() || !Objects.equals(value, valueProperty.getValue());
@@ -527,24 +527,24 @@ public abstract class PropertyEditor extends Editor {
         return navigateRequestProperty;
     }
 
-    protected static Node getBindingValueEditor(Node valueEditor, String bindingExp) {
-        TextField bindingTf = new TextField();
+    protected static Node getBindingValueEditor(final Node valueEditor, final String bindingExp) {
+        final var bindingTf = new TextField();
         bindingTf.setText(bindingExp);
         bindingTf.setEditable(false);
 //                bindingTf.getStyleClass().add("read-only"); //NOI18N
-        HBox hbox = new HBox(5);
+        final var hbox = new HBox(5);
         EditorUtils.replaceNode(valueEditor, hbox, null);
         hbox.getChildren().addAll(new Label("${"), bindingTf, new Label("}")); //NOI18N
         return hbox;
     }
 
-    protected static boolean isBindingExpression(String str) {
+    protected static boolean isBindingExpression(final String str) {
         return str.startsWith("${") && str.endsWith("}"); //NOI18N
     }
 
     private void addCssVisual() {
         if (!propNameNode.getStyleClass().contains("css-override")) { //NOI18N
-            ImageView iv = new ImageView(cssIcon);
+            final var iv = new ImageView(cssIcon);
             propName.setGraphic(iv);
             propNameNode.getStyleClass().add("css-override"); //NOI18N
 
@@ -562,7 +562,7 @@ public abstract class PropertyEditor extends Editor {
                         if (cssInfo.getMainUrl() != null) {
                             try {
                                 EditorPlatform.open(cssInfo.getMainUrl().toString());
-                            } catch (IOException ex) {
+                            } catch (final IOException ex) {
                                 Logger.getLogger(getClass().getName()).log(Level.WARNING, "Failed to open css file:", ex);
                             }
                         }
@@ -581,7 +581,7 @@ public abstract class PropertyEditor extends Editor {
         cssMenuUpdate();
     }
 
-    protected Node handleGenericModes(Node valueEditor) {
+    protected Node handleGenericModes(final Node valueEditor) {
         if (!genericModesHandled) {
             if (isBinding()) {
                 assert getValue() instanceof String;
@@ -605,11 +605,11 @@ public abstract class PropertyEditor extends Editor {
         return propMeta;
     }
 
-    protected void handleInvalidValue(Object value) {
+    protected void handleInvalidValue(final Object value) {
         handleInvalidValue(value, null);
     }
 
-    protected void handleInvalidValue(Object value, Node source) {
+    protected void handleInvalidValue(final Object value, Node source) {
         if (isHandlingError()) {
             return;
         }
@@ -618,7 +618,7 @@ public abstract class PropertyEditor extends Editor {
         if (source == null) {
             source = propName;
         }
-        final AlertDialog alertDialog = new AlertDialog(source.getScene().getWindow());
+        final var alertDialog = new AlertDialog(source.getScene().getWindow());
         // Messages
         alertDialog.setTitle(I18N.getString("inspector.error.title"));
         alertDialog.setMessage(I18N.getString("inspector.error.message"));
@@ -633,7 +633,7 @@ public abstract class PropertyEditor extends Editor {
 
 //        // Temp for debug
 //        Thread.dumpStack();
-        ButtonID buttonClicked = alertDialog.showAndWait();
+        final var buttonClicked = alertDialog.showAndWait();
         if (buttonClicked == ButtonID.OK) {
             setValue(valueProperty().getValue());
             invalidValueProperty.setValue(false);
@@ -660,7 +660,7 @@ public abstract class PropertyEditor extends Editor {
         removeCssVisual();
     }
 
-    private void setSelectedClasses(Set<Class<?>> selClasses) {
+    private void setSelectedClasses(final Set<Class<?>> selClasses) {
         this.selectedClasses = selClasses;
         if (selClasses == null) {
             return;
@@ -677,7 +677,7 @@ public abstract class PropertyEditor extends Editor {
         propName.setText(EditorUtils.toDisplayName(getPropertyName().getName()));
     }
 
-    protected static void handleIndeterminate(Node node) {
+    protected static void handleIndeterminate(final Node node) {
         if (node instanceof TextField) {
             ((TextField) node).setText(""); //NOI18N
             ((TextField) node).setPromptText(Editor.INDETERMINATE_STR);
@@ -693,25 +693,25 @@ public abstract class PropertyEditor extends Editor {
         }
     }
 
-    protected void setTextEditorBehavior(PropertyEditor editor, Control control, EventHandler<ActionEvent> onActionListener) {
+    protected void setTextEditorBehavior(final PropertyEditor editor, final Control control, final EventHandler<ActionEvent> onActionListener) {
         setTextEditorBehavior(editor, control, onActionListener, true);
     }
 
-    protected void setTextEditorBehavior(Control control, EventHandler<ActionEvent> onActionListener) {
+    protected void setTextEditorBehavior(final Control control, final EventHandler<ActionEvent> onActionListener) {
         setTextEditorBehavior(null, control, onActionListener, true, true);
     }
 
-    protected void setTextEditorBehavior(PropertyEditor editor, Control control,
-            EventHandler<ActionEvent> onActionListener, boolean stretchable) {
+    protected void setTextEditorBehavior(final PropertyEditor editor, final Control control,
+                                         final EventHandler<ActionEvent> onActionListener, final boolean stretchable) {
         setTextEditorBehavior(editor, control, onActionListener, stretchable, true);
     }
 
-    protected void setTextEditorBehavior(Control control, EventHandler<ActionEvent> onActionListener, boolean addFocusListener) {
+    protected void setTextEditorBehavior(final Control control, final EventHandler<ActionEvent> onActionListener, final boolean addFocusListener) {
         setTextEditorBehavior(null, control, onActionListener, true, addFocusListener);
     }
 
-    protected void setTextEditorBehavior(PropertyEditor editor, Control control,
-            EventHandler<ActionEvent> onActionListener, boolean stretchable, boolean addFocusListener) {
+    protected void setTextEditorBehavior(final PropertyEditor editor, final Control control,
+                                         final EventHandler<ActionEvent> onActionListener, final boolean stretchable, final boolean addFocusListener) {
         setCommitListener(onActionListener);
         if (stretchable) {
             EditorUtils.makeWidthStretchable(control);
@@ -735,17 +735,17 @@ public abstract class PropertyEditor extends Editor {
         return commitListener;
     }
 
-    protected void setCommitListener(EventHandler<?> listener) {
+    protected void setCommitListener(final EventHandler<?> listener) {
         this.commitListener = listener;
     }
 
-    protected void setNumericEditorBehavior(PropertyEditor editor, Control control,
-            EventHandler<ActionEvent> onActionListener) {
+    protected void setNumericEditorBehavior(final PropertyEditor editor, final Control control,
+                                            final EventHandler<ActionEvent> onActionListener) {
         setNumericEditorBehavior(editor, control, onActionListener, true);
     }
 
-    protected void setNumericEditorBehavior(PropertyEditor editor, Control control,
-            EventHandler<ActionEvent> onActionListener, boolean stretchable) {
+    protected void setNumericEditorBehavior(final PropertyEditor editor, final Control control,
+                                            final EventHandler<ActionEvent> onActionListener, final boolean stretchable) {
         setTextEditorBehavior(editor, control, onActionListener, stretchable);
         control.setOnKeyPressed(event -> {
             if (event.getCode() != KeyCode.UP && event.getCode() != KeyCode.DOWN) {
@@ -755,17 +755,17 @@ public abstract class PropertyEditor extends Editor {
                 // Apply only for text field based controls
                 return;
             }
-            TextField textField = (TextField) control;
-            int incDecVal = 1;
-            boolean shiftDown = event.isShiftDown();
+            final var textField = (TextField) control;
+            var incDecVal = 1;
+            final var shiftDown = event.isShiftDown();
             if (shiftDown) {
                 incDecVal = 10;
             }
-            String valStr = textField.getText();
-            Double val;
+            final var valStr = textField.getText();
+            final Double val;
             try {
                 val = Double.parseDouble(valStr);
-            } catch (NumberFormatException ex) {
+            } catch (final NumberFormatException ex) {
                 // may happen if the text field is empty,
                 // or contains a constant string: do nothing
                 return;
@@ -783,7 +783,7 @@ public abstract class PropertyEditor extends Editor {
         });
     }
 
-    private void addFocusListener(TextInputControl tic, EventHandler<ActionEvent> onActionListener) {
+    private void addFocusListener(final TextInputControl tic, final EventHandler<ActionEvent> onActionListener) {
         tic.focusedProperty().addListener((ChangeListener<Boolean>) (observable, oldValue, newValue) -> {
             if (!newValue && tic.isEditable()) {
                 // focus lost

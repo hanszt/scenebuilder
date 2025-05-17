@@ -49,7 +49,7 @@ class RightCell extends TableCell<IndexEntry, FXOMObject> {
      */
 
     @Override
-    protected void updateItem(FXOMObject rightValue, boolean empty) {
+    protected void updateItem(final FXOMObject rightValue, final boolean empty) {
         super.updateItem(rightValue, empty);
         
         final String text;
@@ -76,7 +76,7 @@ class RightCell extends TableCell<IndexEntry, FXOMObject> {
          */
 
         @Override
-        public TableCell<IndexEntry, FXOMObject> call(TableColumn<IndexEntry, FXOMObject> tc) {
+        public TableCell<IndexEntry, FXOMObject> call(final TableColumn<IndexEntry, FXOMObject> tc) {
             return new RightCell();
         }
     }

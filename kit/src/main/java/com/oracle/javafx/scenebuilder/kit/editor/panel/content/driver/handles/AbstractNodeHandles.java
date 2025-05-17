@@ -42,8 +42,8 @@ import javafx.scene.Node;
  */
 public abstract class AbstractNodeHandles<T extends Node> extends AbstractGenericHandles<T> {
     
-    public AbstractNodeHandles(ContentPanelController contentPanelController,
-            FXOMInstance fxomInstance, Class<T> sceneGraphObjectClass) {
+    public AbstractNodeHandles(final ContentPanelController contentPanelController,
+                               final FXOMInstance fxomInstance, final Class<T> sceneGraphObjectClass) {
         super(contentPanelController, fxomInstance, sceneGraphObjectClass);
     }
     

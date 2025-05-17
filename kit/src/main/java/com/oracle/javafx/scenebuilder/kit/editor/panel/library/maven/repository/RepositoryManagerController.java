@@ -43,7 +43,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 import javafx.stage.WindowEvent;
 
 import java.util.stream.Collectors;
@@ -67,9 +66,9 @@ public class RepositoryManagerController extends AbstractFxmlWindowController {
     private final String userM2Repository;
     private final PreferencesControllerBase preferencesControllerBase;
     
-    public RepositoryManagerController(EditorController editorController, String userM2Repository,
-                                       PreferencesControllerBase preferencesControllerBase,
-                                       Stage owner) {
+    public RepositoryManagerController(final EditorController editorController, final String userM2Repository,
+                                       final PreferencesControllerBase preferencesControllerBase,
+                                       final Stage owner) {
         super(LibraryPanelController.class.getResource("RepositoryManager.fxml"), I18N.getBundle(), owner); //NOI18N
         this.owner = owner;
         this.editorController = editorController;
@@ -90,7 +89,7 @@ public class RepositoryManagerController extends AbstractFxmlWindowController {
     }
     
     @Override
-    public void onCloseRequest(WindowEvent event) {
+    public void onCloseRequest(final WindowEvent event) {
         close();
     }
 
@@ -133,14 +132,14 @@ public class RepositoryManagerController extends AbstractFxmlWindowController {
         repositoryDialog(null);
     }
 
-    private void repositoryDialog(Repository repository) {
-        RepositoryDialogController repositoryDialogController = new RepositoryDialogController(editorController,
+    private void repositoryDialog(final Repository repository) {
+        final var repositoryDialogController = new RepositoryDialogController(editorController,
                 userM2Repository, preferencesControllerBase, getStage());
         repositoryDialogController.openWindow();
         repositoryDialogController.setRepository(repository);
         repositoryDialogController.getStage().showingProperty().addListener(new InvalidationListener() {
             @Override
-            public void invalidated(Observable observable) {
+            public void invalidated(final Observable observable) {
                 if (!repositoryDialogController.getStage().isShowing()) {
                     loadRepositoryList();
                     repositoryDialogController.getStage().showingProperty().removeListener(this);
@@ -149,18 +148,18 @@ public class RepositoryManagerController extends AbstractFxmlWindowController {
         });
     }
     
-    public void edit(RepositoryListItem item) {
+    public void edit(final RepositoryListItem item) {
         repositoryDialog(item.getRepository());
     }
     
-    public void delete(RepositoryListItem item) {
+    public void delete(final RepositoryListItem item) {
         // Remove repository
         logInfoMessage("log.user.repository.removed", item.getRepository().getId());
         preferencesControllerBase.removeRepository(item.getRepository().getId());
         loadRepositoryList();
     }
     
-    private void logInfoMessage(String key, Object... args) {
+    private void logInfoMessage(final String key, final Object... args) {
         editorController.getMessageLog().logInfoMessage(key, I18N.getBundle(), args);
     }
     

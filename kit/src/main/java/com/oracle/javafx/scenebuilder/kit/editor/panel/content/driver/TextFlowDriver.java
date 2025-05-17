@@ -46,7 +46,7 @@ import javafx.scene.text.TextFlow;
  */
 public class TextFlowDriver extends AbstractNodeDriver {
 
-    public TextFlowDriver(ContentPanelController contentPanelController) {
+    public TextFlowDriver(final ContentPanelController contentPanelController) {
         super(contentPanelController);
     }
 
@@ -54,18 +54,18 @@ public class TextFlowDriver extends AbstractNodeDriver {
      * AbstractDriver
      */
     @Override
-    public AbstractDropTarget makeDropTarget(FXOMObject fxomObject, double sceneX, double sceneY) {
+    public AbstractDropTarget makeDropTarget(final FXOMObject fxomObject, final double sceneX, final double sceneY) {
         
         assert fxomObject instanceof FXOMInstance;
         assert fxomObject.getSceneGraphObject() instanceof TextFlow;
         
-        final int targetIndex = GenericParentTring.lookupCrackIndex(fxomObject, sceneX, sceneY);
+        final var targetIndex = GenericParentTring.lookupCrackIndex(fxomObject, sceneX, sceneY);
         
         final FXOMObject beforeChild;
         if (targetIndex == -1) {
             beforeChild = null;
         } else {
-            final DesignHierarchyMask m = new DesignHierarchyMask(fxomObject);
+            final var m = new DesignHierarchyMask(fxomObject);
             if (targetIndex < m.getSubComponentCount()) {
                 beforeChild = m.getSubComponentAtIndex(targetIndex);
             } else {
@@ -78,12 +78,12 @@ public class TextFlowDriver extends AbstractNodeDriver {
     
     
     @Override
-    public AbstractTring<?> makeTring(AbstractDropTarget dropTarget) {
+    public AbstractTring<?> makeTring(final AbstractDropTarget dropTarget) {
         assert dropTarget instanceof ContainerZDropTarget; 
         assert dropTarget.getTargetObject() instanceof FXOMInstance;
         assert dropTarget.getTargetObject().getSceneGraphObject() instanceof TextFlow;
         
-        final ContainerZDropTarget zDropTarget = (ContainerZDropTarget) dropTarget;
+        final var zDropTarget = (ContainerZDropTarget) dropTarget;
         final int targetIndex;
         if (zDropTarget.getBeforeChild() == null) {
             targetIndex = -1;

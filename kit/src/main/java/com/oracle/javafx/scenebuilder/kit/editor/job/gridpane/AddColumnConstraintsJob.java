@@ -41,7 +41,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.AddPropertyValueJob;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMProperty;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyC;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
@@ -82,10 +81,10 @@ public class AddColumnConstraintsJob extends BatchDocumentJob {
         final List<Job> result = new ArrayList<>();
 
         // Add column constraints job
-        assert targetGridPanes.isEmpty() == false;
-        for (FXOMObject targetGridPane : targetGridPanes.keySet()) {
+        assert !targetGridPanes.isEmpty();
+        for (final var targetGridPane : targetGridPanes.keySet()) {
             assert targetGridPane instanceof FXOMInstance;
-            final Set<Integer> targetIndexes = targetGridPanes.get(targetGridPane);
+            final var targetIndexes = targetGridPanes.get(targetGridPane);
             result.addAll(addColumnConstraints((FXOMInstance) targetGridPane, targetIndexes));
         }
         
@@ -102,36 +101,36 @@ public class AddColumnConstraintsJob extends BatchDocumentJob {
             final Set<Integer> targetIndexes) {
 
         final Set<Job> result = new LinkedHashSet<>();
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
+        final var fxomDocument = getEditorController().getFxomDocument();
 
         // Retrieve the constraints property for the specified target GridPane
-        final PropertyName propertyName = new PropertyName("columnConstraints"); //NOI18N
-        FXOMProperty constraintsProperty = targetGridPane.getProperties().get(propertyName);
+        final var propertyName = new PropertyName("columnConstraints"); //NOI18N
+        var constraintsProperty = targetGridPane.getProperties().get(propertyName);
         if (constraintsProperty == null) {
             constraintsProperty = new FXOMPropertyC(fxomDocument, propertyName);
         }
         assert constraintsProperty instanceof FXOMPropertyC;
 
-        final DesignHierarchyMask mask = new DesignHierarchyMask(targetGridPane);
+        final var mask = new DesignHierarchyMask(targetGridPane);
 
-        int shiftIndex = 0;
-        int constraintsSize = mask.getColumnsConstraintsSize();
-        for (int targetIndex : targetIndexes) {
+        var shiftIndex = 0;
+        var constraintsSize = mask.getColumnsConstraintsSize();
+        for (final int targetIndex : targetIndexes) {
 
             // Retrieve the index for the new constraints to be added
-            int addedIndex = targetIndex + shiftIndex;
+            var addedIndex = targetIndex + shiftIndex;
             if (position == Position.AFTER) {
                 addedIndex++;
             }
 
-            final FXOMObject targetConstraints
+            final var targetConstraints
                     = mask.getColumnConstraintsAtIndex(targetIndex);
             // The target index is associated to an existing constraints value :
             // we add a new constraints using the values of the existing one
             if (targetConstraints != null) {
                 assert targetConstraints instanceof FXOMInstance;
                 // Create new constraints instance with same values as the target one
-                final FXOMInstance addedConstraints = makeColumnConstraintsInstance(
+                final var addedConstraints = makeColumnConstraintsInstance(
                         (FXOMInstance) targetConstraints);
 
                 final Job addValueJob = new AddPropertyValueJob(
@@ -144,9 +143,9 @@ public class AddColumnConstraintsJob extends BatchDocumentJob {
             // - we add new empty constraints from the last existing one to the added index (excluded)
             // - we add a new constraints with default values for the added index
             else {
-                for (int index = constraintsSize; index < addedIndex; index++) {
+                for (var index = constraintsSize; index < addedIndex; index++) {
                     // Create new empty constraints for the exisiting columns
-                    final FXOMInstance addedConstraints = makeColumnConstraintsInstance();
+                    final var addedConstraints = makeColumnConstraintsInstance();
                     final Job addValueJob = new AddPropertyValueJob(
                             addedConstraints,
                             (FXOMPropertyC) constraintsProperty,
@@ -154,7 +153,7 @@ public class AddColumnConstraintsJob extends BatchDocumentJob {
                     result.add(addValueJob);
                 }
                 // Create new constraints with default values for the new added column
-                final FXOMInstance addedConstraints = makeColumnConstraintsInstance();
+                final var addedConstraints = makeColumnConstraintsInstance();
                 JobUtils.setMinWidth(addedConstraints, ColumnConstraints.class, defaultMinWidth);
                 JobUtils.setPrefWidth(addedConstraints, ColumnConstraints.class, defaultPrefWidth);
                 final Job addValueJob = new AddPropertyValueJob(
@@ -184,8 +183,8 @@ public class AddColumnConstraintsJob extends BatchDocumentJob {
     private FXOMInstance makeColumnConstraintsInstance() {
 
         // Create new constraints instance
-        final FXOMDocument newDocument = new FXOMDocument();
-        final FXOMInstance result
+        final var newDocument = new FXOMDocument();
+        final var result
                 = new FXOMInstance(newDocument, ColumnConstraints.class);
         newDocument.setFxomRoot(result);
         result.moveToFxomDocument(getEditorController().getFxomDocument());
@@ -199,16 +198,16 @@ public class AddColumnConstraintsJob extends BatchDocumentJob {
         assert constraints.getDeclaredClass() == ColumnConstraints.class;
 
         // Create new constraints instance
-        final FXOMInstance result = makeColumnConstraintsInstance();
+        final var result = makeColumnConstraintsInstance();
 
         // Set the new column constraints values with the values of the specified instance
-        final boolean fillWidth = JobUtils.getFillWidth(constraints, ColumnConstraints.class);
-        final double maxWidth = JobUtils.getMaxWidth(constraints, ColumnConstraints.class);
-        final double minWidth = JobUtils.getMinWidth(constraints, ColumnConstraints.class);
-        final double percentWidth = JobUtils.getPercentWidth(constraints, ColumnConstraints.class);
-        final double prefWidth = JobUtils.getPrefWidth(constraints, ColumnConstraints.class);
-        final String halignment = JobUtils.getHAlignment(constraints, ColumnConstraints.class);
-        final String hgrow = JobUtils.getHGrow(constraints, ColumnConstraints.class);
+        final var fillWidth = JobUtils.getFillWidth(constraints, ColumnConstraints.class);
+        final var maxWidth = JobUtils.getMaxWidth(constraints, ColumnConstraints.class);
+        final var minWidth = JobUtils.getMinWidth(constraints, ColumnConstraints.class);
+        final var percentWidth = JobUtils.getPercentWidth(constraints, ColumnConstraints.class);
+        final var prefWidth = JobUtils.getPrefWidth(constraints, ColumnConstraints.class);
+        final var halignment = JobUtils.getHAlignment(constraints, ColumnConstraints.class);
+        final var hgrow = JobUtils.getHGrow(constraints, ColumnConstraints.class);
 
         JobUtils.setFillWidth(result, ColumnConstraints.class, fillWidth);
         JobUtils.setMaxWidth(result, ColumnConstraints.class, maxWidth);

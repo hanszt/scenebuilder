@@ -37,7 +37,6 @@ import com.oracle.javafx.scenebuilder.kit.metadata.property.value.IntegerPropert
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import javafx.event.ActionEvent;
@@ -55,25 +54,25 @@ public class IntegerEditor extends AutoSuggestEditor {
     private int min;
     private int max;
 
-    public IntegerEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses,
-            Map<String, Object> constants, int minVal, int maxVal) {
+    public IntegerEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses,
+                         final Map<String, Object> constants, final int minVal, final int maxVal) {
         super(propMeta, selectedClasses, new ArrayList<>(constants.keySet()), AutoSuggestEditor.Type.INTEGER);
         initialize(constants, minVal, maxVal);
     }
     
-    private void initialize(Map<String, Object> constants, int minVal, int maxVal) {
+    private void initialize(final Map<String, Object> constants, final int minVal, final int maxVal) {
         this.constants = constants;
         this.min = minVal;
         this.max = maxVal;
 
-        EventHandler<ActionEvent> onActionListener = event -> {
+        final EventHandler<ActionEvent> onActionListener = event -> {
             if (isHandlingError()) {
                 // Event received because of focus lost due to error dialog
                 return;
             }
-            Object value = getValue();
+            var value = getValue();
             if ((value != null) && ((IntegerPropertyMetadata) getPropertyMeta()).isValidValue((Integer) value)) {
-                String constantStr = getConstant(value);
+                final var constantStr = getConstant(value);
                 if (constantStr != null) {
                     getTextField().setText(constantStr);
                 } else {
@@ -99,19 +98,19 @@ public class IntegerEditor extends AutoSuggestEditor {
 
     @Override
     public Object getValue() {
-        String val = getTextField().getText();
+        var val = getTextField().getText();
         if (val.isEmpty()) {
             val = "0"; //NOI18N
             getTextField().setText(val);
             return Integer.valueOf(val);
         }
-        Object constantValue = constants.get(val.toUpperCase(Locale.ROOT));
+        final var constantValue = constants.get(val.toUpperCase(Locale.ROOT));
         if (constantValue != null) {
             val = EditorUtils.valAsStr(constantValue);
         }
         try {
             return Integer.parseInt(val);
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             return null;
         }
     }
@@ -128,7 +127,7 @@ public class IntegerEditor extends AutoSuggestEditor {
             value = 0;
         }
         assert (value instanceof Integer);
-        String constantStr = getConstant(value);
+        final var constantStr = getConstant(value);
         if (constantStr != null) {
             value = constantStr;
         }
@@ -140,17 +139,17 @@ public class IntegerEditor extends AutoSuggestEditor {
         EditorUtils.doNextFrame(() -> getTextField().requestFocus());
     }
 
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses,
-            Map<String, Object> constants, int minVal, int maxVal) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses,
+                      final Map<String, Object> constants, final int minVal, final int maxVal) {
         super.reset(propMeta, selectedClasses, new ArrayList<>(constants.keySet()));
         this.constants = constants;
         this.min = minVal;
         this.max = maxVal;
     }
 
-    private String getConstant(Object value) {
+    private String getConstant(final Object value) {
         // Get the corresponding constant if any
-        for (Entry<String, Object> entry : constants.entrySet()) {
+        for (final var entry : constants.entrySet()) {
             if (value.equals(entry.getValue())) {
                 return entry.getKey();
             }

@@ -35,7 +35,6 @@ package com.oracle.javafx.scenebuilder.kit.editor.panel.css;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.inspector.editors.EditorUtils;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.ColorEncoder;
 import com.oracle.javafx.scenebuilder.kit.util.MathUtils;
-import javafx.css.Declaration;
 import javafx.css.Rule;
 import javafx.css.Size;
 import javafx.css.converter.PaintConverter;
@@ -53,7 +52,6 @@ import javafx.css.ParsedValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Side;
 import javafx.scene.effect.Effect;
-import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BackgroundImage;
@@ -61,7 +59,6 @@ import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderImage;
 import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -81,7 +78,7 @@ public class CssValueConverter {
     }
 
     @SuppressWarnings("rawtypes")
-    public static Object convert(ParsedValue pv) {
+    public static Object convert(final ParsedValue pv) {
         Object value = null;
         if (pv == null) {
             return null;
@@ -89,10 +86,9 @@ public class CssValueConverter {
 
         if (pv.getConverter() != null) {
             try {
-                @SuppressWarnings("unchecked")
-                Object converted = pv.getConverter().convert(pv, null);
+                @SuppressWarnings("unchecked") final var converted = pv.getConverter().convert(pv, null);
                 value = converted;
-            } catch (RuntimeException ex) {
+            } catch (final RuntimeException ex) {
                 // OK, can't be resolved, a lookup possibly
             }
         } else {
@@ -105,34 +101,34 @@ public class CssValueConverter {
     }
 
     // Retrieve a CSS String from a value set thanks to CSS
-    public static String toCssString(String property, Rule rule, Object fxValue) {
+    public static String toCssString(final String property, final Rule rule, final Object fxValue) {
         try {
             return getValue(property, rule, fxValue);
-        } catch (IllegalArgumentException ex) {
+        } catch (final IllegalArgumentException ex) {
             return getValue(property, null, fxValue);
         }
     }
 
-    public static String toCssString(String property, Object fxValue) {
+    public static String toCssString(final String property, final Object fxValue) {
         return getValue(property, null, fxValue);
     }
 
-    public static String toCssString(Object fxValue) {
+    public static String toCssString(final Object fxValue) {
         return getValue(null, null, fxValue);
     }
 
     // Retrieve the value for a sub property.
-    public static Object getSubPropertyValue(String property, Object value) {
+    public static Object getSubPropertyValue(final String property, final Object value) {
         if (value instanceof Collection) {
-            Collection<?> values = (Collection<?>) value;
-            List<Object> subValues = new ArrayList<>();
-            for (Object bf : values) {
+            final var values = (Collection<?>) value;
+            final List<Object> subValues = new ArrayList<>();
+            for (final var bf : values) {
                 subValues.add(getSubPropertyValue(property, bf));
             }
             return subValues;
         } else if (value != null && value.getClass().isArray()) {
-            Object newArray = Array.newInstance(value.getClass().getComponentType(), Array.getLength(value));
-            for (int i = 0; i < Array.getLength(value); i++) {
+            final var newArray = Array.newInstance(value.getClass().getComponentType(), Array.getLength(value));
+            for (var i = 0; i < Array.getLength(value); i++) {
                 Array.set(newArray, i, getSubPropertyValue(property, Array.get(value, i)));
             }
             return newArray;
@@ -141,7 +137,7 @@ public class CssValueConverter {
             // Background
             //
         } else if (value instanceof Background) {
-            Background background = (Background) value;
+            final var background = (Background) value;
             if (background.getFills() != null) {
                 return getSubPropertyValue(property, background.getFills());
             } else if (background.getImages() != null) {
@@ -156,7 +152,7 @@ public class CssValueConverter {
             // Border
             //
         } else if (value instanceof Border) {
-            Border border = (Border) value;
+            final var border = (Border) value;
             if (border.getStrokes() != null) {
                 return getSubPropertyValue(property, border.getStrokes());
             } else if (border.getImages() != null) {
@@ -181,7 +177,7 @@ public class CssValueConverter {
         STRING_VALUE.add("-fx-shape");//NOI18N
     }
 
-    private static String format(String property, String value) {
+    private static String format(final String property, final String value) {
         if (STRING_VALUE.contains(property)) {
             return "\"" + value + "\"";//NOI18N
         } else {
@@ -190,12 +186,12 @@ public class CssValueConverter {
     }
 
     // FX to String value transformation entry point.
-    private static String getValue(String property, Rule r, Object eventValue) throws IllegalArgumentException {
+    private static String getValue(final String property, final Rule r, final Object eventValue) throws IllegalArgumentException {
         if (r == null) {
             return format(property, retrieveValue(property, eventValue));
         }
 
-        for (Declaration d : r.getDeclarations()) {
+        for (final var d : r.getDeclarations()) {
             if (d.getProperty().equals(property)) {
                 if (property.equals("-fx-background-radius") || property.equals("-fx-border-radius")) { //NOI18N
                     return format(property, getRadiusCssString(property, d.getParsedValue()));
@@ -220,7 +216,7 @@ public class CssValueConverter {
 
     }
 
-    private static boolean singleForEquality(String prop) {
+    private static boolean singleForEquality(final String prop) {
         return SINGLE_WHEN_EQUALITY.contains(prop);
     }
 
@@ -230,7 +226,7 @@ public class CssValueConverter {
     // When converting, we loose the CSS textual format present in the CSS source,
     // for instance the lookup information, or 'em' unit.
     @SuppressWarnings("rawtypes")
-    private static String getCssString(String property, ParsedValue value) {
+    private static String getCssString(final String property, final ParsedValue value) {
 
         // TODO : this method should be rewritten in a cleaner way...
         if (value == null) {
@@ -243,21 +239,21 @@ public class CssValueConverter {
                 || value.getConverter() instanceof PaintConverter.RadialGradientConverter) {
 
             try {
-                @SuppressWarnings("unchecked")//NOI18N
-                Object converted = value.getConverter().convert(value, null);
+                @SuppressWarnings("unchecked") final//NOI18N
+                var converted = value.getConverter().convert(value, null);
 
                 return toCssString(converted);
-            } catch (RuntimeException ex) {
+            } catch (final RuntimeException ex) {
             }
         }
 
-        Object obj = value.getValue();
+        final var obj = value.getValue();
         if (obj instanceof ParsedValue) {
             return getCssString(property, (ParsedValue) obj);
         }
-        StringBuilder builder = new StringBuilder();
-        boolean isDerive = value.getConverter() instanceof DeriveColorConverter || value.getConverter() instanceof DeriveSizeConverter;
-        boolean isLadder = value.getConverter() instanceof LadderConverter;
+        final var builder = new StringBuilder();
+        final var isDerive = value.getConverter() instanceof DeriveColorConverter || value.getConverter() instanceof DeriveSizeConverter;
+        final var isLadder = value.getConverter() instanceof LadderConverter;
         if (isDerive) {
             builder.append("derive("); //NOI18N
         }
@@ -265,10 +261,10 @@ public class CssValueConverter {
             builder.append("ladder("); //NOI18N
         }
         if (obj instanceof ParsedValue[]) {
-            ParsedValue[] array = (ParsedValue[]) obj;
-            boolean isArrayValue = false;
+            final var array = (ParsedValue[]) obj;
+            var isArrayValue = false;
             if (array.length >= 1) {
-                ParsedValue pval = array[0];
+                final var pval = array[0];
                 Object val = null;
                 if (pval != null) {
                     if (pval.getConverter() instanceof LinearGradientConverter
@@ -280,24 +276,24 @@ public class CssValueConverter {
                 }
                 isArrayValue = val != null && val.getClass().isArray();
             }
-            boolean singleForEquality = singleForEquality(property) && !isArrayValue;
-            StringBuilder b = new StringBuilder();
+            final var singleForEquality = singleForEquality(property) && !isArrayValue;
+            final var b = new StringBuilder();
             if (singleForEquality) {
                 String latest = null;
-                boolean areEquals = true;
-                List<String> values = new ArrayList<>(array.length);
-                for (ParsedValue v : array) {
-                    String current = getCssString(property, v);
+                var areEquals = true;
+                final List<String> values = new ArrayList<>(array.length);
+                for (final var v : array) {
+                    final var current = getCssString(property, v);
                     values.add(current);
                     areEquals &= (latest == null || current.equals(latest));
                     latest = current;
                 }
                 if (areEquals) {
-                    String val = values.get(0);
+                    var val = values.getFirst();
                     val = removeDotZeroPxPercent(val);
                     b.append(val);
                 } else {
-                    for (int i = 0; i < values.size(); i++) {
+                    for (var i = 0; i < values.size(); i++) {
                         b.append(values.get(i));
                         if (i < array.length - 1) {
                             b.append(" "); //NOI18N
@@ -305,9 +301,9 @@ public class CssValueConverter {
                     }
                 }
             } else {
-                for (int i = 0; i < array.length; i++) {
-                    ParsedValue v = array[i];
-                    String val = getCssString(property, v);
+                for (var i = 0; i < array.length; i++) {
+                    final var v = array[i];
+                    var val = getCssString(property, v);
                     val = removeDotZeroPxPercent(val);
                     b.append(val);
                     if ((i < array.length - 1) && val.length() > 0) {
@@ -319,9 +315,9 @@ public class CssValueConverter {
             builder.append(b.toString());
         } else {
             if (obj instanceof ParsedValue[][]) {
-                ParsedValue[][] arr = (ParsedValue[][]) obj;
-                for (int i = 0; i < arr.length; i++) {
-                    String val = retrieveValue(property, arr[i]);
+                final var arr = (ParsedValue[][]) obj;
+                for (var i = 0; i < arr.length; i++) {
+                    final var val = retrieveValue(property, arr[i]);
                     builder.append(val);
                     if ((i < arr.length - 1) && val.length() > 0) {
                         builder.append(", "); //NOI18N
@@ -338,20 +334,20 @@ public class CssValueConverter {
     }
 
     @SuppressWarnings("rawtypes")
-    private static String getRadiusCssString(String property, ParsedValue value) {
+    private static String getRadiusCssString(final String property, final ParsedValue value) {
         // TODO : Ideally should be included in the generic getCssString() method
         
         // See  http://www.w3.org/TR/css3-background/#the-border-radius 
         
         assert property.equals("-fx-background-radius") || property.equals("-fx-border-radius"); //NOI18N
-        StringBuilder sbAll = new StringBuilder();
-        Object obj = value.getValue();
+        final var sbAll = new StringBuilder();
+        var obj = value.getValue();
         if (!(obj instanceof ParsedValue[])) {
             return null;
         }
-        ParsedValue[] pvArray = (ParsedValue[]) obj;
-        int index = 0;
-        for (ParsedValue pvItem : pvArray) {
+        final var pvArray = (ParsedValue[]) obj;
+        var index = 0;
+        for (final var pvItem : pvArray) {
             // We have a CornerRadii representation here:
             // double dimension array:
             // 1- horizontal/vertical radii
@@ -361,19 +357,19 @@ public class CssValueConverter {
             if (!(obj instanceof ParsedValue[][])) {
                 return null;
             }
-            ParsedValue[][] pvArray2 = (ParsedValue[][]) obj;
-            StringBuilder sbCornerRadii = new StringBuilder();
+            final var pvArray2 = (ParsedValue[][]) obj;
+            final var sbCornerRadii = new StringBuilder();
             Size initSize = null;
-            boolean areEquals = true;
-            int index2 = 0;
-            for (ParsedValue[] pvArray1 : pvArray2) {
+            var areEquals = true;
+            var index2 = 0;
+            for (final var pvArray1 : pvArray2) {
                 // horizontal or vertical list 
-                for (ParsedValue pvItem2 : pvArray1) {
+                for (final var pvItem2 : pvArray1) {
                     obj = pvItem2.getValue();
                     if (!(obj instanceof Size)) {
                         return null;
                     }
-                    Size size = (Size) obj;
+                    final var size = (Size) obj;
                     sbCornerRadii.append(size).append(" "); //NOI18N
                     if (initSize == null) {
                         initSize = size;
@@ -400,7 +396,7 @@ public class CssValueConverter {
         return removeDotZeroPxPercent(sbAll.toString());
     }
 
-    private static String retrieveValue(String property, Object eventValue) {
+    private static String retrieveValue(final String property, Object eventValue) {
         if (eventValue instanceof ParsedValue) {
             eventValue = convert((ParsedValue<?, ?>) eventValue);
         }
@@ -408,35 +404,35 @@ public class CssValueConverter {
         if (eventValue == null) {
             return "null"; //NOI18N
         }
-        StringBuilder builder = new StringBuilder();
+        final var builder = new StringBuilder();
         if (eventValue instanceof List) {
-            List<?> values = (List<?>) eventValue;
-            int length = values.size();
-            for (int i = 0; i < length; i++) {
-                String val = retrieveValue(property, values.get(i));
+            final var values = (List<?>) eventValue;
+            final var length = values.size();
+            for (var i = 0; i < length; i++) {
+                final var val = retrieveValue(property, values.get(i));
                 builder.append(val);
                 if ((i < length - 1) && val.length() > 0) {
                     builder.append(", "); //NOI18N
                 }
             }
         } else if (eventValue.getClass().isArray()) {
-            int length = Array.getLength(eventValue);
-            for (int i = 0; i < length; i++) {
-                String val = retrieveValue(property, Array.get(eventValue, i));
+            final var length = Array.getLength(eventValue);
+            for (var i = 0; i < length; i++) {
+                final var val = retrieveValue(property, Array.get(eventValue, i));
                 builder.append(val);
                 if ((i < length - 1) && val.length() > 0) {
                     builder.append(", "); //NOI18N
                 }
             }
         } else if (eventValue instanceof Background) {
-            Background background = (Background) eventValue;
+            final var background = (Background) eventValue;
             if (background.getFills() != null) {
                 return retrieveValue(property, background.getFills());
             } else if (background.getImages() != null) {
                 return retrieveValue(property, background.getImages());
             }
         } else if (eventValue instanceof Border) {
-            Border border = (Border) eventValue;
+            final var border = (Border) eventValue;
             if (border.getStrokes() != null) {
                 return retrieveValue(property, border.getStrokes());
             } else if (border.getImages() != null) {
@@ -461,7 +457,7 @@ public class CssValueConverter {
         } else if (eventValue instanceof Effect) {
             builder.append(effectValue((Effect) eventValue));
         } else {
-            String str = EditorUtils.valAsStr(eventValue);
+            var str = EditorUtils.valAsStr(eventValue);
             if (str == null) {
                 str = "null"; //NOI18N
             } else {
@@ -475,11 +471,11 @@ public class CssValueConverter {
         return builder.toString();
     }
 
-    private static String getColorAsWebString(Color c) {
-        int red = (int) Math.round(c.getRed() * 255.0);
-        int green = (int) Math.round(c.getGreen() * 255.0);
-        int blue = (int) Math.round(c.getBlue() * 255.0);
-        int alpha = (int) Math.round(c.getOpacity() * 255.0);
+    private static String getColorAsWebString(final Color c) {
+        final var red = (int) Math.round(c.getRed() * 255.0);
+        final var green = (int) Math.round(c.getGreen() * 255.0);
+        final var blue = (int) Math.round(c.getBlue() * 255.0);
+        final var alpha = (int) Math.round(c.getOpacity() * 255.0);
         if (alpha == 255) {
             return String.format("#%02x%02x%02x", red, green, blue); //NOI18N
         } else {
@@ -487,7 +483,7 @@ public class CssValueConverter {
         }
     }
 
-    private static String getColorAsString(Color color) {
+    private static String getColorAsString(final Color color) {
         if (isStandardColor(color)) {
             return getStandardColorAsString(color);
         } else {
@@ -495,22 +491,22 @@ public class CssValueConverter {
         }
     }
 
-    private static boolean isStandardColor(Color c) {
+    private static boolean isStandardColor(final Color c) {
         return standardColors.containsKey(c);
     }
     static Map<Color, String> standardColors = ColorEncoder.getStandardColorNames();
 
-    private static String getStandardColorAsString(Color c) {
+    private static String getStandardColorAsString(final Color c) {
         return standardColors.get(c);
     }
 
-    private static String backgroundFillToString(String property, BackgroundFill bf) {
+    private static String backgroundFillToString(final String property, final BackgroundFill bf) {
         if (property == null) {
             return bf.toString();
         }
-        StringBuilder builder = new StringBuilder();
+        final var builder = new StringBuilder();
         if (property.equals("-fx-background-color")) { //NOI18N
-            Paint p = bf.getFill();
+            final var p = bf.getFill();
             builder.append(paintToString(p));
         } else {
             if (property.equals("-fx-background-insets")) { //NOI18N
@@ -525,22 +521,22 @@ public class CssValueConverter {
         return builder.toString();
     }
 
-    private static String cornerRadiiToString(String property, CornerRadii cr) {
+    private static String cornerRadiiToString(final String property, final CornerRadii cr) {
         if (property == null) {
             return cr.toString();
         }
-        StringBuilder builder = new StringBuilder();
+        final var builder = new StringBuilder();
         handleCornerRadii(cr, builder);
         return builder.toString();
     }
 
-    private static String backgroundImageToString(String property, BackgroundImage bi) {
+    private static String backgroundImageToString(final String property, final BackgroundImage bi) {
         if (property == null) {
             return bi.toString();
         }
-        StringBuilder builder = new StringBuilder();
+        final var builder = new StringBuilder();
         if (property.equals("-fx-background-image")) { //NOI18N
-            Image p = bi.getImage();
+            final var p = bi.getImage();
             builder.append(p.getUrl());
         } else {
             if (property.equals("-fx-background-position")) {             //NOI18N
@@ -576,7 +572,7 @@ public class CssValueConverter {
                     }
                 } else {
                     if (property.equals("-fx-background-size")) { //NOI18N
-                        BackgroundSize bs = bi.getSize();
+                        final var bs = bi.getSize();
                         if (bs.isContain()) {
                             builder.append("contain"); //NOI18N
                         } else {
@@ -602,13 +598,13 @@ public class CssValueConverter {
         return builder.toString();
     }
 
-    private static String borderImageToString(String property, BorderImage bi) {
+    private static String borderImageToString(final String property, final BorderImage bi) {
         if (property == null) {
             return bi.toString();
         }
-        StringBuilder builder = new StringBuilder();
+        final var builder = new StringBuilder();
         if (property.equals("-fx-border-image")) { //NOI18N
-            Image p = bi.getImage();
+            final var p = bi.getImage();
             builder.append(p.getUrl());
         } else {
             if (property.equals("-fx-background-position")) {             //NOI18N
@@ -629,7 +625,7 @@ public class CssValueConverter {
                         builder.append(insetsValue(bi.getInsets()));
                     } else {
                         if (property.equals("-fx-border-image-width")) { //NOI18N
-                            BorderWidths bw = bi.getWidths();
+                            final var bw = bi.getWidths();
                             if (MathUtils.equals(bw.getTop(), bw.getBottom())
                                     && MathUtils.equals(bw.getLeft(), bw.getRight())) {
                                 builder.append(EditorUtils.valAsStr(bw.getTop()));
@@ -641,7 +637,7 @@ public class CssValueConverter {
                             }
                         } else {
                             if (property.equals("-fx-border-image-slice")) { //NOI18N
-                                BorderWidths bw = bi.getSlices();
+                                final var bw = bi.getSlices();
                                 if (MathUtils.equals(bw.getTop(), bw.getBottom())
                                         && MathUtils.equals(bw.getLeft(), bw.getRight())) {
                                     builder.append(EditorUtils.valAsStr(bw.getTop()));
@@ -660,11 +656,11 @@ public class CssValueConverter {
         return builder.toString();
     }
 
-    private static String borderStrokeToString(String property, BorderStroke bs) {
+    private static String borderStrokeToString(final String property, final BorderStroke bs) {
         if (property == null) {
             return bs.toString();
         }
-        StringBuilder builder = new StringBuilder();
+        final var builder = new StringBuilder();
         //top, right, bottom, and left 
         if (property.equals("-fx-border-color")) { //NOI18N
             if (bs.getTopStroke().equals(bs.getBottomStroke())
@@ -692,7 +688,7 @@ public class CssValueConverter {
                         builder.append(bs.getLeftStyle().toString());
                     } else {
                         if (property.equals("-fx-border-width")) { //NOI18N
-                            BorderWidths bw = bs.getWidths();
+                            final var bw = bs.getWidths();
                             if (MathUtils.equals(bw.getTop(), bw.getBottom())
                                     && MathUtils.equals(bw.getRight(), bw.getBottom())
                                     && MathUtils.equals(bw.getLeft(), bw.getBottom())) {
@@ -711,11 +707,11 @@ public class CssValueConverter {
         return builder.toString();
     }
 
-    private static String paintToString(Paint p) {
+    private static String paintToString(final Paint p) {
         if (p instanceof Color) {
             return getColorAsString((Color) p).toLowerCase(Locale.ROOT);
         } else {
-            String gradient = p.toString();
+            var gradient = p.toString();
             // Workaround for RT-22910
             gradient = gradient.replaceAll("0x", "#");//NOI18N
             gradient = removeDotZeroPxPercent(gradient);
@@ -723,21 +719,21 @@ public class CssValueConverter {
         }
     }
 
-    private static String fontToString(String property, Font font) {
+    private static String fontToString(final String property, final Font font) {
         if (property == null) {
             return removeAllDotZero(font.toString());
         }
-        StringBuilder builder = new StringBuilder();
+        final var builder = new StringBuilder();
         if (property.equals("-fx-font")) { //NOI18N
-            String size = EditorUtils.valAsStr(font.getSize()); //NOI18N
-            String previewStr = font.getFamily() + " " + size + "px" //NOI18N
-                    + (!font.getName().equals(font.getFamily())
+            final var size = EditorUtils.valAsStr(font.getSize()); //NOI18N
+            final var previewStr = font.getFamily() + " " + size + "px" //NOI18N
+                                   + (!font.getName().equals(font.getFamily())
                     && !"Regular".equals(font.getStyle()) //NOI18N
                     ? " (" + font.getStyle() + ")" : ""); //NOI18N
             builder.append(previewStr);
         } else {
             if (property.equals("-fx-font-size")) { //NOI18N
-                double p = font.getSize();
+                final var p = font.getSize();
                 builder.append(EditorUtils.valAsStr(p)).append("px"); //NOI18N
 
             } else {
@@ -758,7 +754,7 @@ public class CssValueConverter {
         return builder.toString();
     }
 
-    private static String insetsValue(Insets insets) {
+    private static String insetsValue(final Insets insets) {
         if (MathUtils.equals(insets.getBottom(), insets.getLeft())
                 && MathUtils.equals(insets.getRight(), insets.getLeft())
                 && MathUtils.equals(insets.getTop(), insets.getLeft())) {
@@ -769,9 +765,9 @@ public class CssValueConverter {
         }
     }
 
-    private static String effectValue(Effect effect) {
-        StringBuilder strBuild = new StringBuilder();
-        Effect adding = effect;
+    private static String effectValue(final Effect effect) {
+        final var strBuild = new StringBuilder();
+        var adding = effect;
         while (adding != null) {
             strBuild.append(adding.getClass().getSimpleName());
             adding = getEffectInput(adding);
@@ -782,7 +778,7 @@ public class CssValueConverter {
         return strBuild.toString();
     }
 
-    private static Object subBackgroundFill(String property, BackgroundFill bf) {
+    private static Object subBackgroundFill(final String property, final BackgroundFill bf) {
         if (property == null) {
             return bf;
         }
@@ -797,7 +793,7 @@ public class CssValueConverter {
         }
     }
 
-    private static Object subBackgroundImage(String property, BackgroundImage bi) {
+    private static Object subBackgroundImage(final String property, final BackgroundImage bi) {
         if (property == null) {
             return bi;
         }
@@ -808,7 +804,7 @@ public class CssValueConverter {
         }
     }
 
-    private static Object subBorderImage(String property, BorderImage bi) {
+    private static Object subBorderImage(final String property, final BorderImage bi) {
         if (property == null) {
             return bi;
         }
@@ -819,7 +815,7 @@ public class CssValueConverter {
         }
     }
 
-    private static Object subBorderStroke(String property, BorderStroke bs) {
+    private static Object subBorderStroke(final String property, final BorderStroke bs) {
         if (property == null) {
             return bs;
         }
@@ -830,7 +826,7 @@ public class CssValueConverter {
                     && bs.getLeftStroke().equals(bs.getBottomStroke())) {
                 return bs.getBottomStroke();
             } else {
-                Paint[] p = new Paint[4];
+                final var p = new Paint[4];
                 p[0] = bs.getTopStroke();
                 p[1] = bs.getRightStroke();
                 p[2] = bs.getBottomStroke();
@@ -846,7 +842,7 @@ public class CssValueConverter {
         }
     }
 
-    private static Object subFont(String property, Font font) {
+    private static Object subFont(final String property, final Font font) {
         if (property == null) {
             return font;
         }
@@ -884,18 +880,18 @@ public class CssValueConverter {
         return str;
     }
 
-    private static void handleCornerRadii(CornerRadii cr, StringBuilder builder) {
+    private static void handleCornerRadii(final CornerRadii cr, final StringBuilder builder) {
         // Each radius has a vertical and horizontal radius
         // See  http://www.w3.org/TR/css3-background/#the-border-radius 
 
-        double topLeftH = cr.getTopLeftHorizontalRadius();
-        double topLeftV = cr.getTopLeftVerticalRadius();
-        double topRightH = cr.getTopRightHorizontalRadius();
-        double topRightV = cr.getTopRightVerticalRadius();
-        double bottomLeftH = cr.getBottomLeftHorizontalRadius();
-        double bottomLeftV = cr.getBottomLeftVerticalRadius();
-        double bottomRightH = cr.getBottomRightHorizontalRadius();
-        double bottomRightV = cr.getBottomRightVerticalRadius();
+        final var topLeftH = cr.getTopLeftHorizontalRadius();
+        final var topLeftV = cr.getTopLeftVerticalRadius();
+        final var topRightH = cr.getTopRightHorizontalRadius();
+        final var topRightV = cr.getTopRightVerticalRadius();
+        final var bottomLeftH = cr.getBottomLeftHorizontalRadius();
+        final var bottomLeftV = cr.getBottomLeftVerticalRadius();
+        final var bottomRightH = cr.getBottomRightHorizontalRadius();
+        final var bottomRightV = cr.getBottomRightVerticalRadius();
 
         if (MathUtils.equals(topLeftH, topLeftV) && MathUtils.equals(topRightH, topRightV)
                 && MathUtils.equals(bottomLeftH, bottomLeftV) && MathUtils.equals(bottomRightH, bottomRightV)) {
@@ -927,16 +923,16 @@ public class CssValueConverter {
     }
 
 //    @SuppressWarnings({"BroadCatchBlock", "TooBroadCatch"}) //NOI18N
-    private static Effect getEffectInput(Effect effect) {
+    private static Effect getEffectInput(final Effect effect) {
         Effect found = null;
         try {
             found = (Effect) effect.getClass().getMethod("getInput").invoke(effect); //NOI18N
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             // DO NOT use multi-catch syntax here, this generates a FindBugs Warning (because of SecurityException catching)
 //                e.printStackTrace();
             try {
                 found = (Effect) effect.getClass().getMethod("getContentInput").invoke(effect); //NOI18N
-            } catch (Throwable ee) {
+            } catch (final Throwable ee) {
                 // DO NOT use multi-catch syntax here, this generates a FindBugs Warning (because of SecurityException catching)
 //                    ee.printStackTrace();
             }

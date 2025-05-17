@@ -52,7 +52,7 @@ public class JobManager {
     private boolean lock;
     
     
-    JobManager(EditorController editorController, int undoStackMaxSize) {
+    JobManager(final EditorController editorController, final int undoStackMaxSize) {
         assert editorController != null;
         assert undoStackMaxSize >= 1;
         this.editorController = editorController;
@@ -68,7 +68,7 @@ public class JobManager {
         return Collections.unmodifiableList(redoStack);
     }
     
-    public void push(Job job) {
+    public void push(final Job job) {
         assert job != null;
         assert job.getEditorController() == editorController;
         assert job.isExecutable();
@@ -80,9 +80,9 @@ public class JobManager {
         
         final Job fixJob = new UpdateReferencesJob(job);
         executeJob(fixJob);
-        undoStack.add(0, fixJob);
+        undoStack.addFirst(fixJob);
         if (undoStack.size() > undoStackMaxSize) {
-            undoStack.remove(undoStack.size()-1);
+            undoStack.removeLast();
         }
         redoStack.clear();
         incrementRevision();
@@ -101,13 +101,13 @@ public class JobManager {
     }
     
     public boolean canUndo() {
-        return undoStack.isEmpty() == false;
+        return !undoStack.isEmpty();
     }
     
     public String getUndoDescription() {
         final String result;
         if (canUndo()) {
-            result = undoStack.get(0).getDescription();
+            result = undoStack.getFirst().getDescription();
         } else {
             result = null;
         }
@@ -122,21 +122,21 @@ public class JobManager {
             throw new IllegalStateException("Undoing jobs from another job or a job manager listener is forbidden"); //NOI18N
         }
         
-        final Job job = undoStack.get(0);
+        final var job = undoStack.getFirst();
         undoJob(job);
-        undoStack.remove(0);
-        redoStack.add(0, job);
+        undoStack.removeFirst();
+        redoStack.addFirst(job);
         incrementRevision();
     }
     
     public boolean canRedo() {
-        return redoStack.isEmpty() == false;
+        return !redoStack.isEmpty();
     }
     
     public String getRedoDescription() {
         final String result;
         if (canRedo()) {
-            result = redoStack.get(0).getDescription();
+            result = redoStack.getFirst().getDescription();
         } else {
             result = null;
         }
@@ -151,10 +151,10 @@ public class JobManager {
             throw new IllegalStateException("Redoing jobs from another job or a job manager listener is forbidden"); //NOI18N
         }
         
-        final Job job = redoStack.get(0);
+        final var job = redoStack.getFirst();
         redoJob(job);
-        redoStack.remove(0);
-        undoStack.add(0, job);
+        redoStack.removeFirst();
+        undoStack.addFirst(job);
         incrementRevision();
     }
     
@@ -176,7 +176,7 @@ public class JobManager {
      */
     public Job getCurrentJob() {
         if (undoStack.size() > 0) {
-            return undoStack.get(0);
+            return undoStack.getFirst();
         } else {
             return null;
         }
@@ -187,7 +187,7 @@ public class JobManager {
      * Private
      */
     
-    private void executeJob(Job job) {
+    private void executeJob(final Job job) {
         lock = true;
         try {
             job.execute();
@@ -197,7 +197,7 @@ public class JobManager {
     }
     
     
-    private void undoJob(Job job) {
+    private void undoJob(final Job job) {
         lock = true;
         try {
             job.undo();
@@ -207,7 +207,7 @@ public class JobManager {
     }
     
     
-    private void redoJob(Job job) {
+    private void redoJob(final Job job) {
         lock = true;
         try {
             job.redo();

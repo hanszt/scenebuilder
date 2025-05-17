@@ -33,11 +33,8 @@
 package com.oracle.javafx.scenebuilder.kit.fxom;
 
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument.FXOMDocumentSwitch;
-import com.oracle.javafx.scenebuilder.kit.fxom.glue.GlueDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.glue.GlueInstruction;
 import com.oracle.javafx.scenebuilder.kit.metadata.Metadata;
-import com.oracle.javafx.scenebuilder.kit.metadata.klass.ComponentClassMetadata;
-import com.oracle.javafx.scenebuilder.kit.metadata.property.PropertyMetadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.property.value.DoublePropertyMetadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.property.value.ImagePropertyMetadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignImage;
@@ -83,7 +80,7 @@ public class FXOMNodes {
      * @param objects a set of fxom objects (never null but possibly empty)
      * @return the list of objets sorted by position in the fxom document
      */
-    public static List<FXOMObject> sort(Set<FXOMObject> objects) {
+    public static List<FXOMObject> sort(final Set<FXOMObject> objects) {
         final List<FXOMObject> result;
         
         assert objects != null;
@@ -93,8 +90,8 @@ public class FXOMNodes {
         } else if (objects.size() == 1) {
             result = Collections.singletonList(objects.iterator().next());
         } else {
-            final FXOMObject object0 = objects.iterator().next();
-            final FXOMDocument fxomDocument = object0.getFxomDocument();
+            final var object0 = objects.iterator().next();
+            final var fxomDocument = object0.getFxomDocument();
             assert fxomDocument != null;
             result = new ArrayList<>();
             sort(fxomDocument.getFxomRoot(), objects, result);
@@ -112,12 +109,12 @@ public class FXOMNodes {
      * @param objects a set of fxom objects (never null)
      * @return the flat set of objects.
      */
-    public static Set<FXOMObject> flatten(Set<FXOMObject> objects) {
+    public static Set<FXOMObject> flatten(final Set<FXOMObject> objects) {
         final Set<FXOMObject> result = new HashSet<>();
         
         assert objects != null;
         
-        for (FXOMObject o : objects) {
+        for (final var o : objects) {
             if (lookupAncestor(o, objects) == null) {
                 result.add(o);
             }
@@ -133,13 +130,13 @@ public class FXOMNodes {
      * @param candidates a set of fxom object (not null and not empty)
      * @return null or the first ancestor of "obj" which belongs to "candidates".
      */
-    public static FXOMObject lookupAncestor(FXOMObject obj, Set<FXOMObject> candidates) {
+    public static FXOMObject lookupAncestor(final FXOMObject obj, final Set<FXOMObject> candidates) {
         assert obj != null;
         assert candidates != null;
-        assert candidates.isEmpty() == false;
-        
-        FXOMObject result = obj.getParentObject();
-        while ((result != null) && (candidates.contains(result) == false)) {
+        assert !candidates.isEmpty();
+
+        var result = obj.getParentObject();
+        while ((result != null) && (!candidates.contains(result))) {
             result = result.getParentObject();
         }
         
@@ -148,15 +145,15 @@ public class FXOMNodes {
     
     
     
-    public static FXOMObject newObject(FXOMDocument targetDocument, File file)
+    public static FXOMObject newObject(final FXOMDocument targetDocument, final File file)
             throws IOException {
         assert targetDocument != null;
         assert file != null;
         FXOMObject result = null;
         if (file.getAbsolutePath().endsWith(".fxml")) { //NOI18N
-            final String fxmlText
+            final var fxmlText
                     = FXOMDocument.readContentFromURL(file.toURI().toURL());
-            final FXOMDocument transientDoc = new FXOMDocument(
+            final var transientDoc = new FXOMDocument(
                     fxmlText,
                     targetDocument.getLocation(),
                     targetDocument.getClassLoader(),
@@ -168,10 +165,10 @@ public class FXOMNodes {
             }
         } else {
             // Try load the file as an image
-            final String fileURL = file.toURI().toURL().toString();
-            final Image image = new Image(fileURL);
-            if (image.isError() == false) {
-                final FXOMDocument transientDoc
+            final var fileURL = file.toURI().toURL().toString();
+            final var image = new Image(fileURL);
+            if (!image.isError()) {
+                final var transientDoc
                         = makeFxomDocumentFromImageURL(image, 200.0);
                 result = transientDoc.getFxomRoot();
                 if (result != null) {
@@ -179,9 +176,9 @@ public class FXOMNodes {
                 }
             } else {
                 try {
-                    final Media media = new Media(fileURL);
+                    final var media = new Media(fileURL);
                     if (media.getError() == null) {
-                        final FXOMDocument transientDoc
+                        final var transientDoc
                                 = makeFxomDocumentFromMedia(media, 200.0);
                         result = transientDoc.getFxomRoot();
                         if (result != null) {
@@ -190,7 +187,7 @@ public class FXOMNodes {
                     } else {
                         throw new IOException(media.getError());
                     }
-                } catch(MediaException x) {
+                } catch(final MediaException x) {
                     throw new IOException(x);
                 }
             }
@@ -199,27 +196,27 @@ public class FXOMNodes {
         return result;
     }
     
-    public static FXOMIntrinsic newInclude(FXOMDocument targetDocument, File file)
+    public static FXOMIntrinsic newInclude(final FXOMDocument targetDocument, final File file)
             throws IOException {
         assert targetDocument != null;
         assert targetDocument.getLocation() != null;
         assert file != null;
         FXOMIntrinsic result = null;
         if (file.getAbsolutePath().endsWith(".fxml")) { //NOI18N
-            final URL fxmlURL = file.toURI().toURL();
-            final String fxmlText = FXOMDocument.readContentFromURL(fxmlURL);
-            final FXOMDocument transientDoc = new FXOMDocument(
+            final var fxmlURL = file.toURI().toURL();
+            final var fxmlText = FXOMDocument.readContentFromURL(fxmlURL);
+            final var transientDoc = new FXOMDocument(
                     fxmlText,
                     fxmlURL,
                     targetDocument.getClassLoader(),
                     targetDocument.getResources(),
                     FXOMDocumentSwitch.NORMALIZED);
             if (transientDoc.getFxomRoot() != null) {
-                final PrefixedValue pv 
+                final var pv
                         = PrefixedValue.makePrefixedValue(fxmlURL, targetDocument.getLocation());
                 assert pv.isDocumentRelativePath();
                 assert pv.toString().startsWith(FXMLLoader.RELATIVE_PATH_PREFIX);
-                final String includeRef
+                final var includeRef
                         = pv.toString().substring(FXMLLoader.RELATIVE_PATH_PREFIX.length());
                 result = new FXOMIntrinsic(targetDocument, FXOMIntrinsic.Type.FX_INCLUDE, includeRef);
                 result.setSourceSceneGraphObject(transientDoc.getFxomRoot().getSceneGraphObject());
@@ -229,27 +226,27 @@ public class FXOMNodes {
         return result;
     }
     
-    public static FXOMDocument newDocument(FXOMObject source) {
+    public static FXOMDocument newDocument(final FXOMObject source) {
         assert source != null;
         
-        final FXOMDocument result = new FXOMDocument();
+        final var result = new FXOMDocument();
         
         /*
          * If source's document contains unresolved objects,
          * then clones import instructions from the source document
          * to the new document.
          */
-        final FXOMDocument sourceDocument 
+        final var sourceDocument
                 = source.getFxomDocument();
         assert sourceDocument.getFxomRoot() != null; // contains at least source
-        final List<FXOMObject> unresolvedObjects 
+        final var unresolvedObjects
                 = collectUnresolvedObjects(sourceDocument.getFxomRoot());
-        if (unresolvedObjects.isEmpty() == false) {
+        if (!unresolvedObjects.isEmpty()) {
             // Copy all the imports from the source document to the new document
-            final GlueDocument sourceGlue = sourceDocument.getGlue();
-            final GlueDocument resultGlue = result.getGlue();
-            for (GlueInstruction i : sourceGlue.collectInstructions("import")) {
-                final GlueInstruction ci = new GlueInstruction(resultGlue, i.getTarget(), i.getData());
+            final var sourceGlue = sourceDocument.getGlue();
+            final var resultGlue = result.getGlue();
+            for (final var i : sourceGlue.collectInstructions("import")) {
+                final var ci = new GlueInstruction(resultGlue, i.getTarget(), i.getData());
                 resultGlue.getHeader().add(ci);
             }
         }
@@ -257,8 +254,8 @@ public class FXOMNodes {
         /*
          * Clones source to the new document
          */
-        final FXOMCloner cloner = new FXOMCloner(result);
-        final FXOMObject sourceClone = cloner.clone(source);
+        final var cloner = new FXOMCloner(result);
+        final var sourceClone = cloner.clone(source);
         
         /*
          * Setup new document : sourceClone is the root, 
@@ -277,33 +274,33 @@ public class FXOMNodes {
     }
 
 
-    public static void updateProperty(FXOMInstance fxomInstance, FXOMProperty sourceProperty) {
+    public static void updateProperty(final FXOMInstance fxomInstance, final FXOMProperty sourceProperty) {
         assert fxomInstance != null;
         assert sourceProperty != null;
         assert sourceProperty.getFxomDocument() == fxomInstance.getFxomDocument();
         
-        final FXOMProperty currentProperty = fxomInstance.getProperties().get(sourceProperty.getName());
+        final var currentProperty = fxomInstance.getProperties().get(sourceProperty.getName());
         if (currentProperty == null) {
             sourceProperty.addToParentInstance(-1, fxomInstance);
         } else if ((currentProperty instanceof FXOMPropertyT)
                 && (sourceProperty instanceof FXOMPropertyT)) {
-            final FXOMPropertyT currentPropertyT = (FXOMPropertyT) currentProperty;
-            final FXOMPropertyT newPropertyT = (FXOMPropertyT) sourceProperty;
+            final var currentPropertyT = (FXOMPropertyT) currentProperty;
+            final var newPropertyT = (FXOMPropertyT) sourceProperty;
             updateProperty(currentPropertyT, newPropertyT);
         } else if ((currentProperty instanceof FXOMPropertyC)
                 && (sourceProperty instanceof FXOMPropertyC)) {
-            final FXOMPropertyC currentPropertyC = (FXOMPropertyC) currentProperty;
-            final FXOMPropertyC newPropertyC = (FXOMPropertyC) sourceProperty;
+            final var currentPropertyC = (FXOMPropertyC) currentProperty;
+            final var newPropertyC = (FXOMPropertyC) sourceProperty;
             updateProperty(currentPropertyC, newPropertyC);
         } else {
-            final int index = currentProperty.getIndexInParentInstance();
+            final var index = currentProperty.getIndexInParentInstance();
             currentProperty.removeFromParentInstance();
             sourceProperty.addToParentInstance(index, fxomInstance);
         }
     }
     
     
-    public static void updateProperty(FXOMPropertyT fxomProperty, FXOMPropertyT sourceProperty) {
+    public static void updateProperty(final FXOMPropertyT fxomProperty, final FXOMPropertyT sourceProperty) {
         assert fxomProperty != null;
         assert sourceProperty != null;
         assert fxomProperty.getName().equals(sourceProperty.getName());
@@ -311,7 +308,7 @@ public class FXOMNodes {
     }
     
     
-    public static void updateProperty(FXOMPropertyC fxomProperty, FXOMPropertyC sourceProperty) {
+    public static void updateProperty(final FXOMPropertyC fxomProperty, final FXOMPropertyC sourceProperty) {
         assert fxomProperty != null;
         assert sourceProperty != null;
         assert fxomProperty.getName().equals(sourceProperty.getName());
@@ -321,18 +318,18 @@ public class FXOMNodes {
         final List<FXOMObject> sourceValues = new ArrayList<>();
         sourceValues.addAll(sourceProperty.getValues());
         
-        final int currentCount = currentValues.size();
-        final int newCount = sourceValues.size();
-        final int updateCount = Math.min(currentCount, newCount);
+        final var currentCount = currentValues.size();
+        final var newCount = sourceValues.size();
+        final var updateCount = Math.min(currentCount, newCount);
         
         // Update items
-        for (int i = 0; i < updateCount; i++) {
-            final FXOMObject currentValue = currentValues.get(i);
-            final FXOMObject newValue = sourceValues.get(i);
+        for (var i = 0; i < updateCount; i++) {
+            final var currentValue = currentValues.get(i);
+            final var newValue = sourceValues.get(i);
             if ((currentValue instanceof FXOMInstance) &&
                     (newValue instanceof FXOMInstance)) {
-                final FXOMInstance currentInstance = (FXOMInstance) currentValue;
-                final FXOMInstance newInstance = (FXOMInstance) newValue;
+                final var currentInstance = (FXOMInstance) currentValue;
+                final var newInstance = (FXOMInstance) newValue;
                 if (currentInstance.getDeclaredClass() == newInstance.getDeclaredClass()) {
                     updateInstance(currentInstance, newInstance);
                 } else {
@@ -340,13 +337,13 @@ public class FXOMNodes {
                 }
             } else if ((currentValue instanceof FXOMCollection) &&
                     (newValue instanceof FXOMCollection)) {
-                final FXOMCollection currentCollection = (FXOMCollection) currentValue;
-                final FXOMCollection newCollection = (FXOMCollection) newValue;
+                final var currentCollection = (FXOMCollection) currentValue;
+                final var newCollection = (FXOMCollection) newValue;
                 updateCollection(currentCollection, newCollection);
             } else if ((currentValue instanceof FXOMIntrinsic) &&
                     (newValue instanceof FXOMIntrinsic)) {
-                final FXOMIntrinsic currentIntrinsic = (FXOMIntrinsic) currentValue;
-                final FXOMIntrinsic newIntrinsic = (FXOMIntrinsic) newValue;
+                final var currentIntrinsic = (FXOMIntrinsic) currentValue;
+                final var newIntrinsic = (FXOMIntrinsic) newValue;
                 updateIntrinsic(currentIntrinsic, newIntrinsic);
             } else {
                 replacePropertyValue(currentValue, newValue);
@@ -355,21 +352,21 @@ public class FXOMNodes {
         
         if (currentCount < newCount) {
             // Add new items
-            for (int i = currentCount; i < newCount; i++) {
-                final FXOMObject newValue = sourceValues.get(i);
+            for (var i = currentCount; i < newCount; i++) {
+                final var newValue = sourceValues.get(i);
                 newValue.addToParentProperty(-1, fxomProperty);
             }
         } else {
             // Delete old items
-            for (int i = newCount; i < currentCount; i++) {
-                final FXOMObject currentValue = currentValues.get(i);
+            for (var i = newCount; i < currentCount; i++) {
+                final var currentValue = currentValues.get(i);
                 currentValue.removeFromParentProperty();
             }
         }
     }
     
     
-    public static void updateInstance(FXOMInstance fxomInstance, FXOMInstance sourceInstance) {
+    public static void updateInstance(final FXOMInstance fxomInstance, final FXOMInstance sourceInstance) {
         assert fxomInstance != null;
         assert sourceInstance != null;
         assert fxomInstance.getFxomDocument() == sourceInstance.getFxomDocument();
@@ -383,12 +380,12 @@ public class FXOMNodes {
 
         // Update properties
         final Set<FXOMProperty> sourceProperties = new HashSet<>(sourceInstance.getProperties().values());
-        for (FXOMProperty sourceProperty : sourceProperties) {
+        for (final var sourceProperty : sourceProperties) {
             updateProperty(fxomInstance, sourceProperty);
         }
         // Remove obsolete properties
-        for (PropertyName pn : obsoleteNames) {
-            final FXOMProperty fxomProperty = fxomInstance.getProperties().get(pn);
+        for (final var pn : obsoleteNames) {
+            final var fxomProperty = fxomInstance.getProperties().get(pn);
             assert fxomProperty != null;
             assert fxomProperty.getParentInstance() == fxomInstance;
             fxomProperty.removeFromParentInstance();
@@ -400,36 +397,36 @@ public class FXOMNodes {
     }
     
     
-    public static void updateCollection(FXOMCollection fxomCollection, FXOMCollection sourceCollection) {
+    public static void updateCollection(final FXOMCollection fxomCollection, final FXOMCollection sourceCollection) {
         assert fxomCollection != null;
         assert sourceCollection != null;
         assert fxomCollection.getFxomDocument() == sourceCollection.getFxomDocument();
         
-        final int currentCount = fxomCollection.getItems().size();
-        final int sourceCount = sourceCollection.getItems().size();
-        final int updateCount = Math.min(currentCount, sourceCount);
+        final var currentCount = fxomCollection.getItems().size();
+        final var sourceCount = sourceCollection.getItems().size();
+        final var updateCount = Math.min(currentCount, sourceCount);
         
         // Update items
-        for (int i = 0; i < updateCount; i++) {
-            final FXOMObject currentValue = fxomCollection.getItems().get(i);
-            final FXOMObject newValue = sourceCollection.getItems().get(i);
+        for (var i = 0; i < updateCount; i++) {
+            final var currentValue = fxomCollection.getItems().get(i);
+            final var newValue = sourceCollection.getItems().get(i);
             if ((currentValue instanceof FXOMInstance) &&
                     (newValue instanceof FXOMInstance)) {
-                final FXOMInstance currentInstance = (FXOMInstance) currentValue;
-                final FXOMInstance newInstance = (FXOMInstance) newValue;
+                final var currentInstance = (FXOMInstance) currentValue;
+                final var newInstance = (FXOMInstance) newValue;
                 updateInstance(currentInstance, newInstance);
             } else if ((currentValue instanceof FXOMCollection) &&
                     (newValue instanceof FXOMCollection)) {
-                final FXOMCollection currentCollection = (FXOMCollection) currentValue;
-                final FXOMCollection newCollection = (FXOMCollection) newValue;
+                final var currentCollection = (FXOMCollection) currentValue;
+                final var newCollection = (FXOMCollection) newValue;
                 updateCollection(currentCollection, newCollection);
             } else if ((currentValue instanceof FXOMIntrinsic) &&
                     (newValue instanceof FXOMIntrinsic)) {
-                final FXOMIntrinsic currentIntrinsic = (FXOMIntrinsic) currentValue;
-                final FXOMIntrinsic newIntrinsic = (FXOMIntrinsic) newValue;
+                final var currentIntrinsic = (FXOMIntrinsic) currentValue;
+                final var newIntrinsic = (FXOMIntrinsic) newValue;
                 updateIntrinsic(currentIntrinsic, newIntrinsic);
             } else {
-                final int index = currentValue.getIndexInParentProperty();
+                final var index = currentValue.getIndexInParentProperty();
                 assert index != -1;
                 currentValue.removeFromParentCollection();
                 newValue.addToParentCollection(index, fxomCollection);
@@ -438,16 +435,16 @@ public class FXOMNodes {
         
         if (currentCount < sourceCount) {
             // Add new items
-            final int addCount = sourceCount - currentCount;
-            for (int i = 0; i < addCount; i++) {
-                final FXOMObject newValue = sourceCollection.getItems().get(i);
+            final var addCount = sourceCount - currentCount;
+            for (var i = 0; i < addCount; i++) {
+                final var newValue = sourceCollection.getItems().get(i);
                 newValue.addToParentCollection(-1, fxomCollection);
             }
         } else {
             // Delete old items
-            final int removeCount = currentCount - sourceCount;
-            for (int i = 0; i < removeCount; i++) {
-                final FXOMObject currentValue = fxomCollection.getItems().get(sourceCount);
+            final var removeCount = currentCount - sourceCount;
+            for (var i = 0; i < removeCount; i++) {
+                final var currentValue = fxomCollection.getItems().get(sourceCount);
                 currentValue.removeFromParentProperty();
             }
         }
@@ -458,7 +455,7 @@ public class FXOMNodes {
     }
     
     
-    public static void updateIntrinsic(FXOMIntrinsic fxomIntrinsic, FXOMIntrinsic sourceIntrinsic) {
+    public static void updateIntrinsic(final FXOMIntrinsic fxomIntrinsic, final FXOMIntrinsic sourceIntrinsic) {
         assert fxomIntrinsic != null;
         assert sourceIntrinsic != null;
         assert fxomIntrinsic.getFxomDocument() != sourceIntrinsic.getFxomDocument();
@@ -471,21 +468,21 @@ public class FXOMNodes {
     }
     
     
-    public static List<FXOMPropertyT> collectReferenceExpression(FXOMObject fxomRoot, String fxId) {
+    public static List<FXOMPropertyT> collectReferenceExpression(final FXOMObject fxomRoot, final String fxId) {
         assert fxomRoot != null;
         assert fxId != null;
         
         final List<FXOMPropertyT> result = new ArrayList<>();
         
-        for (FXOMPropertyT p : fxomRoot.collectPropertiesT()) {
-            final PrefixedValue pv = new PrefixedValue(p.getValue());
+        for (final var p : fxomRoot.collectPropertiesT()) {
+            final var pv = new PrefixedValue(p.getValue());
             if (pv.isExpression()) {
                 /*
                  * p is an FXOMPropertyT like this:
                  * 
                  * <.... property="$id" .... />
                  */
-                final String id = pv.getSuffix();
+                final var id = pv.getSuffix();
                 if (id.equals(fxId)) {
                     result.add(p);
                 }
@@ -496,10 +493,10 @@ public class FXOMNodes {
     }
     
     
-    public static List<FXOMObject> collectUnresolvedObjects(FXOMObject fxomObject) {
+    public static List<FXOMObject> collectUnresolvedObjects(final FXOMObject fxomObject) {
         final List<FXOMObject> result = new ArrayList<>();
         
-        for (FXOMObject o : serializeObjects(fxomObject)) {
+        for (final var o : serializeObjects(fxomObject)) {
             if (o.getSceneGraphObject() == null) {
                 result.add(o);
             }
@@ -509,21 +506,21 @@ public class FXOMNodes {
     }
     
     
-    public static List<FXOMObject> serializeObjects(FXOMObject fxomObject) {
+    public static List<FXOMObject> serializeObjects(final FXOMObject fxomObject) {
         final List<FXOMObject> result = new ArrayList<>();
         
         serializeObjects(fxomObject, result);
-        assert result.isEmpty() == false;
-        assert result.get(0) == fxomObject;
+        assert !result.isEmpty();
+        assert result.getFirst() == fxomObject;
         
         return result;
     }
    
-    public static void removeToggleGroups(Map<String, FXOMObject> fxIdMap) {
+    public static void removeToggleGroups(final Map<String, FXOMObject> fxIdMap) {
         assert fxIdMap != null;
         
-        for (String fxId : new HashSet<>(fxIdMap.keySet())) {
-            final FXOMObject fxomObject = fxIdMap.get(fxId);
+        for (final var fxId : new HashSet<>(fxIdMap.keySet())) {
+            final var fxomObject = fxIdMap.get(fxId);
             if (fxomObject.getSceneGraphObject() instanceof ToggleGroup) {
                 fxIdMap.remove(fxId);
             }
@@ -531,11 +528,11 @@ public class FXOMNodes {
     }
     
     
-    public static String extractReferenceSource(FXOMNode node) {
+    public static String extractReferenceSource(final FXOMNode node) {
         final String result;
         
         if (node instanceof FXOMIntrinsic) {
-            final FXOMIntrinsic intrinsic = (FXOMIntrinsic) node;
+            final var intrinsic = (FXOMIntrinsic) node;
             switch(intrinsic.getType()) {
                 case FX_REFERENCE:
                 case FX_COPY:
@@ -545,8 +542,8 @@ public class FXOMNodes {
                     result = null;
             }
         } else if (node instanceof FXOMPropertyT) {
-            final FXOMPropertyT property = (FXOMPropertyT) node;
-            final PrefixedValue pv = new PrefixedValue(property.getValue());
+            final var property = (FXOMPropertyT) node;
+            final var pv = new PrefixedValue(property.getValue());
             if (pv.isExpression() && JavaLanguage.isIdentifier(pv.getSuffix())) {
                 result = pv.getSuffix();
             } else {
@@ -562,14 +559,14 @@ public class FXOMNodes {
     
     private static final PropertyName toggleGroupName = new PropertyName("toggleGroup");
     
-    public static boolean isToggleGroupReference(FXOMNode node) {
+    public static boolean isToggleGroupReference(final FXOMNode node) {
         final boolean result;
         
         if (extractReferenceSource(node) == null) {
             result = false;
         } else {
             if (node instanceof FXOMIntrinsic) {
-                final FXOMIntrinsic intrinsic = (FXOMIntrinsic) node;
+                final var intrinsic = (FXOMIntrinsic) node;
                 final FXOMProperty parentProperty = intrinsic.getParentProperty();
                 if (parentProperty == null) {
                     result = false;
@@ -577,7 +574,7 @@ public class FXOMNodes {
                     result = parentProperty.getName().equals(toggleGroupName);
                 }
             } else if (node instanceof FXOMPropertyT) {
-                final FXOMPropertyT property = (FXOMPropertyT) node;
+                final var property = (FXOMPropertyT) node;
                 result = property.getName().equals(toggleGroupName);
             } else {
                 result = false;
@@ -588,23 +585,23 @@ public class FXOMNodes {
     }
     
     
-    public static FXOMPropertyC makeToggleGroup(FXOMDocument fxomDocument, String fxId) {
-        final FXOMInstance toggleGroup = new FXOMInstance(fxomDocument, ToggleGroup.class);
+    public static FXOMPropertyC makeToggleGroup(final FXOMDocument fxomDocument, final String fxId) {
+        final var toggleGroup = new FXOMInstance(fxomDocument, ToggleGroup.class);
         toggleGroup.setFxId(fxId);
         return new FXOMPropertyC(fxomDocument, toggleGroupName, toggleGroup);
     }
     
     
-    public static boolean isWeakReference(FXOMNode node) {
+    public static boolean isWeakReference(final FXOMNode node) {
         final boolean result;
         
         if (node instanceof FXOMIntrinsic) {
-            final FXOMIntrinsic intrinsic = (FXOMIntrinsic) node;
+            final var intrinsic = (FXOMIntrinsic) node;
             switch(intrinsic.getType()) {
                 case FX_REFERENCE:
                 case FX_COPY:
                     if (intrinsic.getParentProperty() != null) {
-                        final PropertyName propertyName = intrinsic.getParentProperty().getName();
+                        final var propertyName = intrinsic.getParentProperty().getName();
                         if (propertyName.getResidenceClass() == null) {
                             result = getWeakPropertyNames().contains(propertyName.getName());
                         } else {
@@ -618,10 +615,10 @@ public class FXOMNodes {
                     result = false;
             }
         } else if (node instanceof FXOMPropertyT) {
-            final FXOMPropertyT property = (FXOMPropertyT) node;
-            final PrefixedValue pv = new PrefixedValue(property.getValue());
+            final var property = (FXOMPropertyT) node;
+            final var pv = new PrefixedValue(property.getValue());
             if (pv.isExpression() && JavaLanguage.isIdentifier(pv.getSuffix())) {
-                final PropertyName propertyName = property.getName();
+                final var propertyName = property.getName();
                 if (propertyName.getResidenceClass() == null) {
                     result = getWeakPropertyNames().contains(propertyName.getName());
                 } else {
@@ -657,29 +654,29 @@ public class FXOMNodes {
      * Private
      */
     
-    private static void sort(FXOMObject from, 
-            Set<FXOMObject> objects, List<FXOMObject> result) {
+    private static void sort(final FXOMObject from,
+                             final Set<FXOMObject> objects, final List<FXOMObject> result) {
         
         if (objects.contains(from)) {
             result.add(from);
         }
         
         if (from instanceof FXOMCollection) {
-            final FXOMCollection collection = (FXOMCollection) from;
-            for (FXOMObject item : collection.getItems()) {
+            final var collection = (FXOMCollection) from;
+            for (final var item : collection.getItems()) {
                 sort(item, objects, result);
             }
         } else if (from instanceof FXOMInstance) {
-            final FXOMInstance instance = (FXOMInstance) from;
+            final var instance = (FXOMInstance) from;
             final List<PropertyName> propertyNames 
                     = new ArrayList<>(instance.getProperties().keySet());
             Collections.sort(propertyNames);
-            for (PropertyName name : propertyNames) {
-                final FXOMProperty property = instance.getProperties().get(name);
+            for (final var name : propertyNames) {
+                final var property = instance.getProperties().get(name);
                 assert property != null;
                 if (property instanceof FXOMPropertyC) {
-                    final FXOMPropertyC propertyC = (FXOMPropertyC) property;
-                    for (FXOMObject v : propertyC.getValues()) {
+                    final var propertyC = (FXOMPropertyC) property;
+                    for (final var v : propertyC.getValues()) {
                         sort(v, objects, result);
                     }
                 }
@@ -691,10 +688,10 @@ public class FXOMNodes {
     }
 
     
-    private static void trimStaticProperties(FXOMInstance fxomInstance) {
+    private static void trimStaticProperties(final FXOMInstance fxomInstance) {
         final List<FXOMProperty> properties = 
                 new ArrayList<>(fxomInstance.getProperties().values());
-        for (FXOMProperty p : properties) {
+        for (final var p : properties) {
             if (p.getName().getResidenceClass() != null) {
                 // This is a static property : we remove it.
                 p.removeFromParentInstance();
@@ -703,33 +700,33 @@ public class FXOMNodes {
     }
     
     
-    private static void replacePropertyValue(FXOMObject replacee, FXOMObject replacement) {
+    private static void replacePropertyValue(final FXOMObject replacee, final FXOMObject replacement) {
         assert replacee.getIndexInParentProperty() != -1;
         
-        final int replaceeIndex = replacee.getIndexInParentProperty();
+        final var replaceeIndex = replacee.getIndexInParentProperty();
         assert replaceeIndex != -1;
         replacement.addToParentProperty(replaceeIndex, replacee.getParentProperty());
         replacee.removeFromParentProperty();
     }
 
     private static FXOMDocument makeFxomDocumentFromImageURL(
-            Image image, double fitSize) throws IOException {
+        final Image image, final double fitSize) throws IOException {
 
         assert image != null;
         assert fitSize > 0.0;
         
-        final double imageWidth = image.getWidth();
-        final double imageHeight = image.getHeight();
+        final var imageWidth = image.getWidth();
+        final var imageHeight = image.getHeight();
         
         final double fitWidth, fitHeight;
-        final double imageSize = Math.max(imageWidth, imageHeight);
+        final var imageSize = Math.max(imageWidth, imageHeight);
         if (imageSize < fitSize) {
             fitWidth = 0;
             fitHeight = 0;
         } else {
-            final double widthScale  = fitSize / imageSize;
-            final double heightScale = fitSize / imageHeight;
-            final double scale = Math.min(widthScale, heightScale);
+            final var widthScale  = fitSize / imageSize;
+            final var heightScale = fitSize / imageHeight;
+            final var scale = Math.min(widthScale, heightScale);
             fitWidth = Math.floor(imageWidth * scale);
             fitHeight = Math.floor(imageHeight * scale);
         }
@@ -738,33 +735,33 @@ public class FXOMNodes {
     }
     
     private static FXOMDocument makeFxomDocumentFromImageURL(
-            Image image, double fitWidth, double fitHeight) {
+        final Image image, final double fitWidth, final double fitHeight) {
         
-        final FXOMDocument result = new FXOMDocument();
-        final FXOMInstance imageView = new FXOMInstance(result, ImageView.class);
+        final var result = new FXOMDocument();
+        final var imageView = new FXOMInstance(result, ImageView.class);
 
-        final PropertyName imageName = new PropertyName("image"); //NOI18N
-        final PropertyName fitWidthName = new PropertyName("fitWidth"); //NOI18N
-        final PropertyName fitHeightName = new PropertyName("fitHeight"); //NOI18N
+        final var imageName = new PropertyName("image"); //NOI18N
+        final var fitWidthName = new PropertyName("fitWidth"); //NOI18N
+        final var fitHeightName = new PropertyName("fitHeight"); //NOI18N
 
-        final ComponentClassMetadata imageViewMeta
+        final var imageViewMeta
                 = Metadata.getMetadata().queryComponentMetadata(ImageView.class);
-        final PropertyMetadata imagePropMeta
+        final var imagePropMeta
                 = imageViewMeta.lookupProperty(imageName);
-        final PropertyMetadata fitWidthPropMeta
+        final var fitWidthPropMeta
                 = imageViewMeta.lookupProperty(fitWidthName);
-        final PropertyMetadata fitHeightPropMeta
+        final var fitHeightPropMeta
                 = imageViewMeta.lookupProperty(fitHeightName);
 
         assert imagePropMeta instanceof ImagePropertyMetadata;
         assert fitWidthPropMeta instanceof DoublePropertyMetadata;
         assert fitHeightPropMeta instanceof DoublePropertyMetadata;
 
-        final ImagePropertyMetadata imageMeta
+        final var imageMeta
                 = (ImagePropertyMetadata) imagePropMeta;
-        final DoublePropertyMetadata fitWidthMeta
+        final var fitWidthMeta
                 = (DoublePropertyMetadata) fitWidthPropMeta;
-        final DoublePropertyMetadata fitHeightMeta
+        final var fitHeightMeta
                 = (DoublePropertyMetadata) fitHeightPropMeta;
 
         imageMeta.setValue(imageView, new DesignImage(image));
@@ -777,7 +774,7 @@ public class FXOMNodes {
     }
 
     private static FXOMDocument makeFxomDocumentFromMedia(
-            Media media, double fitSize) throws IOException {
+        final Media media, final double fitSize) throws IOException {
 
         assert media != null;
         assert fitSize > 0.0;
@@ -786,14 +783,14 @@ public class FXOMNodes {
         final double mediaHeight = media.getHeight();
         
         final double fitWidth, fitHeight;
-        final double mediaSize = Math.max(mediaWidth, mediaHeight);
+        final var mediaSize = Math.max(mediaWidth, mediaHeight);
         if (mediaSize < fitSize) {
             fitWidth = 0;
             fitHeight = 0;
         } else {
-            final double widthScale  = fitSize / mediaSize;
-            final double heightScale = fitSize / mediaHeight;
-            final double scale = Math.min(widthScale, heightScale);
+            final var widthScale  = fitSize / mediaSize;
+            final var heightScale = fitSize / mediaHeight;
+            final var scale = Math.min(widthScale, heightScale);
             fitWidth = Math.floor(mediaWidth * scale);
             fitHeight = Math.floor(mediaHeight * scale);
         }
@@ -802,7 +799,7 @@ public class FXOMNodes {
     }
     
     private static FXOMDocument makeFxomDocumentFromMedia(
-            Media media, double fitWidth, double fitHeight) {
+        final Media media, final double fitWidth, final double fitHeight) {
         
         /*
          * <MediaView fitWidth="200" fitHeight="2003 >
@@ -820,57 +817,57 @@ public class FXOMNodes {
          * </MediaView>
          */
         
-        final FXOMDocument result = new FXOMDocument();
+        final var result = new FXOMDocument();
         
         /*
          * URL
          */
-        final PropertyName valueName 
+        final var valueName
                 = new PropertyName("value"); //NOI18N
-        final FXOMPropertyT valueProperty
+        final var valueProperty
                 = new FXOMPropertyT(result, valueName, media.getSource());
-        final FXOMInstance urlInstance 
+        final var urlInstance
                 = new FXOMInstance(result, URL.class);
         valueProperty.addToParentInstance(-1, urlInstance);
 
         /*
          * Media
          */
-        final PropertyName sourceName 
+        final var sourceName
                 = new PropertyName("source"); //NOI18N
-        final FXOMPropertyC sourceProperty
+        final var sourceProperty
                 = new FXOMPropertyC(result, sourceName, urlInstance);
-        final FXOMInstance mediaInstance 
+        final var mediaInstance
                 = new FXOMInstance(result, Media.class);
         sourceProperty.addToParentInstance(-1, mediaInstance);
 
         /*
          * MediaPlayer
          */
-        final PropertyName mediaName 
+        final var mediaName
                 = new PropertyName("media"); //NOI18N
-        final FXOMPropertyC mediaProperty
+        final var mediaProperty
                 = new FXOMPropertyC(result, mediaName, mediaInstance);
-        final FXOMInstance mediaPlayerInstance 
+        final var mediaPlayerInstance
                 = new FXOMInstance(result, MediaPlayer.class);
         mediaProperty.addToParentInstance(-1, mediaPlayerInstance);
         
         /*
          * MediaView
          */
-        final PropertyName mediaPlayerName 
+        final var mediaPlayerName
                 = new PropertyName("mediaPlayer"); //NOI18N
-        final FXOMPropertyC mediaPlayerProperty
+        final var mediaPlayerProperty
                 = new FXOMPropertyC(result, mediaPlayerName, mediaPlayerInstance);
-        final PropertyName fitWidthName 
+        final var fitWidthName
                 = new PropertyName("fitWidth"); //NOI18N
-        final FXOMPropertyT fitWidthProperty
+        final var fitWidthProperty
                 = new FXOMPropertyT(result, fitWidthName, String.valueOf(fitWidth));
-        final PropertyName fitHeightName 
+        final var fitHeightName
                 = new PropertyName("fitHeight"); //NOI18N
-        final FXOMPropertyT fitHeightProperty
+        final var fitHeightProperty
                 = new FXOMPropertyT(result, fitHeightName, String.valueOf(fitHeight));
-        final FXOMInstance mediaView 
+        final var mediaView
                 = new FXOMInstance(result, MediaView.class);
         mediaPlayerProperty.addToParentInstance(-1, mediaView);
         fitWidthProperty.addToParentInstance(-1, mediaView);
@@ -882,25 +879,25 @@ public class FXOMNodes {
     }
 
     
-    private static void serializeObjects(FXOMObject fxomObject, List<FXOMObject> result) {
+    private static void serializeObjects(final FXOMObject fxomObject, final List<FXOMObject> result) {
         assert fxomObject != null;
         assert result != null;
         
         result.add(fxomObject);
         
         if (fxomObject instanceof FXOMInstance) {
-            final FXOMInstance fxomInstance = (FXOMInstance) fxomObject;
-            for (FXOMProperty p : fxomInstance.getProperties().values()) {
+            final var fxomInstance = (FXOMInstance) fxomObject;
+            for (final var p : fxomInstance.getProperties().values()) {
                 if (p instanceof FXOMPropertyC) {
-                    final FXOMPropertyC pc = (FXOMPropertyC) p;
-                    for (FXOMObject v : pc.getValues()) {
+                    final var pc = (FXOMPropertyC) p;
+                    for (final var v : pc.getValues()) {
                         serializeObjects(v, result);
                     }
                 }
             }
         } else if (fxomObject instanceof FXOMCollection) {
-            final FXOMCollection fxomCollection = (FXOMCollection) fxomObject;
-            for (FXOMObject i : fxomCollection.getItems()) {
+            final var fxomCollection = (FXOMCollection) fxomObject;
+            for (final var i : fxomCollection.getItems()) {
                 serializeObjects(i, result);
             }
         }

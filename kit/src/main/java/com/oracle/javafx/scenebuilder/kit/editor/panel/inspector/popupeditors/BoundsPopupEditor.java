@@ -67,7 +67,7 @@ public class BoundsPopupEditor extends PopupEditor {
     private Parent root;
     private Bounds bounds;
 
-    public BoundsPopupEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public BoundsPopupEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super(propMeta, selectedClasses);
     }
 
@@ -82,11 +82,11 @@ public class BoundsPopupEditor extends PopupEditor {
     }
 
     @Override
-    public String getPreviewString(Object value) {
+    public String getPreviewString(final Object value) {
         // value should never be null
         assert value instanceof Bounds;
-        Bounds boundsVal = (Bounds) value;
-        String valueAsString;
+        final var boundsVal = (Bounds) value;
+        final String valueAsString;
         if (isIndeterminate()) {
             valueAsString = "-"; //NOI18N
         } else {
@@ -99,7 +99,7 @@ public class BoundsPopupEditor extends PopupEditor {
     }
 
     @Override
-    public void setPopupContentValue(Object value) {
+    public void setPopupContentValue(final Object value) {
         if (value == null) {
             bounds = null;
             updateValues();

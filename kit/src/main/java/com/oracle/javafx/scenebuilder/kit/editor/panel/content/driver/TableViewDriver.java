@@ -39,7 +39,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.resizer.Re
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import javafx.scene.Node;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.Region;
 
@@ -48,7 +47,7 @@ import javafx.scene.layout.Region;
  */
 public class TableViewDriver extends AbstractNodeDriver {
 
-    public TableViewDriver(ContentPanelController contentPanelController) {
+    public TableViewDriver(final ContentPanelController contentPanelController) {
         super(contentPanelController);
     }
 
@@ -57,7 +56,7 @@ public class TableViewDriver extends AbstractNodeDriver {
      */
     
     @Override
-    public AbstractHandles<?> makeHandles(FXOMObject fxomObject) {
+    public AbstractHandles<?> makeHandles(final FXOMObject fxomObject) {
         assert fxomObject != null;
         assert fxomObject instanceof FXOMInstance;
         assert fxomObject.getSceneGraphObject() instanceof TableView;
@@ -66,18 +65,18 @@ public class TableViewDriver extends AbstractNodeDriver {
 
     
     @Override
-    public AbstractResizer<?> makeResizer(FXOMObject fxomObject) {
+    public AbstractResizer<?> makeResizer(final FXOMObject fxomObject) {
         assert fxomObject.getSceneGraphObject() instanceof TableView;
         return new RegionResizer((Region) fxomObject.getSceneGraphObject());
     }
     
     @Override
-    public FXOMObject refinePick(Node hitNode, double sceneX, double sceneY, FXOMObject fxomObject) {
+    public FXOMObject refinePick(final Node hitNode, final double sceneX, final double sceneY, final FXOMObject fxomObject) {
         assert fxomObject.getSceneGraphObject() instanceof TableView;
         
-        final TableViewDesignInfoX di = new TableViewDesignInfoX();
-        final TableView<?> tv = (TableView<?>) fxomObject.getSceneGraphObject();
-        final TableColumn<?,?> tc = di.lookupColumn(tv, sceneX, sceneY);
+        final var di = new TableViewDesignInfoX();
+        final var tv = (TableView<?>) fxomObject.getSceneGraphObject();
+        final var tc = di.lookupColumn(tv, sceneX, sceneY);
         final FXOMObject result;
         
         if (tc == null) {

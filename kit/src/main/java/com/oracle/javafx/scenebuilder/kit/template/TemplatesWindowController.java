@@ -41,7 +41,7 @@ import javafx.stage.WindowEvent;
 public class TemplatesWindowController extends TemplatesBaseWindowController {
     private final Window owner;
 
-    public TemplatesWindowController(Stage owner) {
+    public TemplatesWindowController(final Stage owner) {
         super(TemplatesWindowController.class.getResource("TemplatesWindow.fxml"), //NOI18N
                 I18N.getBundle(), owner);
         this.owner = owner;
@@ -53,7 +53,7 @@ public class TemplatesWindowController extends TemplatesBaseWindowController {
     }
 
     @Override
-    public void onCloseRequest(WindowEvent event) {
+    public void onCloseRequest(final WindowEvent event) {
         getStage().hide();
     }
 

@@ -39,7 +39,6 @@ import com.oracle.javafx.scenebuilder.kit.metadata.Metadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.property.value.DoublePropertyMetadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
 import com.oracle.javafx.scenebuilder.kit.util.MathUtils;
-import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 
@@ -70,7 +69,7 @@ public class RelocateNodeJob extends Job {
     private final DoublePropertyMetadata topAnchorMeta;
     private final DoublePropertyMetadata bottomAnchorMeta;
     
-    public RelocateNodeJob(FXOMInstance fxomInstance, double newLayoutX, double newLayoutY, EditorController editorController) {
+    public RelocateNodeJob(final FXOMInstance fxomInstance, final double newLayoutX, final double newLayoutY, final EditorController editorController) {
         super(editorController);
         
         assert fxomInstance != null;
@@ -80,14 +79,14 @@ public class RelocateNodeJob extends Job {
         this.newLayoutX = newLayoutX; // Root scene coordinates
         this.newLayoutY = newLayoutY; // Root scene coordinates
         
-        final Metadata metadata = Metadata.getMetadata();
-        final Class<?> sgoClass = fxomInstance.getSceneGraphObject().getClass();
-        final PropertyName layoutXName = new PropertyName("layoutX"); //NOI18N
-        final PropertyName layoutYName = new PropertyName("layoutY"); //NOI18N
-        final PropertyName leftAnchorName   = new PropertyName("leftAnchor",   AnchorPane.class); //NOI18N
-        final PropertyName rightAnchorName  = new PropertyName("rightAnchor",  AnchorPane.class); //NOI18N
-        final PropertyName topAnchorName    = new PropertyName("topAnchor",    AnchorPane.class); //NOI18N
-        final PropertyName bottomAnchorName = new PropertyName("bottomAnchor", AnchorPane.class); //NOI18N
+        final var metadata = Metadata.getMetadata();
+        final var sgoClass = fxomInstance.getSceneGraphObject().getClass();
+        final var layoutXName = new PropertyName("layoutX"); //NOI18N
+        final var layoutYName = new PropertyName("layoutY"); //NOI18N
+        final var leftAnchorName   = new PropertyName("leftAnchor",   AnchorPane.class); //NOI18N
+        final var rightAnchorName  = new PropertyName("rightAnchor",  AnchorPane.class); //NOI18N
+        final var topAnchorName    = new PropertyName("topAnchor",    AnchorPane.class); //NOI18N
+        final var bottomAnchorName = new PropertyName("bottomAnchor", AnchorPane.class); //NOI18N
         this.layoutXMeta = (DoublePropertyMetadata) metadata.queryProperty(sgoClass, layoutXName);
         this.layoutYMeta = (DoublePropertyMetadata) metadata.queryProperty(sgoClass, layoutYName);
         this.leftAnchorMeta   = (DoublePropertyMetadata) metadata.queryProperty(sgoClass, leftAnchorName  );
@@ -108,7 +107,7 @@ public class RelocateNodeJob extends Job {
         return newLayoutY;
     }
     
-    public void mergeWith(RelocateNodeJob youngerJob) {
+    public void mergeWith(final RelocateNodeJob youngerJob) {
         assert ! (MathUtils.equals(this.newLayoutX, youngerJob.newLayoutX) 
                && MathUtils.equals(this.newLayoutY, youngerJob.newLayoutY));
         this.newLayoutX = youngerJob.newLayoutX;
@@ -189,9 +188,9 @@ public class RelocateNodeJob extends Job {
             this.newLeftAnchor = null;
             this.newRightAnchor = null;
         } else {
-            final Node sceneGraphNode = (Node)fxomInstance.getSceneGraphObject();
-            final Bounds nodeLayoutBounds = sceneGraphNode.getLayoutBounds();
-            final Bounds parentLayoutBounds = sceneGraphNode.getParent().getLayoutBounds();
+            final var sceneGraphNode = (Node)fxomInstance.getSceneGraphObject();
+            final var nodeLayoutBounds = sceneGraphNode.getLayoutBounds();
+            final var parentLayoutBounds = sceneGraphNode.getParent().getLayoutBounds();
             if (this.oldLeftAnchor != null) {
                 this.newLeftAnchor = AnchorPaneRelocater.computeLeftAnchor(parentLayoutBounds, nodeLayoutBounds, newLayoutX);
             } else {
@@ -207,9 +206,9 @@ public class RelocateNodeJob extends Job {
             this.newTopAnchor = null;
             this.newBottomAnchor = null;
         } else {
-            final Node sceneGraphNode = (Node)fxomInstance.getSceneGraphObject();
-            final Bounds nodeLayoutBounds = sceneGraphNode.getLayoutBounds();
-            final Bounds parentLayoutBounds = sceneGraphNode.getParent().getLayoutBounds();
+            final var sceneGraphNode = (Node)fxomInstance.getSceneGraphObject();
+            final var nodeLayoutBounds = sceneGraphNode.getLayoutBounds();
+            final var parentLayoutBounds = sceneGraphNode.getParent().getLayoutBounds();
             if (this.oldTopAnchor != null) {
                 this.newTopAnchor = AnchorPaneRelocater.computeTopAnchor(parentLayoutBounds, nodeLayoutBounds, newLayoutY);
             } else {

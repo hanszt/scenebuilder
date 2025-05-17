@@ -34,7 +34,6 @@ package com.oracle.javafx.scenebuilder.kit.editor.selection;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMProperty;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyC;
 import com.oracle.javafx.scenebuilder.kit.metadata.property.value.IntegerPropertyMetadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
@@ -62,7 +61,7 @@ public class GridSelectionGroup extends AbstractSelectionGroup {
     private final Type type;
     private final Set<Integer> indexes = new HashSet<>();
     
-    public GridSelectionGroup(FXOMObject parentObject, Type type, int index) {
+    public GridSelectionGroup(final FXOMObject parentObject, final Type type, final int index) {
         assert parentObject != null;
         assert parentObject.getSceneGraphObject() instanceof GridPane;
         assert index >= 0;
@@ -72,11 +71,11 @@ public class GridSelectionGroup extends AbstractSelectionGroup {
         this.indexes.add(index);
     }
 
-    public GridSelectionGroup(FXOMObject parentObject, Type type, Set<Integer> indexes) {
+    public GridSelectionGroup(final FXOMObject parentObject, final Type type, final Set<Integer> indexes) {
         assert parentObject != null;
         assert parentObject.getSceneGraphObject() instanceof GridPane;
         assert indexes != null;
-        assert indexes.isEmpty() == false;
+        assert !indexes.isEmpty();
         
         this.parentObject = parentObject;
         this.type = type;
@@ -139,11 +138,11 @@ public class GridSelectionGroup extends AbstractSelectionGroup {
     }
 
     @Override
-    public boolean isValid(FXOMDocument fxomDocument) {
+    public boolean isValid(final FXOMDocument fxomDocument) {
         assert fxomDocument != null;
         
         final boolean result;
-        final FXOMObject fxomRoot = fxomDocument.getFxomRoot();
+        final var fxomRoot = fxomDocument.getFxomRoot();
         if (fxomRoot == null) {
             result = false;
         } else {
@@ -168,7 +167,7 @@ public class GridSelectionGroup extends AbstractSelectionGroup {
      */
     @Override
     public int hashCode() {
-        int hash = 7;
+        var hash = 7;
         hash = 47 * hash + Objects.hashCode(this.parentObject);
         hash = 47 * hash + Objects.hashCode(this.type);
         hash = 47 * hash + Objects.hashCode(this.indexes);
@@ -176,14 +175,14 @@ public class GridSelectionGroup extends AbstractSelectionGroup {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         }
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final GridSelectionGroup other = (GridSelectionGroup) obj;
+        final var other = (GridSelectionGroup) obj;
         if (!Objects.equals(this.parentObject, other.parentObject)) {
             return false;
         }
@@ -207,15 +206,15 @@ public class GridSelectionGroup extends AbstractSelectionGroup {
     private List<FXOMInstance> collectRowConstraintsInstances() {
         final List<FXOMInstance> result = new ArrayList<>();
         
-        final FXOMInstance gridPaneInstance 
+        final var gridPaneInstance
                 = (FXOMInstance) parentObject;
-        final FXOMProperty fxomProperty 
+        final var fxomProperty
                 = gridPaneInstance.getProperties().get(rowConstraintsName);
         if (fxomProperty != null) {
             assert fxomProperty instanceof FXOMPropertyC;
-            final FXOMPropertyC fxomPropertyC = (FXOMPropertyC) fxomProperty;
-            int index = 0;
-            for (FXOMObject v : fxomPropertyC.getValues()) {
+            final var fxomPropertyC = (FXOMPropertyC) fxomProperty;
+            var index = 0;
+            for (final var v : fxomPropertyC.getValues()) {
                 assert v.getSceneGraphObject() instanceof RowConstraints;
                 assert v instanceof FXOMInstance;
                 if (indexes.contains(index++)) {
@@ -233,15 +232,15 @@ public class GridSelectionGroup extends AbstractSelectionGroup {
     private List<FXOMInstance> collectColumnConstraintsInstances() {
         final List<FXOMInstance> result = new ArrayList<>();
         
-        final FXOMInstance gridPaneInstance 
+        final var gridPaneInstance
                 = (FXOMInstance) parentObject;
-        final FXOMProperty fxomProperty 
+        final var fxomProperty
                 = gridPaneInstance.getProperties().get(columnConstraintsName);
         if (fxomProperty != null) {
             assert fxomProperty instanceof FXOMPropertyC;
-            final FXOMPropertyC fxomPropertyC = (FXOMPropertyC) fxomProperty;
-            int index = 0;
-            for (FXOMObject v : fxomPropertyC.getValues()) {
+            final var fxomPropertyC = (FXOMPropertyC) fxomProperty;
+            var index = 0;
+            for (final var v : fxomPropertyC.getValues()) {
                 assert v.getSceneGraphObject() instanceof ColumnConstraints;
                 assert v instanceof FXOMInstance;
                 if (indexes.contains(index++)) {
@@ -264,13 +263,13 @@ public class GridSelectionGroup extends AbstractSelectionGroup {
     private List<FXOMObject> collectSelectedObjectsInColumn() {
         final List<FXOMObject> result = new ArrayList<>();
         
-        final DesignHierarchyMask m = new DesignHierarchyMask(parentObject);
+        final var m = new DesignHierarchyMask(parentObject);
         assert m.isAcceptingSubComponent();
         
         for (int i = 0, count = m.getSubComponentCount(); i <  count; i++) {
-            final FXOMObject childObject = m.getSubComponentAtIndex(i);
+            final var childObject = m.getSubComponentAtIndex(i);
             if (childObject instanceof FXOMInstance) {
-                final FXOMInstance childInstance = (FXOMInstance) childObject;
+                final var childInstance = (FXOMInstance) childObject;
                 if (indexes.contains(columnIndexMeta.getValue(childInstance))) {
                     // child belongs to a selected column
                     result.add(childInstance);
@@ -291,13 +290,13 @@ public class GridSelectionGroup extends AbstractSelectionGroup {
     private List<FXOMObject> collectSelectedObjectsInRow() {
         final List<FXOMObject> result = new ArrayList<>();
         
-        final DesignHierarchyMask m = new DesignHierarchyMask(parentObject);
+        final var m = new DesignHierarchyMask(parentObject);
         assert m.isAcceptingSubComponent();
         
         for (int i = 0, count = m.getSubComponentCount(); i <  count; i++) {
-            final FXOMObject childObject = m.getSubComponentAtIndex(i);
+            final var childObject = m.getSubComponentAtIndex(i);
             if (childObject instanceof FXOMInstance) {
-                final FXOMInstance childInstance = (FXOMInstance) childObject;
+                final var childInstance = (FXOMInstance) childObject;
                 if (indexes.contains(rowIndexMeta.getValue(childInstance))) {
                     // child belongs to a selected column
                     result.add(childInstance);

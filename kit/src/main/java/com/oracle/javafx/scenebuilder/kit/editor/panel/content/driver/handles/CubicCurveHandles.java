@@ -33,7 +33,6 @@ package com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.handles;
 
 import java.util.List;
 
-import javafx.geometry.Point2D;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.shape.Circle;
@@ -60,8 +59,8 @@ public class CubicCurveHandles extends AbstractCurveHandles<CubicCurve> {
     private final Line rightHandle = new Line();
 
     
-    public CubicCurveHandles(ContentPanelController contentPanelController,
-            FXOMInstance fxomInstance) {
+    public CubicCurveHandles(final ContentPanelController contentPanelController,
+                             final FXOMInstance fxomInstance) {
         super(contentPanelController, fxomInstance, CubicCurve.class);
         
         setupHandleState(startHandle);
@@ -99,13 +98,13 @@ public class CubicCurveHandles extends AbstractCurveHandles<CubicCurve> {
      */
     @Override
     protected void layoutDecoration() {
-        final CubicCurve l = getSceneGraphObject();
+        final var l = getSceneGraphObject();
         
-        final boolean snapToPixel = true;
-        final Point2D s = sceneGraphObjectToDecoration(l.getStartX(), l.getStartY(), snapToPixel);
-        final Point2D c1 = sceneGraphObjectToDecoration(l.getControlX1(), l.getControlY1(), snapToPixel);
-        final Point2D c2 = sceneGraphObjectToDecoration(l.getControlX2(), l.getControlY2(), snapToPixel);
-        final Point2D e = sceneGraphObjectToDecoration(l.getEndX(), l.getEndY(), snapToPixel);
+        final var snapToPixel = true;
+        final var s = sceneGraphObjectToDecoration(l.getStartX(), l.getStartY(), snapToPixel);
+        final var c1 = sceneGraphObjectToDecoration(l.getControlX1(), l.getControlY1(), snapToPixel);
+        final var c2 = sceneGraphObjectToDecoration(l.getControlX2(), l.getControlY2(), snapToPixel);
+        final var e = sceneGraphObjectToDecoration(l.getEndX(), l.getEndY(), snapToPixel);
 
         startHandle.setCenterX(s.getX());
         startHandle.setCenterY(s.getY());
@@ -134,7 +133,7 @@ public class CubicCurveHandles extends AbstractCurveHandles<CubicCurve> {
     protected void startListeningToSceneGraphObject() {
         super.startListeningToSceneGraphObject();
         
-        final CubicCurve l = getSceneGraphObject();
+        final var l = getSceneGraphObject();
         l.startXProperty().addListener(coordinateListener);
         l.startYProperty().addListener(coordinateListener);
         l.controlX1Property().addListener(coordinateListener);
@@ -149,7 +148,7 @@ public class CubicCurveHandles extends AbstractCurveHandles<CubicCurve> {
     protected void stopListeningToSceneGraphObject() {
         super.stopListeningToSceneGraphObject();
         
-        final CubicCurve l = getSceneGraphObject();
+        final var l = getSceneGraphObject();
         l.startXProperty().removeListener(coordinateListener);
         l.startYProperty().removeListener(coordinateListener);
         l.controlX1Property().removeListener(coordinateListener);
@@ -161,7 +160,7 @@ public class CubicCurveHandles extends AbstractCurveHandles<CubicCurve> {
     }
 
     @Override
-    public AbstractGesture findGesture(Node node) {
+    public AbstractGesture findGesture(final Node node) {
         final AbstractGesture result;
         
         if (node == startHandle) {
@@ -195,10 +194,10 @@ public class CubicCurveHandles extends AbstractCurveHandles<CubicCurve> {
      * Private
      */
     
-    private void setupHandleState(Circle handleCircle) {
+    private void setupHandleState(final Circle handleCircle) {
         
-        final String styleClass = isEnabled() ? SELECTION_HANDLES : SELECTION_HANDLES_DIM;
-        final Cursor cursor = isEnabled() ? Cursor.OPEN_HAND : Cursor.DEFAULT;
+        final var styleClass = isEnabled() ? SELECTION_HANDLES : SELECTION_HANDLES_DIM;
+        final var cursor = isEnabled() ? Cursor.OPEN_HAND : Cursor.DEFAULT;
         
         handleCircle.getStyleClass().add(styleClass);
         handleCircle.setCursor(cursor);
@@ -208,7 +207,7 @@ public class CubicCurveHandles extends AbstractCurveHandles<CubicCurve> {
     /* 
      * Wraper to avoid the 'leaking this in constructor' warning emitted by NB.
      */
-    private void setupHandles(Node node) {
+    private void setupHandles(final Node node) {
         attachHandles(node, this);
     }
 }

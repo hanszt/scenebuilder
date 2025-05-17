@@ -39,7 +39,7 @@ import javafx.scene.control.ScrollPane;
  */
 public class WrapInScrollPaneJob extends AbstractWrapInContentJob {
 
-    public WrapInScrollPaneJob(EditorController editorController) {
+    public WrapInScrollPaneJob(final EditorController editorController) {
         super(editorController);
         newContainerClass = ScrollPane.class;
     }

@@ -45,9 +45,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import jakarta.json.Json;
-import jakarta.json.JsonArray;
 import jakarta.json.JsonObject;
-import jakarta.json.JsonReader;
 import org.eclipse.aether.artifact.DefaultArtifact;
 
 public class MavenSearch implements Search {
@@ -66,22 +64,22 @@ public class MavenSearch implements Search {
     }
     
     @Override
-    public List<DefaultArtifact> getCoordinates(String query) {
+    public List<DefaultArtifact> getCoordinates(final String query) {
         
         final Map<String, String> map = new HashMap<>();
         map.put("Repository", MavenPresets.MAVEN);
     
         try {
-            HttpRequest request = HttpRequest.newBuilder()
+            final var request = HttpRequest.newBuilder()
                 .uri(URI.create(URL_PREFIX + query + URL_SUFFIX))
                 .build();
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            try (JsonReader rdr = Json.createReader(new StringReader(response.body()))) {
-                JsonObject obj = rdr.readObject();
+            final var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            try (final var rdr = Json.createReader(new StringReader(response.body()))) {
+                final var obj = rdr.readObject();
                 if (obj != null && !obj.isEmpty() && obj.containsKey("response")) {
-                    JsonObject jsonResponse = obj.getJsonObject("response");
+                    final var jsonResponse = obj.getJsonObject("response");
                     if (jsonResponse != null && !jsonResponse.isEmpty() && jsonResponse.containsKey("docs")) {
-                        JsonArray docResults = jsonResponse.getJsonArray("docs");
+                        final var docResults = jsonResponse.getJsonArray("docs");
                         return docResults.getValuesAs(JsonObject.class)
                                 .stream()
                                 .map(doc -> doc.getString("id", "") + ":" + MIN_VERSION)
@@ -91,7 +89,7 @@ public class MavenSearch implements Search {
                     }
                 }
             }
-        } catch (InterruptedException | IOException ex) {
+        } catch (final InterruptedException | IOException ex) {
             Logger.getLogger(MavenSearch.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;

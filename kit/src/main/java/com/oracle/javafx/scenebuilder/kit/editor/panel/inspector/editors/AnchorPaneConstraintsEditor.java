@@ -85,11 +85,11 @@ public class AnchorPaneConstraintsEditor extends PropertiesEditor {
     private final ArrayList<ConstraintEditor> contraintEditors = new ArrayList<>();
     private ChangeListener<Object> constraintListener;
 
-    public AnchorPaneConstraintsEditor(String name, ValuePropertyMetadata topPropMeta,
-            ValuePropertyMetadata rightPropMeta,
-            ValuePropertyMetadata bottomPropMeta,
-            ValuePropertyMetadata leftPropMeta,
-            Set<FXOMInstance> selectedInstances) {
+    public AnchorPaneConstraintsEditor(final String name, final ValuePropertyMetadata topPropMeta,
+                                       final ValuePropertyMetadata rightPropMeta,
+                                       final ValuePropertyMetadata bottomPropMeta,
+                                       final ValuePropertyMetadata leftPropMeta,
+                                       final Set<FXOMInstance> selectedInstances) {
         super(name);
         initialize(topPropMeta, rightPropMeta, bottomPropMeta, leftPropMeta, selectedInstances);
         propertyChanged();
@@ -97,8 +97,8 @@ public class AnchorPaneConstraintsEditor extends PropertiesEditor {
     }
 
     // Method to please findBugs
-    private void initialize(ValuePropertyMetadata topPropMeta, ValuePropertyMetadata rightPropMeta,
-            ValuePropertyMetadata bottomPropMeta, ValuePropertyMetadata leftPropMeta, Set<FXOMInstance> selectedInstances) {
+    private void initialize(final ValuePropertyMetadata topPropMeta, final ValuePropertyMetadata rightPropMeta,
+                            final ValuePropertyMetadata bottomPropMeta, final ValuePropertyMetadata leftPropMeta, final Set<FXOMInstance> selectedInstances) {
         root = EditorUtils.loadFxml("AnchorPaneConstraintsEditor.fxml", this);
 
         constraintListener = (ov, prevValue, newValue) -> {
@@ -144,23 +144,23 @@ public class AnchorPaneConstraintsEditor extends PropertiesEditor {
 
     @Override
     public List<PropertyEditor> getPropertyEditors() {
-        List<PropertyEditor> propertyEditors = new ArrayList<>();
-        for (ConstraintEditor constraintEditor : contraintEditors) {
+        final List<PropertyEditor> propertyEditors = new ArrayList<>();
+        for (final var constraintEditor : contraintEditors) {
             propertyEditors.add(constraintEditor);
         }
         return propertyEditors;
     }
 
-    public void reset(ValuePropertyMetadata topPropMeta,
-            ValuePropertyMetadata rightPropMeta,
-            ValuePropertyMetadata bottomPropMeta,
-            ValuePropertyMetadata leftPropMeta,
-            Set<FXOMInstance> selectedInstances) {
+    public void reset(final ValuePropertyMetadata topPropMeta,
+                      final ValuePropertyMetadata rightPropMeta,
+                      final ValuePropertyMetadata bottomPropMeta,
+                      final ValuePropertyMetadata leftPropMeta,
+                      final Set<FXOMInstance> selectedInstances) {
         contraintEditors.get(0).reset(selectedInstances, topPropMeta);
         contraintEditors.get(1).reset(selectedInstances, rightPropMeta);
         contraintEditors.get(2).reset(selectedInstances, bottomPropMeta);
         contraintEditors.get(3).reset(selectedInstances, leftPropMeta);
-        for (int ii = 0; ii < 4; ii++) {
+        for (var ii = 0; ii < 4; ii++) {
             contraintEditors.get(ii).addValueListener(constraintListener);
         }
         styleRegions();
@@ -172,8 +172,8 @@ public class AnchorPaneConstraintsEditor extends PropertiesEditor {
     }
 
     private void styleRegions() {
-        StringBuilder styleString = new StringBuilder();
-        for (int ii = 0; ii < 4; ii++) {
+        final var styleString = new StringBuilder();
+        for (var ii = 0; ii < 4; ii++) {
             if (contraintEditors.get(ii).isAnchorEnabled()) {
                 styleString.append(ANCHOR_ENABLED_COLOR);
                 styleString.append(" ");
@@ -182,7 +182,7 @@ public class AnchorPaneConstraintsEditor extends PropertiesEditor {
                 styleString.append(" ");
             }
         }
-        String style = "-fx-border-color: " + styleString;
+        final var style = "-fx-border-color: " + styleString;
         innerR.setStyle(style);
         outerR.setStyle(style);
     }
@@ -199,8 +199,8 @@ public class AnchorPaneConstraintsEditor extends PropertiesEditor {
 
         private boolean updateFromTextField = false;
 
-        public ConstraintEditor(TextField textField, ToggleButton toggleButton, Set<FXOMInstance> selectedInstances,
-                ValuePropertyMetadata propMeta, ChangeListener<Object> listener) {
+        public ConstraintEditor(final TextField textField, final ToggleButton toggleButton, final Set<FXOMInstance> selectedInstances,
+                                final ValuePropertyMetadata propMeta, final ChangeListener<Object> listener) {
             super(propMeta, null);
             super.addValueListener(listener);
             this.textField = textField;
@@ -217,12 +217,12 @@ public class AnchorPaneConstraintsEditor extends PropertiesEditor {
             //
             // For SQE tests
             textField.setId(EditorUtils.toDisplayName(propMeta.getName().getName()) + " Value"); //NOI18N
-            EventHandler<ActionEvent> valueListener = event -> {
+            final EventHandler<ActionEvent> valueListener = event -> {
                 if (isHandlingError()) {
                     // Event received because of focus lost due to error dialog
                     return;
                 }
-                String valStr = textField.getText();
+                final var valStr = textField.getText();
                 if (valStr == null || valStr.isEmpty()) {
                     if (toggleButton.isSelected()) {
                         updateFromTextField = true;
@@ -233,10 +233,10 @@ public class AnchorPaneConstraintsEditor extends PropertiesEditor {
                     return;
                 }
                 textField.selectAll();
-                double valDouble;
+                final double valDouble;
                 try {
                     valDouble = Double.parseDouble(valStr);
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                     handleInvalidValue(valStr, textField);
                     return;
                 }
@@ -273,7 +273,7 @@ public class AnchorPaneConstraintsEditor extends PropertiesEditor {
                 if (newSel) {
                     // Anchor selected : compute its value from the selected node
                     double anchor = 0;
-                    String propName = ConstraintEditor.this.propMeta.getName().toString();
+                    final var propName = ConstraintEditor.this.propMeta.getName().toString();
                     switch (propName) {
                         // For the moment, we don't support multi-selection with different anchors:
                         // the first instance anchor only is used.
@@ -311,7 +311,7 @@ public class AnchorPaneConstraintsEditor extends PropertiesEditor {
 
         @Override
         public Object getValue() {
-            String valStr = textField.getText();
+            final var valStr = textField.getText();
             if (valStr == null || valStr.isEmpty()) {
                 return null;
             }
@@ -319,7 +319,7 @@ public class AnchorPaneConstraintsEditor extends PropertiesEditor {
         }
 
         @Override
-        public void setValue(Object value) {
+        public void setValue(final Object value) {
             setValueGeneric(value);
             if (isSetValueDone()) {
                 return;
@@ -338,7 +338,7 @@ public class AnchorPaneConstraintsEditor extends PropertiesEditor {
             }
         }
 
-        public void reset(Set<FXOMInstance> selectedInstances, ValuePropertyMetadata propMeta) {
+        public void reset(final Set<FXOMInstance> selectedInstances, final ValuePropertyMetadata propMeta) {
             super.reset(propMeta, null);
             this.selectedInstances = selectedInstances;
             this.propMeta = propMeta;

@@ -40,8 +40,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.tring.Bord
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask.Accessory;
-import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
 import javafx.scene.layout.BorderPane;
 
 /**
@@ -49,7 +47,7 @@ import javafx.scene.layout.BorderPane;
  */
 public class BorderPaneDriver extends AbstractNodeDriver {
 
-    public BorderPaneDriver(ContentPanelController contentPanelController) {
+    public BorderPaneDriver(final ContentPanelController contentPanelController) {
         super(contentPanelController);
     }
 
@@ -58,22 +56,22 @@ public class BorderPaneDriver extends AbstractNodeDriver {
      */
      
     @Override
-    public AbstractDropTarget makeDropTarget(FXOMObject fxomObject, double sceneX, double sceneY) {
+    public AbstractDropTarget makeDropTarget(final FXOMObject fxomObject, final double sceneX, final double sceneY) {
         assert fxomObject.getSceneGraphObject() instanceof BorderPane;
         assert fxomObject instanceof FXOMInstance;
         
-        final FXOMInstance fxomInstance = (FXOMInstance) fxomObject;
-        final BorderPane borderPane = (BorderPane) fxomInstance.getSceneGraphObject();
-        final Point2D hitPoint = borderPane.sceneToLocal(sceneX, sceneY, true /* rootScene */);
-        final double hitX = hitPoint.getX();
-        final double hitY = hitPoint.getY();
+        final var fxomInstance = (FXOMInstance) fxomObject;
+        final var borderPane = (BorderPane) fxomInstance.getSceneGraphObject();
+        final var hitPoint = borderPane.sceneToLocal(sceneX, sceneY, true /* rootScene */);
+        final var hitX = hitPoint.getX();
+        final var hitY = hitPoint.getY();
         
-        final Bounds layoutBounds = borderPane.getLayoutBounds();
-        final Bounds centerBounds = BorderPaneTring.computeCenterBounds(borderPane);
-        final Bounds topBounds = BorderPaneTring.computeAreaBounds(layoutBounds, centerBounds, Accessory.TOP);
-        final Bounds bottomBounds = BorderPaneTring.computeAreaBounds(layoutBounds, centerBounds, Accessory.BOTTOM);
-        final Bounds leftBounds = BorderPaneTring.computeAreaBounds(layoutBounds, centerBounds, Accessory.LEFT);
-        final Bounds rightBounds = BorderPaneTring.computeAreaBounds(layoutBounds, centerBounds, Accessory.RIGHT);
+        final var layoutBounds = borderPane.getLayoutBounds();
+        final var centerBounds = BorderPaneTring.computeCenterBounds(borderPane);
+        final var topBounds = BorderPaneTring.computeAreaBounds(layoutBounds, centerBounds, Accessory.TOP);
+        final var bottomBounds = BorderPaneTring.computeAreaBounds(layoutBounds, centerBounds, Accessory.BOTTOM);
+        final var leftBounds = BorderPaneTring.computeAreaBounds(layoutBounds, centerBounds, Accessory.LEFT);
+        final var rightBounds = BorderPaneTring.computeAreaBounds(layoutBounds, centerBounds, Accessory.RIGHT);
         
         final Accessory targetAccessory;
         if (centerBounds.contains(hitX, hitY)) {
@@ -95,9 +93,9 @@ public class BorderPaneDriver extends AbstractNodeDriver {
     
     
     @Override
-    public AbstractTring<?> makeTring(AbstractDropTarget dropTarget) {
+    public AbstractTring<?> makeTring(final AbstractDropTarget dropTarget) {
         assert dropTarget instanceof AccessoryDropTarget;
-        if (!(dropTarget instanceof AccessoryDropTarget accessoryDropTarget)) {
+        if (!(dropTarget instanceof final AccessoryDropTarget accessoryDropTarget)) {
             return null;
         }
         return new BorderPaneTring(contentPanelController,

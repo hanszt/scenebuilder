@@ -35,9 +35,7 @@ import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.AbstractSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMCollection;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.ClipboardDecoder;
@@ -56,7 +54,7 @@ public class PasteIntoJob extends BatchSelectionJob {
 
     private List<FXOMObject> newObjects;
 
-    public PasteIntoJob(EditorController editorController) {
+    public PasteIntoJob(final EditorController editorController) {
         super(editorController);
     }
 
@@ -64,44 +62,44 @@ public class PasteIntoJob extends BatchSelectionJob {
     protected List<Job> makeSubJobs() {
         final List<Job> result = new ArrayList<>();
 
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
+        final var fxomDocument = getEditorController().getFxomDocument();
         if (fxomDocument != null) {
 
             // Retrieve the FXOMObjects from the clipboard
-            final ClipboardDecoder clipboardDecoder
+            final var clipboardDecoder
                     = new ClipboardDecoder(Clipboard.getSystemClipboard());
             newObjects = clipboardDecoder.decode(fxomDocument);
             assert newObjects != null; // But possible empty
 
             // Retrieve the target FXOMObject
-            final Selection selection = getEditorController().getSelection();
+            final var selection = getEditorController().getSelection();
             if (selection.getGroup() instanceof ObjectSelectionGroup) {
-                final ObjectSelectionGroup osg = (ObjectSelectionGroup) selection.getGroup();
+                final var osg = (ObjectSelectionGroup) selection.getGroup();
                 // Single target selection
                 if (osg.getItems().size() == 1) {
-                    final FXOMObject targetObject = osg.getItems().iterator().next();
+                    final var targetObject = osg.getItems().iterator().next();
 
                     // Build InsertAsSubComponent jobs
-                    final DesignHierarchyMask targetMask = new DesignHierarchyMask(targetObject);
+                    final var targetMask = new DesignHierarchyMask(targetObject);
                     if (targetMask.isAcceptingSubComponent(newObjects)) {
-                        for (FXOMObject newObject : newObjects) {
-                            final InsertAsSubComponentJob subJob = new InsertAsSubComponentJob(
+                        for (final var newObject : newObjects) {
+                            final var subJob = new InsertAsSubComponentJob(
                                     newObject,
                                     targetObject,
                                     targetMask.getSubComponentCount(),
                                     getEditorController());
-                            result.add(0, subJob);
+                            result.addFirst(subJob);
                         }
                     } // Build InsertAsAccessory jobs for single source selection
                     else if (newObjects.size() == 1) {
-                        final FXOMObject newObject = newObjects.get(0);
-                        final Accessory[] accessories = {Accessory.CONTENT,
+                        final var newObject = newObjects.getFirst();
+                        final var accessories = new Accessory[]{Accessory.CONTENT,
                             Accessory.CONTEXT_MENU, Accessory.GRAPHIC,
                             Accessory.TOOLTIP};
-                        for (Accessory a : accessories) {
+                        for (final var a : accessories) {
                             if (targetMask.isAcceptingAccessory(a, newObject)
                                     && targetMask.getAccessory(a) == null) {
-                                final InsertAsAccessoryJob subJob = new InsertAsAccessoryJob(
+                                final var subJob = new InsertAsAccessoryJob(
                                         newObject, targetObject, a,
                                         getEditorController());
                                 result.add(subJob);
@@ -134,7 +132,7 @@ public class PasteIntoJob extends BatchSelectionJob {
         if (newObjects.isEmpty()) {
             return null;
         } else {
-            return new ObjectSelectionGroup(newObjects, newObjects.iterator().next(), null);
+            return new ObjectSelectionGroup(newObjects, newObjects.getFirst(), null);
         }
     }
     
@@ -142,9 +140,9 @@ public class PasteIntoJob extends BatchSelectionJob {
         final String result;
 
         assert newObjects.size() == 1;
-        final FXOMObject newObject = newObjects.get(0);
+        final var newObject = newObjects.getFirst();
         if (newObject instanceof FXOMInstance) {
-            final Object sceneGraphObject = newObject.getSceneGraphObject();
+            final var sceneGraphObject = newObject.getSceneGraphObject();
             if (sceneGraphObject != null) {
                 result = I18N.getString("label.action.edit.paste.into.1", sceneGraphObject.getClass().getSimpleName());
             } else {
@@ -161,7 +159,7 @@ public class PasteIntoJob extends BatchSelectionJob {
     }
 
     private String makeMultipleSelectionDescription() {
-        final int objectCount = newObjects.size();
+        final var objectCount = newObjects.size();
         return I18N.getString("label.action.edit.paste.into.n", objectCount);
     }
 }

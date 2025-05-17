@@ -33,9 +33,8 @@
 package com.oracle.javafx.scenebuilder.kit.fxom;
 
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PrefixedValue;
-import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
+
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -48,7 +47,7 @@ public class FXOMCloner {
     private FXOMObject clonee;
     private final Set<String> addedFxIds = new HashSet<>();
     
-    public FXOMCloner(FXOMDocument targetDocument) {
+    public FXOMCloner(final FXOMDocument targetDocument) {
         assert targetDocument != null;
         this.targetDocument = targetDocument;
         this.fxIdCollector = new FxIdCollector(targetDocument);
@@ -58,18 +57,18 @@ public class FXOMCloner {
         return targetDocument;
     }
     
-    public FXOMObject clone(FXOMObject clonee) {
+    public FXOMObject clone(final FXOMObject clonee) {
         return clone(clonee, false /* preserveCloneFxId */);
     }
     
-    public FXOMObject clone(FXOMObject clonee, boolean preserveCloneeFxId) {
+    public FXOMObject clone(final FXOMObject clonee, final boolean preserveCloneeFxId) {
         assert clonee != null;
         assert addedFxIds.isEmpty();
         
         this.clonee = clonee;
         
         // Creates a deep clone of 'clonee'
-        final FXOMObject result = cloneObject(this.clonee);
+        final var result = cloneObject(this.clonee);
         addedFxIds.clear();
         
         // Renames fxid in the clone so that there is no naming
@@ -84,7 +83,7 @@ public class FXOMCloner {
      * Private
      */
     
-    private FXOMObject cloneObject(FXOMObject fxomObject) {
+    private FXOMObject cloneObject(final FXOMObject fxomObject) {
         final FXOMObject result;
         
         if (fxomObject instanceof FXOMCollection) {
@@ -102,15 +101,15 @@ public class FXOMCloner {
     }
     
     
-    private FXOMCollection cloneCollection(FXOMCollection source) {
+    private FXOMCollection cloneCollection(final FXOMCollection source) {
         assert source != null;
         
-        final FXOMCollection result = new FXOMCollection(
+        final var result = new FXOMCollection(
                 targetDocument,
                 source.getDeclaredClass());
         
-        for (FXOMObject sourceItem : source.getItems()) {
-            final FXOMObject newItem = cloneObject(sourceItem);
+        for (final var sourceItem : source.getItems()) {
+            final var newItem = cloneObject(sourceItem);
             newItem.addToParentCollection(-1, result);
         }
         
@@ -124,7 +123,7 @@ public class FXOMCloner {
     }
     
     
-    private FXOMInstance cloneInstance(FXOMInstance source) {
+    private FXOMInstance cloneInstance(final FXOMInstance source) {
         
         assert source != null;
         
@@ -140,8 +139,8 @@ public class FXOMCloner {
                     source.getDeclaredClass());
         }
         
-        for (Map.Entry<PropertyName, FXOMProperty> e : source.getProperties().entrySet()) {
-            final FXOMProperty newProperty = cloneProperty(e.getValue());
+        for (final var e : source.getProperties().entrySet()) {
+            final var newProperty = cloneProperty(e.getValue());
             // Note: cloneProperty() may 
             if (newProperty != null) {
                 newProperty.addToParentInstance(-1, result);
@@ -158,7 +157,7 @@ public class FXOMCloner {
     }
     
     
-    private FXOMObject cloneIntrinsic(FXOMIntrinsic source) {
+    private FXOMObject cloneIntrinsic(final FXOMIntrinsic source) {
         assert source != null;
         
         final boolean shallowClone;
@@ -166,7 +165,7 @@ public class FXOMCloner {
         switch(source.getType()) {
             case FX_REFERENCE:
             case FX_COPY:
-                final String sourceFxId = source.getSource();
+                final var sourceFxId = source.getSource();
                 assert sourceFxId != null;
                 sourceObject = clonee.getFxomDocument().searchWithFxId(sourceFxId);
                 if (isInsideClonee(sourceObject) || addedFxIds.contains(sourceFxId)) {
@@ -208,7 +207,7 @@ public class FXOMCloner {
     }
     
     
-    private FXOMProperty cloneProperty(FXOMProperty source) {
+    private FXOMProperty cloneProperty(final FXOMProperty source) {
         final FXOMProperty result;
         
         if (source instanceof FXOMPropertyC) {
@@ -223,29 +222,29 @@ public class FXOMCloner {
         return result;
     }
 
-    public FXOMPropertyC clonePropertyC(FXOMPropertyC source) {
+    public FXOMPropertyC clonePropertyC(final FXOMPropertyC source) {
         assert source != null;
         
-        final FXOMPropertyC result = new FXOMPropertyC(
+        final var result = new FXOMPropertyC(
                 targetDocument,
                 source.getName());
         
-        for (FXOMObject sourceValue : source.getValues()) {
-            final FXOMObject newValue = cloneObject(sourceValue);
+        for (final var sourceValue : source.getValues()) {
+            final var newValue = cloneObject(sourceValue);
             newValue.addToParentProperty(-1, result);
         }
         
         return result;
     }
     
-    public FXOMProperty clonePropertyT(FXOMPropertyT source) {
+    public FXOMProperty clonePropertyT(final FXOMPropertyT source) {
         assert source != null;
         
         final boolean shallowClone;
         final FXOMObject sourceObject;
-        final PrefixedValue pv = new PrefixedValue(source.getValue());
+        final var pv = new PrefixedValue(source.getValue());
         if (pv.isExpression()) {
-            final String sourceFxId = pv.getSuffix();
+            final var sourceFxId = pv.getSuffix();
             assert sourceFxId != null;
             sourceObject = clonee.getFxomDocument().searchWithFxId(sourceFxId);
             assert sourceObject != null : "sourceFxId=" + sourceFxId;
@@ -281,14 +280,14 @@ public class FXOMCloner {
         return result;
     }
     
-    private boolean isInsideClonee(FXOMObject object) {
+    private boolean isInsideClonee(final FXOMObject object) {
         assert object != null;
         return (object == clonee) || object.isDescendantOf(clonee);
     }    
     
-    private void renameFxIds(FXOMObject clone, boolean preserveCloneeFxId) {
+    private void renameFxIds(final FXOMObject clone, final boolean preserveCloneeFxId) {
         
-        final Map<String, FXOMObject> fxIds = clone.collectFxIds();
+        final var fxIds = clone.collectFxIds();
         
         if (preserveCloneeFxId && (clonee.getFxId() != null)) {
             // We don't apply renaming to the fx:id of the clonee
@@ -297,13 +296,13 @@ public class FXOMCloner {
             fxIds.remove(clonee.getFxId());
         }
         
-        for (Map.Entry<String, FXOMObject> e : fxIds.entrySet()) {
-            final String candidateFxId = e.getKey();
-            final FXOMObject declarer = e.getValue();
+        for (final var e : fxIds.entrySet()) {
+            final var candidateFxId = e.getKey();
+            final var declarer = e.getValue();
             
-            final String renamedFxId = fxIdCollector.importFxId(candidateFxId);
+            final var renamedFxId = fxIdCollector.importFxId(candidateFxId);
             
-            if (renamedFxId.equals(candidateFxId) == false) {
+            if (!renamedFxId.equals(candidateFxId)) {
                 
                 /*
                  * We renamed candidateFxId as renamedFxId 
@@ -316,15 +315,15 @@ public class FXOMCloner {
                 declarer.setFxId(renamedFxId);
 
                 // 2)
-                for (FXOMIntrinsic reference : clone.collectReferences(candidateFxId)) {
+                for (final var reference : clone.collectReferences(candidateFxId)) {
                     assert reference.getSource().equals(candidateFxId);
                     reference.setSource(renamedFxId);
                 }
 
                 // 3)
-                final PrefixedValue pv = new PrefixedValue(PrefixedValue.Type.EXPRESSION, renamedFxId);
-                final String newValue = pv.toString();
-                for (FXOMPropertyT reference : FXOMNodes.collectReferenceExpression(clone, candidateFxId)) {
+                final var pv = new PrefixedValue(PrefixedValue.Type.EXPRESSION, renamedFxId);
+                final var newValue = pv.toString();
+                for (final var reference : FXOMNodes.collectReferenceExpression(clone, candidateFxId)) {
                     reference.setValue(newValue);
                 }
             }

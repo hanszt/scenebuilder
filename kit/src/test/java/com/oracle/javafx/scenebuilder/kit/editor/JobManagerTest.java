@@ -109,7 +109,7 @@ public class JobManagerTest {
 
     @Test
     public void pushing_job_inside_execute_yields_ISE() {
-        var invalidJob = new InvalidJob(editor, jobManager);
+        final var invalidJob = new InvalidJob(editor, jobManager);
 
         assertThrows(IllegalStateException.class, () -> jobManager.push(invalidJob));
     }
@@ -120,7 +120,7 @@ public class JobManagerTest {
         private int undos = 0;
         private int redos = 0;
 
-        public DummyJob(EditorController editorController) {
+        public DummyJob(final EditorController editorController) {
             super(editorController);
         }
 
@@ -154,7 +154,7 @@ public class JobManagerTest {
 
         private JobManager jobManager;
 
-        public InvalidJob(EditorController editorController, JobManager jobManager) {
+        public InvalidJob(final EditorController editorController, final JobManager jobManager) {
             super(editorController);
             this.jobManager = jobManager;
         }

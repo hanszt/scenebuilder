@@ -61,7 +61,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.EditorPlatform.Theme;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.metadata.property.ValuePropertyMetadata;
 import javafx.css.Rule;
-import javafx.css.Selector;
 import javafx.css.Style;
 import javafx.css.Stylesheet;
 import javafx.css.CssParser;
@@ -103,29 +102,29 @@ public class CssInternal {
      * @param style style to be checked
      * @return true if the style is from a theme css.
      */
-    public static boolean isThemeStyle(Style style) {
+    public static boolean isThemeStyle(final Style style) {
         return isThemeRule(style.getDeclaration().getRule());
     }
 
-    public static boolean isCaspianTheme(Style style) {
+    public static boolean isCaspianTheme(final Style style) {
         return style.getDeclaration().getRule().getStylesheet().getUrl()
                 .endsWith(Theme.CASPIAN.getStylesheetURLs().getFirst());
     }
 
-    public static boolean isModenaTheme(Style style) {
+    public static boolean isModenaTheme(final Style style) {
         return style.getDeclaration().getRule().getStylesheet().getUrl()
                 .endsWith(Theme.MODENA.getStylesheetURLs().getFirst());
     }
 
-    public static String getThemeDisplayName(Style style) {
-        String themeName = ""; //NOI18N
-        String url = style.getDeclaration().getRule().getStylesheet().getUrl();
+    public static String getThemeDisplayName(final Style style) {
+        var themeName = ""; //NOI18N
+        final var url = style.getDeclaration().getRule().getStylesheet().getUrl();
         if (url.contains("modena")) {//NOI18N
             themeName += "modena/"; //NOI18N
         } else if (url.contains("caspian")) {//NOI18N
             themeName += "caspian/"; //NOI18N
         }
-        File file = new File(url);
+        final var file = new File(url);
         themeName += file.getName().replace(".bss", ".css");//NOI18N
         if (themeName.endsWith("modena.css")) {//NOI18N
             themeName = "modena.css";//NOI18N
@@ -135,10 +134,10 @@ public class CssInternal {
         return themeName;
     }
 
-    public static boolean isThemeRule(Rule rule) {
-        String stylePath = rule.getStylesheet().getUrl();
+    public static boolean isThemeRule(final Rule rule) {
+        final var stylePath = rule.getStylesheet().getUrl();
         assert stylePath != null;
-        for (String themeUrl : themeUrls) {
+        for (final var themeUrl : themeUrls) {
             if (stylePath.endsWith(themeUrl)) {
                 return true;
             }
@@ -146,16 +145,16 @@ public class CssInternal {
         return false;
     }
 
-    public static boolean isThemeClass(Theme theme, String styleClass) {
+    public static boolean isThemeClass(final Theme theme, final String styleClass) {
         return getThemeStyleClasses(theme).contains(styleClass);
     }
 
-    public static List<String> getThemeStyleClasses(Theme theme) {
-        Set<String> themeClasses = new HashSet<>();
+    public static List<String> getThemeStyleClasses(final Theme theme) {
+        final Set<String> themeClasses = new HashSet<>();
         theme.getStylesheetURLs().stream()
             .filter(s -> !EditorPlatform.isPlatformThemeStylesheetURL(s))
             .forEach(themeStyleSheet -> {
-                URL resource = Button.class.getResource("/" + themeStyleSheet);
+                final var resource = Button.class.getResource("/" + themeStyleSheet);
                 themeClasses.addAll(getStyleClasses(resource));
             });
         return new ArrayList<>(themeClasses);
@@ -163,35 +162,35 @@ public class CssInternal {
 
     // Return the stylesheet corresponding to a style class.
     // (input parameter: a map returned by getStyleClassesMap(), styleClass)
-    public static String getStyleSheet(Map<String, String> styleClassMap, String styleClass) {
+    public static String getStyleSheet(final Map<String, String> styleClassMap, final String styleClass) {
         return styleClassMap.get(styleClass);
     }
 
-    public static List<String> getStyleClasses(EditorController editorController, Set<FXOMInstance> instances) {
+    public static List<String> getStyleClasses(final EditorController editorController, final Set<FXOMInstance> instances) {
         return new ArrayList<>(getStyleClassesMap(editorController, instances).keySet());
     }
 
-    public static Map<String, String> getStyleClassesMap(EditorController editorController, Set<FXOMInstance> instances) {
-        Map<String, String> classesMap = new TreeMap<>();
+    public static Map<String, String> getStyleClassesMap(final EditorController editorController, final Set<FXOMInstance> instances) {
+        final Map<String, String> classesMap = new TreeMap<>();
         Object fxRoot = null;
-        for (FXOMInstance instance : instances) {
+        for (final var instance : instances) {
             if (fxRoot == null) {
                 fxRoot = instance.getFxomDocument().getSceneGraphRoot();
             }
-            Object fxObject = instance.getSceneGraphObject();
+            final var fxObject = instance.getSceneGraphObject();
             classesMap.putAll(getFxObjectClassesMap(fxObject, fxRoot));
         }
 
         // Handle the Scene stylesheets (if any)
-        List<File> sceneStyleSheets = editorController.getSceneStyleSheets();
+        final List<File> sceneStyleSheets = editorController.getSceneStyleSheets();
         if (sceneStyleSheets != null) {
-            for (File stylesheet : sceneStyleSheets) {
+            for (final var stylesheet : sceneStyleSheets) {
                 try {
-                    URL stylesheetUrl = stylesheet.toURI().toURL();
-                    for (String styleClass : getStyleClasses(stylesheetUrl)) {
+                    final var stylesheetUrl = stylesheet.toURI().toURL();
+                    for (final var styleClass : getStyleClasses(stylesheetUrl)) {
                         classesMap.put(styleClass, stylesheetUrl.toExternalForm());
                     }
-                } catch (MalformedURLException ex) {
+                } catch (final MalformedURLException ex) {
                     return classesMap;
                 }
             }
@@ -200,13 +199,13 @@ public class CssInternal {
     }
 
     // Retrieve the styClasses in the fx object scene graph
-    private static Map<String, String> getFxObjectClassesMap(Object fxObject, Object fxRoot) {
-        Map<String, String> classesMap = new HashMap<>();
+    private static Map<String, String> getFxObjectClassesMap(final Object fxObject, final Object fxRoot) {
+        final Map<String, String> classesMap = new HashMap<>();
         classesMap.putAll(getSingleFxObjectClassesMap(fxObject));
         if (!(fxObject instanceof Node)) {
             return classesMap;
         }
-        Node node = (Node) fxObject;
+        var node = (Node) fxObject;
         if (node == fxRoot) {
             return classesMap;
         }
@@ -222,17 +221,17 @@ public class CssInternal {
     }
 
     // Retrieve the styleClasses in the fx object only (not inherited ones)
-    private static Map<String, String> getSingleFxObjectClassesMap(Object fxObject) {
-        Map<String, String> classesMap = new HashMap<>();
+    private static Map<String, String> getSingleFxObjectClassesMap(final Object fxObject) {
+        final Map<String, String> classesMap = new HashMap<>();
 
         if (fxObject instanceof Parent) {
-            List<String> stylesheets = ((Parent) fxObject).getStylesheets();
-            for (String stylesheet : stylesheets) {
+            final List<String> stylesheets = ((Parent) fxObject).getStylesheets();
+            for (final var stylesheet : stylesheets) {
                 try {
-                    for (String styleClass : getStyleClasses(new URL(stylesheet))) {
+                    for (final var styleClass : getStyleClasses(new URL(stylesheet))) {
                         classesMap.put(styleClass, stylesheet);
                     }
-                } catch (MalformedURLException ex) {
+                } catch (final MalformedURLException ex) {
                     return classesMap;
                 }
             }
@@ -241,11 +240,11 @@ public class CssInternal {
     }
 
     private static Set<String> getStyleClasses(final URL url) {
-        Set<String> styleClasses = new HashSet<>();
-        Stylesheet s;
+        final Set<String> styleClasses = new HashSet<>();
+        final Stylesheet s;
         try {
             s = new CssParser().parse(url);
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             System.out.println("Warning: Invalid Stylesheet " + url); //NOI18N
             return styleClasses;
         }
@@ -253,8 +252,8 @@ public class CssInternal {
             // The parsed CSS file was empty. No parsing occurred.
             return styleClasses;
         }
-        for (Rule r : s.getRules()) {
-            for (Selector ss : r.getSelectors()) {
+        for (final var r : s.getRules()) {
+            for (final var ss : r.getSelectors()) {
                 styleClasses.addAll(ss.getStyleClassNames());
             }
         }
@@ -262,20 +261,20 @@ public class CssInternal {
     }
 
     @SuppressWarnings("unchecked")
-    public static List<String> getCssProperties(Set<Class<?>> classes) {
-        TreeSet<String> cssProperties = new TreeSet<>();
-        for (Class<?> clazz : classes) {
+    public static List<String> getCssProperties(final Set<Class<?>> classes) {
+        final var cssProperties = new TreeSet<String>();
+        for (final var clazz : classes) {
             if (Node.class.isAssignableFrom(clazz)) {
                 Object metadatas = null;
                 try {
                     metadatas = clazz.getMethod("getClassCssMetaData").invoke(null, (Object[]) null); //NOI18N
-                } catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+                } catch (final NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
                     assert false;
                 }
-                for (CssMetaData<? extends Styleable, ?> metadata : ((List<CssMetaData<? extends Styleable, ?>>) metadatas)) {
+                for (final var metadata : ((List<CssMetaData<? extends Styleable, ?>>) metadatas)) {
                     cssProperties.add(metadata.getProperty());
                     if (metadata.getSubProperties() != null) {
-                        for (CssMetaData<? extends Styleable, ?> subMetadata : metadata.getSubProperties()) {
+                        for (final var subMetadata : metadata.getSubProperties()) {
                             cssProperties.add(subMetadata.getProperty());
                         }
                     }
@@ -286,14 +285,14 @@ public class CssInternal {
     }
 
     // If this property is ruled by CSS, return a CssPropAuthorInfo. Otherwise returns null.
-    public static CssPropAuthorInfo getCssInfo(Object fxObject, ValuePropertyMetadata prop) {
+    public static CssPropAuthorInfo getCssInfo(final Object fxObject, final ValuePropertyMetadata prop) {
         CssPropAuthorInfo info = null;
         Node node = null;
 
         if (fxObject instanceof Node) {
             node = (Node) fxObject;
         } else {
-            Styleable styleable = fxObject instanceof Styleable ? (Styleable) fxObject : null;
+            final var styleable = fxObject instanceof Styleable ? (Styleable) fxObject : null;
             if (styleable != null) {
                 node = styleable.getStyleableNode();
             }
@@ -304,13 +303,12 @@ public class CssInternal {
         return info;
     }
 
-    private static CssPropAuthorInfo getCssInfoForNode(Node node, ValuePropertyMetadata prop) {
-        @SuppressWarnings("rawtypes")
-        Map<StyleableProperty, List<Style>> map = collectCssState(node);
-        for (@SuppressWarnings("rawtypes") Map.Entry<StyleableProperty, List<Style>> entry : map.entrySet()) {//NOI18N
-            StyleableProperty<?> beanProp = entry.getKey();
-            List<Style> styles = new ArrayList<>(entry.getValue());
-            String name = getBeanPropertyName(beanProp);
+    private static CssPropAuthorInfo getCssInfoForNode(final Node node, final ValuePropertyMetadata prop) {
+        @SuppressWarnings("rawtypes") final var map = collectCssState(node);
+        for (@SuppressWarnings("rawtypes") final var entry : map.entrySet()) {//NOI18N
+            final StyleableProperty<?> beanProp = entry.getKey();
+            final List<Style> styles = new ArrayList<>(entry.getValue());
+            final var name = getBeanPropertyName(beanProp);
             if (!name.equals(prop.getName().getName())) {
                 continue;
             }
@@ -318,19 +316,19 @@ public class CssInternal {
                 // If the value has an origin of Author or Inline 
                 // then we have a property ruled by CSS, otherwise return null
                 // This is in sync because the map is not empty
-                StyleOrigin origin = beanProp.getStyleOrigin();
+                final var origin = beanProp.getStyleOrigin();
                 if (origin == null || origin.equals(StyleOrigin.USER)
                         || origin.equals(StyleOrigin.USER_AGENT)) {
                     return null;
                 }
-                CssMetaData<?, ?> styleable = beanProp.getCssMetaData();
+                final var styleable = beanProp.getCssMetaData();
                 // Lookup the Author style
                 CssPropAuthorInfo info = null;
-                for (Style style : styles) {
-                    Rule rule = style.getDeclaration().getRule();
+                for (final var style : styles) {
+                    final var rule = style.getDeclaration().getRule();
                     assert rule != null;
                     // StyleOrigin can be null when the value is set to its initial value.
-                    StyleOrigin o = rule.getOrigin();
+                    final var o = rule.getOrigin();
                     if (o == null) {
                         return null;
                     }
@@ -348,7 +346,7 @@ public class CssInternal {
         return null;
     }
 
-    public static boolean isCssRuled(Object fxObject, ValuePropertyMetadata prop) {
+    public static boolean isCssRuled(final Object fxObject, final ValuePropertyMetadata prop) {
         return getCssInfo(fxObject, prop) != null;
     }
 
@@ -365,18 +363,18 @@ public class CssInternal {
         private final Object val;
         private final List<Style> styles = new ArrayList<>();
 
-        public CssPropAuthorInfo(ValuePropertyMetadata prop, StyleableProperty<?> value, CssMetaData<?, ?> styleable) {
+        public CssPropAuthorInfo(final ValuePropertyMetadata prop, final StyleableProperty<?> value, final CssMetaData<?, ?> styleable) {
             this(prop, value, styleable, null);
         }
 
-        private CssPropAuthorInfo(ValuePropertyMetadata prop, StyleableProperty<?> value, CssMetaData<?, ?> styleable, Object val) {
+        private CssPropAuthorInfo(final ValuePropertyMetadata prop, final StyleableProperty<?> value, final CssMetaData<?, ?> styleable, final Object val) {
             this.prop = prop;
             this.styleable = styleable;
             this.value = value;
             this.val = val;
         }
 
-        public CssPropAuthorInfo(StyleableProperty<?> val, CssMetaData<?, ?> styleable, Object value) {
+        public CssPropAuthorInfo(final StyleableProperty<?> val, final CssMetaData<?, ?> styleable, final Object value) {
             this(null, val, styleable, value);
         }
 
@@ -388,13 +386,13 @@ public class CssInternal {
             if (getStyles().isEmpty()) {
                 return null;
             } else {
-                Rule rule = getStyles().get(0).getDeclaration().getRule();
+                final var rule = getStyles().getFirst().getDeclaration().getRule();
                 if (rule == null) {
                     return null;
                 } else {
                     try {
                         return new URL(rule.getStylesheet().getUrl());
-                    } catch (MalformedURLException ex) {
+                    } catch (final MalformedURLException ex) {
                         System.out.println(ex.getMessage() + " " + ex);
                         return null;
                     }
@@ -411,7 +409,7 @@ public class CssInternal {
         }
 
         public boolean isInline() {
-            StyleOrigin o = getOrigin();
+            final var o = getOrigin();
             return o != null && o.equals(StyleOrigin.INLINE);
         }
 
@@ -431,7 +429,7 @@ public class CssInternal {
 
     }
 
-    public static String getBeanPropertyName(StyleableProperty<?> val) {
+    public static String getBeanPropertyName(final StyleableProperty<?> val) {
         String property = null;
         if (val instanceof ReadOnlyProperty) {
             property = ((ReadOnlyProperty<?>) val).getName();
@@ -439,29 +437,29 @@ public class CssInternal {
         return property;
     }
 
-    public static void attachMapToNode(Node node) {
-        Map<StyleableProperty<?>, List<Style>> smap = new HashMap<>();
+    public static void attachMapToNode(final Node node) {
+        final Map<StyleableProperty<?>, List<Style>> smap = new HashMap<>();
         Deprecation.setStyleMap(node, FXCollections.observableMap(smap));
     }
 
-    public static void detachMapToNode(Node node) {
+    public static void detachMapToNode(final Node node) {
         Deprecation.setStyleMap(node, null);
     }
 
     @SuppressWarnings("rawtypes")
-    public static Map<StyleableProperty, List<Style>> collectCssState(Node node) {
+    public static Map<StyleableProperty, List<Style>> collectCssState(final Node node) {
         attachMapToNode(node);
         // Force CSS to apply
         node.applyCss();
 
-        Map<StyleableProperty, List<Style>> ret = new HashMap<>();
+        final Map<StyleableProperty, List<Style>> ret = new HashMap<>();
 //        ret.putAll(Deprecation.getStyleMap(node));
 
-        Map<StyleableProperty<?>, List<Style>> map = Deprecation.getStyleMap(node);
+        final var map = Deprecation.getStyleMap(node);
         if (map != null && !map.isEmpty()) {
-            for (Map.Entry<StyleableProperty<?>, List<Style>> entry : map.entrySet()) {
-                StyleableProperty<?> key = entry.getKey();
-                List<Style> value = entry.getValue();
+            for (final var entry : map.entrySet()) {
+                final var key = entry.getKey();
+                final var value = entry.getValue();
                 if (((javafx.beans.property.Property<?>) key).getBean() == node) {
                     ret.put(key, value);
                 }
@@ -482,7 +480,7 @@ public class CssInternal {
         return ret;
     }
 
-    public static StyleOrigin getOrigin(Style style) {
+    public static StyleOrigin getOrigin(final Style style) {
         if (style == null || style.getDeclaration() == null) {
             return null;
         }
@@ -490,14 +488,14 @@ public class CssInternal {
     }
 
     // From an css url, returns the theme display name
-    public static String getThemeDisplayName(String url) {
-        String themeName = ""; //NOI18N
+    public static String getThemeDisplayName(final String url) {
+        var themeName = ""; //NOI18N
         if (url.contains("modena")) {//NOI18N
             themeName += "modena/"; //NOI18N
         } else if (url.contains("caspian")) {//NOI18N
             themeName += "caspian/"; //NOI18N
         }
-        File file = new File(url);
+        final var file = new File(url);
         themeName += file.getName().replace(".bss", ".css");//NOI18N
         if (themeName.endsWith("modena.css")) {//NOI18N
             themeName = "modena.css";//NOI18N

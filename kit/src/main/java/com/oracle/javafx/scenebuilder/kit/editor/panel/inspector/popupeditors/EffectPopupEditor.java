@@ -55,12 +55,12 @@ public class EffectPopupEditor extends PopupEditor {
     private EditorController editorController;
 
     private final ChangeListener<Number> effectRevisionChangeListener = (ov, t, t1) -> {
-        final Effect rootEffect = effectPicker.getRootEffectProperty();
+        final var rootEffect = effectPicker.getRootEffectProperty();
         // Need to clone the root effect of the effect picker
         // in order to commit with a new value
-        final Effect rootEffectClone = Utils.clone(rootEffect);
+        final var rootEffectClone = Utils.clone(rootEffect);
         // If live update, do not commit the value
-        if (effectPicker.isLiveUpdate() == true) {
+        if (effectPicker.isLiveUpdate()) {
             userUpdateTransientValueProperty(rootEffectClone);
         } else {
             commitValue(rootEffectClone);
@@ -69,33 +69,33 @@ public class EffectPopupEditor extends PopupEditor {
     };
 
     private final ChangeListener<Boolean> liveUpdateListener = (ov, oldValue, newValue) -> {
-        if (effectPicker.isLiveUpdate() == false) {
-            final Effect rootEffect = effectPicker.getRootEffectProperty();
+        if (!effectPicker.isLiveUpdate()) {
+            final var rootEffect = effectPicker.getRootEffectProperty();
             // Need to clone the root effect of the effect picker
             // in order to commit with a new value
-            final Effect rootEffectClone = Utils.clone(rootEffect);
+            final var rootEffectClone = Utils.clone(rootEffect);
             commitValue(rootEffectClone);
             updateMenuButton(rootEffectClone);
         }
     };
 
-    public EffectPopupEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses, EditorController editorController) {
+    public EffectPopupEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses, final EditorController editorController) {
         super(propMeta, selectedClasses);
         initialize(editorController);
     }
     
-    private void initialize(EditorController editorController) {
+    private void initialize(final EditorController editorController) {
         this.editorController = editorController;
     }
 
     @Override
-    public void setPopupContentValue(Object value) {
+    public void setPopupContentValue(final Object value) {
         assert value == null || value instanceof Effect;
         effectPicker.revisionProperty().removeListener(effectRevisionChangeListener);
         effectPicker.liveUpdateProperty().removeListener(liveUpdateListener);
         // We first clone the root effect and initializePopupContent the effect picker with the clone value :
         // then the clone value will be updated and passed back to the model
-        final Effect rootEffectClone = Utils.clone((Effect) value);
+        final var rootEffectClone = Utils.clone((Effect) value);
         effectPicker.setRootEffectProperty(rootEffectClone);
         // Refresh MenuButton items if needed
         updateMenuButton(rootEffectClone);
@@ -112,13 +112,13 @@ public class EffectPopupEditor extends PopupEditor {
     }
 
     @Override
-    public String getPreviewString(Object value) {
+    public String getPreviewString(final Object value) {
         if (value == null) {
             return "+"; //NOI18N
         }
         assert value instanceof Effect;
-        Effect effect = (Effect) value;
-        final StringBuilder sb = new StringBuilder();
+        var effect = (Effect) value;
+        final var sb = new StringBuilder();
         while (effect != null) {
             sb.append(effect.getClass().getSimpleName());
             effect = Utils.getDefaultInput(effect);
@@ -134,14 +134,14 @@ public class EffectPopupEditor extends PopupEditor {
         return effectPicker;
     }
 
-    private void updateMenuButton(Effect value) {
+    private void updateMenuButton(final Effect value) {
         if (value != null) {
-            if (popupMb.getItems().contains(popupMenuItem) == false) {
+            if (!popupMb.getItems().contains(popupMenuItem)) {
                 popupMb.getItems().removeAll(effectMenuItems);
                 popupMb.getItems().add(popupMenuItem);
             }
         } else {
-            if (popupMb.getItems().contains(popupMenuItem) == true) {
+            if (popupMb.getItems().contains(popupMenuItem)) {
                 popupMb.getItems().addAll(effectMenuItems);
                 popupMb.getItems().remove(popupMenuItem);
             }

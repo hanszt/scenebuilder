@@ -62,16 +62,16 @@ public class MessagePanelController extends AbstractFxmlPanelController {
     @FXML private Button clearButton;
     
     @FXML
-    public void onClear(ActionEvent event) {
+    public void onClear(final ActionEvent event) {
         getEditorController().getMessageLog().clear();
     }
     
-    public MessagePanelController(EditorController editorController) {
+    public MessagePanelController(final EditorController editorController) {
         super(MessagePanelController.class.getResource("MessagePanel.fxml"), I18N.getBundle(), editorController); //NOI18N
     }
     
     
-    public void setPanelWidth(double panelWidth) {
+    public void setPanelWidth(final double panelWidth) {
         this.panelWidth = panelWidth;
         if (scrollPane != null) {
             updateScrollPaneWidth();
@@ -84,7 +84,7 @@ public class MessagePanelController extends AbstractFxmlPanelController {
      */
 
     @Override
-    protected void fxomDocumentDidChange(FXOMDocument oldDocument) {
+    protected void fxomDocumentDidChange(final FXOMDocument oldDocument) {
         // Nothing to do
     }
 
@@ -136,23 +136,23 @@ public class MessagePanelController extends AbstractFxmlPanelController {
     private void messageLogDidChange() {
         assert gridPane != null;
         gridPane.getChildren().clear();
-        int rowIndex = 0;
-        int columnIndex = 0;
-        for (MessageLogEntry mle : getEditorController().getMessageLog().getEntries()) {
+        var rowIndex = 0;
+        var columnIndex = 0;
+        for (final var mle : getEditorController().getMessageLog().getEntries()) {
             if (mle.getType() == MessageLogEntry.Type.WARNING) {
-                Button dismissButton = new Button("x"); //NOI18N
+                final var dismissButton = new Button("x"); //NOI18N
                 dismissButton.addEventHandler(MouseEvent.MOUSE_RELEASED, t -> getEditorController().getMessageLog().clearEntry(mle));
-                StackPane paneForButton = new StackPane();
+                final var paneForButton = new StackPane();
                 paneForButton.getChildren().add(dismissButton);
                 paneForButton.setAlignment(Pos.CENTER_RIGHT);
 
-                Label msgLabel = new Label(mle.getText());
+                final var msgLabel = new Label(mle.getText());
                 msgLabel.setTooltip(new Tooltip(mle.getText()));
-                Label timestampLabel = new Label(mle.getTimestamp());
+                final var timestampLabel = new Label(mle.getTimestamp());
                 timestampLabel.getStyleClass().add("timestamp"); //NOI18N
-                VBox labelBox = new VBox();
+                final var labelBox = new VBox();
                 labelBox.getChildren().addAll(timestampLabel, msgLabel);
-                StackPane paneForLabel = new StackPane();
+                final var paneForLabel = new StackPane();
                 paneForLabel.getChildren().add(labelBox);
                 paneForLabel.setAlignment(Pos.CENTER_LEFT);
 

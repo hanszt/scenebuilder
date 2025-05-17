@@ -54,33 +54,33 @@ public class ClipboardEncoder {
     
     private final List<FXOMObject> fxomObjects;
 
-    public ClipboardEncoder(List<FXOMObject> fxomObjects) {
+    public ClipboardEncoder(final List<FXOMObject> fxomObjects) {
         assert fxomObjects != null;
         this.fxomObjects = fxomObjects;
     }
     
     public boolean isEncodable() {
-        return fxomObjects.isEmpty() == false;
+        return !fxomObjects.isEmpty();
     }
     
     public ClipboardContent makeEncoding() {
         assert isEncodable();
         
-        final ClipboardContent result = new ClipboardContent();
-        final FXOMArchive fxomArchive = new FXOMArchive(fxomObjects);
+        final var result = new ClipboardContent();
+        final var fxomArchive = new FXOMArchive(fxomObjects);
         
         // SB_DATA_FORMAT
         result.put(SB_DATA_FORMAT, new FXOMArchive(fxomObjects));
             
         // FXML_DATA_FORMAT
-        final FXOMArchive.Entry entry0 = fxomArchive.getEntries().get(0);
+        final var entry0 = fxomArchive.getEntries().getFirst();
         result.put(FXML_DATA_FORMAT, entry0.getFxmlText());
         result.put(DataFormat.PLAIN_TEXT, entry0.getFxmlText());
         
         // DataFormat.IMAGE
-        final FXOMObject fxomObject0 = fxomObjects.get(0);
+        final var fxomObject0 = fxomObjects.getFirst();
         if (fxomObject0.getSceneGraphObject() instanceof ImageView) {
-            final ImageView imageView = (ImageView) fxomObject0.getSceneGraphObject();
+            final var imageView = (ImageView) fxomObject0.getSceneGraphObject();
             if (imageView.getImage() != null) {
                 result.put(DataFormat.IMAGE, imageView.getImage());
             }

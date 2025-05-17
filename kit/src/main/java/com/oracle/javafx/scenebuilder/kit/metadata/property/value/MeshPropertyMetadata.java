@@ -42,13 +42,13 @@ import javafx.scene.shape.Mesh;
  */
 public class MeshPropertyMetadata extends ComplexPropertyMetadata<Mesh> {
 
-    public MeshPropertyMetadata(PropertyName name, boolean readWrite, 
-            Mesh defaultValue, InspectorPath inspectorPath) {
+    public MeshPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                final Mesh defaultValue, final InspectorPath inspectorPath) {
         super(name, Mesh.class, readWrite, defaultValue, inspectorPath);
     }
 
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(Mesh value, FXOMDocument fxomDocument) {
+    public FXOMInstance makeFxomInstanceFromValue(final Mesh value, final FXOMDocument fxomDocument) {
         throw new UnsupportedOperationException("Not supported yet."); //NOI18N
     }
     

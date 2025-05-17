@@ -51,8 +51,8 @@ public class FontPropertyMetadata extends ComplexPropertyMetadata<Font> {
             DoublePropertyMetadata.DoubleKind.SIZE, true, 0.0, InspectorPath.UNUSED);
 
     
-    public FontPropertyMetadata(PropertyName name, boolean readWrite, 
-            Font defaultValue, InspectorPath inspectorPath) {
+    public FontPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                final Font defaultValue, final InspectorPath inspectorPath) {
         super(name, Font.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -61,8 +61,8 @@ public class FontPropertyMetadata extends ComplexPropertyMetadata<Font> {
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(Font value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, getValueClass());
+    public FXOMInstance makeFxomInstanceFromValue(final Font value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, getValueClass());
         
         nameMetadata.setValue(result, value.getName());
         sizeMetadata.setValue(result, value.getSize());

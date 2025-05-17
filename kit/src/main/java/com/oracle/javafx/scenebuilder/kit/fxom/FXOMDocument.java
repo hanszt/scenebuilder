@@ -35,12 +35,11 @@ package com.oracle.javafx.scenebuilder.kit.fxom;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -60,7 +59,6 @@ import com.oracle.javafx.scenebuilder.kit.fxom.glue.GlueDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.sampledata.SampleDataGenerator;
 import com.oracle.javafx.scenebuilder.kit.util.Deprecation;
 import com.oracle.javafx.scenebuilder.kit.util.URLUtils;
-import javafx.scene.Parent;
 
 /**
  *
@@ -102,23 +100,23 @@ public class FXOMDocument {
      *                    (e.g. enforcing normalization)
      * @throws IOException when the fxmlText cannot be loaded
      */
-    public FXOMDocument(String fxmlText, URL location, ClassLoader classLoader, ResourceBundle resources, FXOMDocumentSwitch... switches) throws IOException {
+    public FXOMDocument(final String fxmlText, final URL location, final ClassLoader classLoader, final ResourceBundle resources, final FXOMDocumentSwitch... switches) throws IOException {
         this.glue = new GlueDocument(fxmlText);
         this.location = location;
         this.classLoader = classLoader;
         this.resources = resources;
         initialDeclaredClasses = new ArrayList<>();
         if (this.glue.getRootElement() != null) {
-            String fxmlTextToLoad = fxmlText;
-            Set<FXOMDocumentSwitch> availableSwitches = Set.of(switches);
+            var fxmlTextToLoad = fxmlText;
+            final var availableSwitches = Set.of(switches);
             if (!availableSwitches.contains(FXOMDocumentSwitch.FOR_PREVIEW)) {
-                final FXMLPropertiesDisabler fxmlPropertiesDisabler = new FXMLPropertiesDisabler();
+                final var fxmlPropertiesDisabler = new FXMLPropertiesDisabler();
                 fxmlTextToLoad = fxmlPropertiesDisabler.disableProperties(fxmlText);
             }
-            final FXOMLoader loader = new FXOMLoader(this);
+            final var loader = new FXOMLoader(this);
             loader.load(fxmlTextToLoad);
             if (availableSwitches.contains(FXOMDocumentSwitch.NORMALIZED)) {
-                final FXOMNormalizer normalizer = new FXOMNormalizer(this);
+                final var normalizer = new FXOMNormalizer(this);
                 normalizer.normalize();
             }
         } else {
@@ -160,13 +158,13 @@ public class FXOMDocument {
 
         try {
             return Optional.ofNullable(location.toURI());
-        } catch (URISyntaxException e) {
+        } catch (final URISyntaxException e) {
             return Optional.empty();
         }
     }
 
-    public void setLocation(URL location) {
-        if (URLUtils.equals(this.location, location) == false) {
+    public void setLocation(final URL location) {
+        if (!URLUtils.equals(this.location, location)) {
             beginUpdate();
             if (fxomRoot != null) {
                 fxomRoot.documentLocationWillChange(location);
@@ -180,7 +178,7 @@ public class FXOMDocument {
         return classLoader;
     }
 
-    public void setClassLoader(ClassLoader classLoader) {
+    public void setClassLoader(final ClassLoader classLoader) {
         beginUpdate();
         this.classLoader = classLoader;
         endUpdate();
@@ -194,7 +192,7 @@ public class FXOMDocument {
         return resources;
     }
 
-    public void setResources(ResourceBundle resources) {
+    public void setResources(final ResourceBundle resources) {
         beginUpdate();
         this.resources = resources;
         endUpdate();
@@ -204,8 +202,8 @@ public class FXOMDocument {
         return sampleDataGenerator != null;
     }
 
-    public void setSampleDataEnabled(boolean sampleDataEnabled) {
-        assert isUpdateOnGoing() == false;
+    public void setSampleDataEnabled(final boolean sampleDataEnabled) {
+        assert !isUpdateOnGoing();
         
         final SampleDataGenerator newSampleDataGenerator;
         if (sampleDataEnabled) {
@@ -233,13 +231,13 @@ public class FXOMDocument {
         return fxomRoot;
     }
 
-    public void setFxomRoot(FXOMObject fxomRoot) {
+    public void setFxomRoot(final FXOMObject fxomRoot) {
         beginUpdate();
         updateRoots(fxomRoot, null);
         endUpdate();
     }
     
-    void updateRoots(FXOMObject fxomRoot, Object sceneGraphRoot) {
+    void updateRoots(final FXOMObject fxomRoot, final Object sceneGraphRoot) {
         assert fxomRoot == null || fxomRoot.getFxomDocument() == this;
 
         this.fxomRoot = fxomRoot;
@@ -257,7 +255,7 @@ public class FXOMDocument {
         return sceneGraphRoot;
     }
 
-    void setSceneGraphRoot(Object sceneGraphRoot) {
+    void setSceneGraphRoot(final Object sceneGraphRoot) {
         this.sceneGraphRoot = sceneGraphRoot;
     }
 
@@ -272,7 +270,7 @@ public class FXOMDocument {
         return Collections.unmodifiableList(displayStylesheets);
     }
 
-    void setDisplayStylesheets(List<String> displayStylesheets) {
+    void setDisplayStylesheets(final List<String> displayStylesheets) {
         this.displayStylesheets.clear();
         this.displayStylesheets.addAll(displayStylesheets);
     }
@@ -280,7 +278,7 @@ public class FXOMDocument {
     /**
      * Sets the Node that should be displayed in the editor instead of the scene graph root.
      */
-    void setDisplayNode(Node displayNode) {
+    void setDisplayNode(final Node displayNode) {
         this.displayNode = displayNode;
     }
 
@@ -296,7 +294,7 @@ public class FXOMDocument {
      * @param wildcardImports If the FXML should have wildcards in its imports.
      * @return The FXML string representation. This can be empty if current root is null.
      */
-    public String getFxmlText(boolean wildcardImports) {
+    public String getFxmlText(final boolean wildcardImports) {
         final String result;
         if (fxomRoot == null) {
             assert glue.getRootElement() == null;
@@ -306,13 +304,13 @@ public class FXOMDocument {
             assert glue.getRootElement() != null;
             // Note that sceneGraphRoot might be null if fxomRoot is unresolved
             glue.updateIndent();
-            final FXOMSaver saver = new FXOMSaver(wildcardImports);
+            final var saver = new FXOMSaver(wildcardImports);
             result = saver.save(this);
         }
         return result;
     }
 
-    public FXOMObject searchWithSceneGraphObject(Object sceneGraphObject) {
+    public FXOMObject searchWithSceneGraphObject(final Object sceneGraphObject) {
         final FXOMObject result;
         
         if (fxomRoot == null) {
@@ -324,7 +322,7 @@ public class FXOMDocument {
         return result;
     }
     
-    public FXOMObject searchWithFxId(String fxId) {
+    public FXOMObject searchWithFxId(final String fxId) {
         final FXOMObject result;
         
         if (fxomRoot == null) {
@@ -369,7 +367,7 @@ public class FXOMDocument {
         if (sceneGraphHolder != null) {
             sceneGraphHolder.fxomDocumentWillRefreshSceneGraph(this);
         }
-        final FXOMRefresher fxomRefresher = new FXOMRefresher();
+        final var fxomRefresher = new FXOMRefresher();
         fxomRefresher.refresh(this);
         if ((sampleDataGenerator != null) && (fxomRoot != null)) {
             sampleDataGenerator.assignSampleData(fxomRoot);
@@ -396,7 +394,7 @@ public class FXOMDocument {
      * 
      * @param stylesheetPath path of the stylesheet to be reloaded.
      */
-    public void reapplyCSS(Path stylesheetPath) {
+    public void reapplyCSS(final Path stylesheetPath) {
         if (sceneGraphRoot instanceof Node) {
             
             /*
@@ -404,7 +402,7 @@ public class FXOMDocument {
              * include stylesheetPath and update them.
              * Right now, we use a workaround solution because of bug RT-34863.
              */
-            final Parent contentGroup = ((Node) sceneGraphRoot).getParent();
+            final var contentGroup = ((Node) sceneGraphRoot).getParent();
             if ((contentGroup != null) && (contentGroup.getScene() != null) && stylesheetPath != null) {
                 Deprecation.reapplyCSS(contentGroup, stylesheetPath.toUri());
                 cssRevision.set(cssRevision.get()+1);
@@ -430,15 +428,15 @@ public class FXOMDocument {
      * @return  the text content read from the URL.
      * @throws IOException if something goes wrong
      */
-    public static String readContentFromURL(URL url) throws IOException {
-        final StringBuilder result = new StringBuilder();
+    public static String readContentFromURL(final URL url) throws IOException {
+        final var result = new StringBuilder();
         
-        try (InputStream is =url.openConnection().getInputStream()) {
-            try (BufferedReader r = new BufferedReader(
-                    new InputStreamReader(is, Charset.forName("UTF-8")))) {
-                char[] buffer = new char[1024];
+        try (final var is =url.openConnection().getInputStream()) {
+            try (final var r = new BufferedReader(
+                    new InputStreamReader(is, StandardCharsets.UTF_8))) {
+                final var buffer = new char[1024];
 
-                int readLength = r.read(buffer, 0, buffer.length);
+                var readLength = r.read(buffer, 0, buffer.length);
                 while (readLength != -1) {
                     result.append(buffer, 0, readLength);
                     readLength = r.read(buffer, 0, buffer.length);
@@ -456,7 +454,7 @@ public class FXOMDocument {
      * 
      * @param holder an scene graph holder (should not be null)
      */
-    public void beginHoldingSceneGraph(SceneGraphHolder holder) {
+    public void beginHoldingSceneGraph(final SceneGraphHolder holder) {
         assert holder != null;
         assert sceneGraphHolder == null;
         sceneGraphHolder = holder;

@@ -35,7 +35,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.editor.job.Job;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.AddPropertyJob;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMPropertyC;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
@@ -50,7 +49,7 @@ import javafx.scene.layout.BorderPane;
  */
 public class WrapInBorderPaneJob extends AbstractWrapInJob {
 
-    public WrapInBorderPaneJob(EditorController editorController) {
+    public WrapInBorderPaneJob(final EditorController editorController) {
         super(editorController);
         newContainerClass = BorderPane.class;
     }
@@ -60,9 +59,9 @@ public class WrapInBorderPaneJob extends AbstractWrapInJob {
         final boolean result;
         if (super.canWrapIn()) { // (1)
             // Can wrap in CENTER property single selection only
-            final Selection selection = getEditorController().getSelection();
+            final var selection = getEditorController().getSelection();
             assert selection.getGroup() instanceof ObjectSelectionGroup; // Because of (1)
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) selection.getGroup();
+            final var osg = (ObjectSelectionGroup) selection.getGroup();
             result = osg.getItems().size() == 1;
         } else {
             result = false;
@@ -75,15 +74,15 @@ public class WrapInBorderPaneJob extends AbstractWrapInJob {
 
         final List<Job> jobs = new ArrayList<>();
 
-        final DesignHierarchyMask newContainerMask
+        final var newContainerMask
                 = new DesignHierarchyMask(newContainer);
         assert newContainerMask.isAcceptingAccessory(Accessory.CENTER);
 
         // Retrieve the new container property name to be used
-        final PropertyName newContainerPropertyName
+        final var newContainerPropertyName
                 = new PropertyName("center"); //NOI18N
         // Create the new container property
-        final FXOMPropertyC newContainerProperty = new FXOMPropertyC(
+        final var newContainerProperty = new FXOMPropertyC(
                 newContainer.getFxomDocument(), newContainerPropertyName);
 
         assert children.size() == 1;

@@ -60,8 +60,8 @@ public class CursorPropertyMetadata extends ComplexPropertyMetadata<Cursor> {
 
     private static Map<Cursor, String> cursorMap;
     
-    public CursorPropertyMetadata(PropertyName name, boolean readWrite, 
-            Cursor defaultValue, InspectorPath inspectorPath) {
+    public CursorPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                  final Cursor defaultValue, final InspectorPath inspectorPath) {
         super(name, Cursor.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -99,16 +99,16 @@ public class CursorPropertyMetadata extends ComplexPropertyMetadata<Cursor> {
      * ComplexPropertyMetadata
      */
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(Cursor value, FXOMDocument fxomDocument) {
+    public FXOMInstance makeFxomInstanceFromValue(final Cursor value, final FXOMDocument fxomDocument) {
         final FXOMInstance result;
         
-        final String cursorName = getCursorMap().get(value);
+        final var cursorName = getCursorMap().get(value);
         if (cursorName != null) {
             // It's a standard cursor
             result = new FXOMInstance(fxomDocument, Cursor.class);
             result.setFxConstant(cursorName);
         } else if (value instanceof ImageCursor) {
-            final ImageCursor imageCursor = (ImageCursor) value;
+            final var imageCursor = (ImageCursor) value;
             result = new FXOMInstance(fxomDocument, ImageCursor.class);
             hotspotXMetadata.setValue(result, imageCursor.getHotspotX());
             hotspotYMetadata.setValue(result, imageCursor.getHotspotY());

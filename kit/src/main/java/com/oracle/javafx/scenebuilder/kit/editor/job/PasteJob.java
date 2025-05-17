@@ -36,9 +36,7 @@ import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.AbstractSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMCollection;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.ClipboardDecoder;
@@ -56,7 +54,7 @@ public class PasteJob extends BatchSelectionJob {
     private FXOMObject targetObject;
     private List<FXOMObject> newObjects;
 
-    public PasteJob(EditorController editorController) {
+    public PasteJob(final EditorController editorController) {
         super(editorController);
     }
 
@@ -64,16 +62,16 @@ public class PasteJob extends BatchSelectionJob {
     protected List<Job> makeSubJobs() {
         final List<Job> result = new ArrayList<>();
         
-        final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
+        final var fxomDocument = getEditorController().getFxomDocument();
         if (fxomDocument != null) {
 
             // Retrieve the FXOMObjects from the clipboard
-            final ClipboardDecoder clipboardDecoder
+            final var clipboardDecoder
                     = new ClipboardDecoder(Clipboard.getSystemClipboard());
             newObjects = clipboardDecoder.decode(fxomDocument);
             assert newObjects != null; // But possible empty
 
-            if (newObjects.isEmpty() == false) {
+            if (!newObjects.isEmpty()) {
                 
                 // Retrieve the target FXOMObject :
                 // If the document is empty (root object is null), then the target 
@@ -84,8 +82,8 @@ public class PasteJob extends BatchSelectionJob {
                 if (fxomDocument.getFxomRoot() == null) {
                     targetObject = null;
                 } else {
-                    final Selection selection = getEditorController().getSelection();
-                    final FXOMObject rootObject = fxomDocument.getFxomRoot();
+                    final var selection = getEditorController().getSelection();
+                    final var rootObject = fxomDocument.getFxomRoot();
                     if (selection.isEmpty() || selection.isSelected(rootObject)) {
                         targetObject = rootObject;
                     } else {
@@ -97,34 +95,34 @@ public class PasteJob extends BatchSelectionJob {
                 if (targetObject == null) {
                     // Document is empty : only one object can be inserted
                     if (newObjects.size() == 1) {
-                        final FXOMObject newObject0 = newObjects.get(0);
-                        final SetDocumentRootJob subJob = new SetDocumentRootJob(
+                        final var newObject0 = newObjects.getFirst();
+                        final var subJob = new SetDocumentRootJob(
                                 newObject0,
                                 getEditorController());
                         result.add(subJob);
                     }
                 } else {
                     // Build InsertAsSubComponent jobs
-                    final DesignHierarchyMask targetMask = new DesignHierarchyMask(targetObject);
+                    final var targetMask = new DesignHierarchyMask(targetObject);
                     if (targetMask.isAcceptingSubComponent(newObjects)) {
                         
                         final double relocateDelta;
                         if (targetMask.isFreeChildPositioning()) {
-                            final int pasteJobCount = countPasteJobs();
+                            final var pasteJobCount = countPasteJobs();
                             relocateDelta = 10.0 * (pasteJobCount + 1);
                         } else {
                             relocateDelta = 0.0;
                         }
-                        for (FXOMObject newObject : newObjects) {
-                            final InsertAsSubComponentJob subJob = new InsertAsSubComponentJob(
+                        for (final var newObject : newObjects) {
+                            final var subJob = new InsertAsSubComponentJob(
                                     newObject,
                                     targetObject,
                                     targetMask.getSubComponentCount(),
                                     getEditorController());
-                            result.add(0, subJob);
+                            result.addFirst(subJob);
                             if ((relocateDelta != 0.0) && newObject.isNode()) {
-                                final Node sceneGraphNode = (Node) newObject.getSceneGraphObject();
-                                final RelocateNodeJob relocateJob = new RelocateNodeJob(
+                                final var sceneGraphNode = (Node) newObject.getSceneGraphObject();
+                                final var relocateJob = new RelocateNodeJob(
                                         (FXOMInstance) newObject,
                                         sceneGraphNode.getLayoutX() + relocateDelta,
                                         sceneGraphNode.getLayoutY() + relocateDelta,
@@ -161,7 +159,7 @@ public class PasteJob extends BatchSelectionJob {
         if (newObjects.isEmpty()) {
             return null;
         } else {
-            return new ObjectSelectionGroup(newObjects, newObjects.iterator().next(), null);
+            return new ObjectSelectionGroup(newObjects, newObjects.getFirst(), null);
         }
     }
 
@@ -172,9 +170,9 @@ public class PasteJob extends BatchSelectionJob {
         final String result;
 
         assert newObjects.size() == 1;
-        final FXOMObject newObject = newObjects.get(0);
+        final var newObject = newObjects.getFirst();
         if (newObject instanceof FXOMInstance) {
-            final Object sceneGraphObject = newObject.getSceneGraphObject();
+            final var sceneGraphObject = newObject.getSceneGraphObject();
             if (sceneGraphObject != null) {
                 result = I18N.getString("label.action.edit.paste.1", sceneGraphObject.getClass().getSimpleName());
             } else {
@@ -191,17 +189,17 @@ public class PasteJob extends BatchSelectionJob {
     }
 
     private String makeMultipleSelectionDescription() {
-        final int objectCount = newObjects.size();
+        final var objectCount = newObjects.size();
         return I18N.getString("label.action.edit.paste.n", objectCount);
     }
     
     private int countPasteJobs() {
-        int result = 0;
+        var result = 0;
         
-        final List<Job> undoStack = getEditorController().getJobManager().getUndoStack();
-        for (Job job : undoStack) {
+        final var undoStack = getEditorController().getJobManager().getUndoStack();
+        for (final var job : undoStack) {
             if (job instanceof PasteJob) {
-                final PasteJob pasteJob = (PasteJob) job;
+                final var pasteJob = (PasteJob) job;
                 if (this.targetObject == pasteJob.targetObject) {
                     result++;
                 } else {

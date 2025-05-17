@@ -72,12 +72,12 @@ public class I18nStringEditor extends PropertyEditor {
     private boolean i18nMode = false;
     private boolean multiLineMode = false;
 
-    public I18nStringEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses, boolean multiLineSupported) {
+    public I18nStringEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses, final boolean multiLineSupported) {
         super(propMeta, selectedClasses);
         initialize(multiLineSupported);
     }
     
-    private void initialize(boolean multiLineSupported) {
+    private void initialize(final boolean multiLineSupported) {
         this.multiLineSupported = multiLineSupported;
         valueListener = event -> {
             userUpdateValueProperty(getValue());
@@ -118,7 +118,7 @@ public class I18nStringEditor extends PropertyEditor {
 
     @Override
     public Object getValue() {
-        String val = textNode.getText();
+        var val = textNode.getText();
         if (i18nMode) {
             val = new PrefixedValue(PrefixedValue.Type.RESOURCE_KEY, val).toString();
         } else {
@@ -128,7 +128,7 @@ public class I18nStringEditor extends PropertyEditor {
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(final Object value) {
         setValueGeneric(value);
         if (isSetValueDone()) {
             return;
@@ -139,9 +139,9 @@ public class I18nStringEditor extends PropertyEditor {
             return;
         }
         assert value instanceof String;
-        String val = (String) value;
-        PrefixedValue prefixedValue = new PrefixedValue(val);
-        String suffix = prefixedValue.getSuffix();
+        final var val = (String) value;
+        final var prefixedValue = new PrefixedValue(val);
+        final var suffix = prefixedValue.getSuffix();
 
         // Handle i18n
         if (prefixedValue.isResourceKey()) {
@@ -184,7 +184,7 @@ public class I18nStringEditor extends PropertyEditor {
         updateMenuItems();
     }
 
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses, boolean multiLineSupported) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses, final boolean multiLineSupported) {
         super.reset(propMeta, selectedClasses);
         this.multiLineSupported = multiLineSupported;
         textNode.setPromptText(null);
@@ -192,7 +192,7 @@ public class I18nStringEditor extends PropertyEditor {
 
     @Override
     public Node getValueEditor() {
-        Node valueEditor;
+        final Node valueEditor;
         if (i18nMode) {
             valueEditor = i18nHBox;
         } else {
@@ -212,7 +212,7 @@ public class I18nStringEditor extends PropertyEditor {
             return;
         }
         // Move the node from TextField to TextArea
-        TextArea textArea = new TextArea(textNode.getText());
+        final var textArea = new TextArea(textNode.getText());
         setTextEditorBehavior(this, textArea, valueListener);
         textArea.setPrefRowCount(5);
         setLayoutFormat(LayoutFormat.SIMPLE_LINE_TOP);
@@ -229,8 +229,8 @@ public class I18nStringEditor extends PropertyEditor {
         }
         // Move the node from TextArea to TextField.
         // The current text is compacted to a single line.
-        String val = textNode.getText().replace("\n", "");//NOI18N
-        TextField textField = new TextField(val);
+        final var val = textNode.getText().replace("\n", "");//NOI18N
+        final var textField = new TextField(val);
         setTextEditorBehavior(this, textField, valueListener);
         setLayoutFormat(LayoutFormat.SIMPLE_LINE_CENTERED);
         if (textNode.getParent() != null) {
@@ -244,7 +244,7 @@ public class I18nStringEditor extends PropertyEditor {
         i18nHBox = new HBox();
         i18nHBox.setAlignment(Pos.CENTER);
         EditorUtils.replaceNode(textNode, i18nHBox, null);
-        Label percentLabel = new Label(PERCENT_STR);
+        final var percentLabel = new Label(PERCENT_STR);
         percentLabel.getStyleClass().add("symbol-prefix"); //NOI18N
         i18nHBox.getChildren().addAll(percentLabel, textNode);
         HBox.setHgrow(percentLabel, Priority.NEVER);
@@ -259,7 +259,7 @@ public class I18nStringEditor extends PropertyEditor {
         EditorUtils.replaceNode(i18nHBox, textNode, null);
     }
 
-    private static boolean containsLineFeed(String str) {
+    private static boolean containsLineFeed(final String str) {
         return str.contains("\n"); //NOI18N
     }
 

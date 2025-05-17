@@ -66,8 +66,8 @@ public class ImagePatternPropertyMetadata extends ComplexPropertyMetadata<ImageP
             = new BooleanPropertyMetadata(new PropertyName("proportional"), 
             true, true, InspectorPath.UNUSED);
 
-    public ImagePatternPropertyMetadata(PropertyName name, boolean readWrite, 
-            ImagePattern defaultValue, InspectorPath inspectorPath) {
+    public ImagePatternPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                        final ImagePattern defaultValue, final InspectorPath inspectorPath) {
         super(name, ImagePattern.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -76,8 +76,8 @@ public class ImagePatternPropertyMetadata extends ComplexPropertyMetadata<ImageP
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(ImagePattern value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, value.getClass());
+    public FXOMInstance makeFxomInstanceFromValue(final ImagePattern value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, value.getClass());
         
         imageMetadata.setValue(result, new DesignImage(value.getImage()));
         xMetadata.setValue(result, value.getX());

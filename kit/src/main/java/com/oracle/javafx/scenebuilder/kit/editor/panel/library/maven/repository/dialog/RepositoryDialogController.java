@@ -31,7 +31,6 @@
  */
 package com.oracle.javafx.scenebuilder.kit.editor.panel.library.maven.repository.dialog;
 
-import com.oracle.javafx.scenebuilder.kit.preferences.PreferencesRecordRepository;
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.library.LibraryPanelController;
@@ -112,9 +111,9 @@ public class RepositoryDialogController extends AbstractFxmlWindowController {
     private final String userM2Repository;
     private final PreferencesControllerBase preferencesControllerBase;
     
-    public RepositoryDialogController(EditorController editorController, String userM2Repository,
-                                      PreferencesControllerBase preferencesControllerBase,
-                                      Stage owner) {
+    public RepositoryDialogController(final EditorController editorController, final String userM2Repository,
+                                      final PreferencesControllerBase preferencesControllerBase,
+                                      final Stage owner) {
         super(LibraryPanelController.class.getResource("RepositoryDialog.fxml"), I18N.getBundle(), owner); //NOI18N
         this.owner = owner;
         this.editorController = editorController;
@@ -137,7 +136,7 @@ public class RepositoryDialogController extends AbstractFxmlWindowController {
         
         testService.stateProperty().addListener((obs, ov, nv) -> {
             if (nv.equals(Worker.State.SUCCEEDED)) {
-                String result = testService.getValue();
+                var result = testService.getValue();
                 if (result.isEmpty()) {
                     if (resultLabel.getStyleClass().contains("label-error")) {
                         resultLabel.getStyleClass().remove("label-error");
@@ -181,7 +180,7 @@ public class RepositoryDialogController extends AbstractFxmlWindowController {
 
     @FXML
     void addRepository() {
-        Repository repository;
+        final Repository repository;
         if (privateCheckBox.isSelected()) {
             repository = new Repository(nameIDTextfield.getText(), 
                 typeTextfield.getText(), urlTextfield.getText(), 
@@ -205,7 +204,7 @@ public class RepositoryDialogController extends AbstractFxmlWindowController {
     }
 
     @Override
-    public void onCloseRequest(WindowEvent event) {
+    public void onCloseRequest(final WindowEvent event) {
         cancel();
     }
 
@@ -223,23 +222,23 @@ public class RepositoryDialogController extends AbstractFxmlWindowController {
                 preferencesControllerBase.getRepositoryPreferences());
     }
     
-    private void logInfoMessage(String key, Object... args) {
+    private void logInfoMessage(final String key, final Object... args) {
         editorController.getMessageLog().logInfoMessage(key, I18N.getBundle(), args);
     }
     
-    private void updatePreferences(Repository repository) {
+    private void updatePreferences(final Repository repository) {
         if (repository == null) {
             return;
         }
         
         // Update record repository
-        final PreferencesRecordRepository recordRepository = preferencesControllerBase.
+        final var recordRepository = preferencesControllerBase.
                 getRecordRepository(repository);
         recordRepository.writeToJavaPreferences();
         
     }
 
-    public void setRepository(Repository repository) {
+    public void setRepository(final Repository repository) {
         oldRepository = repository;
         if (repository == null) {
             super.getStage().setTitle(I18N.getString("repository.dialog.title.add"));

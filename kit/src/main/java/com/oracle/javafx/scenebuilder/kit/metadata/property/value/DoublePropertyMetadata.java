@@ -56,8 +56,8 @@ public class DoublePropertyMetadata extends TextEncodablePropertyMetadata<java.l
 
     private final DoubleKind kind;
 
-    public DoublePropertyMetadata(PropertyName name, DoubleKind kind,
-            boolean readWrite, Double defaultValue, InspectorPath inspectorPath) {
+    public DoublePropertyMetadata(final PropertyName name, final DoubleKind kind,
+                                  final boolean readWrite, final Double defaultValue, final InspectorPath inspectorPath) {
         super(name, Double.class, readWrite, defaultValue, inspectorPath);
         assert (kind != DoubleKind.NULLABLE_COORDINATE) || (defaultValue == null);
         this.kind = kind;
@@ -67,7 +67,7 @@ public class DoublePropertyMetadata extends TextEncodablePropertyMetadata<java.l
         return kind;
     }
     
-    public boolean isValidValue(Double value) {
+    public boolean isValidValue(final Double value) {
         final boolean result;
         
         if (kind == DoubleKind.NULLABLE_COORDINATE) {
@@ -110,7 +110,7 @@ public class DoublePropertyMetadata extends TextEncodablePropertyMetadata<java.l
         return result;
     }
     
-    public Double getCanonicalValue(Double value) {
+    public Double getCanonicalValue(final Double value) {
         final Double result;
         
         if (value == null) {
@@ -149,7 +149,7 @@ public class DoublePropertyMetadata extends TextEncodablePropertyMetadata<java.l
      */
     
     @Override
-    public Double makeValueFromString(String string) {
+    public Double makeValueFromString(final String string) {
         return Double.valueOf(string);
     }
 }

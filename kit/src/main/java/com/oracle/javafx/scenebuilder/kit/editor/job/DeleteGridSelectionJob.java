@@ -37,7 +37,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.job.gridpane.DeleteRowJob;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.AbstractSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.GridSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
-import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -52,7 +51,7 @@ public class DeleteGridSelectionJob extends BatchSelectionJob {
 
     private FXOMObject targetGridPane;
 
-    public DeleteGridSelectionJob(EditorController editorController) {
+    public DeleteGridSelectionJob(final EditorController editorController) {
         super(editorController);
     }
 
@@ -60,10 +59,10 @@ public class DeleteGridSelectionJob extends BatchSelectionJob {
     protected List<Job> makeSubJobs() {
 
         final List<Job> result = new ArrayList<>();
-        final Selection selection = getEditorController().getSelection();
+        final var selection = getEditorController().getSelection();
         assert selection.getGroup() instanceof GridSelectionGroup;
 
-        final GridSelectionGroup gsg = (GridSelectionGroup) selection.getGroup();
+        final var gsg = (GridSelectionGroup) selection.getGroup();
         targetGridPane = gsg.getAncestor();
         switch (gsg.getType()) {
             case COLUMN:
@@ -81,7 +80,7 @@ public class DeleteGridSelectionJob extends BatchSelectionJob {
 
     @Override
     protected String makeDescription() {
-        return getSubJobs().get(0).getDescription();
+        return getSubJobs().getFirst().getDescription();
     }
 
     @Override

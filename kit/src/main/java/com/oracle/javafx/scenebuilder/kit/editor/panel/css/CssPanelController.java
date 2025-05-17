@@ -48,7 +48,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.panel.css.SelectionPath.Item;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.util.AbstractFxmlPanelController;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.util.dialog.ErrorDialog;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.css.SelectionPath.Path;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.Selection;
@@ -199,7 +198,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
      * AbstractPanelController
      */
     @Override
-    protected void fxomDocumentDidChange(FXOMDocument oldDocument) {
+    protected void fxomDocumentDidChange(final FXOMDocument oldDocument) {
         if (isCssPanelLoaded() && hasFxomDocument()) {
             updateSelectedObject();
             refresh();
@@ -286,9 +285,9 @@ public class CssPanelController extends AbstractFxmlPanelController {
 
         cssStateProperty.addListener((ChangeListener<NodeCssState>) (arg0, oldValue, newValue) -> fillPropertiesTable());
 
-        ChangeListener<Item> selectionListener = (arg0, oldvalue, newValue) -> {
+        final ChangeListener<Item> selectionListener = (arg0, oldvalue, newValue) -> {
             if (newValue != null && newValue.getItem() != null) {
-                Node selectedSubNode = CssUtils.getNode(newValue.getItem());
+                final var selectedSubNode = CssUtils.getNode(newValue.getItem());
                 selectedObject = selectedSubNode;
                 refresh();
                 // Switch to pick mode
@@ -322,8 +321,8 @@ public class CssPanelController extends AbstractFxmlPanelController {
     private static class ValueFactory implements Callback<TableColumn.CellDataFeatures<CssProperty, CssProperty>, ObservableValue<CssProperty>> {
 
         @Override
-        public ObservableValue<CssProperty> call(TableColumn.CellDataFeatures<CssProperty, CssProperty> param) {
-            ObjectProperty<CssProperty> val = new SimpleObjectProperty<>();
+        public ObservableValue<CssProperty> call(final TableColumn.CellDataFeatures<CssProperty, CssProperty> param) {
+            final ObjectProperty<CssProperty> val = new SimpleObjectProperty<>();
             val.setValue(param.getValue());
             return val;
         }
@@ -332,7 +331,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
     private static class PropertiesCellFactory implements Callback<TableColumn<CssProperty, CssProperty>, TableCell<CssProperty, CssProperty>> {
 
         @Override
-        public TableCell<CssProperty, CssProperty> call(TableColumn<CssProperty, CssProperty> param) {
+        public TableCell<CssProperty, CssProperty> call(final TableColumn<CssProperty, CssProperty> param) {
             return new CssPropertyTableCell();
         }
     }
@@ -340,7 +339,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
     private class BuiltinCellFactory implements Callback<TableColumn<CssProperty, CssProperty>, TableCell<CssProperty, CssProperty>> {
 
         @Override
-        public TableCell<CssProperty, CssProperty> call(TableColumn<CssProperty, CssProperty> param) {
+        public TableCell<CssProperty, CssProperty> call(final TableColumn<CssProperty, CssProperty> param) {
             return new BuiltinValueTableCell();
         }
     }
@@ -348,7 +347,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
     private class FxThemeCellFactory implements Callback<TableColumn<CssProperty, CssProperty>, TableCell<CssProperty, CssProperty>> {
 
         @Override
-        public TableCell<CssProperty, CssProperty> call(TableColumn<CssProperty, CssProperty> param) {
+        public TableCell<CssProperty, CssProperty> call(final TableColumn<CssProperty, CssProperty> param) {
             return new FxThemeValueTableCell();
         }
     }
@@ -356,7 +355,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
     private class ModelCellFactory implements Callback<TableColumn<CssProperty, CssProperty>, TableCell<CssProperty, CssProperty>> {
 
         @Override
-        public TableCell<CssProperty, CssProperty> call(TableColumn<CssProperty, CssProperty> param) {
+        public TableCell<CssProperty, CssProperty> call(final TableColumn<CssProperty, CssProperty> param) {
 //            System.out.println("Creating new ModelValueTableCell...");
             return new ModelValueTableCell();
         }
@@ -365,7 +364,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
     private class AuthorCellFactory implements Callback<TableColumn<CssProperty, CssProperty>, TableCell<CssProperty, CssProperty>> {
 
         @Override
-        public TableCell<CssProperty, CssProperty> call(TableColumn<CssProperty, CssProperty> param) {
+        public TableCell<CssProperty, CssProperty> call(final TableColumn<CssProperty, CssProperty> param) {
             return new AuthorValueTableCell();
         }
     }
@@ -373,7 +372,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
     private class InlineCellFactory implements Callback<TableColumn<CssProperty, CssProperty>, TableCell<CssProperty, CssProperty>> {
 
         @Override
-        public TableCell<CssProperty, CssProperty> call(TableColumn<CssProperty, CssProperty> param) {
+        public TableCell<CssProperty, CssProperty> call(final TableColumn<CssProperty, CssProperty> param) {
             return new InlineValueTableCell();
         }
     }
@@ -381,7 +380,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
     private class DefaultCellFactory implements Callback<TableColumn<CssProperty, CssProperty>, TableCell<CssProperty, CssProperty>> {
 
         @Override
-        public TableCell<CssProperty, CssProperty> call(TableColumn<CssProperty, CssProperty> param) {
+        public TableCell<CssProperty, CssProperty> call(final TableColumn<CssProperty, CssProperty> param) {
             return new DefaultValueTableCell();
         }
     }
@@ -391,7 +390,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
      * Public
      *
      */
-    public CssPanelController(EditorController c, Delegate delegate) {
+    public CssPanelController(final EditorController c, final Delegate delegate) {
         super(CssPanelController.class.getResource("CssPanel.fxml"), I18N.getBundle(), c);
         this.editorController = c;
         this.applicationDelegate = delegate;
@@ -401,7 +400,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
         return searchPattern;
     }
 
-    public void setSearchPattern(String searchPattern) {
+    public void setSearchPattern(final String searchPattern) {
         this.searchPattern = searchPattern;
         searchPatternDidChange();
     }
@@ -411,7 +410,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
      * @param selectionListener selection listener.
      * @treatAsPrivate
      */
-    public void addSelectionListener(ChangeListener<Item> selectionListener) {
+    public void addSelectionListener(final ChangeListener<Item> selectionListener) {
         selectionPath.selected().addListener(selectionListener);
     }
 
@@ -420,7 +419,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
      * @param path path.
      * @treatAsPrivate
      */
-    public void setSelectionPath(Path path) {
+    public void setSelectionPath(final Path path) {
         selectionPath.setSelectionPath(path);
     }
 
@@ -436,7 +435,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
      * @param mess message.
      * @treatAsPrivate
      */
-    public void viewMessage(String mess) {
+    public void viewMessage(final String mess) {
         root.getChildren().removeAll(messagePane, header, table, rulesPane, textPane);
 //        mainMenu.setDisable(true);
 //        searchBox.setDisable(true);
@@ -468,7 +467,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
      * @param state state.
      * @treatAsPrivate
      */
-    public void setContent(ObservableList<CssProperty> model, NodeCssState state) {
+    public void setContent(final ObservableList<CssProperty> model, final NodeCssState state) {
         changeView(currentView);
         initializeRulesTextPanes(state);
         this.model = FXCollections.observableArrayList(model);
@@ -483,16 +482,16 @@ public class CssPanelController extends AbstractFxmlPanelController {
         resetSelectionPath();
     }
 
-    public void filter(String pattern) {
+    public void filter(final String pattern) {
         if (model == null) {
             return;
         }
-        ObservableList<CssProperty> filtered;
+        final ObservableList<CssProperty> filtered;
         if (pattern == null || pattern.trim().length() == 0) {
             filtered = model;
         } else {
             filtered = FXCollections.observableArrayList();
-            for (CssProperty p : model) {
+            for (final var p : model) {
                 if (p.propertyName().get().contains(pattern.trim())) {
                     filtered.add(p);
                 }
@@ -510,18 +509,18 @@ public class CssPanelController extends AbstractFxmlPanelController {
      * @param isLookup lookup.
      * @treatAsPrivate
      */
-    public static void attachStyleProperty(TreeItem<Node> parent, CssPropertyState cssProp, CssStyle style,
-            boolean applied, boolean isLookup) {
+    public static void attachStyleProperty(final TreeItem<Node> parent, final CssPropertyState cssProp, final CssStyle style,
+                                           final boolean applied, final boolean isLookup) {
         if (isLookup) {
-            String cssValue = CssValueConverter.toCssString(style.getCssProperty(), style.getCssRule(), style.getParsedValue());
-            TreeItem<Node> item = new TreeItem<>(getContent(style.getCssProperty(), cssValue, style.getParsedValue(), applied));
+            final var cssValue = CssValueConverter.toCssString(style.getCssProperty(), style.getCssRule(), style.getParsedValue());
+            final var item = new TreeItem<Node>(getContent(style.getCssProperty(), cssValue, style.getParsedValue(), applied));
             parent.getChildren().add(item);
         } else {
             attachStylePropertyNoLookup(parent, cssProp, style, applied);
         }
     }
 
-    public void changeView(View view) {
+    public void changeView(final View view) {
         switch (view) {
             case TABLE: {
                 root.getChildren().removeAll(messagePane, header, table, rulesPane, textPane);
@@ -547,7 +546,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
      * @treatAsPrivate
      */
     public void copyStyleablePath() {
-        final ClipboardContent content = new ClipboardContent();
+        final var content = new ClipboardContent();
         content.putString(selectionPath.toString());
         Clipboard.getSystemClipboard().setContent(content);
     }
@@ -569,12 +568,12 @@ public class CssPanelController extends AbstractFxmlPanelController {
         // switch the table columns:
         // Default to Inline ==> Inline to Defaults
         // (and vice-versa)
-        ObservableList<TableColumn<CssProperty, ?>> columns = table.getColumns();
+        final var columns = table.getColumns();
         FXCollections.reverse(columns);
         // Property column is always first
-        TableColumn<CssProperty, ?> propertyColumn = columns.get(columns.size() - 1);
+        final var propertyColumn = columns.getLast();
         columns.remove(propertyColumn);
-        columns.add(0, propertyColumn);
+        columns.addFirst(propertyColumn);
         tableColumnsOrderingReversed = !tableColumnsOrderingReversed;
     }
 
@@ -582,7 +581,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
         return tableColumnsOrderingReversed;
     }
 
-    public void setTableColumnsOrderingReversed(boolean value) {
+    public void setTableColumnsOrderingReversed(final boolean value) {
         if (table != null && tableColumnsOrderingReversed != value) {
             toggleTableColumnsOrdering();
         }
@@ -614,8 +613,8 @@ public class CssPanelController extends AbstractFxmlPanelController {
                 // In pick mode:
                 // If the selected node is the "root" node ==> we get its FXOMInstance
                 // Else, we don't have an FXOMInstance
-                Object pickObject = selection.getCheckedHitNode();
-                FXOMInstance fxomInstance = getFXOMInstance(selection);
+                final Object pickObject = selection.getCheckedHitNode();
+                final var fxomInstance = getFXOMInstance(selection);
                 if (fxomInstance != null && fxomInstance.getSceneGraphObject() == pickObject) {
                     selectedObject = fxomInstance;
                 } else {
@@ -630,7 +629,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
     }
 
     private static String getFirstStandardClassName(final Class<?> type) {
-        Class<?> clazz = type;
+        var clazz = type;
         while (clazz != null) {
             if (clazz.getName().startsWith("javafx")) {//NOI18N
                 return clazz.getSimpleName();
@@ -642,7 +641,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
 
     private void collectCss() {
         if (selectedObject != null) {
-            NodeCssState state = CssContentMaker.getCssState(selectedObject);
+            final var state = CssContentMaker.getCssState(selectedObject);
             if (state == null) {
                 return;
             }
@@ -690,7 +689,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
         return editorController.isPickModeEnabled();
     }
 
-    private void setPickMode(boolean pickMode) {
+    private void setPickMode(final boolean pickMode) {
         pick.setSelected(pickMode);
         edit.setSelected(!pickMode);
     }
@@ -698,11 +697,11 @@ public class CssPanelController extends AbstractFxmlPanelController {
     private void fillSelectionContent() {
         assert selectedObject != null;
         // Start from the Component;
-        Node selectedRootNode = CssUtils.getSelectedNode(getFXOMInstance(selection));
+        final var selectedRootNode = CssUtils.getSelectedNode(getFXOMInstance(selection));
         if (selectedRootNode == null) {
             return;
         }
-        Item rootItem = new Item(selectedRootNode, createItemName(selectedRootNode), createOptional(selectedRootNode));//NOI18N
+        final var rootItem = new Item(selectedRootNode, createItemName(selectedRootNode), createOptional(selectedRootNode));//NOI18N
 
         // Seems we can skip the skin now, which is not in the scene graph anymore.
 //        if (componentRootNode instanceof Skinnable) {
@@ -716,38 +715,38 @@ public class CssPanelController extends AbstractFxmlPanelController {
             addSubStructure(selectedRootNode, rootItem, (Parent) selectedRootNode);
         }
 //        }
-        Object selectedNode = CssUtils.getSelectedNode(selectedObject);
-        List<Item> items = SelectionPath.lookupPath(rootItem, selectedNode);
+        final Object selectedNode = CssUtils.getSelectedNode(selectedObject);
+        final var items = SelectionPath.lookupPath(rootItem, selectedNode);
         setSelectionPath(new Path(items));
     }
 
-    private void addSubStructure(Node componentRootNode, Item parentItem, Node node) {
-        FXOMDocument fxomDoc = getEditorController().getFxomDocument();
+    private void addSubStructure(final Node componentRootNode, Item parentItem, final Node node) {
+        final var fxomDoc = getEditorController().getFxomDocument();
         assert fxomDoc != null;
-        Node enclosingNode = getEnclosingNode(fxomDoc, node);
+        final var enclosingNode = getEnclosingNode(fxomDoc, node);
         // The componentRootNode can be a skin structure (Tab, Column), in this case the enclosingNode 
         // is not == to the componentRootNode. That is why we need to compare the enclosingNode of both
         // n and componentRootNode nodes.
-        Node componentRootNodeEnclosingNode = getEnclosingNode(fxomDoc, componentRootNode);
+        final var componentRootNodeEnclosingNode = getEnclosingNode(fxomDoc, componentRootNode);
         // this is a skin's node and not a node from a component located inside 
         // the skin (eg: SplitPane content being a Button is not part of the SplitPane Skin.
-        boolean isOtherComponentNode = enclosingNode != componentRootNodeEnclosingNode;
+        final var isOtherComponentNode = enclosingNode != componentRootNodeEnclosingNode;
         if (componentRootNode != node && !node.getStyleClass().isEmpty() && !isOtherComponentNode && !(node instanceof Skin)) {
-            Item ni = new Item(node, createItemName(node), createOptional(node));//NOI18N
+            final var ni = new Item(node, createItemName(node), createOptional(node));//NOI18N
             parentItem.getChildren().add(ni);
             parentItem = ni;
         }
         if (node instanceof Parent && !isOtherComponentNode) {
-            Parent parentNode = (Parent) node;
-            for (Node child : parentNode.getChildrenUnmodifiable()) {
+            final var parentNode = (Parent) node;
+            for (final var child : parentNode.getChildrenUnmodifiable()) {
                 addSubStructure(componentRootNode, parentItem, child);
             }
         }
     }
 
-    private Node getEnclosingNode(FXOMDocument fxomDoc, Node n) {
-        Node node = n;
-        FXOMObject enclosingFXOMObj = fxomDoc.searchWithSceneGraphObject(node);
+    private Node getEnclosingNode(final FXOMDocument fxomDoc, final Node n) {
+        var node = n;
+        var enclosingFXOMObj = fxomDoc.searchWithSceneGraphObject(node);
         while (enclosingFXOMObj == null) {
             node = node.getParent();
             if (node == null) {
@@ -755,13 +754,13 @@ public class CssPanelController extends AbstractFxmlPanelController {
             }
             enclosingFXOMObj = fxomDoc.searchWithSceneGraphObject(node);
         }
-        Object enclosingObj = enclosingFXOMObj.getSceneGraphObject();
+        final var enclosingObj = enclosingFXOMObj.getSceneGraphObject();
         assert enclosingObj instanceof Node;
         return (Node) enclosingObj;
     }
 
     private void fillPropertiesTable() {
-        NodeCssState state = cssStateProperty.getValue();
+        final var state = cssStateProperty.getValue();
         if (state == null) {
             return;
         }
@@ -769,40 +768,40 @@ public class CssPanelController extends AbstractFxmlPanelController {
         filter(searchPattern);
     }
 
-    private void fillContent(NodeCssState state) {
-        ObservableList<CssProperty> cssModel = FXCollections.observableArrayList();
-        Collection<CssProperty> styleables = state.getAllStyleables();
-        for (CssProperty sp : styleables) {
+    private void fillContent(final NodeCssState state) {
+        final ObservableList<CssProperty> cssModel = FXCollections.observableArrayList();
+        final var styleables = state.getAllStyleables();
+        for (final var sp : styleables) {
             cssModel.add(sp);
-            for (CssProperty sub : sp.getSubProperties()) {
+            for (final var sub : sp.getSubProperties()) {
                 cssModel.add(sub);
             }
         }
         setContent(cssModel, state);
     }
 
-    private void attachNotAppliedStyles(TreeItem<Node> ti, PropertyState css) {
-        for (CssStyle style : css.getNotAppliedStyles()) {
+    private void attachNotAppliedStyles(final TreeItem<Node> ti, final PropertyState css) {
+        for (final var style : css.getNotAppliedStyles()) {
             attachStyle(css, style, ti, false);
         }
     }
 
-    private void attachSubProperties(TreeItem<Node> parent, PropertyState ss) {
-        for (PropertyState sub : ss.getSubProperties()) {
+    private void attachSubProperties(final TreeItem<Node> parent, final PropertyState ss) {
+        for (final var sub : ss.getSubProperties()) {
             attachProperty(parent, sub);
         }
         attachNotAppliedStyles(parent, ss);
     }
 
-    private void attachProperty(TreeItem<Node> parent, PropertyState ss) {
-        boolean hasSubs = !ss.getSubProperties().isEmpty();
+    private void attachProperty(final TreeItem<Node> parent, final PropertyState ss) {
+        final var hasSubs = !ss.getSubProperties().isEmpty();
         if (hasSubs) {
             if (ss instanceof CssPropertyState) {
-                CssPropertyState cssProp = (CssPropertyState) ss;
+                final var cssProp = (CssPropertyState) ss;
                 if (cssProp.getStyle() != null) {
                     // Need to add the container, not the sub properties
-                    Node content = getContent(ss.getCssProperty(), ss.getCssValue(), ss.getFxValue(), true);
-                    TreeItem<Node> ti = newTreeItem(content, ss);
+                    final var content = getContent(ss.getCssProperty(), ss.getCssValue(), ss.getFxValue(), true);
+                    final var ti = newTreeItem(content, ss);
                     parent.getChildren().add(ti);
                     attachStyles(cssProp, ti);
                     attachNotAppliedStyles(parent, ss);
@@ -813,17 +812,17 @@ public class CssPanelController extends AbstractFxmlPanelController {
                 attachSubProperties(parent, ss);
             }
         } else {
-            Node content = getContent(ss.getCssProperty(), ss.getCssValue(), ss.getFxValue(), true);
-            TreeItem<Node> ti = newTreeItem(content, ss);
+            final var content = getContent(ss.getCssProperty(), ss.getCssValue(), ss.getFxValue(), true);
+            final var ti = newTreeItem(content, ss);
             parent.getChildren().add(ti);
             if (ss instanceof CssPropertyState) {
-                CssPropertyState css = (CssPropertyState) ss;
+                final var css = (CssPropertyState) ss;
                 attachStyles(css, ti);
             } else {
                 if (ss instanceof BeanPropertyState) {
-                    BeanPropertyState beanProp = (BeanPropertyState) ss;
-                    String source = beanProp.getPropertyMeta().getName().toString();
-                    StringBuilder contentBuilder = new StringBuilder();
+                    final var beanProp = (BeanPropertyState) ss;
+                    final var source = beanProp.getPropertyMeta().getName().toString();
+                    final var contentBuilder = new StringBuilder();
                     contentBuilder.append(source);
                     ti.getChildren().add(newTreeItem(new Label(contentBuilder.toString()), ss));
                 }
@@ -836,46 +835,46 @@ public class CssPanelController extends AbstractFxmlPanelController {
         filter(searchPattern);
     }
 
-    private void updateTable(ObservableList<CssProperty> currentModel) {
+    private void updateTable(final ObservableList<CssProperty> currentModel) {
         showStyled(currentModel);
         unmerge();
     }
 
     private void disableColumnReordering() {
-        for (TableColumn<CssProperty, ?> column : table.getColumns()) {
+        for (final var column : table.getColumns()) {
             column.setReorderable(false);
         }
     }
 
-    private void initializeRulesTextPanes(NodeCssState state) {
+    private void initializeRulesTextPanes(final NodeCssState state) {
         rulesBox.getChildren().clear();
-        List<NodeCssState.MatchingRule> rulesList = state.getMatchingRules();
-        HtmlStyler htmlStyler = new HtmlStyler();
+        final var rulesList = state.getMatchingRules();
+        final var htmlStyler = new HtmlStyler();
         rulesTree = new TreeView<>();
         CopyHandler.attachContextMenu(rulesTree);
         rulesTree.setShowRoot(false);
-        TreeItem<Node> ruleRoot = new TreeItem<>(new Text(""));//NOI18N
+        final var ruleRoot = new TreeItem<Node>(new Text(""));//NOI18N
         rulesTree.setRoot(ruleRoot);
-        for (NodeCssState.MatchingRule rule : rulesList) {
-            List<NodeCssState.MatchingDeclaration> lst = rule.getDeclarations();
+        for (final var rule : rulesList) {
+            final var lst = rule.getDeclarations();
 
-            String selector = rule.getSelector();
+            final var selector = rule.getSelector();
 
-            String txt = selector + " { ";//NOI18N
-            String source = nonNull(getSource(rule.getRule()));
-            Text text = CopyHandler.makeCopyableNode(new Text(txt + source), txt);
-            TreeItem<Node> start = new TreeItem<>(text);
+            final var txt = selector + " { ";//NOI18N
+            final var source = nonNull(getSource(rule.getRule()));
+            final var text = CopyHandler.makeCopyableNode(new Text(txt + source), txt);
+            final var start = new TreeItem<Node>(text);
             ruleRoot.getChildren().add(start);
             htmlStyler.cssRuleStart(selector, source);
 
-            for (NodeCssState.MatchingDeclaration p : lst) {
-                CssPropertyState prop = p.getProp();
+            for (final var p : lst) {
+                final var prop = p.getProp();
                 attachStyleProperty(ruleRoot, prop, p.getStyle(), p.isApplied(), p.isLookup());
-                CssStyle style = p.getStyle();
-                String cssValue = CssValueConverter.toCssString(style.getCssProperty(), style.getCssRule(), style.getParsedValue());
+                final var style = p.getStyle();
+                final var cssValue = CssValueConverter.toCssString(style.getCssProperty(), style.getCssRule(), style.getParsedValue());
                 htmlStyler.addProperty(p.getStyle().getCssProperty(), cssValue, p.isApplied());
             }
-            TreeItem<Node> end = new TreeItem<>(CopyHandler.createCopyableText("}"));//NOI18N
+            final var end = new TreeItem<Node>(CopyHandler.createCopyableText("}"));//NOI18N
             ruleRoot.getChildren().add(end);
             setTreeHeight(rulesTree);
             htmlStyler.cssRuleEnd();
@@ -891,7 +890,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
         textPane.getEngine().loadContent(htmlStyler.getHtmlString());
     }
 
-    void close(ChangeListener<Item> selectionListener) {
+    void close(final ChangeListener<Item> selectionListener) {
         selectionPath.selected().removeListener(selectionListener);
     }
 
@@ -908,9 +907,9 @@ public class CssPanelController extends AbstractFxmlPanelController {
         table.getItems().setAll(currentModel);
     }
 
-    private static ObservableList<CssProperty> extractStyled(ObservableList<CssProperty> currentModel) {
-        ObservableList<CssProperty> ret = FXCollections.observableArrayList();
-        for (CssProperty prop : currentModel) {
+    private static ObservableList<CssProperty> extractStyled(final ObservableList<CssProperty> currentModel) {
+        final ObservableList<CssProperty> ret = FXCollections.observableArrayList();
+        for (final var prop : currentModel) {
             if (prop.isAuthorSource() || prop.isInlineSource() || prop.isModelSource()) {
                 ret.add(prop);
             }
@@ -918,7 +917,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
         return ret;
     }
 
-    private static String nodeIdentifier(Node n) {
+    private static String nodeIdentifier(final Node n) {
         if (n.getId() != null && !n.getId().equals("")) {//NOI18N
             return n.getId();
         } else {
@@ -939,12 +938,12 @@ public class CssPanelController extends AbstractFxmlPanelController {
         }
 
         @Override
-        public void updateItem(final CssProperty item, boolean empty) {
+        public void updateItem(final CssProperty item, final boolean empty) {
             super.updateItem(item, empty);
             if (empty) {
                 setGraphic(null);
             } else {
-                Hyperlink hl = new Hyperlink();
+                final var hl = new Hyperlink();
                 hl.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
                 hl.setOnAction(new LinkActionListener(item));
                 hl.setAlignment(Pos.CENTER_LEFT);
@@ -963,19 +962,19 @@ public class CssPanelController extends AbstractFxmlPanelController {
 
         final CssProperty item;
 
-        public LinkActionListener(CssProperty item) {
+        public LinkActionListener(final CssProperty item) {
             this.item = item;
         }
 
         @Override
-        public void handle(ActionEvent event) {
+        public void handle(final ActionEvent event) {
             try {
                 // XXX jfdenise, for now can't do better than opening the file, no Anchor per property...
                 // Retrieve defining class
                 EditorPlatform.open(DocumentationUrls.JAVADOC_HOME.toString()
                         + "javafx.graphics/javafx/scene/doc-files/cssref.html#" + //NOI18N
                         item.getTarget().getClass().getSimpleName().toLowerCase(Locale.ROOT));
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 Logger.getLogger(getClass().getName()).log(Level.WARNING, "Failed to open JAVADOC_HOME: ", e);
             }
         }
@@ -999,7 +998,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
             private Label sourceLabel;
             private MenuButton navigationMenuButton;
 
-            private Value(Node value) {
+            private Value(final Node value) {
                 vbox = new VBox(2);
                 setAlignment(Pos.CENTER_LEFT);
                 vbox.getChildren().add(value);
@@ -1020,12 +1019,12 @@ public class CssPanelController extends AbstractFxmlPanelController {
                 });
             }
 
-            private void setSource(Label sourceLabel) {
+            private void setSource(final Label sourceLabel) {
                 this.sourceLabel = sourceLabel;
                 vbox.getChildren().add(sourceLabel);
             }
 
-            private void setNavigation(Label navigationLabel, MenuButton navigationMenuButton) {
+            private void setNavigation(final Label navigationLabel, final MenuButton navigationMenuButton) {
                 this.navigationMenuButton = navigationMenuButton;
                 vbox.getChildren().add(navigationLabel);
                 if (navigationMenuButton != null) {
@@ -1035,7 +1034,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
                 }
             }
 
-            private void showSource(boolean show) {
+            private void showSource(final boolean show) {
                 if (sourceLabel != null) {
                     sourceLabel.setVisible(show);
                 }
@@ -1044,7 +1043,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
                 }
             }
 
-            private void fadeMenuButtonTo(double toValue) {
+            private void fadeMenuButtonTo(final double toValue) {
                 fadeTransition.stop();
                 fadeTransition.setFromValue(navigationMenuButton.getOpacity());
                 fadeTransition.setToValue(toValue);
@@ -1065,7 +1064,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
          * @param empty
          */
         @Override
-        public void updateItem(CssProperty item, boolean empty) {
+        public void updateItem(final CssProperty item, final boolean empty) {
             super.updateItem(item, empty);
 //            System.out.println("CssValueTableCell.updateItem() called for property: " + item.getStyleable().getProperty() );
             values.clear();
@@ -1076,14 +1075,14 @@ public class CssPanelController extends AbstractFxmlPanelController {
                 }
                 // A new node MUST be constructed on each call, otherwise TableView looses the UI<->model relationship
                 valueBox = new VBox(2);
-                Value currentValue;
+                final Value currentValue;
                 valueBox.setAlignment(Pos.CENTER);
-                PropertyState cssState = getPropertyState(item);
+                final var cssState = getPropertyState(item);
                 if (cssState != null) {
                     Node n;
                     n = createValueUI(item, cssState, cssState.getFxValue(), getStyle(item));
                     if (n == null) {
-                        Label label = new Label(cssState.getCssValue());
+                        final var label = new Label(cssState.getCssValue());
                         n = label;
                     }
                     currentValue = new Value(n);
@@ -1101,7 +1100,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
         }
 
         private void displayValues() {
-            for (Value v : values) {
+            for (final var v : values) {
                 VBox.setVgrow(v, Priority.ALWAYS);
                 valueBox.getChildren().add(v);
             }
@@ -1117,20 +1116,20 @@ public class CssPanelController extends AbstractFxmlPanelController {
 
         protected abstract StyleOrigin getOrigin(CssProperty item);
 
-        protected String getNavigation(CssProperty item, CssStyle style) {
+        protected String getNavigation(final CssProperty item, final CssStyle style) {
             return getNavigationInfo(item, style, getOrigin(item));
         }
 
-        private void handleNotApplied(CssProperty item) {
-            CssPropertyState ps = item.getWinner();
+        private void handleNotApplied(final CssProperty item) {
+            final var ps = item.getWinner();
             if (ps != null) {
-                for (CssStyle style : ps.getNotAppliedStyles()) {
+                for (final var style : ps.getNotAppliedStyles()) {
                     if (style.getOrigin() == getOrigin(item) && !CssContentMaker.containsPseudoState(style.getSelector())) {
-                        Node n = createValueUI(item, style);
+                        var n = createValueUI(item, style);
                         if (n == null) {
                             n = getLabel(style);
                         }
-                        Value currentValue = new Value(n);
+                        final var currentValue = new Value(n);
                         values.add(currentValue);
                         handleSource(currentValue, item, style);
                     }
@@ -1138,35 +1137,35 @@ public class CssPanelController extends AbstractFxmlPanelController {
             }
             // Case where an API call has been made, not applied fxTheme (if any) are hidden
             if (getOrigin(item) == StyleOrigin.USER_AGENT) {
-                List<CssPropertyState.CssStyle> styles = item.getFxThemeHiddenByModel();
-                for (CssPropertyState.CssStyle style : styles) {
-                    Node n = createValueUI(item, style);
+                final var styles = item.getFxThemeHiddenByModel();
+                for (final var style : styles) {
+                    var n = createValueUI(item, style);
                     if (n == null) {
-                        String l = CssValueConverter.toCssString(style.getCssProperty(), style.getCssRule(), style.getParsedValue());
-                        Label label = new Label(l);
+                        final var l = CssValueConverter.toCssString(style.getCssProperty(), style.getCssRule(), style.getParsedValue());
+                        final var label = new Label(l);
                         n = label;
                     }
-                    Value currentValue = new Value(n);
+                    final var currentValue = new Value(n);
                     values.add(currentValue);
                     handleSource(currentValue, item, style);
                 }
             }
         }
 
-        private void handleSource(Value currentValue, final CssProperty item, final CssStyle style) {
+        private void handleSource(final Value currentValue, final CssProperty item, final CssStyle style) {
             if (style != null && !style.isUsed()) {//eg: -fx-background-fills;
                 return;
             }
-            final StyleOrigin origin = getOrigin(item);
-            String source = getSourceInfo(item, style, origin);
+            final var origin = getOrigin(item);
+            final var source = getSourceInfo(item, style, origin);
             if (source != null) {
-                Label sourceLabel = new Label(source);
+                final var sourceLabel = new Label(source);
                 sourceLabel.getStyleClass().add("note-label");//NOI18N
                 currentValue.setSource(sourceLabel);
             }
-            String nav = getNavigation(item, style);
+            final var nav = getNavigation(item, style);
             if (nav != null) {
-                Label navigationLabel = new Label(nav);
+                final var navigationLabel = new Label(nav);
                 navigationLabel.getStyleClass().add("note-label");//NOI18N
                 if (origin != null && origin != StyleOrigin.USER_AGENT) {// No arrow for builtin and fxTheme
                     createNavigationMenuButton();
@@ -1199,7 +1198,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
         private void createNavigationMenuButton() {
             navigationMenuButton = new MenuButton();
 
-            Region region = new Region();
+            final var region = new Region();
             navigationMenuButton.setGraphic(region);
             region.getStyleClass().add("cog-shape"); //NOI18N
 
@@ -1213,22 +1212,22 @@ public class CssPanelController extends AbstractFxmlPanelController {
     private class BuiltinValueTableCell extends CssValueTableCell {
 
         @Override
-        protected PropertyState getPropertyState(CssProperty item) {
+        protected PropertyState getPropertyState(final CssProperty item) {
             return item.builtinState().get();
         }
 
         @Override
-        protected boolean isWinner(CssProperty item) {
+        protected boolean isWinner(final CssProperty item) {
             return item.isBuiltinSource();
         }
 
         @Override
-        protected StyleOrigin getOrigin(CssProperty item) {
+        protected StyleOrigin getOrigin(final CssProperty item) {
             return null;
         }
 
         @Override
-        protected CssStyle getStyle(CssProperty item) {
+        protected CssStyle getStyle(final CssProperty item) {
             return null;
         }
     }
@@ -1237,23 +1236,23 @@ public class CssPanelController extends AbstractFxmlPanelController {
     private class FxThemeValueTableCell extends CssValueTableCell {
 
         @Override
-        protected PropertyState getPropertyState(CssProperty item) {
+        protected PropertyState getPropertyState(final CssProperty item) {
             return item.fxThemeState().get();
         }
 
         @Override
-        protected boolean isWinner(CssProperty item) {
+        protected boolean isWinner(final CssProperty item) {
             return item.isFxThemeSource();
         }
 
         @Override
-        protected StyleOrigin getOrigin(CssProperty item) {
+        protected StyleOrigin getOrigin(final CssProperty item) {
             return StyleOrigin.USER_AGENT;
         }
 
         @Override
-        protected CssStyle getStyle(CssProperty item) {
-            CssPropertyState ps = item.fxThemeState().get();
+        protected CssStyle getStyle(final CssProperty item) {
+            final var ps = item.fxThemeState().get();
             return ps == null ? null : ps.getStyle();
         }
     }
@@ -1262,22 +1261,22 @@ public class CssPanelController extends AbstractFxmlPanelController {
     private class ModelValueTableCell extends CssValueTableCell {
 
         @Override
-        protected PropertyState getPropertyState(CssProperty item) {
+        protected PropertyState getPropertyState(final CssProperty item) {
             return item.modelState().get();
         }
 
         @Override
-        protected boolean isWinner(CssProperty item) {
+        protected boolean isWinner(final CssProperty item) {
             return item.isModelSource();
         }
 
         @Override
-        protected StyleOrigin getOrigin(CssProperty item) {
+        protected StyleOrigin getOrigin(final CssProperty item) {
             return StyleOrigin.USER;
         }
 
         @Override
-        protected CssStyle getStyle(CssProperty item) {
+        protected CssStyle getStyle(final CssProperty item) {
             return null;
         }
     }
@@ -1286,23 +1285,23 @@ public class CssPanelController extends AbstractFxmlPanelController {
     private class AuthorValueTableCell extends CssValueTableCell {
 
         @Override
-        protected PropertyState getPropertyState(CssProperty item) {
+        protected PropertyState getPropertyState(final CssProperty item) {
             return item.authorState().get();
         }
 
         @Override
-        protected boolean isWinner(CssProperty item) {
+        protected boolean isWinner(final CssProperty item) {
             return item.isAuthorSource();
         }
 
         @Override
-        protected StyleOrigin getOrigin(CssProperty item) {
+        protected StyleOrigin getOrigin(final CssProperty item) {
             return StyleOrigin.AUTHOR;
         }
 
         @Override
-        protected CssStyle getStyle(CssProperty item) {
-            CssPropertyState ps = item.authorState().get();
+        protected CssStyle getStyle(final CssProperty item) {
+            final var ps = item.authorState().get();
             return ps == null ? null : ps.getStyle();
         }
     }
@@ -1311,23 +1310,23 @@ public class CssPanelController extends AbstractFxmlPanelController {
     private class InlineValueTableCell extends CssValueTableCell {
 
         @Override
-        protected PropertyState getPropertyState(CssProperty item) {
+        protected PropertyState getPropertyState(final CssProperty item) {
             return item.inlineState().get();
         }
 
         @Override
-        protected boolean isWinner(CssProperty item) {
+        protected boolean isWinner(final CssProperty item) {
             return item.isInlineSource();
         }
 
         @Override
-        protected StyleOrigin getOrigin(CssProperty item) {
+        protected StyleOrigin getOrigin(final CssProperty item) {
             return StyleOrigin.INLINE;
         }
 
         @Override
-        protected CssStyle getStyle(CssProperty item) {
-            CssPropertyState ps = item.inlineState().get();
+        protected CssStyle getStyle(final CssProperty item) {
+            final var ps = item.inlineState().get();
             return ps == null ? null : ps.getStyle();
         }
     }
@@ -1341,14 +1340,14 @@ public class CssPanelController extends AbstractFxmlPanelController {
     private class DefaultValueTableCell extends CssValueTableCell {
 
         @Override
-        protected PropertyState getPropertyState(CssProperty item) {
+        protected PropertyState getPropertyState(final CssProperty item) {
             PropertyState ret = item.fxThemeState().get();
             if (ret == null) {
                 // Do we have an override
-                boolean foundNotApplied = false;
-                PropertyState winner = item.getWinner();
+                var foundNotApplied = false;
+                final PropertyState winner = item.getWinner();
                 if (winner != null) {
-                    for (CssStyle np : winner.getNotAppliedStyles()) {
+                    for (final var np : winner.getNotAppliedStyles()) {
                         // Not applied handling will had the value.
                         if (np.getOrigin() == StyleOrigin.USER_AGENT) {
                             foundNotApplied = true;
@@ -1364,14 +1363,14 @@ public class CssPanelController extends AbstractFxmlPanelController {
         }
 
         @Override
-        protected CssStyle getStyle(CssProperty item) {
+        protected CssStyle getStyle(final CssProperty item) {
             CssStyle style = null;
-            CssPropertyState fxTheme = item.fxThemeState().get();
+            final var fxTheme = item.fxThemeState().get();
             if (fxTheme == null) {
                 // Do we have an override
-                PropertyState winner = item.getWinner();
+                final PropertyState winner = item.getWinner();
                 if (winner != null) {
-                    for (CssStyle np : winner.getNotAppliedStyles()) {
+                    for (final var np : winner.getNotAppliedStyles()) {
                         // Not applied handling will had the value.
                         if (np.getOrigin() == StyleOrigin.USER_AGENT) {
                             style = np;
@@ -1387,13 +1386,13 @@ public class CssPanelController extends AbstractFxmlPanelController {
         }
 
         @Override
-        protected boolean isWinner(CssProperty item) {
+        protected boolean isWinner(final CssProperty item) {
             return item.isFxThemeSource() || item.isBuiltinSource();
         }
 
         @Override
-        protected StyleOrigin getOrigin(CssProperty item) {
-            PropertyState state = getPropertyState(item);
+        protected StyleOrigin getOrigin(final CssProperty item) {
+            final var state = getPropertyState(item);
             // If null is returned, means that there is a not applied for fxTheme
             if (state instanceof CssPropertyState || state == null) {
                 return StyleOrigin.USER_AGENT;
@@ -1404,8 +1403,8 @@ public class CssPanelController extends AbstractFxmlPanelController {
 
         // Special case, display some info when merged.
         @Override
-        protected String getNavigation(CssProperty item, CssStyle style) {
-            PropertyState ps = getPropertyState(item);
+        protected String getNavigation(final CssProperty item, final CssStyle style) {
+            final var ps = getPropertyState(item);
             if (ps == null || ps instanceof CssPropertyState) {
                 return I18N.getString("csspanel.fxtheme.defaults.navigation")
                         + " (" + CssInternal.getThemeDisplayName(style.getStyle()) + ")";//NOI18N
@@ -1422,18 +1421,18 @@ public class CssPanelController extends AbstractFxmlPanelController {
      *
      *
      */
-    private void open(CssProperty item, PropertyState state, CssStyle style, StyleOrigin origin) {
+    private void open(final CssProperty item, final PropertyState state, final CssStyle style, final StyleOrigin origin) {
         navigate(item, state, style, origin, true);
     }
 
-    private void navigate(CssProperty item, PropertyState state, CssStyle style, StyleOrigin origin) {
+    private void navigate(final CssProperty item, final PropertyState state, final CssStyle style, final StyleOrigin origin) {
         navigate(item, state, style, origin, false);
     }
 
-    private void navigate(CssProperty item, PropertyState state, CssStyle style, StyleOrigin origin, boolean open) {
+    private void navigate(final CssProperty item, final PropertyState state, final CssStyle style, final StyleOrigin origin, final boolean open) {
 
         if (origin == StyleOrigin.USER) {// Navigate to property
-            PropertyName propName = ((BeanPropertyState) state).getPropertyMeta().getName();
+            final var propName = ((BeanPropertyState) state).getPropertyMeta().getName();
             // Navigate to inspector property
             if (applicationDelegate != null) {
                 applicationDelegate.revealInspectorEditor(getValuePropertyMeta(propName));
@@ -1441,19 +1440,19 @@ public class CssPanelController extends AbstractFxmlPanelController {
         }
         if (style != null) {
             if (style.getOrigin() == StyleOrigin.AUTHOR) {// Navigate to file
-                URL url = style.getUrl();
-                String path = url.toExternalForm();
+                final var url = style.getUrl();
+                final var path = url.toExternalForm();
                 if (path.toLowerCase(Locale.ROOT).startsWith("file:/")) { //NOI18N
                     try {
                         if (open) {
                             EditorPlatform.open(path);
                         } else {
-                            File f = new File(url.toURI());
+                            final var f = new File(url.toURI());
                             EditorPlatform.revealInFileBrowser(f);
                         }
-                    } catch (URISyntaxException | IOException ex) {
+                    } catch (final URISyntaxException | IOException ex) {
                         LOGGER.log(Level.SEVERE, "An unexpected error occured!", ex);
-                        final ErrorDialog errorDialog = new ErrorDialog(editorController.getOwnerWindow());
+                        final var errorDialog = new ErrorDialog(editorController.getOwnerWindow());
                         errorDialog.setTitle(I18N.getString("alert.error.file.reveal.title"));
                         errorDialog.setMessage(I18N.getString("alert.error.file.reveal.message"));
                         errorDialog.setDetails(I18N.getString("alert.error.file.reveal.details", path));
@@ -1475,26 +1474,26 @@ public class CssPanelController extends AbstractFxmlPanelController {
     }
 
     private static String getNavigationInfo(
-            CssProperty item, CssStyle cssStyle, StyleOrigin origin) {
+        final CssProperty item, final CssStyle cssStyle, final StyleOrigin origin) {
         if (origin == StyleOrigin.USER_AGENT) {
             return CssInternal.getThemeDisplayName(cssStyle.getStyle());
         }
         if (origin == StyleOrigin.USER) {
-            BeanPropertyState state = (BeanPropertyState) item.modelState().get();
+            final var state = (BeanPropertyState) item.modelState().get();
             return item.getTarget().getClass().getSimpleName() + "."
                     + state.getPropertyMeta().getName().getName();//NOI18N
         }
         if (origin == StyleOrigin.AUTHOR) {
             if (cssStyle != null) {
-                URL url = cssStyle.getUrl();
+                final var url = cssStyle.getUrl();
                 String name = null;
                 if (url != null) {
                     name = url.toExternalForm();
                     if (name.toLowerCase(Locale.ROOT).startsWith("file:/")) { //NOI18N
                         try {
-                            File f = new File(url.toURI());
+                            final var f = new File(url.toURI());
                             name = f.getName();
-                        } catch (URISyntaxException ex) {
+                        } catch (final URISyntaxException ex) {
                             System.out.println(ex.getMessage() + ": " + ex);
                         }
                     }
@@ -1503,7 +1502,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
             }
         }
         if (origin == StyleOrigin.INLINE) {
-            Node n = item.getSourceNodeForInline();
+            final var n = item.getSourceNodeForInline();
             if (n != null) {
                 return nodeIdentifier(n);
             }
@@ -1518,14 +1517,14 @@ public class CssPanelController extends AbstractFxmlPanelController {
      * Private static
      *
      */
-    private static FXOMInstance getFXOMInstance(Selection selection) {
+    private static FXOMInstance getFXOMInstance(final Selection selection) {
         FXOMInstance fxomInstance = null;
         if (selection == null) {
             return null;
         }
         if (selection.getGroup() instanceof ObjectSelectionGroup) {
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) selection.getGroup();
-            for (FXOMObject item : osg.getItems()) {
+            final var osg = (ObjectSelectionGroup) selection.getGroup();
+            for (final var item : osg.getItems()) {
                 if (item instanceof FXOMInstance) {
                     fxomInstance = (FXOMInstance) item;
                 }
@@ -1536,7 +1535,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
         return fxomInstance;
     }
 
-    private ValuePropertyMetadata getValuePropertyMeta(PropertyName propName) {
+    private ValuePropertyMetadata getValuePropertyMeta(final PropertyName propName) {
         ValuePropertyMetadata valuePropMeta = null;
         if (selectedObject instanceof FXOMInstance) {
             valuePropMeta = Metadata.getMetadata().queryValueProperty(
@@ -1545,45 +1544,45 @@ public class CssPanelController extends AbstractFxmlPanelController {
         return valuePropMeta;
     }
 
-    private static String getPseudoStates(Node node) {
-        StringBuilder pseudoClasses = new StringBuilder();
-        Set<PseudoClass> pseudoClassSet = node.getPseudoClassStates();
-        for (PseudoClass pc : pseudoClassSet) {
+    private static String getPseudoStates(final Node node) {
+        final var pseudoClasses = new StringBuilder();
+        final Set<PseudoClass> pseudoClassSet = node.getPseudoClassStates();
+        for (final var pc : pseudoClassSet) {
             pseudoClasses.append(":").append(pc.getPseudoClassName()); //NOI18N
         }
         return pseudoClasses.toString();
     }
 
     // Best effort to express a potential selector. There is more than one...
-    private static String localSelector(Node node) {
-        String ret = "";//NOI18N
-        String pseudoClasses = getPseudoStates(node);
+    private static String localSelector(final Node node) {
+        var ret = "";//NOI18N
+        final var pseudoClasses = getPseudoStates(node);
         if (!node.getStyleClass().isEmpty()) {
-            ret = "." + node.getStyleClass().get(node.getStyleClass().size() - 1) + pseudoClasses;//NOI18N
+            ret = "." + node.getStyleClass().getLast() + pseudoClasses;//NOI18N
         } else if (node.getId() != null && !node.getId().equals("")) {//NOI18N
             ret = "#" + node.getId() + pseudoClasses;//NOI18N
         }
         return ret;
     }
 
-    private static String createItemName(Node n) {
+    private static String createItemName(final Node n) {
         return localSelector(n);
     }
 
-    private static String createOptional(Node n) {
+    private static String createOptional(final Node n) {
         return "(" + getFirstStandardClassName(n.getClass()) + ")";//NOI18N
     }
 
-    private static Node getContent(String property, String cssValue, Object value, boolean applied) {
-        HBox hbox = new HBox();
-        Node l = createPropertyLabel(property + ": ", applied);//NOI18N
+    private static Node getContent(final String property, final String cssValue, final Object value, final boolean applied) {
+        final var hbox = new HBox();
+        final var l = createPropertyLabel(property + ": ", applied);//NOI18N
         hbox.getChildren().add(l);
         // Custom content. Mainly for paints and images
-        Node n = getCustomContent(value);
+        final var n = getCustomContent(value);
         if (n != null) {
             hbox.getChildren().add(n);
         } else {
-            Node cssValueNode = createLabel(cssValue + ";", applied);//NOI18N
+            final var cssValueNode = createLabel(cssValue + ";", applied);//NOI18N
             hbox.getChildren().add(cssValueNode);
         }
         return CopyHandler.makeCopyableNode(hbox, property + ": " + cssValue + ";");//NOI18N
@@ -1592,15 +1591,15 @@ public class CssPanelController extends AbstractFxmlPanelController {
     private static Node getCustomContent(Object value) {
         Node ret = null;
         if (value instanceof ParsedValue) {
-            ParsedValue<?, ?> pv = (ParsedValue<?, ?>) value;
+            final var pv = (ParsedValue<?, ?>) value;
             value = CssValueConverter.convert(pv);
         }
         if (value != null) {
             if (value.getClass().isArray()) {
-                HBox hbox = new HBox(5);
-                int size = Array.getLength(value);
-                for (int i = 0; i < size; i++) {
-                    Node n = getCustomContent(Array.get(value, i));
+                final var hbox = new HBox(5);
+                final var size = Array.getLength(value);
+                for (var i = 0; i < size; i++) {
+                    final var n = getCustomContent(Array.get(value, i));
                     if (n != null) {
                         hbox.getChildren().add(n);
                         if (i < size - 1) {
@@ -1613,12 +1612,12 @@ public class CssPanelController extends AbstractFxmlPanelController {
                 }
             } else {
                 if (value instanceof Collection) {
-                    HBox hbox = new HBox(5);
-                    Collection<?> collection = (Collection<?>) value;
-                    Iterator<?> it = collection.iterator();
+                    final var hbox = new HBox(5);
+                    final var collection = (Collection<?>) value;
+                    final var it = collection.iterator();
                     while (it.hasNext()) {
-                        Object obj = it.next();
-                        Node n = getCustomContent(obj);
+                        final var obj = it.next();
+                        final var n = getCustomContent(obj);
                         if (n != null) {
                             hbox.getChildren().add(n);
                             if (it.hasNext()) {
@@ -1630,8 +1629,8 @@ public class CssPanelController extends AbstractFxmlPanelController {
                         ret = hbox;
                     }
                 } else {// Leaf value
-                    CssValuePresenter<?> presenter = CssValuePresenterFactory.getInstance().newValuePresenter(value);
-                    Node customPresenter = presenter.getCustomPresenter();
+                    final CssValuePresenter<?> presenter = CssValuePresenterFactory.getInstance().newValuePresenter(value);
+                    final var customPresenter = presenter.getCustomPresenter();
                     ret = customPresenter;
                 }
             }
@@ -1639,7 +1638,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
         return ret;
     }
 
-    private static Node createLabel(String text, String styleclass, boolean isApplied) {
+    private static Node createLabel(final String text, final String styleclass, final boolean isApplied) {
         Node node = new Label(text);
         if (styleclass != null) {
             node.getStyleClass().add(styleclass);
@@ -1650,48 +1649,48 @@ public class CssPanelController extends AbstractFxmlPanelController {
         return node;
     }
 
-    private static Node createLabel(String text, boolean isApplied) {
+    private static Node createLabel(final String text, final boolean isApplied) {
         return createLabel(text, null, isApplied);
     }
 
-    private static Node createPropertyLabel(String text, boolean isApplied) {
+    private static Node createPropertyLabel(final String text, final boolean isApplied) {
         return createLabel(text, "css-panel-property", isApplied);//NOI18N
     }
 
-    private static Node createLine(Node node) {
-        StackPane sp = new StackPane();
+    private static Node createLine(final Node node) {
+        final var sp = new StackPane();
         sp.getChildren().add(node);
-        Separator s = new Separator(Orientation.HORIZONTAL);
+        final var s = new Separator(Orientation.HORIZONTAL);
         s.setValignment(VPos.CENTER);
         s.getStyleClass().add("notAppliedStyleLine");//NOI18N
         sp.getChildren().add(s);
         return sp;
     }
 
-    private static TreeItem<Node> attachSource(PropertyState css, CssStyle cssStyle, TreeItem<Node> parent, boolean applied) {
-        String source = getSource(cssStyle);
+    private static TreeItem<Node> attachSource(final PropertyState css, final CssStyle cssStyle, final TreeItem<Node> parent, final boolean applied) {
+        final var source = getSource(cssStyle);
         TreeItem<Node> srcItem = null;
         if (source != null) {
-            HBox hbox = new HBox(5);
+            final var hbox = new HBox(5);
             if (cssStyle.getOrigin() != StyleOrigin.INLINE) {
-                Label selector = new Label(cssStyle.getSelector());
+                final var selector = new Label(cssStyle.getSelector());
                 // Workaround RT layout bug
                 selector.setMinWidth(30);
                 hbox.getChildren().add(selector);
                 hbox.getChildren().add(new Label("{"));//NOI18N
             }
             hbox.getChildren().add(createLabel(cssStyle.getCssProperty() + ": ", applied));//NOI18N
-            Node n = getCustomContent(cssStyle.getParsedValue());
+            final var n = getCustomContent(cssStyle.getParsedValue());
             if (n != null) {
                 hbox.getChildren().add(n);
             }
-            Node label2 = createLabel(CssValueConverter.toCssString(cssStyle.getCssProperty(), cssStyle.getCssRule(), cssStyle.getParsedValue())
-                    + ";", applied);//NOI18N
+            final var label2 = createLabel(CssValueConverter.toCssString(cssStyle.getCssProperty(), cssStyle.getCssRule(), cssStyle.getParsedValue())
+                                           + ";", applied);//NOI18N
             hbox.getChildren().add(label2);
             if (cssStyle.getOrigin() != StyleOrigin.INLINE) {
                 hbox.getChildren().add(new Label("}"));//NOI18N
             }
-            Label label = new Label(source);
+            final var label = new Label(source);
             hbox.getChildren().add(label);
             srcItem = newTreeItem(hbox, css);
             parent.getChildren().add(srcItem);
@@ -1699,18 +1698,18 @@ public class CssPanelController extends AbstractFxmlPanelController {
         return srcItem;
     }
 
-    private static void attachStyle(PropertyState css, CssStyle style, TreeItem<Node> parent, boolean applied) {
+    private static void attachStyle(final PropertyState css, final CssStyle style, final TreeItem<Node> parent, final boolean applied) {
         attachStyle(css, style, parent, applied, null);
     }
 
-    private static void attachStyle(PropertyState css, CssStyle style, TreeItem<Node> parent, boolean applied, ArrayList<String> cssPropertyList) {
-        TreeItem<Node> sourceItem = attachSource(css, style, parent, applied);
+    private static void attachStyle(final PropertyState css, final CssStyle style, final TreeItem<Node> parent, final boolean applied, final ArrayList<String> cssPropertyList) {
+        final var sourceItem = attachSource(css, style, parent, applied);
         if (cssPropertyList != null) {
             cssPropertyList.add(style.getCssProperty());
         }
         if (sourceItem != null) {
             // Do we have a chain of lookups?
-            for (CssStyle lookup : style.getLookupChain()) {
+            for (final var lookup : style.getLookupChain()) {
 
                 if ((cssPropertyList != null) && cssPropertyList.contains(lookup.getCssProperty())) {
                     // This css property has already been attached
@@ -1729,16 +1728,16 @@ public class CssPanelController extends AbstractFxmlPanelController {
      * @param parent parent.
      * @treatAsPrivate
      */
-    public static void attachLookupStyles(Object component, CssPropertyState css, CssStyle lookupRoot, TreeItem<Node> parent) {
+    public static void attachLookupStyles(final Object component, final CssPropertyState css, final CssStyle lookupRoot, final TreeItem<Node> parent) {
         // Some lookup that comes from the SB itself, skip them.
         // This is expected, these lookups are superceeded by the 
         // CssUtils.createCSSFrontier
-        ArrayList<String> cssPropertyList = new ArrayList<>();
+        final var cssPropertyList = new ArrayList<String>();
         // cssPropertyList will allow to check that the same css property is not added multiple times
         attachStyle(css, lookupRoot, parent, true, cssPropertyList);
     }
 
-    private static void attachStyles(CssPropertyState css, TreeItem<Node> parent) {
+    private static void attachStyles(final CssPropertyState css, final TreeItem<Node> parent) {
         if (css.getStyle() != null) {
             attachStyle(css, css.getStyle(), parent, true);
         }
@@ -1761,7 +1760,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
             }
         }
 
-        public void cssRuleStart(String selector, String source) {
+        public void cssRuleStart(final String selector, final String source) {
             check();
             builder.append("<p>");//NOI18N
             builder.append("<b>").append(selector).append("</b>");//NOI18N
@@ -1775,16 +1774,16 @@ public class CssPanelController extends AbstractFxmlPanelController {
             builder.append("</p>");//NOI18N
         }
 
-        public void addProperty(String name, String content, boolean applied) {
+        public void addProperty(final String name, String content, final boolean applied) {
             check();
-            String sepName = name + ":&nbsp;";//NOI18N
-            String propName = "<b>" + (applied ? sepName : "<strike>" + sepName + "</strike>") + "</b>";//NOI18N
+            final var sepName = name + ":&nbsp;";//NOI18N
+            final var propName = "<b>" + (applied ? sepName : "<strike>" + sepName + "</strike>") + "</b>";//NOI18N
             builder.append("<br>");//NOI18N
             content = applied ? content : "<strike>" + content + "</strike>";//NOI18N
             builder.append("<span style=\"margin-left:10px;\">").append(propName).append(content).append(";").append("</span>");//NOI18N
         }
 
-        public void addMessage(String mess) {
+        public void addMessage(final String mess) {
             check();
             builder.append(mess);
         }
@@ -1812,11 +1811,11 @@ public class CssPanelController extends AbstractFxmlPanelController {
 
     private static class CopyHandler {
 
-        private static String getContent(TreeView<Node> tv) {
-            StringBuilder builder = new StringBuilder();
-            for (TreeItem<Node> item : tv.getSelectionModel().getSelectedItems()) {
-                Node n = item.getValue();
-                String str = (String) n.getProperties().get(CSS_TEXT);
+        private static String getContent(final TreeView<Node> tv) {
+            final var builder = new StringBuilder();
+            for (final var item : tv.getSelectionModel().getSelectedItems()) {
+                final var n = item.getValue();
+                final var str = (String) n.getProperties().get(CSS_TEXT);
                 if (str != null) {
                     builder.append(str);
                 }
@@ -1825,15 +1824,15 @@ public class CssPanelController extends AbstractFxmlPanelController {
         }
 
         private static void copy(final TreeView<Node> tv) {
-            final String cssContent = getContent(tv);
-            final ClipboardContent content = new ClipboardContent();
+            final var cssContent = getContent(tv);
+            final var content = new ClipboardContent();
             content.putString(cssContent);
             Clipboard.getSystemClipboard().setContent(content);
         }
 
         private static void attachContextMenu(final TreeView<Node> tv) {
-            ContextMenu ctxMenu = new ContextMenu();
-            final MenuItem cssContentAction = new MenuItem(I18N.getString("csspanel.copy"));
+            final var ctxMenu = new ContextMenu();
+            final var cssContentAction = new MenuItem(I18N.getString("csspanel.copy"));
             ctxMenu.setOnShowing(arg0 -> {
             });
             tv.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -1845,27 +1844,27 @@ public class CssPanelController extends AbstractFxmlPanelController {
         }
         private static final String CSS_TEXT = "CSS_TEXT";//NOI18N
 
-        private static <T extends Node> T makeCopyableNode(T node, String str) {
+        private static <T extends Node> T makeCopyableNode(final T node, final String str) {
             node.getProperties().put(CSS_TEXT, str + "\n");//NOI18N
             return node;
         }
 
-        private static Text createCopyableText(String str) {
-            Text text = new Text(str);
+        private static Text createCopyableText(final String str) {
+            final var text = new Text(str);
             text.getProperties().put(CSS_TEXT, str + "\n");//NOI18N
             return text;
         }
     }
 
-    private static void setTreeHeight(TreeView<?> tv) {
+    private static void setTreeHeight(final TreeView<?> tv) {
         // XXX jfdenise how to properly compute the height of the tree
-        int minHeight = 70;
-        int topLevelItems = tv.getRoot().getChildren().size();
-        int computed = topLevelItems == 0 ? 15 : (25 * topLevelItems);
+        final var minHeight = 70;
+        final var topLevelItems = tv.getRoot().getChildren().size();
+        final var computed = topLevelItems == 0 ? 15 : (25 * topLevelItems);
         tv.setPrefHeight(Math.max(minHeight, computed));
     }
 
-    private static String nonNull(String string) {
+    private static String nonNull(final String string) {
         if (string == null) {
             return ""; //NOI18N
         } else {
@@ -1873,13 +1872,13 @@ public class CssPanelController extends AbstractFxmlPanelController {
         }
     }
 
-    private static TreeItem<Node> newTreeItem(Node content, PropertyState ss) {
-        TreeItem<Node> ti = new TreeItem<>(content);
+    private static TreeItem<Node> newTreeItem(final Node content, final PropertyState ss) {
+        final var ti = new TreeItem<Node>(content);
         return ti;
     }
 
-    private static String getSource(CssStyle style) {
-        URL url = style.getUrl();
+    private static String getSource(final CssStyle style) {
+        final var url = style.getUrl();
         String source = null;
         if (url != null) {
             source = getSource(url, style.getOrigin());
@@ -1887,14 +1886,14 @@ public class CssPanelController extends AbstractFxmlPanelController {
         return source;
     }
 
-    private static String getSource(Rule rule) {
+    private static String getSource(final Rule rule) {
         URL url = null;
         StyleOrigin origin = null;
         // Workaround!
         if (rule != null) {
             try {
                 url = new URL(rule.getStylesheet().getUrl());
-            } catch (MalformedURLException ex) {
+            } catch (final MalformedURLException ex) {
                 System.out.println("Invalid URL: " + ex);
             }
             origin = rule.getOrigin();
@@ -1902,7 +1901,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
         return getSource(url, origin);
     }
 
-    private static String getSource(URL url, StyleOrigin origin) {
+    private static String getSource(final URL url, final StyleOrigin origin) {
         String source = null;
         if (url != null) {
             if (origin == StyleOrigin.USER_AGENT) {
@@ -1922,7 +1921,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
         return source;
     }
 
-    private static String getSourceInfo(CssProperty item, CssStyle style, StyleOrigin origin) {
+    private static String getSourceInfo(final CssProperty item, final CssStyle style, final StyleOrigin origin) {
         if (origin == StyleOrigin.USER_AGENT) {
             if (style != null) {
                 return style.getSelector();
@@ -1930,7 +1929,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
             return null;
         }
         if (origin == StyleOrigin.USER) {
-            BeanPropertyState state = (BeanPropertyState) item.modelState().get();
+            final var state = (BeanPropertyState) item.modelState().get();
             return state.getPropertyMeta().getName().getName();
         }
         if (origin == StyleOrigin.AUTHOR) {
@@ -1940,18 +1939,18 @@ public class CssPanelController extends AbstractFxmlPanelController {
             return null;
         }
         if (origin == StyleOrigin.INLINE) {
-            boolean inherited = item.isInlineInherited();
+            final var inherited = item.isInlineInherited();
             return "style" + (inherited ? " (" + I18N.getString("csspanel.inherited") + ")" : "");//NOI18N
         }
 
         return null;
     }
 
-    private static Node createValueUI(CssProperty item, CssStyle style) {
+    private static Node createValueUI(final CssProperty item, final CssStyle style) {
         ParsedValue<?, ?> value = null;
         if (style != null && !style.getLookupChain().isEmpty()) {
             if (style.getLookupChain().size() == 1) {
-                value = style.getLookupChain().get(0).getParsedValue();
+                value = style.getLookupChain().getFirst().getParsedValue();
             } else {
                 value = style.getParsedValue();
             }
@@ -1964,11 +1963,11 @@ public class CssPanelController extends AbstractFxmlPanelController {
         return createValueUI(item, null, value, style);
     }
 
-    private static Node createValueUI(CssProperty item, PropertyState ps, Object value, CssStyle style) {
+    private static Node createValueUI(final CssProperty item, final PropertyState ps, final Object value, final CssStyle style) {
         ParsedValue<?, ?>[] parsedValues = null;
         if (style != null) {
-            ParsedValue<?, ?> pv = style.getParsedValue();
-            Object v = pv.getValue();
+            final ParsedValue<?, ?> pv = style.getParsedValue();
+            final var v = pv.getValue();
             if (v instanceof ParsedValue<?, ?>[]) {//Means lookups
                 parsedValues = (ParsedValue<?, ?>[]) v;
             }
@@ -1976,26 +1975,26 @@ public class CssPanelController extends AbstractFxmlPanelController {
         return createValueUI(item, ps, value, style, parsedValues);
     }
 
-    private static Node createValueUI(CssProperty item, PropertyState ps, Object value, CssStyle style, ParsedValue<?, ?>[] parsedValues) {
+    private static Node createValueUI(final CssProperty item, final PropertyState ps, Object value, final CssStyle style, final ParsedValue<?, ?>[] parsedValues) {
         Node ret = null;
         if (value instanceof ParsedValue) {
-            ParsedValue<?, ?> pv = (ParsedValue<?, ?>) value;
+            final var pv = (ParsedValue<?, ?>) value;
             value = CssValueConverter.convert(pv);
         }
         if (value != null) {
             if (value.getClass().isArray()) {
-                HBox hbox = new HBox(5);
-                int size = Array.getLength(value);
-                int lookupIndex = 0;
-                for (int i = 0; i < size; i++) {
-                    Object v = Array.get(value, i);
-                    Node n = getLeaf(v);
+                final var hbox = new HBox(5);
+                final var size = Array.getLength(value);
+                var lookupIndex = 0;
+                for (var i = 0; i < size; i++) {
+                    final var v = Array.get(value, i);
+                    final var n = getLeaf(v);
                     if (n == null) {
                         break;
                     }
-                    boolean lookup = false;
+                    var lookup = false;
                     if (parsedValues != null) {
-                        ParsedValue<?, ?> pv = parsedValues[i];
+                        final var pv = parsedValues[i];
                         lookup = pv.isContainsLookups();
                     }
                     if (lookup) {
@@ -2021,7 +2020,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
                         }
 
                         lookupIndex += 1;
-                        Node lookupUI = createLookupUI(item, ps, style, lookupRoot, n);
+                        final var lookupUI = createLookupUI(item, ps, style, lookupRoot, n);
                         hbox.getChildren().add(lookupUI);
                     } else {
                         hbox.getChildren().add(n);
@@ -2035,20 +2034,20 @@ public class CssPanelController extends AbstractFxmlPanelController {
                 }
             } else {
                 if (value instanceof Collection) {
-                    HBox hbox = new HBox(5);
-                    int lookupIndex = 0;
-                    Collection<?> collection = (Collection<?>) value;
-                    Iterator<?> it = collection.iterator();
-                    int index = 0;
+                    final var hbox = new HBox(5);
+                    var lookupIndex = 0;
+                    final var collection = (Collection<?>) value;
+                    final var it = collection.iterator();
+                    var index = 0;
                     while (it.hasNext()) {
-                        Object v = it.next();
-                        Node n = getLeaf(v);
+                        final var v = it.next();
+                        final var n = getLeaf(v);
                         if (n == null) {
                             break;
                         }
-                        boolean lookup = false;
+                        var lookup = false;
                         if (parsedValues != null) {
-                            ParsedValue<?, ?> pv = parsedValues[index];
+                            final var pv = parsedValues[index];
                             lookup = pv.isContainsLookups();
                         }
                         if (lookup) {
@@ -2072,7 +2071,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
                             } else {
                                 lookupRoot = style.getLookupChain().get(lookupIndex);
                             }
-                            Node lookupUI = createLookupUI(item, ps, style, lookupRoot, n);
+                            final var lookupUI = createLookupUI(item, ps, style, lookupRoot, n);
                             hbox.getChildren().add(lookupUI);
                             lookupIndex += 1;
                         } else {
@@ -2087,7 +2086,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
                         ret = hbox;
                     }
                 } else {// Leaf value
-                    Node n = getLeaf(value);
+                    var n = getLeaf(value);
                     if (n == null && style != null) {
                         n = getLabel(style);
                     }
@@ -2102,8 +2101,8 @@ public class CssPanelController extends AbstractFxmlPanelController {
         return ret;
     }
 
-    private static Label getLabel(CssStyle style) {
-        String l = CssValueConverter.toCssString(style.getCssProperty(), style.getCssRule(), style.getParsedValue());
+    private static Label getLabel(final CssStyle style) {
+        final var l = CssValueConverter.toCssString(style.getCssProperty(), style.getCssRule(), style.getParsedValue());
         return new Label(l);
     }
     
@@ -2117,27 +2116,27 @@ public class CssPanelController extends AbstractFxmlPanelController {
     }
 
     private static Node createLookupUI(
-            final CssProperty item, final PropertyState ps, final CssStyle style,
-            final CssStyle lookupRoot, Node n) {
+        final CssProperty item, final PropertyState ps, final CssStyle style,
+        final CssStyle lookupRoot, final Node n) {
 
         // TODO: make an fxml file for this
         // MenuButton
-        final HBox hbox = new HBox();
+        final var hbox = new HBox();
         hbox.setMaxWidth(Region.USE_PREF_SIZE);
-        ImageView imgView = new ImageView();
+        final var imgView = new ImageView();
         imgView.setImage(getLookupImage());
         hbox.getChildren().addAll(n, imgView);
-        MenuButton lookupMb = new MenuButton();
+        final var lookupMb = new MenuButton();
         lookupMb.setGraphic(hbox);
         lookupMb.getStyleClass().add("lookup-button");
-        CustomMenuItem popupContentMi = new CustomMenuItem();
+        final var popupContentMi = new CustomMenuItem();
         popupContentMi.setHideOnClick(false);
         lookupMb.getItems().add(popupContentMi);
 
         // Popup content
-        StackPane popupContent = new StackPane();
+        final var popupContent = new StackPane();
         popupContentMi.setContent(popupContent);
-        TreeView<Node> lookupTv = new TreeView<>();
+        final var lookupTv = new TreeView<Node>();
         lookupTv.setPrefSize(400, 100);
         Object val = null;
         if (ps instanceof CssPropertyState) {
@@ -2148,7 +2147,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
             }
         }
         assert val != null;
-        TreeItem<Node> root = new TreeItem<>();
+        final var root = new TreeItem<Node>();
         lookupTv.setRoot(root);
         lookupTv.setShowRoot(false);
         if (ps != null) {
@@ -2162,18 +2161,18 @@ public class CssPanelController extends AbstractFxmlPanelController {
         return lookupMb;
     }
 
-    private static Node getLeaf(Object value) {
-        CssValuePresenterFactory.CssValuePresenter<?> presenter = CssValuePresenterFactory.getInstance().newValuePresenter(value);
-        Node customPresenter = presenter.getCustomPresenter();
+    private static Node getLeaf(final Object value) {
+        final CssValuePresenterFactory.CssValuePresenter<?> presenter = CssValuePresenterFactory.getInstance().newValuePresenter(value);
+        final var customPresenter = presenter.getCustomPresenter();
         return customPresenter;
     }
 
-    private static void attachStylePropertyNoLookup(TreeItem<Node> parent,
-            CssPropertyState ps, CssStyle style, boolean applied) {
-        CssStyle cssStyle = applied ? ps.getStyle() : style;
-        Object value = applied ? ps.getFxValue() : style.getParsedValue();
-        String cssValue = CssValueConverter.toCssString(cssStyle.getCssProperty(), cssStyle.getCssRule(), cssStyle.getParsedValue());
-        TreeItem<Node> item = new TreeItem<>(getContent(ps.getCssProperty(), cssValue, value, applied));
+    private static void attachStylePropertyNoLookup(final TreeItem<Node> parent,
+                                                    final CssPropertyState ps, final CssStyle style, final boolean applied) {
+        final var cssStyle = applied ? ps.getStyle() : style;
+        final var value = applied ? ps.getFxValue() : style.getParsedValue();
+        final var cssValue = CssValueConverter.toCssString(cssStyle.getCssProperty(), cssStyle.getCssRule(), cssStyle.getParsedValue());
+        final var item = new TreeItem<Node>(getContent(ps.getCssProperty(), cssValue, value, applied));
         parent.getChildren().add(item);
     }
 

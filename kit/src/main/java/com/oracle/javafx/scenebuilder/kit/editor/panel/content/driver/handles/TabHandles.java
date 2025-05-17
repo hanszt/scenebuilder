@@ -33,7 +33,6 @@ package com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.handles;
 
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -68,8 +67,8 @@ public class TabHandles extends AbstractResilientHandles<Tab> {
     private TabPane tabPane;
     private Node tabNode; // Skin node representing the tab
     
-    public TabHandles(ContentPanelController contentPanelController,
-            FXOMInstance fxomInstance) {
+    public TabHandles(final ContentPanelController contentPanelController,
+                      final FXOMInstance fxomInstance) {
         super(contentPanelController, fxomInstance, Tab.class);
         
         getSceneGraphObject().tabPaneProperty().addListener(
@@ -95,9 +94,9 @@ public class TabHandles extends AbstractResilientHandles<Tab> {
         }
 
         // Convert tabNode bounds from tabNode local space to tabPane local space
-        final Bounds b = tabNode.getLayoutBounds();
-        final Point2D min = Deprecation.localToLocal(tabNode, b.getMinX(), b.getMinY(), tabPane);
-        final Point2D max = Deprecation.localToLocal(tabNode, b.getMaxX(), b.getMaxY(), tabPane);
+        final var b = tabNode.getLayoutBounds();
+        final var min = Deprecation.localToLocal(tabNode, b.getMinX(), b.getMinY(), tabPane);
+        final var max = Deprecation.localToLocal(tabNode, b.getMaxX(), b.getMaxY(), tabPane);
         
         return BoundsUtils.makeBounds(min, max);
     }
@@ -147,7 +146,7 @@ public class TabHandles extends AbstractResilientHandles<Tab> {
     private Node lookupTabNode() {
         assert tabPane != null;
         
-        final TabPaneDesignInfoX di = new TabPaneDesignInfoX();
+        final var di = new TabPaneDesignInfoX();
         return di.getTabNode(tabPane, getSceneGraphObject());
     }
 }

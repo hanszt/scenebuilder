@@ -57,7 +57,7 @@ import org.eclipse.aether.version.Version;
 public class SearchService extends Service<Void> {
 
     private final ExecutorService exec = Executors.newFixedThreadPool(5, r -> {
-        Thread t = new Thread(r);
+        var t = new Thread(r);
         t.setDaemon(true);
         return t ;
     });
@@ -71,14 +71,14 @@ public class SearchService extends Service<Void> {
 
     private final String userM2Repository;
     
-    public SearchService(String userM2Repository) {
+    public SearchService(final String userM2Repository) {
         setExecutor(exec);
         result = FXCollections.observableArrayList();
         searching = new SimpleBooleanProperty();
         this.userM2Repository = userM2Repository;
     }
     
-    public void setQuery(String query) {
+    public void setQuery(final String query) {
         this.query = query;
     }
     
@@ -113,8 +113,8 @@ public class SearchService extends Service<Void> {
                     createSearchTask(new NexusSearch(MavenPresets.SONATYPE, "http://oss.sonatype.org", "", "")),
                     createSearchTask(new NexusSearch(MavenPresets.GLUON_NEXUS, "https://nexus.gluonhq.com/nexus", "", "")),
                     createSearchTask(new LocalSearch(userM2Repository)));
-                
-                AtomicInteger count = new AtomicInteger();
+
+                final var count = new AtomicInteger();
                 tasks.forEach(task -> 
                     task.stateProperty().addListener((obs, oldState, newState) -> {
                         if (newState == Worker.State.SUCCEEDED || newState == Worker.State.CANCELLED ||
@@ -123,7 +123,7 @@ public class SearchService extends Service<Void> {
                                 searching.set(false);
                             }
                             if (newState == Worker.State.SUCCEEDED && task.getValue() != null) {
-                                List<DefaultArtifact> list = new ArrayList<>(result);
+                                final List<DefaultArtifact> list = new ArrayList<>(result);
                                 list.addAll(task.getValue());
                                 
                                 result.setAll(getLatestVersions(
@@ -144,7 +144,7 @@ public class SearchService extends Service<Void> {
         };
     }
     
-    private Task<ObservableList<DefaultArtifact>> createSearchTask(Search search) {
+    private Task<ObservableList<DefaultArtifact>> createSearchTask(final Search search) {
         return new Task<ObservableList<DefaultArtifact>>() {
             @Override
             protected ObservableList<DefaultArtifact> call() throws Exception {
@@ -153,17 +153,17 @@ public class SearchService extends Service<Void> {
         };
     }
     
-    private List<DefaultArtifact> getLatestVersions(Map<String, List<DefaultArtifact>> mapArtifacts) {
-        List<DefaultArtifact> list = new ArrayList<>();
+    private List<DefaultArtifact> getLatestVersions(final Map<String, List<DefaultArtifact>> mapArtifacts) {
+        final List<DefaultArtifact> list = new ArrayList<>();
         mapArtifacts.forEach((s, l) -> {
-            DefaultArtifact da = l.stream()
+            final var da = l.stream()
                     // TODO: Include snapshots
                     .filter(a -> !a.getVersion().toLowerCase(Locale.ROOT).contains("snapshot"))
                     .filter(a -> !a.getVersion().toLowerCase(Locale.ROOT).contains("javadoc"))
                     .filter(a -> !a.getVersion().toLowerCase(Locale.ROOT).contains("source"))
                     .reduce((a1, a2) -> {
-                        Version v1 = getVersion(a1.getVersion());
-                        Version v2 = getVersion(a2.getVersion());
+                        final var v1 = getVersion(a1.getVersion());
+                        final var v2 = getVersion(a2.getVersion());
                         if (v1 != null && v2 != null && v1.compareTo(v2) > 0) {
                             return a1;
                         } else {
@@ -177,8 +177,8 @@ public class SearchService extends Service<Void> {
     }
     
     // TODO: Return all versions, including snapshots
-    private List<DefaultArtifact> getAllVersions(Map<String, List<DefaultArtifact>> mapArtifacts) {
-        List<DefaultArtifact> list = new ArrayList<>();
+    private List<DefaultArtifact> getAllVersions(final Map<String, List<DefaultArtifact>> mapArtifacts) {
+        final List<DefaultArtifact> list = new ArrayList<>();
         mapArtifacts.forEach((s, l) -> {
             l.stream()
                 .filter(a -> !a.getVersion().toLowerCase(Locale.ROOT).contains("javadoc"))
@@ -188,11 +188,11 @@ public class SearchService extends Service<Void> {
         return list;
     }
     
-    private Version getVersion(String version) {
+    private Version getVersion(final String version) {
         Version v1 = null;
         try {
             v1 = new GenericVersionScheme().parseVersion(version);
-        } catch (InvalidVersionSpecificationException ivse) { }
+        } catch (final InvalidVersionSpecificationException ivse) { }
         return v1;
     }
     

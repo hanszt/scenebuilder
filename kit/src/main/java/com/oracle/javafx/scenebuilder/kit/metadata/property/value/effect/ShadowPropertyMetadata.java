@@ -68,8 +68,8 @@ public class ShadowPropertyMetadata extends ComplexPropertyMetadata<Shadow> {
             = new DoublePropertyMetadata(new PropertyName("radius"), //NOI18N
             DoublePropertyMetadata.DoubleKind.SIZE, true /* readWrite */, 10.0, InspectorPath.UNUSED);
 
-    public ShadowPropertyMetadata(PropertyName name, boolean readWrite, 
-            Shadow defaultValue, InspectorPath inspectorPath) {
+    public ShadowPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                  final Shadow defaultValue, final InspectorPath inspectorPath) {
         super(name, Shadow.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -78,8 +78,8 @@ public class ShadowPropertyMetadata extends ComplexPropertyMetadata<Shadow> {
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(Shadow value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, value.getClass());
+    public FXOMInstance makeFxomInstanceFromValue(final Shadow value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, value.getClass());
         
         blurTypeMetadata.setValue(result, value.getBlurType().toString());
         colorMetadata.setValue(result, value.getColor());

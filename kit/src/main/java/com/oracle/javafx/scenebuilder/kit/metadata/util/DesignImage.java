@@ -43,7 +43,7 @@ public class DesignImage {
     private final Image image;
     private final String location; // A URL or a relative path expression using @
     
-    public DesignImage(Image image, String location) {
+    public DesignImage(final Image image, final String location) {
         assert image != null;
         assert location != null;
         
@@ -51,7 +51,7 @@ public class DesignImage {
         this.location = location;
     }
     
-    public DesignImage(Image image) {
+    public DesignImage(final Image image) {
         assert image != null;
         assert image.getUrl() != null;
         

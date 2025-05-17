@@ -46,13 +46,13 @@ import javafx.scene.layout.HBox;
  */
 public class WrapInHBoxJob extends AbstractWrapInSubComponentJob {
 
-    public WrapInHBoxJob(EditorController editorController) {
+    public WrapInHBoxJob(final EditorController editorController) {
         super(editorController);
         newContainerClass = HBox.class;
     }
 
     @Override
-    protected Collection<FXOMObject> sortChildren(List<FXOMObject> children) {
+    protected Collection<FXOMObject> sortChildren(final List<FXOMObject> children) {
         final List<FXOMObject> sorted = new ArrayList<>(children);
         Collections.sort(sorted, UnidimensionalComparator.of(Orientation.HORIZONTAL));
         return sorted;

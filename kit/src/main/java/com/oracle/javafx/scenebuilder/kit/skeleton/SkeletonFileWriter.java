@@ -83,7 +83,7 @@ final class SkeletonFileWriter {
      *                      Must not be null.
      * 
      */
-    public SkeletonFileWriter(Supplier<Stage> stageSupplier, ReadOnlyStringProperty textProperty) {
+    public SkeletonFileWriter(final Supplier<Stage> stageSupplier, final ReadOnlyStringProperty textProperty) {
         this(stageSupplier, textProperty, (fileChooser,stage) -> fileChooser.showSaveDialog(stage),
                 SkeletonFileWriterSuccessAlert::new, SkeletonFileWriterErrorAlert::new);
     }
@@ -108,10 +108,10 @@ final class SkeletonFileWriter {
      *                              is raised in case of an exception during an
      *                              attempt to write the skeleton file.
      */
-    protected SkeletonFileWriter(Supplier<Stage> stageSupplier, ReadOnlyStringProperty textProperty,
-                                 BiFunction<FileChooser,Stage,File> saveDialogInteraction,
-                                 Function<Supplier<Stage>,Consumer<File>> onSuccessNotify,
-                                 Function<Supplier<Stage>,BiConsumer<File, Exception>> onErrorNotify) {
+    protected SkeletonFileWriter(final Supplier<Stage> stageSupplier, final ReadOnlyStringProperty textProperty,
+                                 final BiFunction<FileChooser,Stage,File> saveDialogInteraction,
+                                 final Function<Supplier<Stage>,Consumer<File>> onSuccessNotify,
+                                 final Function<Supplier<Stage>,BiConsumer<File, Exception>> onErrorNotify) {
         this.stageSupplier = Objects.requireNonNull(stageSupplier);
         this.textProperty = Objects.requireNonNull(textProperty);
         this.saveDialogInteraction = Objects.requireNonNull(saveDialogInteraction);
@@ -149,7 +149,7 @@ final class SkeletonFileWriter {
      * @param language         The language is required in order to adjust file naming
      *                         according to language specific rules. Must not be null.
      */
-    public void run(URL fxmlLocation, String fxControllerName, SkeletonSettings.LANGUAGE language) {
+    public void run(final URL fxmlLocation, final String fxControllerName, final SkeletonSettings.LANGUAGE language) {
         this.fxmlLocation = fxmlLocation;
         this.controllerName = fxControllerName;
         this.language = Objects.requireNonNull(language);
@@ -158,7 +158,7 @@ final class SkeletonFileWriter {
          * TODO: Ask user if a corresponding directory src/main/java or 
          * src/main/kotlin shall be created if it does not exist.
          */
-        File fileToSave = determineSaveFileName();
+        final var fileToSave = determineSaveFileName();
         updateFileChooser(fileToSave);
         saveToFileWhenConfirmed();
     }
@@ -187,14 +187,14 @@ final class SkeletonFileWriter {
     }
 
     private void saveToFileWhenConfirmed() {
-        File confirmedSavedFile = saveDialogInteraction.apply(saveFileChooser, stageSupplier.get());
+        final var confirmedSavedFile = saveDialogInteraction.apply(saveFileChooser, stageSupplier.get());
         if (null != confirmedSavedFile) {
             updateFileChooserAndSave(confirmedSavedFile);
         }
     }
 
     private File determineSaveFileName() {
-        File fileToSave = savedFilePerLanguage.get(language);
+        var fileToSave = savedFilePerLanguage.get(language);
         if (fileToSave == null) {
             fileToSave = new SkeletonFileNameProposal(language).create(fxmlLocation, controllerName);
         }
@@ -209,50 +209,50 @@ final class SkeletonFileWriter {
     }
 
     private void createExtensionFilters() {
-        for (SkeletonSettings.LANGUAGE lang : SkeletonSettings.LANGUAGE.values()) {
-            ExtensionFilter filter = new ExtensionFilter(lang.toString(), "*"+lang.getExtension());
+        for (final var lang : SkeletonSettings.LANGUAGE.values()) {
+            final var filter = new ExtensionFilter(lang.toString(), "*" + lang.getExtension());
             extensionFilterByLanguage.put(lang, filter);
             saveFileChooser.getExtensionFilters().add(filter);
         }
     }
 
-    private void updateFileChooser(File fileToSave) {
+    private void updateFileChooser(final File fileToSave) {
         saveFileChooser.setInitialDirectory(fileToSave.getParentFile());
         saveFileChooser.setInitialFileName(fileToSave.getName());
         saveFileChooser.setSelectedExtensionFilter(extensionFilterByLanguage.get(language));
     }
 
-    private void updateFileChooserAndSave(File savedFile) {
+    private void updateFileChooserAndSave(final File savedFile) {
         updateFileChooser(savedFile);
         rememberLastSavedFilePerLanguage(savedFile);
         saveToFile(savedFile.toPath().toAbsolutePath());
     }
 
-    private void rememberLastSavedFilePerLanguage(File savedFile) {
+    private void rememberLastSavedFilePerLanguage(final File savedFile) {
         savedFilePerLanguage.put(language, savedFile);
     }
 
-    private void saveToFile(Path skeletonFile) {
+    private void saveToFile(final Path skeletonFile) {
         try {
             writeSkeletonFileAndNotifyUser(skeletonFile);
-        } catch (IOException error) {
+        } catch (final IOException error) {
             logErrorAndNotifyUser(skeletonFile, error);
         }
     }
 
-    private void writeSkeletonFileAndNotifyUser(Path skeletonFile) throws IOException {
-        String skeleton = textProperty.getValueSafe();
-        OpenOption openOption = Files.exists(skeletonFile) ? StandardOpenOption.TRUNCATE_EXISTING : StandardOpenOption.CREATE_NEW;
+    private void writeSkeletonFileAndNotifyUser(final Path skeletonFile) throws IOException {
+        final var skeleton = textProperty.getValueSafe();
+        final OpenOption openOption = Files.exists(skeletonFile) ? StandardOpenOption.TRUNCATE_EXISTING : StandardOpenOption.CREATE_NEW;
         Files.write(skeletonFile, skeleton.getBytes(), openOption);
         onSuccess.apply(stageSupplier)
                  .accept(skeletonFile.toFile());
     }
 
-    private void logErrorAndNotifyUser(Path skeletonFile, IOException error) {
+    private void logErrorAndNotifyUser(final Path skeletonFile, final IOException error) {
         onError.apply(stageSupplier)
                .accept(skeletonFile.toFile(),error);
-        Logger logger = Logger.getLogger(SkeletonFileWriter.class.getSimpleName());
-        String template = "Could not write controller skeleton to file: %s .";
+        final var logger = Logger.getLogger(SkeletonFileWriter.class.getSimpleName());
+        final var template = "Could not write controller skeleton to file: %s .";
         logger.log(Level.SEVERE, String.format(template, skeletonFile.normalize().toAbsolutePath()), error);
     }
 }

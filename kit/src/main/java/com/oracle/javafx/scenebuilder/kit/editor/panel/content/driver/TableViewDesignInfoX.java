@@ -36,15 +36,12 @@ import com.oracle.javafx.scenebuilder.kit.util.Deprecation;
 import javafx.scene.control.skin.TableColumnHeader;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableColumnBase;
 import javafx.scene.control.TableView;
 
 /**
@@ -59,10 +56,10 @@ public class TableViewDesignInfoX /* extends TableViewDesignInfo */ {
         // no-op
     }
 
-    public Bounds getColumnBounds(TableColumn<?,?> tableColumn) {
-        final TableView<?> tv = tableColumn.getTableView();
-        final Bounds tb = tv.getLayoutBounds();
-        final Bounds hb = getColumnHeaderBounds(tableColumn);
+    public Bounds getColumnBounds(final TableColumn<?,?> tableColumn) {
+        final var tv = tableColumn.getTableView();
+        final var tb = tv.getLayoutBounds();
+        final var hb = getColumnHeaderBounds(tableColumn);
         
         //
         //           x0             x1          
@@ -78,39 +75,39 @@ public class TableViewDesignInfoX /* extends TableViewDesignInfo */ {
         // y1  +--------------------------------------+
         //
         
-        final double x0 = hb.getMinX();
-        final double x1 = hb.getMaxX();
-        final double y0 = hb.getMinY();
-        final double y1 = tb.getMaxY();
+        final var x0 = hb.getMinX();
+        final var x1 = hb.getMaxX();
+        final var y0 = hb.getMinY();
+        final var y1 = tb.getMaxY();
         
         return new BoundingBox(x0, y0, x1 - x0, y1 - y0);
     }
     
     
-    public Bounds getColumnHeaderBounds(TableColumn<?,?> tableColumn) {
-        final TableView<?> tv = tableColumn.getTableView();
-        final Node hn = getColumnNode(tableColumn);
+    public Bounds getColumnHeaderBounds(final TableColumn<?,?> tableColumn) {
+        final var tv = tableColumn.getTableView();
+        final var hn = getColumnNode(tableColumn);
         return Deprecation.localToLocal(hn, hn.getLayoutBounds(), tv);
     }
     
     
-    public Node getColumnNode(TableColumn<?,?> tableColumn) {
+    public Node getColumnNode(final TableColumn<?,?> tableColumn) {
         assert tableColumn != null;
         assert tableColumn.getTableView() != null;
         
 
         // Looks for the sub nodes which match the .column-header CSS selector
-        final TableView<?> tableView = tableColumn.getTableView();
-        final Set<Node> set = tableView.lookupAll(".column-header"); //NOI18N
+        final var tableView = tableColumn.getTableView();
+        final var set = tableView.lookupAll(".column-header"); //NOI18N
         
         // Searches the result for the node associated to 'tableColumn'.
         // This item has (TableColumn.class, tableColumn) in its property list.
         Node result = null;
-        final Iterator<Node> it = set.iterator();
+        final var it = set.iterator();
         while ((result == null) && it.hasNext()) {
-            Node n = it.next();
+            final var n = it.next();
             assert n instanceof TableColumnHeader;
-            final TableColumnBase<?,?> tc = ((TableColumnHeader)n).getTableColumn();
+            final var tc = ((TableColumnHeader)n).getTableColumn();
             if (tc == tableColumn) {
                 result = n;
             }
@@ -120,7 +117,7 @@ public class TableViewDesignInfoX /* extends TableViewDesignInfo */ {
     }
     
     
-    public <T> TableColumn<T,?> lookupColumn(TableView<T>  tableView, double sceneX, double sceneY) {
+    public <T> TableColumn<T,?> lookupColumn(final TableView<T>  tableView, final double sceneX, final double sceneY) {
         TableColumn<T,?> result = null;
         
         //
@@ -141,11 +138,11 @@ public class TableViewDesignInfoX /* extends TableViewDesignInfo */ {
         
         // Walk through the column to see if one contains 'x' vertical
         List<TableColumn<T,?>> tableColumns = tableView.getColumns();
-        List<TableColumn<T,?>> columnPath = new ArrayList<>();
-        while (tableColumns.isEmpty() == false) {
-            final TableColumn<T,?> tc = lookupColumn(tableColumns, sceneX);
+        final List<TableColumn<T,?>> columnPath = new ArrayList<>();
+        while (!tableColumns.isEmpty()) {
+            final var tc = lookupColumn(tableColumns, sceneX);
             if (tc != null) {
-                columnPath.add(0, tc);
+                columnPath.addFirst(tc);
                 tableColumns = tc.getColumns();
             } else {
                 tableColumns = Collections.emptyList(); // To stop the loop
@@ -158,10 +155,10 @@ public class TableViewDesignInfoX /* extends TableViewDesignInfo */ {
         } else {
             // Check if one column in columnPath contains (sceneX, sceneY)
             // => case #1 or #2
-            for (TableColumn<T,?> tc : columnPath) {
-                final Node headerNode = getColumnNode(tc);
-                final Bounds headerBounds = headerNode.getLayoutBounds();
-                final Point2D p = headerNode.sceneToLocal(sceneX, sceneY, true /* rootScene */);
+            for (final var tc : columnPath) {
+                final var headerNode = getColumnNode(tc);
+                final var headerBounds = headerNode.getLayoutBounds();
+                final var p = headerNode.sceneToLocal(sceneX, sceneY, true /* rootScene */);
                 if (headerBounds.contains(p)) {
                     result = tc;
                     break;
@@ -174,15 +171,15 @@ public class TableViewDesignInfoX /* extends TableViewDesignInfo */ {
     
     
     private <T> TableColumn<T,?> lookupColumn(
-            List<TableColumn<T,?>> tableColumns, double sceneX) {
+            final List<TableColumn<T,?>> tableColumns, final double sceneX) {
         TableColumn<T,?> result = null;
         
         // Walk through the columns to see if one contains 'x' vertical
-        for (TableColumn<T,?> tc : tableColumns) {
-            final Node headerNode = getColumnNode(tc);
+        for (final var tc : tableColumns) {
+            final var headerNode = getColumnNode(tc);
             if (headerNode != null) {
-                final Bounds headerBounds = headerNode.getLayoutBounds();
-                final Point2D p = headerNode.sceneToLocal(sceneX, 0, true /* rootScene */);
+                final var headerBounds = headerNode.getLayoutBounds();
+                final var p = headerNode.sceneToLocal(sceneX, 0, true /* rootScene */);
                 if ((headerBounds.getMinX() <= p.getX()) 
                         && (p.getX() < headerBounds.getMaxX())) {
                     result = tc;

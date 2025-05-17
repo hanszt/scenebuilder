@@ -46,13 +46,13 @@ import javafx.scene.control.ToolBar;
  */
 public class WrapInToolBarJob extends AbstractWrapInSubComponentJob {
 
-    public WrapInToolBarJob(EditorController editorController) {
+    public WrapInToolBarJob(final EditorController editorController) {
         super(editorController);
         newContainerClass = ToolBar.class;
     }
 
     @Override
-    protected Collection<FXOMObject> sortChildren(List<FXOMObject> children) {
+    protected Collection<FXOMObject> sortChildren(final List<FXOMObject> children) {
         final List<FXOMObject> sorted = new ArrayList<>(children);
         Collections.sort(sorted, UnidimensionalComparator.of(Orientation.HORIZONTAL));
         return sorted;

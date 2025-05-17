@@ -36,7 +36,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.resizer.Ab
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.resizer.RegionResizer;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import javafx.scene.Node;
-import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.Region;
 
@@ -45,7 +44,7 @@ import javafx.scene.layout.Region;
  */
 public class TabPaneDriver extends AbstractNodeDriver {
 
-    public TabPaneDriver(ContentPanelController contentPanelController) {
+    public TabPaneDriver(final ContentPanelController contentPanelController) {
         super(contentPanelController);
     }
 
@@ -54,18 +53,18 @@ public class TabPaneDriver extends AbstractNodeDriver {
      */
     
     @Override
-    public AbstractResizer<?> makeResizer(FXOMObject fxomObject) {
+    public AbstractResizer<?> makeResizer(final FXOMObject fxomObject) {
         assert fxomObject.getSceneGraphObject() instanceof TabPane;
         return new RegionResizer((Region) fxomObject.getSceneGraphObject());
     }
     
     @Override
-    public FXOMObject refinePick(Node hitNode, double sceneX, double sceneY, FXOMObject fxomObject) {
+    public FXOMObject refinePick(final Node hitNode, final double sceneX, final double sceneY, final FXOMObject fxomObject) {
         assert fxomObject.getSceneGraphObject() instanceof TabPane;
         
-        final TabPane tabPane = (TabPane) fxomObject.getSceneGraphObject();
-        final TabPaneDesignInfoX di = new TabPaneDesignInfoX();
-        final Tab tab = di.lookupTab(tabPane, sceneX, sceneY);
+        final var tabPane = (TabPane) fxomObject.getSceneGraphObject();
+        final var di = new TabPaneDesignInfoX();
+        final var tab = di.lookupTab(tabPane, sceneX, sceneY);
         
         final FXOMObject result;
         if (tab == null) {

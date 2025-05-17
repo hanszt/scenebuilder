@@ -52,7 +52,7 @@ public abstract class AbstractResizer<T extends Node> {
     
     protected final T sceneGraphObject;
     
-    public AbstractResizer(T sceneGraphObject) {
+    public AbstractResizer(final T sceneGraphObject) {
         assert sceneGraphObject != null;
         this.sceneGraphObject = sceneGraphObject;
     }

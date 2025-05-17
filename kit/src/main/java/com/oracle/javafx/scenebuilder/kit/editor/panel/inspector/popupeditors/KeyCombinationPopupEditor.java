@@ -37,7 +37,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.panel.inspector.editors.AutoSug
 import com.oracle.javafx.scenebuilder.kit.editor.panel.inspector.editors.EditorUtils;
 import com.oracle.javafx.scenebuilder.kit.metadata.property.ValuePropertyMetadata;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -53,7 +52,6 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
@@ -94,13 +92,13 @@ public class KeyCombinationPopupEditor extends PopupEditor {
         KeyCombination.SHIFT_ANY, KeyCombination.SHIFT_DOWN,
         KeyCombination.SHORTCUT_ANY, KeyCombination.SHORTCUT_DOWN};
 
-    public KeyCombinationPopupEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses,
-            EditorController editorController) {
+    public KeyCombinationPopupEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses,
+                                     final EditorController editorController) {
         super(propMeta, selectedClasses);
         initialize(editorController);
     }
     
-    private void initialize(EditorController editorController) {
+    private void initialize(final EditorController editorController) {
         this.editorController = editorController;
     }
 
@@ -110,13 +108,13 @@ public class KeyCombinationPopupEditor extends PopupEditor {
     //
     @Override
     public void initializePopupContent() {
-        Parent root = EditorUtils.loadPopupFxml("KeyCombinationPopupEditor.fxml", this); //NOI18N
+        final var root = EditorUtils.loadPopupFxml("KeyCombinationPopupEditor.fxml", this); //NOI18N
         assert root instanceof GridPane;
         gridPane = (GridPane) root;
         // Build suggested key code list
-        List<Field> keyCodes = Arrays.asList(KeyCode.class.getFields());
-        List<String> keyCodesStr = new ArrayList<>();
-        for (Field keyCode : keyCodes) {
+        final var keyCodes = Arrays.asList(KeyCode.class.getFields());
+        final List<String> keyCodesStr = new ArrayList<>();
+        for (final var keyCode : keyCodes) {
             keyCodesStr.add(keyCode.getName());
         }
 
@@ -134,13 +132,13 @@ public class KeyCombinationPopupEditor extends PopupEditor {
     }
 
     @Override
-    public String getPreviewString(Object value) {
+    public String getPreviewString(final Object value) {
         if (value == null) {
             return I18N.getString("inspector.keycombination.null");
         }
         assert value instanceof KeyCombination;
-        KeyCombination keyCombinationVal = (KeyCombination) value;
-        String valueAsString;
+        final var keyCombinationVal = (KeyCombination) value;
+        final String valueAsString;
         if (isIndeterminate()) {
             valueAsString = "-"; //NOI18N
         } else {
@@ -150,7 +148,7 @@ public class KeyCombinationPopupEditor extends PopupEditor {
     }
 
     @Override
-    public void setPopupContentValue(Object value) {
+    public void setPopupContentValue(final Object value) {
 
         if (value != null) {
             // Empty the editor
@@ -170,7 +168,7 @@ public class KeyCombinationPopupEditor extends PopupEditor {
         return gridPane;
     }
 
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses, EditorController editorController) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses, final EditorController editorController) {
         super.reset(propMeta, selectedClasses);
         this.editorController = editorController;
     }
@@ -185,7 +183,7 @@ public class KeyCombinationPopupEditor extends PopupEditor {
         gridPane.getRowConstraints().clear();
     }
 
-    private void buildContent(KeyCombination keyCombination) {
+    private void buildContent(final KeyCombination keyCombination) {
         assert keyCombination != null;
 
         // Build the modifiers rows
@@ -260,7 +258,7 @@ public class KeyCombinationPopupEditor extends PopupEditor {
         commit(keyCombination);
     }
 
-    private void commit(KeyCombination keyCombination) {
+    private void commit(final KeyCombination keyCombination) {
         commitValue(keyCombination);
     }
 
@@ -269,8 +267,8 @@ public class KeyCombinationPopupEditor extends PopupEditor {
             return null;
         }
         KeyCodeCombination keyComb = null;
-        List<KeyCombination.Modifier> modifiers = new ArrayList<>();
-        for (ModifierRow modifier : modifierRows) {
+        final List<KeyCombination.Modifier> modifiers = new ArrayList<>();
+        for (final var modifier : modifierRows) {
             if (!modifier.isEmpty()) {
                 if (modifiers.contains(modifier.getModifier())) {
                     // doublon: invalid
@@ -285,19 +283,19 @@ public class KeyCombinationPopupEditor extends PopupEditor {
         }
         try {
             keyComb = new KeyCodeCombination(mainKey.getKeyCode(), modifiers.toArray(new KeyCombination.Modifier[1]));
-        } catch (IllegalArgumentException | NullPointerException ex) {
+        } catch (final IllegalArgumentException | NullPointerException ex) {
             System.out.println("Invalid key combination" + ex); //NOI18N
-        } catch (RuntimeException ex) {
+        } catch (final RuntimeException ex) {
             System.out.println(ex.getMessage() + ex);
         }
         return keyComb;
     }
 
     private List<KeyCombination.Modifier> getModifierConstants() {
-        ArrayList<KeyCombination.Modifier> mods = new ArrayList<>();
-        for (KeyCombination.Modifier modifier : keyCombinationModifiers) {
-            boolean alreadyUsed = false;
-            for (ModifierRow row : modifierRows) {
+        final var mods = new ArrayList<Modifier>();
+        for (final var modifier : keyCombinationModifiers) {
+            var alreadyUsed = false;
+            for (final var row : modifierRows) {
                 if (!row.isEmpty()) {
                     if (row.getModifier().getKey().equals(modifier.getKey())) {
                         // modifier already used
@@ -318,18 +316,18 @@ public class KeyCombinationPopupEditor extends PopupEditor {
     private static class ModifierComparator implements Comparator<KeyCombination.Modifier> {
 
         @Override
-        public int compare(KeyCombination.Modifier o1, KeyCombination.Modifier o2) {
+        public int compare(final KeyCombination.Modifier o1, final KeyCombination.Modifier o2) {
             if (o1 == null || o2 == null) {
                 return -1;
             }
-            String str1 = o1.getKey().toString() + o1.getValue().toString();
-            String str2 = o2.getKey().toString() + o2.getValue().toString();
+            final var str1 = o1.getKey().toString() + o1.getValue().toString();
+            final var str2 = o2.getKey().toString() + o2.getValue().toString();
             return str1.compareTo(str2);
         }
     }
 
-    private ChoiceBox<KeyCombination.Modifier> createModifierChoiceBox(KeyCombination.Modifier modifier) {
-        final ChoiceBox<KeyCombination.Modifier> modifierChoiceBox = new ChoiceBox<>();
+    private ChoiceBox<KeyCombination.Modifier> createModifierChoiceBox(final KeyCombination.Modifier modifier) {
+        final var modifierChoiceBox = new ChoiceBox<Modifier>();
         EditorUtils.makeWidthStretchable(modifierChoiceBox);
         modifierChoiceBox.setConverter(new ModifierConverter());
         modifierChoiceBox.getItems().setAll(getModifierConstants());
@@ -340,7 +338,7 @@ public class KeyCombinationPopupEditor extends PopupEditor {
         modifierChoiceBox.getSelectionModel().selectedItemProperty()
                 .addListener((ChangeListener<Modifier>) (observable, oldValue, newValue) -> {
                     if (!mainKey.isEmpty()) {
-                        KeyCombination kc = createKeyCombination();
+                        final var kc = createKeyCombination();
                         if (kc != null) {
                             commit(kc);
                         }
@@ -348,7 +346,7 @@ public class KeyCombinationPopupEditor extends PopupEditor {
                     buildUI();
                 });
         // Workaround for RT-37679
-        modifierChoiceBox.addEventHandler(ActionEvent.ACTION, (Event event) -> {
+        modifierChoiceBox.addEventHandler(ActionEvent.ACTION, (final Event event) -> {
             event.consume();
         });
         return modifierChoiceBox;
@@ -358,22 +356,22 @@ public class KeyCombinationPopupEditor extends PopupEditor {
         resetUI();
 
         // Cleanup: remove empty rows
-        ArrayList<ModifierRow> emptyRows = new ArrayList<>();
-        for (ModifierRow row : modifierRows) {
+        final var emptyRows = new ArrayList<ModifierRow>();
+        for (final var row : modifierRows) {
             if (row.isEmpty()) {
                 emptyRows.add(row);
             }
         }
         modifierRows.removeAll(emptyRows);
 
-        int lineIndex = 0;
-        for (ModifierRow row : modifierRows) {
+        var lineIndex = 0;
+        for (final var row : modifierRows) {
             addModifierRow(row, lineIndex);
             lineIndex++;
         }
 
         // add an empty row
-        boolean added = false;
+        var added = false;
         if (modifierRows.size() < NB_MODIFIERS_MAX) {
             added = addEmptyModifierIfNeeded();
         }
@@ -382,7 +380,7 @@ public class KeyCombinationPopupEditor extends PopupEditor {
         }
 
         // add mainKey
-        Label mainKeyLabel = new Label(I18N.getString("inspector.keycombination.mainkey"));
+        final var mainKeyLabel = new Label(I18N.getString("inspector.keycombination.mainkey"));
         gridPane.add(mainKeyLabel, 0, lineIndex);
         gridPane.add(mainKey.getNode(), 1, lineIndex);
         lineIndex++;
@@ -392,7 +390,7 @@ public class KeyCombinationPopupEditor extends PopupEditor {
     }
 
     private boolean addEmptyModifierIfNeeded() {
-        for (ModifierRow row : modifierRows) {
+        for (final var row : modifierRows) {
             if (row.isEmpty()) {
                 return false;
             }
@@ -401,16 +399,16 @@ public class KeyCombinationPopupEditor extends PopupEditor {
         return true;
     }
 
-    private void addModifierRow(ModifierRow row, int lineIndex) {
+    private void addModifierRow(final ModifierRow row, final int lineIndex) {
         row.getLabel().setText(I18N.getString("inspector.keycombination.modifier")
                 + " " + (lineIndex + 1)); //NOI18N
         gridPane.add(row.getLabel(), 0, lineIndex);
         gridPane.add(row.getChoiceBox(), 1, lineIndex);
     }
 
-    private ModifierRow createModifierRow(KeyCombination.Modifier modifier) {
-        ChoiceBox<KeyCombination.Modifier> choiceBox = createModifierChoiceBox(modifier);
-        ModifierRow row = new ModifierRow(choiceBox);
+    private ModifierRow createModifierRow(final KeyCombination.Modifier modifier) {
+        final var choiceBox = createModifierChoiceBox(modifier);
+        final var row = new ModifierRow(choiceBox);
         modifierRows.add(row);
         return row;
     }
@@ -420,21 +418,21 @@ public class KeyCombinationPopupEditor extends PopupEditor {
         private EditorController editorController;
         String mainKey = null;
 
-        public MainKey(List<String> suggestedKeys, EditorController editorController) {
+        public MainKey(final List<String> suggestedKeys, final EditorController editorController) {
             super("", null, suggestedKeys); //NOI18N
             initialize(editorController);
         }
         
-        private void initialize(EditorController editorController) {
+        private void initialize(final EditorController editorController) {
             this.editorController = editorController;
-            EventHandler<ActionEvent> onActionListener = t -> {
+            final EventHandler<ActionEvent> onActionListener = t -> {
                 if (Objects.equals(mainKey, getTextField().getText())) {
                     // no change
                     return;
                 }
                 mainKey = getTextField().getText();
                 if (!mainKey.isEmpty()) {
-                    KeyCombination kc = createKeyCombination();
+                    final var kc = createKeyCombination();
                     if (kc != null) {
                         commit(kc);
                     }
@@ -449,12 +447,12 @@ public class KeyCombinationPopupEditor extends PopupEditor {
             return getValueEditor();
         }
 
-        public void setKeyCode(KeyCode keyCode) {
+        public void setKeyCode(final KeyCode keyCode) {
             setValue((keyCode != null) ? keyCode.toString() : "");//NOI18N
         }
 
         public KeyCode getKeyCode() {
-            String valStr = getTextField().getText();
+            var valStr = getTextField().getText();
             if (valStr.isEmpty()) {
                 return null;
             }
@@ -464,7 +462,7 @@ public class KeyCombinationPopupEditor extends PopupEditor {
             KeyCode keyCode = null;
             try {
                 keyCode = KeyCode.valueOf(valStr);
-            } catch (Exception ex) {
+            } catch (final Exception ex) {
                 editorController.getMessageLog().logWarningMessage(
                         "inspector.keycombination.invalidkeycode", valStr); //NOI18N
             }
@@ -476,7 +474,7 @@ public class KeyCombinationPopupEditor extends PopupEditor {
         }
     }
 
-    private static void commitOnFocusLost(AutoSuggestEditor autoSuggestEditor) {
+    private static void commitOnFocusLost(final AutoSuggestEditor autoSuggestEditor) {
         autoSuggestEditor.getTextField().focusedProperty().addListener((ChangeListener<Boolean>) (ov, oldVal, newVal) -> {
             if (!newVal) {
                 // Focus lost
@@ -490,7 +488,7 @@ public class KeyCombinationPopupEditor extends PopupEditor {
         private Label label;
         private ChoiceBox<KeyCombination.Modifier> choiceBox;
 
-        public ModifierRow(ChoiceBox<KeyCombination.Modifier> choiceBox) {
+        public ModifierRow(final ChoiceBox<KeyCombination.Modifier> choiceBox) {
             this.label = new Label();
             this.choiceBox = choiceBox;
         }
@@ -500,7 +498,7 @@ public class KeyCombinationPopupEditor extends PopupEditor {
         }
 
         @SuppressWarnings("unused")
-        public void setLabel(Label label) {
+        public void setLabel(final Label label) {
             this.label = label;
         }
 
@@ -509,7 +507,7 @@ public class KeyCombinationPopupEditor extends PopupEditor {
         }
 
         @SuppressWarnings("unused")
-        public void setChoiceBox(ChoiceBox<KeyCombination.Modifier> choiceBox) {
+        public void setChoiceBox(final ChoiceBox<KeyCombination.Modifier> choiceBox) {
             this.choiceBox = choiceBox;
         }
 
@@ -525,7 +523,7 @@ public class KeyCombinationPopupEditor extends PopupEditor {
     private static class ModifierConverter extends StringConverter<KeyCombination.Modifier> {
 
         @Override
-        public String toString(KeyCombination.Modifier object) {
+        public String toString(final KeyCombination.Modifier object) {
             if (object == null) {
                 return I18N.getString("inspector.keycombination.none");
             }
@@ -533,7 +531,7 @@ public class KeyCombinationPopupEditor extends PopupEditor {
         }
 
         @Override
-        public KeyCombination.Modifier fromString(String string) {
+        public KeyCombination.Modifier fromString(final String string) {
             if (string.equals(I18N.getString("inspector.keycombination.none"))) {
                 return null;
             }

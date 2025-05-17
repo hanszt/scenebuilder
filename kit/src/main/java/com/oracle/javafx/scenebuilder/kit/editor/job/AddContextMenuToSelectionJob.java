@@ -41,10 +41,8 @@ import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument.FXOMDocumentSwitch;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.library.BuiltinLibrary;
-import com.oracle.javafx.scenebuilder.kit.library.Library;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -58,7 +56,7 @@ public class AddContextMenuToSelectionJob extends BatchSelectionJob {
     
     private Map<FXOMObject, FXOMObject> contextMenuMap; // Initialized lazily
 
-    public AddContextMenuToSelectionJob(EditorController editorController) {
+    public AddContextMenuToSelectionJob(final EditorController editorController) {
         super(editorController);
     }
     
@@ -77,9 +75,9 @@ public class AddContextMenuToSelectionJob extends BatchSelectionJob {
         constructContextMenuMap();
         
         final List<Job> result = new LinkedList<>();
-        for (Map.Entry<FXOMObject, FXOMObject> e : contextMenuMap.entrySet()) {
-            final FXOMObject fxomObject = e.getKey();
-            final FXOMObject contextMenuObject = e.getValue();
+        for (final var e : contextMenuMap.entrySet()) {
+            final var fxomObject = e.getKey();
+            final var contextMenuObject = e.getValue();
             final Job insertJob = new InsertAsAccessoryJob(
                     contextMenuObject, fxomObject, 
                     DesignHierarchyMask.Accessory.CONTEXT_MENU, 
@@ -92,9 +90,9 @@ public class AddContextMenuToSelectionJob extends BatchSelectionJob {
 
     @Override
     protected AbstractSelectionGroup getNewSelectionGroup() {
-        final Collection<FXOMObject> contextMenus = contextMenuMap.values();
-        assert contextMenus.isEmpty() == false;
-        final FXOMObject hitMenu = contextMenus.iterator().next();
+        final var contextMenus = contextMenuMap.values();
+        assert !contextMenus.isEmpty();
+        final var hitMenu = contextMenus.iterator().next();
         
         return new ObjectSelectionGroup(contextMenus, hitMenu, null);
     }
@@ -118,36 +116,36 @@ public class AddContextMenuToSelectionJob extends BatchSelectionJob {
             contextMenuMap = new LinkedHashMap<>();
             
             // Build the ContextMenu item from the library builtin items
-            final String contextMenuFxmlPath = "builtin/ContextMenu.fxml"; //NOI18N
-            final URL contextMenuFxmlURL 
+            final var contextMenuFxmlPath = "builtin/ContextMenu.fxml"; //NOI18N
+            final var contextMenuFxmlURL
                     = BuiltinLibrary.class.getResource(contextMenuFxmlPath);
             assert contextMenuFxmlURL != null;
 
-            final AbstractSelectionGroup asg = getEditorController().getSelection().getGroup();
+            final var asg = getEditorController().getSelection().getGroup();
             assert asg instanceof ObjectSelectionGroup; // Because of (1)
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) asg;
+            final var osg = (ObjectSelectionGroup) asg;
 
             try {
-                final String contextMenuFxmlText
+                final var contextMenuFxmlText
                         = FXOMDocument.readContentFromURL(contextMenuFxmlURL);
 
-                final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
-                final Library library = getEditorController().getLibrary();
-                for (FXOMObject fxomObject : osg.getItems()) {
-                    final FXOMDocument contextMenuDocument = new FXOMDocument(
+                final var fxomDocument = getEditorController().getFxomDocument();
+                final var library = getEditorController().getLibrary();
+                for (final var fxomObject : osg.getItems()) {
+                    final var contextMenuDocument = new FXOMDocument(
                             contextMenuFxmlText,
                             contextMenuFxmlURL, library.getClassLoader(), null,
                             FXOMDocumentSwitch.NORMALIZED);
 
                     assert contextMenuDocument != null;
-                    final FXOMObject contextMenuObject = contextMenuDocument.getFxomRoot();
+                    final var contextMenuObject = contextMenuDocument.getFxomRoot();
                     assert contextMenuObject != null;
                     contextMenuObject.moveToFxomDocument(fxomDocument);
                     assert contextMenuDocument.getFxomRoot() == null;
 
                     contextMenuMap.put(fxomObject, contextMenuObject);
                 }
-            } catch(IOException x) {
+            } catch(final IOException x) {
                 throw new IllegalStateException("Bug in " + getClass().getSimpleName(), x); //NOI18N
             }
         }

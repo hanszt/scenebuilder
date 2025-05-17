@@ -62,7 +62,7 @@ public class WebViewResizer extends AbstractResizer<WebView> {
     private final PropertyName maxHeightName = new PropertyName("maxHeight"); //NOI18N
     private final List<PropertyName> propertyNames = new ArrayList<>();
     
-    public WebViewResizer(WebView sceneGraphObject) {
+    public WebViewResizer(final WebView sceneGraphObject) {
         super(sceneGraphObject);
         originalMinWidth   = sceneGraphObject.getMinWidth();
         originalMinHeight  = sceneGraphObject.getMinHeight();
@@ -83,7 +83,7 @@ public class WebViewResizer extends AbstractResizer<WebView> {
      */
     
     @Override
-    public final Bounds computeBounds(double width, double height) {
+    public final Bounds computeBounds(final double width, final double height) {
         return new BoundingBox(0, 0, Math.round(width), Math.round(height));
     }
 
@@ -93,7 +93,7 @@ public class WebViewResizer extends AbstractResizer<WebView> {
     }
 
     @Override
-    public void changeWidth(double width) {
+    public void changeWidth(final double width) {
         final double w = Math.round(width);
         
         sceneGraphObject.setPrefWidth(w);
@@ -107,7 +107,7 @@ public class WebViewResizer extends AbstractResizer<WebView> {
     }
 
     @Override
-    public void changeHeight(double height) {
+    public void changeHeight(final double height) {
         final double h = Math.round(height);
         
         sceneGraphObject.setPrefHeight(h);
@@ -136,7 +136,7 @@ public class WebViewResizer extends AbstractResizer<WebView> {
     }
 
     @Override
-    public Object getValue(PropertyName propertyName) {
+    public Object getValue(final PropertyName propertyName) {
         assert propertyName != null;
         assert propertyNames.contains(propertyName);
         
@@ -164,22 +164,22 @@ public class WebViewResizer extends AbstractResizer<WebView> {
     @Override
     public Map<PropertyName, Object> getChangeMap() {
         final Map<PropertyName, Object> result = new HashMap<>();
-        if (MathUtils.equals(sceneGraphObject.getMinWidth(), originalMinWidth) == false) {
+        if (!MathUtils.equals(sceneGraphObject.getMinWidth(), originalMinWidth)) {
             result.put(minWidthName, sceneGraphObject.getMinWidth());
         }
-        if (MathUtils.equals(sceneGraphObject.getMinHeight(), originalMinHeight) == false) {
+        if (!MathUtils.equals(sceneGraphObject.getMinHeight(), originalMinHeight)) {
             result.put(minHeightName, sceneGraphObject.getMinHeight());
         }
-        if (MathUtils.equals(sceneGraphObject.getPrefWidth(), originalPrefWidth) == false) {
+        if (!MathUtils.equals(sceneGraphObject.getPrefWidth(), originalPrefWidth)) {
             result.put(prefWidthName, sceneGraphObject.getPrefWidth());
         }
-        if (MathUtils.equals(sceneGraphObject.getPrefHeight(), originalPrefHeight) == false) {
+        if (!MathUtils.equals(sceneGraphObject.getPrefHeight(), originalPrefHeight)) {
             result.put(prefHeightName, sceneGraphObject.getPrefHeight());
         }
-        if (MathUtils.equals(sceneGraphObject.getMaxWidth(), originalMaxWidth) == false) {
+        if (!MathUtils.equals(sceneGraphObject.getMaxWidth(), originalMaxWidth)) {
             result.put(maxWidthName, sceneGraphObject.getMaxWidth());
         }
-        if (MathUtils.equals(sceneGraphObject.getMaxHeight(), originalMaxHeight) == false) {
+        if (!MathUtils.equals(sceneGraphObject.getMaxHeight(), originalMaxHeight)) {
             result.put(maxHeightName, sceneGraphObject.getMaxHeight());
         }
         return result;

@@ -105,7 +105,7 @@ public class GradientPicker extends VBox {
     private final List<GradientPickerStop> gradientPickerStops = new ArrayList<>();
     private final int maxStops = 12; // the numbers of stops supported in platform
 
-    public GradientPicker(PaintPickerController pe) {
+    public GradientPicker(final PaintPickerController pe) {
         paintPicker = pe;
         initialize();
     }
@@ -114,27 +114,27 @@ public class GradientPicker extends VBox {
         return paintPicker;
     }
 
-    public Paint getValue(Mode mode) {
+    public Paint getValue(final Mode mode) {
         final Paint paint;
         switch (mode) {
             case LINEAR:
-                double startX = startX_slider.getValue();
-                double startY = startY_slider.getValue();
-                double endX = endX_slider.getValue();
-                double endY = endY_slider.getValue();
-                boolean linear_proportional = proportional_checkbox.isSelected();
-                final CycleMethod linear_cycleMethod = cycleMethod_choicebox.getValue();
+                final var startX = startX_slider.getValue();
+                final var startY = startY_slider.getValue();
+                final var endX = endX_slider.getValue();
+                final var endY = endY_slider.getValue();
+                final var linear_proportional = proportional_checkbox.isSelected();
+                final var linear_cycleMethod = cycleMethod_choicebox.getValue();
                 paint = new LinearGradient(startX, startY, endX, endY,
                         linear_proportional, linear_cycleMethod, getStops());
                 break;
             case RADIAL:
-                double focusAngle = focusAngleRotator.getRotationProperty();
-                double focusDistance = focusDistanceSlider.getSlider().getValue();
-                double centerX = centerX_slider.getValue();
-                double centerY = centerY_slider.getValue();
-                double radius = radiusSlider.getSlider().getValue();
-                boolean radial_proportional = proportional_checkbox.isSelected();
-                final CycleMethod radial_cycleMethod = cycleMethod_choicebox.getValue();
+                final var focusAngle = focusAngleRotator.getRotationProperty();
+                final var focusDistance = focusDistanceSlider.getSlider().getValue();
+                final var centerX = centerX_slider.getValue();
+                final var centerY = centerY_slider.getValue();
+                final var radius = radiusSlider.getSlider().getValue();
+                final var radial_proportional = proportional_checkbox.isSelected();
+                final var radial_cycleMethod = cycleMethod_choicebox.getValue();
                 paint = new RadialGradient(focusAngle, focusDistance, centerX, centerY, radius,
                         radial_proportional, radial_cycleMethod, getStops());
                 break;
@@ -156,7 +156,7 @@ public class GradientPicker extends VBox {
 
     public GradientPickerStop getSelectedStop() {
         GradientPickerStop selectedThumb = null;
-        for (GradientPickerStop gradientStopThumb : gradientPickerStops) {
+        for (final var gradientStopThumb : gradientPickerStops) {
             if (gradientStopThumb.isSelected()) {
                 selectedThumb = gradientStopThumb;
             }
@@ -164,10 +164,10 @@ public class GradientPicker extends VBox {
         return selectedThumb;
     }
 
-    public void updateUI(Paint value) {
+    public void updateUI(final Paint value) {
         assert value instanceof LinearGradient || value instanceof RadialGradient;
         if (value instanceof LinearGradient) {
-            final LinearGradient linear = (LinearGradient) value;
+            final var linear = (LinearGradient) value;
             startX_slider.setValue(linear.getStartX());
             startY_slider.setValue(linear.getStartY());
             endX_slider.setValue(linear.getEndX());
@@ -176,14 +176,14 @@ public class GradientPicker extends VBox {
             cycleMethod_choicebox.setValue(linear.getCycleMethod());
             // clear first
             removeAllStops();
-            for (Stop stop : linear.getStops()) {
+            for (final var stop : linear.getStops()) {
                 // Update stops
                 addStop(0.0, 1.0, stop.getOffset(), stop.getColor());
             }
 
         } else {
             assert value instanceof RadialGradient;
-            final RadialGradient radial = (RadialGradient) value;
+            final var radial = (RadialGradient) value;
             centerX_slider.setValue(radial.getCenterX());
             centerY_slider.setValue(radial.getCenterY());
             focusAngleRotator.setRotationProperty(radial.getFocusAngle());
@@ -193,7 +193,7 @@ public class GradientPicker extends VBox {
             cycleMethod_choicebox.setValue(radial.getCycleMethod());
             // clear first
             removeAllStops();
-            for (Stop stop : radial.getStops()) {
+            for (final var stop : radial.getStops()) {
                 // Update stops
                 addStop(0.0, 1.0, stop.getOffset(), stop.getColor());
             }
@@ -202,11 +202,11 @@ public class GradientPicker extends VBox {
         updatePreview(value);
     }
 
-    public void updatePreview(Paint value) {
+    public void updatePreview(final Paint value) {
         preview_rect.setFill(value);
     }
 
-    public void setMode(Paint value) {
+    public void setMode(final Paint value) {
         final Mode mode;
         if (value instanceof LinearGradient) {
             mode = Mode.LINEAR;
@@ -229,13 +229,13 @@ public class GradientPicker extends VBox {
      */
     private void initialize() {
 
-        final FXMLLoader loader = new FXMLLoader();
+        final var loader = new FXMLLoader();
         loader.setLocation(GradientPicker.class.getResource("GradientPicker.fxml")); //NOI18N
         loader.setController(this);
         loader.setRoot(this);
         try {
             loader.load();
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             Logger.getLogger(GradientPicker.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -250,40 +250,40 @@ public class GradientPicker extends VBox {
         assert radial_container != null;
 
         // Add two default stops
-        final GradientPickerStop black = addStop(0.0, 1.0, 0.0, Color.BLACK);
+        final var black = addStop(0.0, 1.0, 0.0, Color.BLACK);
         addStop(0.0, 1.0, 1.0, Color.WHITE);
         // Select first default stop
         setSelectedStop(black);
         proportional_checkbox.setSelected(true);
         proportional_checkbox.selectedProperty().addListener((ChangeListener<Boolean>) (ov, oldValue, newValue) -> {
-            final Mode mode = paintPicker.getMode();
-            final Paint value = getValue(mode);
+            final var mode = paintPicker.getMode();
+            final var value = getValue(mode);
             // Update UI
             preview_rect.setFill(value);
             // Update model
             paintPicker.setPaintProperty(value);
         });
-        proportional_checkbox.setOnAction((ActionEvent event) -> {
+        proportional_checkbox.setOnAction((final ActionEvent event) -> {
             event.consume();
         });
 
         cycleMethod_choicebox.setItems(FXCollections.observableArrayList(CycleMethod.values()));
         cycleMethod_choicebox.getSelectionModel().selectFirst();
         cycleMethod_choicebox.getSelectionModel().selectedItemProperty().addListener((ChangeListener<CycleMethod>) (ov, oldValue, newValue) -> {
-            final Mode mode = paintPicker.getMode();
-            final Paint value = getValue(mode);
+            final var mode = paintPicker.getMode();
+            final var value = getValue(mode);
             // Update UI
             preview_rect.setFill(value);
             // Update model
             paintPicker.setPaintProperty(value);
         });
-        cycleMethod_choicebox.addEventHandler(ActionEvent.ACTION, (Event event) -> {
+        cycleMethod_choicebox.addEventHandler(ActionEvent.ACTION, (final Event event) -> {
             event.consume();
         });
 
         final ChangeListener<Number> onValueChange = (ov, oldValue, newValue) -> {
-            final Mode mode = paintPicker.getMode();
-            final Paint value = getValue(mode);
+            final var mode = paintPicker.getMode();
+            final var value = getValue(mode);
             // Update UI
             preview_rect.setFill(value);
             // Update model
@@ -318,12 +318,12 @@ public class GradientPicker extends VBox {
     }
     
     @FXML
-    void sliderPressed(MouseEvent event) {
-        double percentH = ((100.0 / track_pane.getWidth()) * event.getX()) / 100;
-        final Color color = paintPicker.getColorPicker().getValue();
+    void sliderPressed(final MouseEvent event) {
+        final var percentH = ((100.0 / track_pane.getWidth()) * event.getX()) / 100;
+        final var color = paintPicker.getColorPicker().getValue();
         addStop(0.0, 1.0, percentH, color);
-        final Mode mode = paintPicker.getMode();
-        final Paint value = getValue(mode);
+        final var mode = paintPicker.getMode();
+        final var value = getValue(mode);
         // Update UI
         preview_rect.setFill(value);
         // Update model
@@ -331,18 +331,18 @@ public class GradientPicker extends VBox {
     }
 
     @FXML
-    void sliderDragged(MouseEvent event) {
-        final Mode mode = paintPicker.getMode();
-        final Paint value = getValue(mode);
+    void sliderDragged(final MouseEvent event) {
+        final var mode = paintPicker.getMode();
+        final var value = getValue(mode);
         // Update UI
         preview_rect.setFill(value);
         // Update model
         paintPicker.setPaintProperty(value);
     }
 
-    GradientPickerStop addStop(double min, double max, double value, Color color) {
+    GradientPickerStop addStop(final double min, final double max, final double value, final Color color) {
         if (gradientPickerStops.size() < maxStops) {
-            final GradientPickerStop gradientStop
+            final var gradientStop
                     = new GradientPickerStop(this, min, max, value, color);
             track_pane.getChildren().add(gradientStop);
             gradientPickerStops.add(gradientStop);
@@ -351,7 +351,7 @@ public class GradientPicker extends VBox {
         return null;
     }
 
-    void removeStop(GradientPickerStop gradientStop) {
+    void removeStop(final GradientPickerStop gradientStop) {
         track_pane.getChildren().remove(gradientStop);
         gradientPickerStops.remove(gradientStop);
     }
@@ -361,8 +361,8 @@ public class GradientPicker extends VBox {
         gradientPickerStops.clear();
     }
 
-    public void setSelectedStop(GradientPickerStop gradientStop) {
-        for (GradientPickerStop stop : gradientPickerStops) {
+    public void setSelectedStop(final GradientPickerStop gradientStop) {
+        for (final var stop : gradientPickerStops) {
             stop.setSelected(false); // turn them all false
         }
         if (gradientStop != null) {
@@ -372,8 +372,8 @@ public class GradientPicker extends VBox {
 
     private List<Stop> getStops() {
         final List<Stop> stops = new ArrayList<>();
-        for (GradientPickerStop ges : getGradientStops()) {
-            final Stop stop = new Stop(ges.getOffset(), ges.getColor());
+        for (final var ges : getGradientStops()) {
+            final var stop = new Stop(ges.getOffset(), ges.getColor());
             stops.add(stop);
         }
         return stops;

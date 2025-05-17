@@ -36,7 +36,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -139,7 +138,7 @@ public class EditorPlatform {
         }
 
         public static List<Theme> getThemeList() {
-            List<Theme> themeList = new ArrayList<>(List.of(Theme.MODENA, Theme.MODENA_TOUCH, Theme.MODENA_HIGH_CONTRAST_BLACK_ON_WHITE,
+            final List<Theme> themeList = new ArrayList<>(List.of(Theme.MODENA, Theme.MODENA_TOUCH, Theme.MODENA_HIGH_CONTRAST_BLACK_ON_WHITE,
                 Theme.MODENA_HIGH_CONTRAST_WHITE_ON_BLACK, Theme.MODENA_HIGH_CONTRAST_YELLOW_ON_BLACK, Theme.MODENA_TOUCH_HIGH_CONTRAST_BLACK_ON_WHITE,
                 Theme.MODENA_TOUCH_HIGH_CONTRAST_WHITE_ON_BLACK, Theme.MODENA_HIGH_CONTRAST_YELLOW_ON_BLACK,
                 Theme.CASPIAN, Theme.CASPIAN_EMBEDDED, Theme.CASPIAN_EMBEDDED_HIGH_CONTRAST, Theme.CASPIAN_EMBEDDED_QVGA, Theme.CASPIAN_EMBEDDED_QVGA_HIGH_CONTRAST));
@@ -147,7 +146,7 @@ public class EditorPlatform {
             return themeList;
         }
 
-        public static Theme valueOf(String themeName) {
+        public static Theme valueOf(final String themeName) {
             return getThemeList().stream()
                 .filter(t -> t.name().equals(themeName))
                 .findFirst()
@@ -159,7 +158,7 @@ public class EditorPlatform {
         // no-op
     }
 
-    public static boolean isPlatformThemeStylesheetURL(String stylesheetURL) {
+    public static boolean isPlatformThemeStylesheetURL(final String stylesheetURL) {
         // Return USER_AGENT css, which is Modena for fx 8.0
         return stylesheetURL != null && stylesheetURL.equals(Theme.MODENA.getStylesheetURLs().getFirst());
     }
@@ -169,42 +168,42 @@ public class EditorPlatform {
         return Theme.MODENA.getStylesheetURLs().getFirst();
     }
 
-    public static boolean isModena(Theme theme) {
+    public static boolean isModena(final Theme theme) {
         return theme.toString().startsWith("MODENA");
     }
     
-    public static boolean isModenaBlackOnWhite(Theme theme) {
+    public static boolean isModenaBlackOnWhite(final Theme theme) {
         return isModena(theme)
                 && theme.toString().contains("BLACK_ON_WHITE");
     }
     
-    public static boolean isModenaWhiteOnBlack(Theme theme) {
+    public static boolean isModenaWhiteOnBlack(final Theme theme) {
         return isModena(theme)
                 && theme.toString().contains("WHITE_ON_BLACK");
     }
     
-    public static boolean isModenaYellowOnBlack(Theme theme) {
+    public static boolean isModenaYellowOnBlack(final Theme theme) {
         return isModena(theme)
                 && theme.toString().contains("YELLOW_ON_BLACK");
     }
     
-    public static boolean isModenaHighContrast(Theme theme) {
+    public static boolean isModenaHighContrast(final Theme theme) {
         return isModena(theme)
                 && theme.toString().contains("HIGH_CONTRAST");
     }
     
-    public static boolean isModenaTouch(Theme theme) {
+    public static boolean isModenaTouch(final Theme theme) {
         return isModena(theme)
                 && theme.toString().contains("TOUCH");
     }
     
-    public static boolean isModenaTouchHighContrast(Theme theme) {
+    public static boolean isModenaTouchHighContrast(final Theme theme) {
         return isModena(theme)
                 && theme.toString().contains("HIGH_CONTRAST")
                 && theme.toString().contains("TOUCH");
     }
     
-    public static boolean isCaspian(Theme theme) {
+    public static boolean isCaspian(final Theme theme) {
         return theme.toString().startsWith("CASPIAN");
     }
 
@@ -216,8 +215,8 @@ public class EditorPlatform {
      * @throws IOException in case the application called failed to open due to an error.
      * @throws FileBrowserRevealException in case the application opened indicates an error (unexpected return code).
      */
-    public static void open(String path) throws IOException, FileBrowserRevealException {
-        List<String> args = new ArrayList<>();
+    public static void open(final String path) throws IOException, FileBrowserRevealException {
+        final List<String> args = new ArrayList<>();
         if (EditorPlatform.IS_MAC) {
             args.add("open"); //NOI18N
             args.add(path);
@@ -251,10 +250,10 @@ public class EditorPlatform {
      * @throws FileBrowserRevealException This exception allows to catch exits codes != 0 from the called process.
      * @throws IOException General IOExceptions are thrown by Java System Call Processes in case of an error. 
      */
-    public static void revealInFileBrowser(File filePath) throws IOException, FileBrowserRevealException {
-        List<String> args = new ArrayList<>();
-        String path = Paths.get(filePath.toURI()).normalize().toAbsolutePath().toString();
-        int exitCodeOk = 0;
+    public static void revealInFileBrowser(final File filePath) throws IOException, FileBrowserRevealException {
+        final List<String> args = new ArrayList<>();
+        var path = Paths.get(filePath.toURI()).normalize().toAbsolutePath().toString();
+        var exitCodeOk = 0;
         if (EditorPlatform.IS_MAC) {
             args.add("open"); //NOI18N
             args.add("-R"); //NOI18N
@@ -286,7 +285,7 @@ public class EditorPlatform {
      * @param e mouse event to check (never null)
      * @return true if the modifier key for continuous selection is down.
      */
-    public static boolean isContinuousSelectKeyDown(MouseEvent e) {
+    public static boolean isContinuousSelectKeyDown(final MouseEvent e) {
         return e.isShiftDown();
     }
 
@@ -296,7 +295,7 @@ public class EditorPlatform {
      * @param e mouse event to check (never null).
      * @return true if the modifier key for non-continuous selection is down.
      */
-    public static boolean isNonContinousSelectKeyDown(MouseEvent e) {
+    public static boolean isNonContinousSelectKeyDown(final MouseEvent e) {
         return IS_MAC ? e.isMetaDown(): e.isControlDown();
     }
 
@@ -326,12 +325,12 @@ public class EditorPlatform {
      *                                    cmd call which ends with an error code != 0 is creating an
      *                                    exception.
      */
-    private static void executeDaemon(List<String> cmd, File wDir, int exitCodeOk)
+    private static void executeDaemon(final List<String> cmd, final File wDir, final int exitCodeOk)
             throws IOException, FileBrowserRevealException {
-        var cmdLine = String.join(" ", cmd);
-        long timeoutSec = 5;
+        final var cmdLine = String.join(" ", cmd);
+        final long timeoutSec = 5;
         try {
-            int exitValue = new Cmd().exec(cmd, wDir, timeoutSec);
+            final int exitValue = new Cmd().exec(cmd, wDir, timeoutSec);
             if (exitCodeOk != exitValue) {
                 LOGGER.log(Level.SEVERE, "Error during attempt to run: {0} in {1}", new Object[] { cmdLine, wDir });
                 throw new FileBrowserRevealException(
@@ -340,54 +339,54 @@ public class EditorPlatform {
             } else {
                 LOGGER.log(Level.FINE, "Successfully executed command: {0} in {1}", new Object[] { cmdLine, wDir });
             }
-        } catch (RuntimeException ex) {
+        } catch (final RuntimeException ex) {
             LOGGER.log(Level.SEVERE, "Unknown error during attempt to run: {0} in {1}", new Object[] { cmdLine, wDir });
             throw new IOException(ex);
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             LOGGER.log(Level.SEVERE, "Process timeout after {0}s: {1} in {2}",
                     new Object[] { timeoutSec, cmdLine, wDir });
             Thread.currentThread().interrupt();
-            String msg = "The command to reveal the file exited with an error after timeout.\nCommand: %s\nWorking Dir: %s\nTimeout (s):%s"
+            final var msg = "The command to reveal the file exited with an error after timeout.\nCommand: %s\nWorking Dir: %s\nTimeout (s):%s"
                     .formatted(cmdLine, wDir, timeoutSec);
-            String detailMsg = msg + "\n" + e.getMessage();
+            final var detailMsg = msg + "\n" + e.getMessage();
             throw new IOException(detailMsg);
         }
     }
 
     //  External
-    private static final Collection<ExternalThemeProvider> externalThemeProviders = getExternalThemeProviders();
+    private static final List<ExternalThemeProvider> externalThemeProviders = getExternalThemeProviders();
 
     private static List<EditorPlatform.Theme> getExternalThemes() {
-        List<EditorPlatform.Theme> result = new ArrayList<>();
-        for (ExternalThemeProvider provider : externalThemeProviders) {
+        final List<EditorPlatform.Theme> result = new ArrayList<>();
+        for (final var provider : externalThemeProviders) {
             result.addAll(provider.getExternalThemes());
         }
         return result;
     }
 
-    public static List<String> getStylesheetsForTheme(Theme theme) {
+    public static List<String> getStylesheetsForTheme(final Theme theme) {
         if (getExternalThemes().contains(theme)) {
-            for (ExternalThemeProvider provider : externalThemeProviders) {
+            for (final var provider : externalThemeProviders) {
                 return provider.getExternalStylesheets();
             }
         }
         return List.of();
     }
 
-    public static void showThemeAlert(Stage owner, EditorPlatform.Theme currentTheme, Consumer<EditorPlatform.Theme> onSuccess) {
-        for (ExternalThemeProvider provider : externalThemeProviders) {
+    public static void showThemeAlert(final Stage owner, final EditorPlatform.Theme currentTheme, final Consumer<EditorPlatform.Theme> onSuccess) {
+        for (final var provider : externalThemeProviders) {
             provider.showThemeAlert(owner, currentTheme, onSuccess);
         }
     }
 
-    public static void showImportAlert(Stage owner) {
-        for (ExternalThemeProvider provider : externalThemeProviders) {
+    public static void showImportAlert(final Stage owner) {
+        for (final var provider : externalThemeProviders) {
             provider.showImportAlert(owner);
         }
     }
 
-    public static boolean hasClassFromExternalPlugin(String text) {
-        for (ExternalThemeProvider provider : externalThemeProviders) {
+    public static boolean hasClassFromExternalPlugin(final String text) {
+        for (final var provider : externalThemeProviders) {
             if (provider.hasClassFromExternalPlugin(text)) {
                 return true;
             }
@@ -395,8 +394,8 @@ public class EditorPlatform {
         return false;
     }
 
-    public static Optional<String> getExternalJavadocURL(String classname) {
-        for (ExternalThemeProvider provider : externalThemeProviders) {
+    public static Optional<String> getExternalJavadocURL(final String classname) {
+        for (final var provider : externalThemeProviders) {
             if (provider.hasClassFromExternalPlugin(classname)) {
                 return Optional.of(provider.getExternalJavadocURL());
             }
@@ -404,9 +403,9 @@ public class EditorPlatform {
         return Optional.empty();
     }
 
-    private static Collection<ExternalThemeProvider> getExternalThemeProviders() {
-        ServiceLoader<ExternalThemeProvider> loader = ServiceLoader.load(ExternalThemeProvider.class);
-        Collection<ExternalThemeProvider> providers = new ArrayList<>();
+    private static List<ExternalThemeProvider> getExternalThemeProviders() {
+        final var loader = ServiceLoader.load(ExternalThemeProvider.class);
+        final var providers = new ArrayList<ExternalThemeProvider>();
         loader.iterator().forEachRemaining(providers::add);
         return providers;
     }

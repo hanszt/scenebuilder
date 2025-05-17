@@ -52,8 +52,8 @@ public class PaintPropertyMetadata extends ComplexPropertyMetadata<Paint> {
     private final LinearGradientPropertyMetadata linearGradientMetadata;
     private final RadialGradientPropertyMetadata radialGradientMetadata;
 
-    public PaintPropertyMetadata(PropertyName name, boolean readWrite,
-            Paint defaultValue, InspectorPath inspectorPath) {
+    public PaintPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                 final Paint defaultValue, final InspectorPath inspectorPath) {
         super(name, Paint.class, readWrite, defaultValue, inspectorPath);
         colorMetadata = new ColorPropertyMetadata(name, readWrite, null, inspectorPath);
         imagePatternMetadata = new ImagePatternPropertyMetadata(name, readWrite, null, inspectorPath);
@@ -67,23 +67,23 @@ public class PaintPropertyMetadata extends ComplexPropertyMetadata<Paint> {
     
     
     @Override
-    public Paint makeValueFromString(String string) {
+    public Paint makeValueFromString(final String string) {
         return colorMetadata.makeValueFromString(string);
     }
 
     @Override
-    public boolean canMakeStringFromValue(Paint value) {
+    public boolean canMakeStringFromValue(final Paint value) {
         return value instanceof Color;
     }
 
     @Override
-    public String makeStringFromValue(Paint value) {
+    public String makeStringFromValue(final Paint value) {
         assert value instanceof Color; // Because canMakeStringFromValue() is true
         return colorMetadata.makeStringFromValue((Color) value);
     }
 
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(Paint value, FXOMDocument fxomDocument) {
+    public FXOMInstance makeFxomInstanceFromValue(final Paint value, final FXOMDocument fxomDocument) {
         final FXOMInstance result;
         
         if (value instanceof Color) {

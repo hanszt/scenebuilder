@@ -40,9 +40,6 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -63,7 +60,7 @@ public class RotatorControl extends GridPane {
 
     private final DoubleProperty rotation = new SimpleDoubleProperty();
 
-    public RotatorControl(String text) {
+    public RotatorControl(final String text) {
         initialize(text);
     }
 
@@ -75,73 +72,73 @@ public class RotatorControl extends GridPane {
         return rotation.get();
     }
 
-    public final void setRotationProperty(double value) {
+    public final void setRotationProperty(final double value) {
         rotation.set(value);
     }
 
     /**
      * Private
      */
-    private void initialize(String text) {
+    private void initialize(final String text) {
 
-        final FXMLLoader loader = new FXMLLoader();
+        final var loader = new FXMLLoader();
         loader.setLocation(RotatorControl.class.getResource("RotatorControl.fxml")); //NOI18N
         loader.setController(this);
         loader.setRoot(this);
         try {
             loader.load();
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             Logger.getLogger(GradientPicker.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         assert rotator_label != null;
         rotator_label.setText(text);
         
-        rotator_dial.setOnAction((ActionEvent event) -> {
+        rotator_dial.setOnAction((final ActionEvent event) -> {
             event.consume();
         });
-        rotator_handle.setOnAction((ActionEvent event) -> {
+        rotator_handle.setOnAction((final ActionEvent event) -> {
             event.consume();
         });
     }
 
     @FXML
-    void rotatorAction(ActionEvent event) {
-        double value = Double.valueOf(rotator_textfield.getText());
-        double rounded = round(value, roundingFactor);
+    void rotatorAction(final ActionEvent event) {
+        final double value = Double.valueOf(rotator_textfield.getText());
+        final var rounded = round(value, roundingFactor);
         rotate(rounded);
         rotator_textfield.selectAll();
         event.consume();
     }
 
     @FXML
-    void rotatorMousePressed(MouseEvent e) {
+    void rotatorMousePressed(final MouseEvent e) {
         rotatorMouseDragged(e);
     }
 
     @FXML
-    void rotatorMouseDragged(MouseEvent e) {
-        final Parent p = rotator_dial.getParent();
-        final Bounds b = rotator_dial.getLayoutBounds();
+    void rotatorMouseDragged(final MouseEvent e) {
+        final var p = rotator_dial.getParent();
+        final var b = rotator_dial.getLayoutBounds();
         final Double centerX = b.getMinX() + (b.getWidth() / 2);
         final Double centerY = b.getMinY() + (b.getHeight() / 2);
-        final Point2D center = p.localToParent(centerX, centerY);
-        final Point2D mouse = p.localToParent(e.getX(), e.getY());
+        final var center = p.localToParent(centerX, centerY);
+        final var mouse = p.localToParent(e.getX(), e.getY());
         final Double deltaX = mouse.getX() - center.getX();
         final Double deltaY = mouse.getY() - center.getY();
         final Double radians = Math.atan2(deltaY, deltaX);
         rotate(Math.toDegrees(radians));
     }
 
-    private void rotate(Double value) {
-        double rounded = round(value, roundingFactor);
+    private void rotate(final Double value) {
+        final var rounded = round(value, roundingFactor);
         rotation.set(rounded);
         rotator_handle.setRotate(rounded);
         rotator_textfield.setText(Double.toString(rounded));
     }
 
-    private double round(double value, int roundingFactor) {
-        double doubleRounded = Math.round(value * roundingFactor);
+    private double round(final double value, final int roundingFactor) {
+        final double doubleRounded = Math.round(value * roundingFactor);
         return doubleRounded / roundingFactor;
     }
 }

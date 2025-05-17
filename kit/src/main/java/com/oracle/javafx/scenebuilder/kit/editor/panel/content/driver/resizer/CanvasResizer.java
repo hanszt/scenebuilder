@@ -53,7 +53,7 @@ public class CanvasResizer extends AbstractResizer<Canvas> {
     private final PropertyName heightName = new PropertyName("height"); //NOI18N
     private final List<PropertyName> propertyNames = new ArrayList<>();
     
-    public CanvasResizer(Canvas sceneGraphObject) {
+    public CanvasResizer(final Canvas sceneGraphObject) {
         super(sceneGraphObject);
         originalWidth   = sceneGraphObject.getWidth();
         originalHeight  = sceneGraphObject.getHeight();
@@ -68,7 +68,7 @@ public class CanvasResizer extends AbstractResizer<Canvas> {
      */
     
     @Override
-    public final Bounds computeBounds(double width, double height) {
+    public final Bounds computeBounds(final double width, final double height) {
         return new BoundingBox(0, 0, Math.round(width), Math.round(height));
     }
 
@@ -79,12 +79,12 @@ public class CanvasResizer extends AbstractResizer<Canvas> {
     }
 
     @Override
-    public void changeWidth(double width) {
+    public void changeWidth(final double width) {
         sceneGraphObject.setWidth(Math.round(width));
     }
 
     @Override
-    public void changeHeight(double height) {
+    public void changeHeight(final double height) {
         sceneGraphObject.setHeight(Math.round(height));
     }
 
@@ -100,7 +100,7 @@ public class CanvasResizer extends AbstractResizer<Canvas> {
     }
 
     @Override
-    public Object getValue(PropertyName propertyName) {
+    public Object getValue(final PropertyName propertyName) {
         assert propertyName != null;
         assert propertyNames.contains(propertyName);
         
@@ -120,10 +120,10 @@ public class CanvasResizer extends AbstractResizer<Canvas> {
     @Override
     public Map<PropertyName, Object> getChangeMap() {
         final Map<PropertyName, Object> result = new HashMap<>();
-        if (MathUtils.equals(sceneGraphObject.getWidth(), originalWidth) == false) {
+        if (!MathUtils.equals(sceneGraphObject.getWidth(), originalWidth)) {
             result.put(widthName, sceneGraphObject.getWidth());
         }
-        if (MathUtils.equals(sceneGraphObject.getHeight(), originalHeight) == false) {
+        if (!MathUtils.equals(sceneGraphObject.getHeight(), originalHeight)) {
             result.put(heightName, sceneGraphObject.getHeight());
         }
         return result;

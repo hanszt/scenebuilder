@@ -50,14 +50,14 @@ public class GenericEditor extends PropertyEditor {
 
     private TextField textField;
 
-    public GenericEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public GenericEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super(propMeta, selectedClasses);
         initialize();
     }
     
     private void initialize() {
         textField = new TextField();
-        EventHandler<ActionEvent> onActionListener = event -> userUpdateValueProperty(getValue());
+        final EventHandler<ActionEvent> onActionListener = event -> userUpdateValueProperty(getValue());
         setTextEditorBehavior(this, textField, onActionListener);
         setDisable(true);
 
@@ -81,7 +81,7 @@ public class GenericEditor extends PropertyEditor {
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(final Object value) {
         setValueGeneric(value);
         if (isSetValueDone()) {
             return;
@@ -95,7 +95,7 @@ public class GenericEditor extends PropertyEditor {
     }
 
     @Override
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super.reset(propMeta, selectedClasses);
         textField.setPromptText(null);
         setDisable(true);

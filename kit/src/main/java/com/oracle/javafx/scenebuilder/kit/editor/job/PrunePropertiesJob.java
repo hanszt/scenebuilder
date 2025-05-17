@@ -38,7 +38,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.RemovePropertyJob;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMCollection;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMProperty;
 import com.oracle.javafx.scenebuilder.kit.metadata.Metadata;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +50,7 @@ public class PrunePropertiesJob extends BatchDocumentJob {
     private final FXOMObject fxomObject;
     private final FXOMObject targetParent;
 
-    public PrunePropertiesJob(FXOMObject fxomObject, FXOMObject targetParent, EditorController editorController) {
+    public PrunePropertiesJob(final FXOMObject fxomObject, final FXOMObject targetParent, final EditorController editorController) {
         super(editorController);
         
         assert fxomObject != null;
@@ -64,19 +63,19 @@ public class PrunePropertiesJob extends BatchDocumentJob {
     @Override
     protected List<Job> makeSubJobs() {
         final List<Job> result = new ArrayList<>();
-        final Metadata metadata = Metadata.getMetadata();
+        final var metadata = Metadata.getMetadata();
         
         if (fxomObject instanceof FXOMInstance) {
-            final FXOMInstance fxomInstance = (FXOMInstance) fxomObject;
+            final var fxomInstance = (FXOMInstance) fxomObject;
             
-            for (FXOMProperty p : fxomInstance.getProperties().values()) {
+            for (final var p : fxomInstance.getProperties().values()) {
                 if (metadata.isPropertyTrimmingNeeded(p.getName())) {
-                    final Class<?> residentClass = p.getName().getResidenceClass();
+                    final var residentClass = p.getName().getResidenceClass();
                     final boolean prune;
                     if (residentClass == null) {
                         prune = true;
                     } else if (targetParent instanceof FXOMInstance) {
-                        final FXOMInstance parentInstance = (FXOMInstance) targetParent;
+                        final var parentInstance = (FXOMInstance) targetParent;
                         prune = residentClass != parentInstance.getDeclaredClass();
                     } else {
                         assert (targetParent == null) || (targetParent instanceof FXOMCollection);

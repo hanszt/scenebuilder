@@ -45,7 +45,7 @@ public class MessageLogEntry {
     private final String text;
     private final String timestamp;
     
-    public MessageLogEntry(Type type, String text, String timestamp) {
+    public MessageLogEntry(final Type type, final String text, final String timestamp) {
         this.type = type;
         this.text = text;
         this.timestamp = timestamp;

@@ -39,7 +39,7 @@ import javafx.scene.layout.Pane;
  */
 public class WrapInPaneJob extends AbstractWrapInSubComponentJob {
 
-    public WrapInPaneJob(EditorController editorController) {
+    public WrapInPaneJob(final EditorController editorController) {
         super(editorController);
         newContainerClass = Pane.class;
     }

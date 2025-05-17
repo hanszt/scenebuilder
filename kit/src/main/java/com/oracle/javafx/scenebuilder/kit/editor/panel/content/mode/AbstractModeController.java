@@ -45,7 +45,7 @@ public abstract class AbstractModeController {
     protected final ContentPanelController contentPanelController;
     
     
-    public AbstractModeController(ContentPanelController contentPanelController) {
+    public AbstractModeController(final ContentPanelController contentPanelController) {
         this.contentPanelController = contentPanelController;
     }
 

@@ -31,15 +31,12 @@
  */
 package com.oracle.javafx.scenebuilder.kit.editor.panel.content.gesture.mouse;
 
-import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.ModifyObjectJob;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.ContentPanelController;
-import com.oracle.javafx.scenebuilder.kit.editor.panel.content.HudWindowController;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.driver.SplitPaneDesignInfoX;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.util.CardinalPoint;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.metadata.Metadata;
-import com.oracle.javafx.scenebuilder.kit.metadata.property.ValuePropertyMetadata;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,8 +57,8 @@ public class AdjustDividerGesture extends AbstractMouseGesture {
     private static final PropertyName dividerPositionsName 
             = new PropertyName("dividerPositions"); //NOI18N
 
-    public AdjustDividerGesture(ContentPanelController contentPanelController,
-            FXOMInstance splitPaneInstance, int dividerIndex) {
+    public AdjustDividerGesture(final ContentPanelController contentPanelController,
+                                final FXOMInstance splitPaneInstance, final int dividerIndex) {
         super(contentPanelController);
         
         assert splitPaneInstance.getSceneGraphObject() instanceof SplitPane;
@@ -89,10 +86,10 @@ public class AdjustDividerGesture extends AbstractMouseGesture {
 
     @Override
     protected void mouseDragged() {
-        final SplitPane splitPane = (SplitPane)splitPaneInstance.getSceneGraphObject();
-        final double sceneX = getLastMouseEvent().getSceneX();
-        final double sceneY = getLastMouseEvent().getSceneY();
-        final double[] newDividerPositions 
+        final var splitPane = (SplitPane)splitPaneInstance.getSceneGraphObject();
+        final var sceneX = getLastMouseEvent().getSceneX();
+        final var sceneY = getLastMouseEvent().getSceneY();
+        final var newDividerPositions
                 = di.simulateDividerMove(splitPane, dividerIndex, sceneX, sceneY);
         splitPane.setDividerPositions(newDividerPositions);
         splitPane.layout();
@@ -113,7 +110,7 @@ public class AdjustDividerGesture extends AbstractMouseGesture {
         
         // Step #1
         final List<Double> newDividerPositions = new ArrayList<>();
-        for (double p : getSplitPane().getDividerPositions()) {
+        for (final var p : getSplitPane().getDividerPositions()) {
             newDividerPositions.add(Double.valueOf(p));
         }
         
@@ -121,12 +118,12 @@ public class AdjustDividerGesture extends AbstractMouseGesture {
         userDidCancel();
         
         // Step #3
-        final Metadata metadata = Metadata.getMetadata();
-        final EditorController editorController 
+        final var metadata = Metadata.getMetadata();
+        final var editorController
                 = contentPanelController.getEditorController();
-        final ValuePropertyMetadata dividerPositionsMeta 
+        final var dividerPositionsMeta
                 = metadata.queryValueProperty(splitPaneInstance, dividerPositionsName);
-        final ModifyObjectJob j = new ModifyObjectJob(
+        final var j = new ModifyObjectJob(
                 splitPaneInstance, 
                 dividerPositionsMeta,
                 newDividerPositions,
@@ -142,7 +139,7 @@ public class AdjustDividerGesture extends AbstractMouseGesture {
     }
 
     @Override
-    protected void keyEvent(KeyEvent e) {
+    protected void keyEvent(final KeyEvent e) {
     }
 
     @Override
@@ -164,7 +161,7 @@ public class AdjustDividerGesture extends AbstractMouseGesture {
     }
     
     private void setupAndOpenHudWindow() {
-        final HudWindowController hudWindowController
+        final var hudWindowController
                 = contentPanelController.getHudWindowController();
         
         hudWindowController.setRowCount(1);
@@ -186,11 +183,11 @@ public class AdjustDividerGesture extends AbstractMouseGesture {
     }
     
     private void updateHudWindow() {
-        final HudWindowController hudWindowController
+        final var hudWindowController
                 = contentPanelController.getHudWindowController();
-        
-        double dividerPosition = getSplitPane().getDividerPositions()[dividerIndex];
-        String str = String.format("%.2f %%", dividerPosition * 100); //NOI18N
+
+        final var dividerPosition = getSplitPane().getDividerPositions()[dividerIndex];
+        final var str = String.format("%.2f %%", dividerPosition * 100); //NOI18N
         hudWindowController.setValueAtRowIndex(str, 0);
     }
 }

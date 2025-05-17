@@ -57,7 +57,7 @@ public class SliderControl extends GridPane {
     private TextField slider_textfield;
     private final int roundingFactor = 100; // 2 decimals rounding
 
-    public SliderControl(String text, double min, double max, double initVal) {
+    public SliderControl(final String text, final double min, final double max, final double initVal) {
         initialize(text, min, max, initVal);
     }
 
@@ -68,15 +68,15 @@ public class SliderControl extends GridPane {
     /**
      * Private
      */
-    private void initialize(String text, double min, double max, double initVal) {
+    private void initialize(final String text, final double min, final double max, final double initVal) {
 
-        final FXMLLoader loader = new FXMLLoader();
+        final var loader = new FXMLLoader();
         loader.setLocation(SliderControl.class.getResource("SliderControl.fxml")); //NOI18N
         loader.setController(this);
         loader.setRoot(this);
         try {
             loader.load();
-        } catch (IOException ex) {
+        } catch (final IOException ex) {
             Logger.getLogger(GradientPicker.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -91,15 +91,15 @@ public class SliderControl extends GridPane {
         slider_textfield.setText(Double.toString(initVal));
 
         slider_slider.valueProperty().addListener((ChangeListener<Number>) (ov, oldValue, newValue) -> {
-            double rounded = round(newValue.doubleValue(), roundingFactor);
+            final var rounded = round(newValue.doubleValue(), roundingFactor);
             slider_textfield.setText(Double.toString(rounded));
         });
     }
 
     @FXML
-    void sliderAction(ActionEvent event) {
-        double value = Double.valueOf(slider_textfield.getText());
-        double rounded = round(value, roundingFactor);
+    void sliderAction(final ActionEvent event) {
+        final double value = Double.valueOf(slider_textfield.getText());
+        var rounded = round(value, roundingFactor);
         slider_slider.setValue(rounded);
         if (rounded > slider_slider.getMax()) {
             rounded = slider_slider.getMax();
@@ -114,7 +114,7 @@ public class SliderControl extends GridPane {
     }
 
     @FXML
-    void sliderKeyPressed(KeyEvent e) {
+    void sliderKeyPressed(final KeyEvent e) {
         switch (e.getCode()) {
             case UP:
                 incOrDecFieldValue(e, 0.1);
@@ -127,14 +127,14 @@ public class SliderControl extends GridPane {
         }
     }
 
-    private void incOrDecFieldValue(KeyEvent e, double x) {
+    private void incOrDecFieldValue(final KeyEvent e, final double x) {
 
         if (!(e.getSource() instanceof TextField)) {
             return; // check it's a textField
         }        // increment or decrement the value
-        final TextField tf = (TextField) e.getSource();
+        final var tf = (TextField) e.getSource();
         final Double newValue = Double.valueOf(tf.getText()) + x;
-        double rounded = round(newValue, roundingFactor);
+        final var rounded = round(newValue, roundingFactor);
         slider_slider.setValue(rounded);
         tf.setText(Double.toString(newValue));
         // Avoid using runLater
@@ -148,8 +148,8 @@ public class SliderControl extends GridPane {
 //        });
     }
 
-    private double round(double value, int roundingFactor) {
-        double doubleRounded = Math.round(value * roundingFactor);
+    private double round(final double value, final int roundingFactor) {
+        final double doubleRounded = Math.round(value * roundingFactor);
         return doubleRounded / roundingFactor;
     }
 }

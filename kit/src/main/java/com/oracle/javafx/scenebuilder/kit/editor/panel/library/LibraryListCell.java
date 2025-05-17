@@ -36,25 +36,20 @@ import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.editor.EditorPlatform;
 import com.oracle.javafx.scenebuilder.kit.editor.drag.source.LibraryDragSource;
 import com.oracle.javafx.scenebuilder.kit.editor.images.ImageUtils;
-import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.library.BuiltinLibrary;
 import com.oracle.javafx.scenebuilder.kit.library.LibraryItem;
 import java.net.URL;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.stage.Window;
 
 /**
  * ListCell for the Library panel.
@@ -95,17 +90,17 @@ class LibraryListCell extends ListCell<LibraryListItem> {
         
         setOnDragDetected(t -> {
 //                System.out.println("LibraryListCell - setOnDragDetected.handle");
-            final LibraryListItem listItem = LibraryListCell.this.getItem();
-            final FXOMDocument fxomDocument = editorController.getFxomDocument();
+            final var listItem = LibraryListCell.this.getItem();
+            final var fxomDocument = editorController.getFxomDocument();
             
             if ((listItem != null) && (fxomDocument != null)) {
-                final LibraryItem item = LibraryListCell.this.getItem().getLibItem();
+                final var item = LibraryListCell.this.getItem().getLibItem();
                 if (item != null) {
-                    final ListView<LibraryListItem> list = LibraryListCell.this.getListView();
-                    final Dragboard db = list.startDragAndDrop(TransferMode.COPY);
+                    final var list = LibraryListCell.this.getListView();
+                    final var db = list.startDragAndDrop(TransferMode.COPY);
 
-                    final Window ownerWindow = getScene().getWindow();
-                    final LibraryDragSource dragSource 
+                    final var ownerWindow = getScene().getWindow();
+                    final var dragSource
                             = new LibraryDragSource(item, fxomDocument, ownerWindow);
                     assert editorController.getDragController().getDragSource() == null;
                     assert dragSource.isAcceptable();
@@ -119,7 +114,7 @@ class LibraryListCell extends ListCell<LibraryListItem> {
     }
 
     @Override
-    public void updateItem(LibraryListItem item, boolean empty) {
+    public void updateItem(final LibraryListItem item, final boolean empty) {
         super.updateItem(item, empty);
         setText(null);
 
@@ -128,7 +123,7 @@ class LibraryListCell extends ListCell<LibraryListItem> {
             if (item.getLibItem() != null) {
                 // A qualifier needed to discriminate items is kept in the ID:
                 // this applies to orientation as well as empty qualifiers.
-                String id = item.getLibItem().getName();
+                var id = item.getLibItem().getName();
 
                 // If QE were about to test a localized version the ID should
                 // remain unchanged.
@@ -162,9 +157,9 @@ class LibraryListCell extends ListCell<LibraryListItem> {
         }
     }
     
-    private void handleMouseEvent(MouseEvent me) {
+    private void handleMouseEvent(final MouseEvent me) {
         // Handle cursor
-        final Scene scene = getScene();
+        final var scene = getScene();
         
         if (scene == null) {
             return;
@@ -177,14 +172,14 @@ class LibraryListCell extends ListCell<LibraryListItem> {
             return;
         }
         
-        final LibraryListItem listItem = getItem();
+        final var listItem = getItem();
         LibraryItem item = null;
         
         if (listItem != null) {
             item = listItem.getLibItem();
         }
-        
-        boolean isSection = false;
+
+        var isSection = false;
         if (listItem != null && listItem.getSectionName() != null) {
             isSection = true;
         }
@@ -221,17 +216,17 @@ class LibraryListCell extends ListCell<LibraryListItem> {
         }
     }
 
-    private void updateLayout(LibraryListItem listItem) {
+    private void updateLayout(final LibraryListItem listItem) {
         assert listItem != null;
         
         if (listItem.getLibItem() != null) {
-            final LibraryItem item = listItem.getLibItem();
+            final var item = listItem.getLibItem();
             // The classname shall be space character free (it is an API name).
             // If there is a space character then it means a qualifier comes
             // right after. In the case there is several qualifiers in a row
             // only the latest one is taken as is, others are kept with class
             // name.
-            String classname = getClassName(item.getName());
+            final var classname = getClassName(item.getName());
             iconImageView.setManaged(true);
             classNameLabel.setManaged(true);
             qualifierLabel.setManaged(true);
@@ -243,7 +238,7 @@ class LibraryListCell extends ListCell<LibraryListItem> {
             classNameLabel.setText(classname);
             qualifierLabel.setText(getQualifier(item.getName()));
             // getIconURL can return null, this is deliberate.
-            URL iconURL = item.getIconURL();
+            var iconURL = item.getIconURL();
             // Use missing icon 
             if (iconURL == null) {
                 iconURL = missingIconURL;
@@ -262,7 +257,7 @@ class LibraryListCell extends ListCell<LibraryListItem> {
         }
     }
     
-    private String getClassName(String input) {
+    private String getClassName(final String input) {
         if (!input.contains(" ")) { //NOI18N
             return input;
         } else {
@@ -270,7 +265,7 @@ class LibraryListCell extends ListCell<LibraryListItem> {
         }
     }
     
-    private String getQualifier(String input) {
+    private String getQualifier(final String input) {
         if (!input.contains(" ")) { //NOI18N
             return ""; //NOI18N
         } else {

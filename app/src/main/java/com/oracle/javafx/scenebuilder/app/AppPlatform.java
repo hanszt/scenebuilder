@@ -64,7 +64,7 @@ public class AppPlatform {
     public static synchronized String getApplicationDataFolder() {
         
         if (applicationDataFolder == null) {
-            final String appName = "Scene Builder"; //NOI18N
+            final var appName = "Scene Builder"; //NOI18N
             
             if (IS_WINDOWS) {
                 applicationDataFolder 
@@ -107,7 +107,7 @@ public class AppPlatform {
     }
 
     public static boolean requestStart(
-            AppNotificationHandler notificationHandler, Application.Parameters parameters)  
+            final AppNotificationHandler notificationHandler, final Application.Parameters parameters)
     throws IOException {
         if (EditorPlatform.isAssertionEnabled()) {
             // Development mode : we do not delegate to the existing instance
@@ -131,7 +131,7 @@ public class AppPlatform {
      */
     
     private static synchronized boolean requestStartGeneric(
-            AppNotificationHandler notificationHandler, Application.Parameters parameters) 
+            final AppNotificationHandler notificationHandler, final Application.Parameters parameters)
     throws IOException {
         assert notificationHandler != null;
         assert parameters != null;
@@ -140,7 +140,7 @@ public class AppPlatform {
         try {
             Files.createDirectories(Paths.get(getMessageBoxFolder()));
             Files.createDirectories(Paths.get(getLogFolder()));
-        } catch(FileAlreadyExistsException x) {
+        } catch(final FileAlreadyExistsException x) {
             // Fine
         }
         
@@ -157,11 +157,11 @@ public class AppPlatform {
             result = true;
         } else {
             result = false;
-            final MessageBoxMessage unamedParameters 
+            final var unamedParameters
                     = new MessageBoxMessage(parametersUnnamed);
             try {
                 messageBox.sendMessage(unamedParameters);
-            } catch(InterruptedException x) {
+            } catch(final InterruptedException x) {
                 throw new IOException(x);
             }
         }
@@ -179,7 +179,7 @@ public class AppPlatform {
     
     private static class MessageBoxMessage extends ArrayList<String> {
         static final long serialVersionUID = 10;
-        public MessageBoxMessage(List<String> strings) {
+        public MessageBoxMessage(final List<String> strings) {
             super(strings);
         };
     };
@@ -188,7 +188,7 @@ public class AppPlatform {
 
         private final AppNotificationHandler eventHandler;
         
-        public MessageBoxDelegate(AppNotificationHandler eventHandler) {
+        public MessageBoxDelegate(final AppNotificationHandler eventHandler) {
             assert eventHandler != null;
             this.eventHandler = eventHandler;
         }
@@ -198,14 +198,14 @@ public class AppPlatform {
          */
         
         @Override
-        public void messageBoxDidGetMessage(MessageBoxMessage message) {
-            assert Platform.isFxApplicationThread() == false;
+        public void messageBoxDidGetMessage(final MessageBoxMessage message) {
+            assert !Platform.isFxApplicationThread();
             Platform.runLater(() -> eventHandler.handleOpenFilesAction(message));
         }
 
         @Override
-        public void messageBoxDidCatchException(Exception x) {
-            assert Platform.isFxApplicationThread() == false;
+        public void messageBoxDidCatchException(final Exception x) {
+            assert !Platform.isFxApplicationThread();
             Platform.runLater(() -> eventHandler.handleMessageBoxFailure(x));
         }
         

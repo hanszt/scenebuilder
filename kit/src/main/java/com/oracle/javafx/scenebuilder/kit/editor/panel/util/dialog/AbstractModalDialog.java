@@ -88,7 +88,7 @@ public abstract class AbstractModalDialog extends AbstractFxmlWindowController {
      * Public
      */
 
-    public AbstractModalDialog(URL contentFxmlURL, ResourceBundle contentResources, Window owner) {
+    public AbstractModalDialog(final URL contentFxmlURL, final ResourceBundle contentResources, final Window owner) {
         super(getContainerFxmlURL(), I18N.getBundle());
         this.owner = owner;
         this.contentFxmlURL = contentFxmlURL;
@@ -99,7 +99,7 @@ public abstract class AbstractModalDialog extends AbstractFxmlWindowController {
     public Parent getContentRoot() {
         
         if (contentRoot == null) {
-            final FXMLLoader loader = new FXMLLoader();
+            final var loader = new FXMLLoader();
 
             loader.setController(this);
             loader.setLocation(contentFxmlURL);
@@ -107,7 +107,7 @@ public abstract class AbstractModalDialog extends AbstractFxmlWindowController {
             try {
                 contentRoot = (Parent)loader.load();
                 controllerDidLoadContentFxml();
-            } catch (IOException x) {
+            } catch (final IOException x) {
                 contentRoot = null;
                 throw new RuntimeException("Failed to load " + contentFxmlURL.getFile(), x); //NOI18N
             }
@@ -127,7 +127,7 @@ public abstract class AbstractModalDialog extends AbstractFxmlWindowController {
         return getStage().getTitle();
     }
     
-    public void setTitle(String title) {
+    public void setTitle(final String title) {
         getStage().setTitle(title);
     }
 
@@ -135,7 +135,7 @@ public abstract class AbstractModalDialog extends AbstractFxmlWindowController {
         return getOKButton().getText();
     }
     
-    public void setOKButtonTitle(String title) {
+    public void setOKButtonTitle(final String title) {
         getOKButton().setText(title);
     }
     
@@ -143,7 +143,7 @@ public abstract class AbstractModalDialog extends AbstractFxmlWindowController {
         return getCancelButton().getText();
     }
     
-    public void setCancelButtonTitle(String title) {
+    public void setCancelButtonTitle(final String title) {
         getCancelButton().setText(title);
     }
     
@@ -151,7 +151,7 @@ public abstract class AbstractModalDialog extends AbstractFxmlWindowController {
         return getActionButton().getText();
     }
     
-    public void setActionButtonTitle(String title) {
+    public void setActionButtonTitle(final String title) {
         getActionButton().setText(title);
     }
     
@@ -159,7 +159,7 @@ public abstract class AbstractModalDialog extends AbstractFxmlWindowController {
         return getOKButton().getParent() != null;
     }
     
-    public void setOKButtonVisible(boolean visible) {
+    public void setOKButtonVisible(final boolean visible) {
         if (visible != isOKButtonVisible()) {
             if (visible) {
                 assert getOKButton().getParent() == null;
@@ -175,7 +175,7 @@ public abstract class AbstractModalDialog extends AbstractFxmlWindowController {
         return getActionButton().getParent() != null;
     }
     
-    public void setActionButtonVisible(boolean visible) {
+    public void setActionButtonVisible(final boolean visible) {
         if (visible != isActionButtonVisible()) {
             if (visible) {
                 assert getActionButton().getParent() == null;
@@ -187,20 +187,20 @@ public abstract class AbstractModalDialog extends AbstractFxmlWindowController {
         }
     }
     
-    public void setOKButtonDisable(boolean disable) {
+    public void setOKButtonDisable(final boolean disable) {
         getOKButton().setDisable(disable);
     }
     
-    public void setActionButtonDisable(boolean disable) {
+    public void setActionButtonDisable(final boolean disable) {
         getActionButton().setDisable(disable);
     }
 
-    public void setShowDefaultButton(boolean show) {
+    public void setShowDefaultButton(final boolean show) {
         showDefaultButton = show;
         updateButtonState();
     }
     
-    public void setDefaultButtonID(ButtonID buttonID) {
+    public void setDefaultButtonID(final ButtonID buttonID) {
         defaultButtonID = buttonID;
         updateButtonState();
     }
@@ -209,7 +209,7 @@ public abstract class AbstractModalDialog extends AbstractFxmlWindowController {
         return getImageView().getParent() != null;
     }
     
-    public void setImageViewVisible(boolean visible) {
+    public void setImageViewVisible(final boolean visible) {
         if (visible != isImageViewVisible()) {
             if (visible) {
                 assert getImageView().getParent() == null;
@@ -225,7 +225,7 @@ public abstract class AbstractModalDialog extends AbstractFxmlWindowController {
         return getImageView().getImage();
     }
     
-    public void setImageViewImage(Image image) {
+    public void setImageViewImage(final Image image) {
         getImageView().setImage(image);
     }
     
@@ -315,7 +315,7 @@ public abstract class AbstractModalDialog extends AbstractFxmlWindowController {
     }
 
     @Override
-    public void onCloseRequest(WindowEvent event) {
+    public void onCloseRequest(final WindowEvent event) {
         // Closing the window is equivalent to clicking the Cancel button
         cancelButtonPressed(null);
     }
@@ -366,10 +366,10 @@ public abstract class AbstractModalDialog extends AbstractFxmlWindowController {
         return imageView;
     }
     
-    private void updateButtonID(ActionEvent t) {
+    private void updateButtonID(final ActionEvent t) {
         assert t != null;
         
-        final Object source = t.getSource();
+        final var source = t.getSource();
         if (source == getCancelButton()) {
             clickedButtonID = AbstractModalDialog.ButtonID.CANCEL;
         } else if (source == getOKButton()) {

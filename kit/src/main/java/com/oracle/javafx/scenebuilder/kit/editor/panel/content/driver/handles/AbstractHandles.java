@@ -36,7 +36,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.panel.content.ContentPanelContr
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.gesture.AbstractGesture;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.content.gesture.mouse.DiscardGesture;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
-import java.net.URL;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 
@@ -60,8 +59,8 @@ public abstract class AbstractHandles<T> extends AbstractDecoration<T> {
     
     private boolean enabled = true;
     
-    public AbstractHandles(ContentPanelController contentPanelController,
-            FXOMObject fxomObject, Class<T> sceneGraphClass) {
+    public AbstractHandles(final ContentPanelController contentPanelController,
+                           final FXOMObject fxomObject, final Class<T> sceneGraphClass) {
         super(contentPanelController, fxomObject, sceneGraphClass);
     }
 
@@ -69,12 +68,12 @@ public abstract class AbstractHandles<T> extends AbstractDecoration<T> {
         return enabled;
     }
 
-    public void setEnabled(boolean enabled) {
+    public void setEnabled(final boolean enabled) {
         this.enabled = enabled;
         enabledDidChange();
     }
    
-    public AbstractGesture findEnabledGesture(Node node) {
+    public AbstractGesture findEnabledGesture(final Node node) {
         final AbstractGesture result;
         
         if (enabled) {
@@ -91,12 +90,12 @@ public abstract class AbstractHandles<T> extends AbstractDecoration<T> {
     
     private static final String HANDLES = "HANDLES";
     
-    public static AbstractHandles<?> lookupHandles(Node node) {
+    public static AbstractHandles<?> lookupHandles(final Node node) {
         assert node != null;
-        assert node.isMouseTransparent() == false;
+        assert !node.isMouseTransparent();
         
         final AbstractHandles<?> result;
-        final Object value = node.getProperties().get(HANDLES);
+        final var value = node.getProperties().get(HANDLES);
         if (value instanceof AbstractHandles) {
             result = (AbstractHandles<?>) value;
         } else {
@@ -107,9 +106,9 @@ public abstract class AbstractHandles<T> extends AbstractDecoration<T> {
         return result;
     }
     
-    public static void attachHandles(Node node, AbstractHandles<?> handles) {
+    public static void attachHandles(final Node node, final AbstractHandles<?> handles) {
         assert node != null;
-        assert node.isMouseTransparent() == false;
+        assert !node.isMouseTransparent();
         assert lookupHandles(node) == null;
         
         if (handles == null) {
@@ -121,7 +120,7 @@ public abstract class AbstractHandles<T> extends AbstractDecoration<T> {
     
     public synchronized static Image getCornerHandleImage() {
         if (squareHandleImage == null) {
-            final URL url = AbstractHandles.class.getResource("corner-handle.png");
+            final var url = AbstractHandles.class.getResource("corner-handle.png");
             squareHandleImage = new Image(url.toString());
         }
         return squareHandleImage;
@@ -129,7 +128,7 @@ public abstract class AbstractHandles<T> extends AbstractDecoration<T> {
     
     public synchronized static Image getSideHandleImage() {
         if (sideHandleImage == null) {
-            final URL url = AbstractHandles.class.getResource("side-handle.png");
+            final var url = AbstractHandles.class.getResource("side-handle.png");
             sideHandleImage = new Image(url.toString());
         }
         return sideHandleImage;
@@ -137,7 +136,7 @@ public abstract class AbstractHandles<T> extends AbstractDecoration<T> {
     
     public synchronized static Image getCornerHandleDimImage() {
         if (squareHandleDimImage == null) {
-            final URL url = AbstractHandles.class.getResource("corner-handle-dim.png");
+            final var url = AbstractHandles.class.getResource("corner-handle-dim.png");
             squareHandleDimImage = new Image(url.toString());
         }
         return squareHandleDimImage;
@@ -145,7 +144,7 @@ public abstract class AbstractHandles<T> extends AbstractDecoration<T> {
     
     public synchronized static Image getSideHandleDimImage() {
         if (sideHandleDimImage == null) {
-            final URL url = AbstractHandles.class.getResource("side-handle-dim.png");
+            final var url = AbstractHandles.class.getResource("side-handle-dim.png");
             sideHandleDimImage = new Image(url.toString());
         }
         return sideHandleDimImage;

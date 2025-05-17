@@ -47,15 +47,15 @@ public class RepositoryPreferences {
         this.recordRepositories = new HashMap<>();
     }
     
-    public PreferencesRecordRepository getRecordRepository(String id) {
+    public PreferencesRecordRepository getRecordRepository(final String id) {
         return recordRepositories.get(id);
     }
     
-    public void addRecordRepository(String key, PreferencesRecordRepository object) {
+    public void addRecordRepository(final String key, final PreferencesRecordRepository object) {
         recordRepositories.put(key, object);
     }
     
-    public void removeRecordRepository(String id) {
+    public void removeRecordRepository(final String id) {
         recordRepositories.remove(id);
     }
     

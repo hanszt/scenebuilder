@@ -39,7 +39,7 @@ class StaticPropertyIntrospector {
     final private Object targetObject;
     final private Class<?> residenceClass;
     
-    public StaticPropertyIntrospector(Object targetObject, Class<?> residenceClass) {
+    public StaticPropertyIntrospector(final Object targetObject, final Class<?> residenceClass) {
         this.targetObject = targetObject;
         this.residenceClass = residenceClass;
     }
@@ -52,12 +52,12 @@ class StaticPropertyIntrospector {
         return residenceClass;
     }
     
-    public Object getValue(String propertyName) {
+    public Object getValue(final String propertyName) {
         // So far we have no use for this : we'll implement when needed.
         throw new UnsupportedOperationException("Not yet implemented"); //NOI18N
     }
     
-    public void setValue(String propertyName, Object value) {
+    public void setValue(final String propertyName, final Object value) {
         // So far we have no use for this : we'll implement when needed.
         throw new UnsupportedOperationException("Not yet implemented"); //NOI18N
     }

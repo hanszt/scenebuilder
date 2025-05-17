@@ -45,24 +45,24 @@ public class GridSnapshot {
     
     private final Map<FXOMObject, GridSnapshotItem> items = new HashMap<>();
     
-    public GridSnapshot(Collection<FXOMObject> fxomObjects) {
+    public GridSnapshot(final Collection<FXOMObject> fxomObjects) {
         assert fxomObjects != null;
-        assert fxomObjects.isEmpty() == false; // (1)
+        assert !fxomObjects.isEmpty(); // (1)
         
-        for (FXOMObject fxomObject : fxomObjects) {
-            assert items.containsKey(fxomObject) == false;
+        for (final var fxomObject : fxomObjects) {
+            assert !items.containsKey(fxomObject);
             items.put(fxomObject, new GridSnapshotItem(fxomObject));
         }
     }
     
-    public GridSnapshot(Collection<FXOMObject> fxomObjects, int columnCount) {
+    public GridSnapshot(final Collection<FXOMObject> fxomObjects, final int columnCount) {
         assert fxomObjects != null;
-        assert fxomObjects.isEmpty() == false;
+        assert !fxomObjects.isEmpty();
         assert columnCount >= 1;
-        
-        int columnIndex = 0;
-        int rowIndex = 0;
-        for (FXOMObject fxomObject : fxomObjects) {
+
+        var columnIndex = 0;
+        var rowIndex = 0;
+        for (final var fxomObject : fxomObjects) {
             items.put(fxomObject, new GridSnapshotItem(fxomObject, columnIndex, rowIndex));
             columnIndex++;
             if (columnIndex >= columnCount) {
@@ -72,13 +72,13 @@ public class GridSnapshot {
         }
     }
     
-    public int getColumnIndex(FXOMObject fxomObject) {
+    public int getColumnIndex(final FXOMObject fxomObject) {
         assert fxomObject != null;
         assert items.containsKey(fxomObject);
         return items.get(fxomObject).getColumnIndex();
     }
     
-    public int getRowIndex(FXOMObject fxomObject) {
+    public int getRowIndex(final FXOMObject fxomObject) {
         assert fxomObject != null;
         assert items.containsKey(fxomObject);
         return items.get(fxomObject).getRowIndex();
@@ -87,7 +87,7 @@ public class GridSnapshot {
     public GridBounds getBounds() {
         GridBounds result = null;
         
-        for (Map.Entry<FXOMObject, GridSnapshotItem> e : items.entrySet()) {
+        for (final var e : items.entrySet()) {
             if (result == null) {
                 result = e.getValue().getBounds();
             } else {

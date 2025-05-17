@@ -42,7 +42,7 @@ public class DebugMouseGesture extends AbstractMouseGesture {
 
     private final String title;
     
-    public DebugMouseGesture(ContentPanelController contentPanelController, String title) {
+    public DebugMouseGesture(final ContentPanelController contentPanelController, final String title) {
         super(contentPanelController);
         this.title = title;
     }
@@ -77,7 +77,7 @@ public class DebugMouseGesture extends AbstractMouseGesture {
     }
 
     @Override
-    protected void keyEvent(KeyEvent e) {
+    protected void keyEvent(final KeyEvent e) {
         System.out.println("DebugMouseGesture.keyEvent");
     }
 

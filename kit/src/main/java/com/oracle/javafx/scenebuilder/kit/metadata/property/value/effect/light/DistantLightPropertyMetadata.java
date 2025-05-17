@@ -56,8 +56,8 @@ public class DistantLightPropertyMetadata extends ComplexPropertyMetadata<Light.
             = new DoublePropertyMetadata(new PropertyName("elevation"), //NOI18N
             DoublePropertyMetadata.DoubleKind.ANGLE, true, 45.0, InspectorPath.UNUSED);
     
-    public DistantLightPropertyMetadata(PropertyName name, boolean readWrite, 
-            Light.Distant defaultValue, InspectorPath inspectorPath) {
+    public DistantLightPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                        final Light.Distant defaultValue, final InspectorPath inspectorPath) {
         super(name, Light.Distant.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -66,8 +66,8 @@ public class DistantLightPropertyMetadata extends ComplexPropertyMetadata<Light.
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(Light.Distant value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, getValueClass());
+    public FXOMInstance makeFxomInstanceFromValue(final Light.Distant value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, getValueClass());
         
         colorMetadata.setValue(result, value.getColor());
         azimuthMetadata.setValue(result, value.getAzimuth());

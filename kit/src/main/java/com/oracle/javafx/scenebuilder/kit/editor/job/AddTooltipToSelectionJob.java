@@ -41,10 +41,8 @@ import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument.FXOMDocumentSwitch;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
 import com.oracle.javafx.scenebuilder.kit.library.BuiltinLibrary;
-import com.oracle.javafx.scenebuilder.kit.library.Library;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -58,7 +56,7 @@ public class AddTooltipToSelectionJob extends BatchSelectionJob {
     
     private Map<FXOMObject, FXOMObject> tooltipMap; // Initialized lazily
 
-    public AddTooltipToSelectionJob(EditorController editorController) {
+    public AddTooltipToSelectionJob(final EditorController editorController) {
         super(editorController);
     }
     
@@ -77,9 +75,9 @@ public class AddTooltipToSelectionJob extends BatchSelectionJob {
         constructTooltipMap();
         
         final List<Job> result = new LinkedList<>();
-        for (Map.Entry<FXOMObject, FXOMObject> e : tooltipMap.entrySet()) {
-            final FXOMObject fxomObject = e.getKey();
-            final FXOMObject tooltipObject = e.getValue();
+        for (final var e : tooltipMap.entrySet()) {
+            final var fxomObject = e.getKey();
+            final var tooltipObject = e.getValue();
             final Job insertJob = new InsertAsAccessoryJob(
                     tooltipObject, fxomObject, 
                     DesignHierarchyMask.Accessory.TOOLTIP, 
@@ -92,9 +90,9 @@ public class AddTooltipToSelectionJob extends BatchSelectionJob {
 
     @Override
     protected AbstractSelectionGroup getNewSelectionGroup() {
-        final Collection<FXOMObject> contextMenus = tooltipMap.values();
-        assert contextMenus.isEmpty() == false;
-        final FXOMObject hitMenu = contextMenus.iterator().next();
+        final var contextMenus = tooltipMap.values();
+        assert !contextMenus.isEmpty();
+        final var hitMenu = contextMenus.iterator().next();
         
         return new ObjectSelectionGroup(contextMenus, hitMenu, null);
     }
@@ -118,36 +116,36 @@ public class AddTooltipToSelectionJob extends BatchSelectionJob {
             tooltipMap = new LinkedHashMap<>();
             
             // Build the ContextMenu item from the library builtin items
-            final String tooltipFxmlPath = "builtin/Tooltip.fxml"; //NOI18N
-            final URL tooltipFxmlURL 
+            final var tooltipFxmlPath = "builtin/Tooltip.fxml"; //NOI18N
+            final var tooltipFxmlURL
                     = BuiltinLibrary.class.getResource(tooltipFxmlPath);
             assert tooltipFxmlURL != null;
 
-            final AbstractSelectionGroup asg = getEditorController().getSelection().getGroup();
+            final var asg = getEditorController().getSelection().getGroup();
             assert asg instanceof ObjectSelectionGroup; // Because of (1)
-            final ObjectSelectionGroup osg = (ObjectSelectionGroup) asg;
+            final var osg = (ObjectSelectionGroup) asg;
 
             try {
-                final String contextMenuFxmlText
+                final var contextMenuFxmlText
                         = FXOMDocument.readContentFromURL(tooltipFxmlURL);
 
-                final FXOMDocument fxomDocument = getEditorController().getFxomDocument();
-                final Library library = getEditorController().getLibrary();
-                for (FXOMObject fxomObject : osg.getItems()) {
-                    final FXOMDocument contextMenuDocument = new FXOMDocument(
+                final var fxomDocument = getEditorController().getFxomDocument();
+                final var library = getEditorController().getLibrary();
+                for (final var fxomObject : osg.getItems()) {
+                    final var contextMenuDocument = new FXOMDocument(
                             contextMenuFxmlText,
                             tooltipFxmlURL, library.getClassLoader(), null,
                             FXOMDocumentSwitch.NORMALIZED);
 
                     assert contextMenuDocument != null;
-                    final FXOMObject contextMenuObject = contextMenuDocument.getFxomRoot();
+                    final var contextMenuObject = contextMenuDocument.getFxomRoot();
                     assert contextMenuObject != null;
                     contextMenuObject.moveToFxomDocument(fxomDocument);
                     assert contextMenuDocument.getFxomRoot() == null;
 
                     tooltipMap.put(fxomObject, contextMenuObject);
                 }
-            } catch(IOException x) {
+            } catch(final IOException x) {
                 throw new IllegalStateException("Bug in " + getClass().getSimpleName(), x); //NOI18N
             }
         }

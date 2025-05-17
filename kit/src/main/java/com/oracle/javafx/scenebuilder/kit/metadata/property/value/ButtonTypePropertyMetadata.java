@@ -48,8 +48,8 @@ public class ButtonTypePropertyMetadata extends ComplexPropertyMetadata<ButtonTy
     
     private static Map<ButtonType, String> buttonTypeMap;
     
-    public ButtonTypePropertyMetadata(PropertyName name, boolean readWrite, 
-            ButtonType defaultValue, InspectorPath inspectorPath) {
+    public ButtonTypePropertyMetadata(final PropertyName name, final boolean readWrite,
+                                      final ButtonType defaultValue, final InspectorPath inspectorPath) {
         super(name, ButtonType.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -76,10 +76,10 @@ public class ButtonTypePropertyMetadata extends ComplexPropertyMetadata<ButtonTy
      * ComplexPropertyMetadata
      */
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(ButtonType value, FXOMDocument fxomDocument) {
+    public FXOMInstance makeFxomInstanceFromValue(final ButtonType value, final FXOMDocument fxomDocument) {
         final FXOMInstance result;
         
-        final String buttonName = getButtonTypeMap().get(value);
+        final var buttonName = getButtonTypeMap().get(value);
         if (buttonName != null) {
             // It's a standard button type
             result = new FXOMInstance(fxomDocument, ButtonType.class);

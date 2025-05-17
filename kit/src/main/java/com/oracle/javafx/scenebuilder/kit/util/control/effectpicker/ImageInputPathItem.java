@@ -38,7 +38,7 @@ import javafx.scene.effect.Effect;
  */
 public class ImageInputPathItem extends EffectPathItem {
 
-    public ImageInputPathItem(EffectPickerController epc, Effect effect, EffectPathItem hostPathItem) {
+    public ImageInputPathItem(final EffectPickerController epc, final Effect effect, final EffectPathItem hostPathItem) {
         super(epc, effect, hostPathItem);
         assert effect instanceof javafx.scene.effect.ImageInput;
         initialize();
@@ -50,7 +50,7 @@ public class ImageInputPathItem extends EffectPathItem {
     }
 
     @Override
-    void setSelectedInputEffect(Effect input) {
+    void setSelectedInputEffect(final Effect input) {
         // No input
     }
 

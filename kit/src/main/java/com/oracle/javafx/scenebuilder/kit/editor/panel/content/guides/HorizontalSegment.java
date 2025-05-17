@@ -42,7 +42,7 @@ class HorizontalSegment extends AbstractSegment {
     private final double y;
     private final double length;
     
-    public HorizontalSegment(double x1, double x2, double y) {
+    public HorizontalSegment(final double x1, final double x2, final double y) {
         this.x1 = x1;
         this.x2 = x2;
         this.y = y;
@@ -83,7 +83,7 @@ class HorizontalSegment extends AbstractSegment {
      */
     @Override
     public int hashCode() {
-        int hash = 7;
+        var hash = 7;
         hash = 89 * hash + (int) (Double.doubleToLongBits(this.x1) ^ (Double.doubleToLongBits(this.x1) >>> 32));
         hash = 89 * hash + (int) (Double.doubleToLongBits(this.x2) ^ (Double.doubleToLongBits(this.x2) >>> 32));
         hash = 89 * hash + (int) (Double.doubleToLongBits(this.y) ^ (Double.doubleToLongBits(this.y) >>> 32));
@@ -91,14 +91,14 @@ class HorizontalSegment extends AbstractSegment {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         }
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final HorizontalSegment other = (HorizontalSegment) obj;
+        final var other = (HorizontalSegment) obj;
         if (Double.doubleToLongBits(this.x1) != Double.doubleToLongBits(other.x1)) {
             return false;
         }
@@ -116,7 +116,7 @@ class HorizontalSegment extends AbstractSegment {
      * Comparable
      */
     @Override
-    public int compareTo(AbstractSegment o) {
+    public int compareTo(final AbstractSegment o) {
         assert o != null;
         return Double.compare(this.length, o.getLength());
     }

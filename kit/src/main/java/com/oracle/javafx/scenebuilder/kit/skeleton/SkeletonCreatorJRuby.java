@@ -34,10 +34,6 @@ package com.oracle.javafx.scenebuilder.kit.skeleton;
 import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
 
 import java.lang.reflect.TypeVariable;
-import java.net.URL;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SkeletonCreatorJRuby implements SkeletonConverter {
@@ -49,9 +45,9 @@ public class SkeletonCreatorJRuby implements SkeletonConverter {
         // no-op
     }
 
-    public String createFrom(SkeletonContext context) {
+    public String createFrom(final SkeletonContext context) {
 
-        final StringBuilder sb = new StringBuilder();
+        final var sb = new StringBuilder();
         appendHeaderComment(context, sb);
         // Ruby supports packages... but we ignore it here because Java package != Ruby Module and
         // equating the two can cause confusion. Let the user fix it up themselves
@@ -60,7 +56,7 @@ public class SkeletonCreatorJRuby implements SkeletonConverter {
         return sb.toString();
     }
 
-    public String createApplicationFrom(SkeletonContext context) {
+    public String createApplicationFrom(final SkeletonContext context) {
 
         return "require 'jrubyfx'\n" +
                 "\n" +
@@ -80,14 +76,14 @@ public class SkeletonCreatorJRuby implements SkeletonConverter {
 
     static Pattern importExtractor = Pattern.compile("import (([^.]+)\\..*)");
 
-    void appendImports(SkeletonContext context, StringBuilder sb) {
-        boolean output = false;
+    void appendImports(final SkeletonContext context, final StringBuilder sb) {
+        var output = false;
         // Optional, really, as JRubyFX imports them by default
         // Only "import" non-javafx ones in a comment
-        for (String importStatement : context.getImports()) {
-            Matcher matcher = importExtractor.matcher(importStatement);
+        for (final var importStatement : context.getImports()) {
+            final var matcher = importExtractor.matcher(importStatement);
             matcher.matches();
-            String rootName = matcher.group(2);
+            final var rootName = matcher.group(2);
             if (rootName.equals("javafx"))
                 continue; // JRubyFX already imports these
             sb.append(INDENT).append("# java_import '").append(matcher.group(1)).append("'").append(NL);
@@ -98,19 +94,19 @@ public class SkeletonCreatorJRuby implements SkeletonConverter {
     }
 
 
-    void appendHeaderComment(SkeletonContext context, StringBuilder sb) {
+    void appendHeaderComment(final SkeletonContext context, final StringBuilder sb) {
         if (!context.getSettings().isWithComments()) {
             return;
         }
 
-        final String title = I18N.getString("skeleton.window.title", context.getDocumentName());
+        final var title = I18N.getString("skeleton.window.title", context.getDocumentName());
         sb.append("# ").append(title).append(NL); //NOI18N
     }
 
 
-    void appendClass(SkeletonContext context, StringBuilder sb) {
+    void appendClass(final SkeletonContext context, final StringBuilder sb) {
 
-        String controllerClassName = makeClassName(context);
+        final var controllerClassName = makeClassName(context);
 
         sb.append("class ").append(controllerClassName); //NOI18N
 
@@ -123,7 +119,7 @@ public class SkeletonCreatorJRuby implements SkeletonConverter {
             sb.append(INDENT).append("# Marks this class as being a controller for the given fxml document").append(NL); //NOI18N
             sb.append(INDENT).append("# This creates @instance_variables for all fx:id").append(NL); //NOI18N
         }
-        String documentName = context.getDocumentName();
+        var documentName = context.getDocumentName();
         if (!documentName.contains(".fxml")) {
             documentName += ".fxml";
         }
@@ -145,8 +141,8 @@ public class SkeletonCreatorJRuby implements SkeletonConverter {
         sb.append("end").append(NL); //NOI18N
     }
 
-    private String makeClassName(SkeletonContext context) {
-        String controllerClassName = "PleaseProvideControllerClassName";
+    private String makeClassName(final SkeletonContext context) {
+        var controllerClassName = "PleaseProvideControllerClassName";
 
         if (hasController(context)) {
             controllerClassName = getControllerClassName(context);
@@ -155,25 +151,25 @@ public class SkeletonCreatorJRuby implements SkeletonConverter {
     }
 
 
-    private boolean hasController(SkeletonContext context) {
+    private boolean hasController(final SkeletonContext context) {
         return context.getFxController() != null && !context.getFxController().isEmpty();
     }
 
-    private String getControllerClassName(SkeletonContext context) {
-        String simpleName = context.getFxController().replace("$", "."); //NOI18N
-        int dot = simpleName.lastIndexOf('.');
+    private String getControllerClassName(final SkeletonContext context) {
+        var simpleName = context.getFxController().replace("$", "."); //NOI18N
+        final var dot = simpleName.lastIndexOf('.');
         if (dot > -1) {
             simpleName = simpleName.substring(dot + 1);
         }
         return simpleName;
     }
 
-    void appendFieldParameters(StringBuilder sb, Class<?> fieldClazz) {
+    void appendFieldParameters(final StringBuilder sb, final Class<?> fieldClazz) {
         final TypeVariable<? extends Class<?>>[] parameters = fieldClazz.getTypeParameters();
         if (parameters.length > 0) {
             sb.append("<"); //NOI18N
-            String sep = ""; //NOI18N
-            for (TypeVariable<?> ignored : parameters) {
+            var sep = ""; //NOI18N
+            for (final TypeVariable<?> ignored : parameters) {
                 sb.append(sep);
                 sb.append("?"); //NOI18N
                 sep = ", "; //NOI18N
@@ -183,7 +179,7 @@ public class SkeletonCreatorJRuby implements SkeletonConverter {
     }
 
 
-    void appendFieldsResourcesAndLocation(SkeletonContext context, StringBuilder sb) {
+    void appendFieldsResourcesAndLocation(final SkeletonContext context, final StringBuilder sb) {
         if (!context.getSettings().isFull()) {
             return;
         }
@@ -204,8 +200,8 @@ public class SkeletonCreatorJRuby implements SkeletonConverter {
     }
 
 
-    void appendFieldsWithFxId(SkeletonContext context, StringBuilder sb) {
-        for (Map.Entry<String, Class<?>> variable : context.getVariables().entrySet()) {
+    void appendFieldsWithFxId(final SkeletonContext context, final StringBuilder sb) {
+        for (final var variable : context.getVariables().entrySet()) {
             sb.append(INDENT).append("# @").append(variable.getKey()).append(": \t").append(variable.getValue().getSimpleName()); //NOI18N
             appendFieldParameters(sb, variable.getValue()); // just for reference
             sb.append(NL);
@@ -213,7 +209,7 @@ public class SkeletonCreatorJRuby implements SkeletonConverter {
         sb.append(NL);
     }
 
-    void appendInitialize(SkeletonContext context, StringBuilder sb) {
+    void appendInitialize(final SkeletonContext context, final StringBuilder sb) {
         if (!context.getSettings().isFull()) {
             return;
         }
@@ -231,12 +227,12 @@ public class SkeletonCreatorJRuby implements SkeletonConverter {
         sb.append("end").append(NL).append(NL); //NOI18N
     }
 
-    void appendEventHandlers(SkeletonContext context, StringBuilder sb) {
-        for (Map.Entry<String, String> entry : context.getEventHandlers().entrySet()) {
-            String methodName = entry.getKey();
-            String eventClassName = entry.getValue();
+    void appendEventHandlers(final SkeletonContext context, final StringBuilder sb) {
+        for (final var entry : context.getEventHandlers().entrySet()) {
+            final var methodName = entry.getKey();
+            final var eventClassName = entry.getValue();
 
-            final String methodNamePured = methodName.replace("#", ""); //NOI18N
+            final var methodNamePured = methodName.replace("#", ""); //NOI18N
 
             sb.append(INDENT);
             appendEventHandler(methodNamePured, eventClassName, sb);
@@ -244,15 +240,15 @@ public class SkeletonCreatorJRuby implements SkeletonConverter {
         }
     }
 
-    void appendEventHandler(String methodName, String eventClassName, StringBuilder sb) {
+    void appendEventHandler(final String methodName, final String eventClassName, final StringBuilder sb) {
         sb.append("def "); //NOI18N
         sb.append(methodName);
         sb.append("(").append("event) # event: ").append(eventClassName).append(NL).append(NL); //NOI18N
         sb.append(INDENT).append("end"); //NOI18N
     }
 
-    void appendAssertions(SkeletonContext context, StringBuilder sb) {
-        for (String assertion : context.getAssertions()) {
+    void appendAssertions(final SkeletonContext context, final StringBuilder sb) {
+        for (final var assertion : context.getAssertions()) {
             sb.append(INDENT).append(INDENT)
                     .append("raise 'fx:id=\"").append(assertion).append("\" was not injected: check your FXML file ") //NOI18N
                     .append("\"").append(context.getDocumentName()).append("\".' if ") //NOI18N

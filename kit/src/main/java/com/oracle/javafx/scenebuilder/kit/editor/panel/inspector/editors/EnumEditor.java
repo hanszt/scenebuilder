@@ -45,7 +45,7 @@ import java.util.Set;
 public class EnumEditor extends PropertyEditor {
     private ComboBox<String> comboBox;
 
-    public EnumEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public EnumEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super(propMeta, selectedClasses);
         comboBox = new ComboBox<String>();
         comboBox.disableProperty().bind(disableProperty());
@@ -68,7 +68,7 @@ public class EnumEditor extends PropertyEditor {
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(final Object value) {
         setValueGeneric(value);
         if (isSetValueDone()) {
             return;
@@ -82,7 +82,7 @@ public class EnumEditor extends PropertyEditor {
     }
 
     @Override
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super.reset(propMeta, selectedClasses);
         // ComboBox items have to be updated, since this editor may have been used by a different Enum...
         updateItems();
@@ -106,12 +106,12 @@ public class EnumEditor extends PropertyEditor {
         updateItems(comboBox.getItems());
     }
 
-    protected void updateItems(ObservableList<String> itemsList) {
+    protected void updateItems(final ObservableList<String> itemsList) {
         assert getPropertyMeta() instanceof EnumerationPropertyMetadata;
-        final EnumerationPropertyMetadata enumPropMeta
+        final var enumPropMeta
                 = (EnumerationPropertyMetadata) getPropertyMeta();
         itemsList.clear();
-        for (Object val : enumPropMeta.getValidValues()) {
+        for (final Object val : enumPropMeta.getValidValues()) {
             itemsList.add(val.toString());
         }
     }

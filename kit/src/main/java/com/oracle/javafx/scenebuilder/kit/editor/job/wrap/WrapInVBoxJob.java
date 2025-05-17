@@ -46,13 +46,13 @@ import javafx.scene.layout.VBox;
  */
 public class WrapInVBoxJob extends AbstractWrapInSubComponentJob {
 
-    public WrapInVBoxJob(EditorController editorController) {
+    public WrapInVBoxJob(final EditorController editorController) {
         super(editorController);
         newContainerClass = VBox.class;
     }
 
     @Override
-    protected Collection<FXOMObject> sortChildren(List<FXOMObject> children) {
+    protected Collection<FXOMObject> sortChildren(final List<FXOMObject> children) {
         final List<FXOMObject> sorted = new ArrayList<>(children);
         Collections.sort(sorted, UnidimensionalComparator.of(Orientation.VERTICAL));
         return sorted;

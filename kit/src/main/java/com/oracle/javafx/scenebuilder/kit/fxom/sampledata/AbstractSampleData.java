@@ -93,15 +93,15 @@ abstract class AbstractSampleData {
      * Utilites for subclasses
      */
     
-    protected static String lorem(int index) {
+    protected static String lorem(final int index) {
         return lorem[index % lorem.length];
     }
     
-    protected static Color color(int index) {
+    protected static Color color(final int index) {
         return colors[index % colors.length];
     }
 
-    protected static String alphabet(int index) {
+    protected static String alphabet(final int index) {
         return alphabet[index % alphabet.length];
     }
 }

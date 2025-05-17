@@ -50,7 +50,7 @@ public class ReplaceObjectJob extends Job {
     private int indexInParentProperty;
     private int indexInParentCollection;
 
-    public ReplaceObjectJob(FXOMObject original, FXOMObject replacement, EditorController editorController) {
+    public ReplaceObjectJob(final FXOMObject original, final FXOMObject replacement, final EditorController editorController) {
         super(editorController);
         this.original = original;
         this.replacement = replacement;

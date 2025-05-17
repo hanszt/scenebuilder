@@ -59,8 +59,8 @@ public class HierarchyAnimationScheduler {
 
     public void playDecrementAnimation(final ScrollBar scrollBar) {
         assert scrollBar != null;
-        final double minValue = scrollBar.getMin();
-        assert isTimelineRunning() == false;
+        final var minValue = scrollBar.getMin();
+        assert !isTimelineRunning();
         // If the scroll bar is not yet at its min value,
         // we play the scroll bar decrement animation
         if (scrollBar.getValue() > minValue) {
@@ -68,13 +68,13 @@ public class HierarchyAnimationScheduler {
             // - the scroll bar height
             // - the scroll bar thumb size (visibleAmount property)
             // - the scroll bar value
-            final double scrollBarHeight = scrollBar.getHeight();
-            final double scrollBarVisibleAmount = scrollBar.getVisibleAmount();
-            final double scrollBarValue = scrollBar.getValue();
+            final var scrollBarHeight = scrollBar.getHeight();
+            final var scrollBarVisibleAmount = scrollBar.getVisibleAmount();
+            final var scrollBarValue = scrollBar.getValue();
 
             // Height between the scroll bar top and the scroll bar thumb
-            final double height = scrollBarHeight * scrollBarValue;
-            final double duration = height * rate / scrollBarVisibleAmount; // duration in millis
+            final var height = scrollBarHeight * scrollBarValue;
+            final var duration = height * rate / scrollBarVisibleAmount; // duration in millis
 
             getTimeline().getKeyFrames().setAll(new KeyFrame(
                     new Duration(duration),
@@ -85,8 +85,8 @@ public class HierarchyAnimationScheduler {
 
     public void playIncrementAnimation(final ScrollBar scrollBar) {
         assert scrollBar != null;
-        final double maxValue = scrollBar.getMax();
-        assert isTimelineRunning() == false;
+        final var maxValue = scrollBar.getMax();
+        assert !isTimelineRunning();
         // If the scroll bar is not yet at its max value,
         // we play the scroll bar increment animation
         if (scrollBar.getValue() < maxValue) {
@@ -94,13 +94,13 @@ public class HierarchyAnimationScheduler {
             // - the scroll bar height
             // - the scroll bar thumb size (visibleAmount property)
             // - the scroll bar value
-            final double scrollBarHeight = scrollBar.getHeight();
-            final double scrollBarVisibleAmount = scrollBar.getVisibleAmount();
-            final double scrollBarValue = scrollBar.getValue();
+            final var scrollBarHeight = scrollBar.getHeight();
+            final var scrollBarVisibleAmount = scrollBar.getVisibleAmount();
+            final var scrollBarValue = scrollBar.getValue();
 
             // Height between the scroll bar thumb and the scroll bar bottom
-            final double height = scrollBarHeight * (scrollBar.getMax() - scrollBarValue);
-            final double duration = height * rate / scrollBarVisibleAmount; // duration in millis
+            final var height = scrollBarHeight * (scrollBar.getMax() - scrollBarValue);
+            final var duration = height * rate / scrollBarVisibleAmount; // duration in millis
 
             getTimeline().getKeyFrames().setAll(new KeyFrame(
                     new Duration(duration),

@@ -42,7 +42,7 @@ public class SBDuration extends Duration {
      *
      * @param millis The number of milliseconds
      */
-    public SBDuration(@NamedArg("millis") double millis) {
+    public SBDuration(@NamedArg("millis") final double millis) {
         super(millis);
     }
 
@@ -50,7 +50,7 @@ public class SBDuration extends Duration {
      * Creates a new SBDuration instance from a Duration object.
      * @param duration
      */
-    public SBDuration(Duration duration){
+    public SBDuration(final Duration duration){
         super(duration.toMillis());
     }
 
@@ -68,18 +68,18 @@ public class SBDuration extends Duration {
      * time is null.
      * @return a Duration which is represented by the <code>time</code>
      */
-    public static SBDuration valueOf(String time) {
-        int index = -1;
-        for (int i=0; i<time.length(); i++) {
-            char c = time.charAt(i);
+    public static SBDuration valueOf(final String time) {
+        var index = -1;
+        for (var i = 0; i < time.length(); i++) {
+            final var c = time.charAt(i);
             if (!Character.isDigit(c) && c != '.' && c != '-' && c!='E') {
                 index = i;
                 break;
             }
         }
 
-        String suffix;
-        double value;
+        final String suffix;
+        final double value;
         if (index == -1) {
             value = Double.parseDouble(time);
             // Never found the suffix!

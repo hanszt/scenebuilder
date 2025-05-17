@@ -45,7 +45,6 @@ import java.util.stream.Collectors;
 import com.oracle.javafx.scenebuilder.app.SceneBuilderApp;
 import com.oracle.javafx.scenebuilder.app.i18n.I18N;
 import com.oracle.javafx.scenebuilder.app.preferences.PreferencesController;
-import com.oracle.javafx.scenebuilder.app.preferences.PreferencesRecordGlobal;
 import com.oracle.javafx.scenebuilder.app.util.AppSettings;
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.util.dialog.AbstractModalDialog.ButtonID;
@@ -102,7 +101,7 @@ public class WelcomeDialogWindowController extends TemplatesBaseWindowController
     }
 
     @Override
-    public void onCloseRequest(WindowEvent event) {
+    public void onCloseRequest(final WindowEvent event) {
         getStage().hide();
     }
 
@@ -120,14 +119,14 @@ public class WelcomeDialogWindowController extends TemplatesBaseWindowController
     }
     
     @FXML
-    void handleFileDraggedOver(DragEvent event) {
+    void handleFileDraggedOver(final DragEvent event) {
         if (event.getDragboard().hasFiles()) {
             event.acceptTransferModes(TransferMode.ANY);
         }
     }
 
     @FXML
-    void handleDroppedFiles(DragEvent event) {
+    void handleDroppedFiles(final DragEvent event) {
         if (event.getDragboard().hasFiles()) {
             new WelcomeDialogFilesDropHandler(event.getDragboard().getFiles())
                 .withSupportedFiles(fileNames->Platform.runLater(()->handleOpen(fileNames)))
@@ -136,14 +135,14 @@ public class WelcomeDialogWindowController extends TemplatesBaseWindowController
         }
     }
 
-    private void notifyUserWhenDroppedUnsupportedFiles(List<String> unsupported) {
-        ErrorDialog dialog = new ErrorDialog(getStage());
+    private void notifyUserWhenDroppedUnsupportedFiles(final List<String> unsupported) {
+        final var dialog = new ErrorDialog(getStage());
         dialog.setTitle(I18N.getString("welcome.loading.when.dropped.error.title"));
         dialog.setMessage(I18N.getString("welcome.loading.when.dropped.error.message"));
         dialog.setDetailsTitle(I18N.getString("welcome.loading.when.dropped.error.title"));
         dialog.setDetails(I18N.getString("welcome.loading.when.dropped.error.detail.explanation"));
-        
-        String debugInfo = unsupported.stream()
+
+        final var debugInfo = unsupported.stream()
                                       .collect(Collectors.joining(System.lineSeparator()));
         
         dialog.setDebugInfo(debugInfo);
@@ -162,20 +161,20 @@ public class WelcomeDialogWindowController extends TemplatesBaseWindowController
     }
 
     private void loadAndPopulateRecentItemsInBackground() {
-        Label loadingRecentItems = new Label(I18N.getString("welcome.recent.items.loading"));
+        final var loadingRecentItems = new Label(I18N.getString("welcome.recent.items.loading"));
         loadingRecentItems.getStyleClass().add("no-recent-items-label");
 
         recentDocuments.getChildren().add(loadingRecentItems);
 
-        var t = new Thread(() -> {
-            PreferencesRecordGlobal preferencesRecordGlobal = PreferencesController
+        final var t = new Thread(() -> {
+            final var preferencesRecordGlobal = PreferencesController
                     .getSingleton().getRecordGlobal();
-            List<String> recentItems = preferencesRecordGlobal.getRecentItems();
+            final var recentItems = preferencesRecordGlobal.getRecentItems();
 
             Platform.runLater(() -> recentDocuments.getChildren().clear());
 
             if (recentItems.size() == 0) {
-                Label noRecentItems = new Label(I18N.getString("welcome.recent.items.no.recent.items"));
+                final var noRecentItems = new Label(I18N.getString("welcome.recent.items.no.recent.items"));
                 noRecentItems.getStyleClass().add("no-recent-items-label");
 
                 Platform.runLater(() -> {
@@ -183,17 +182,17 @@ public class WelcomeDialogWindowController extends TemplatesBaseWindowController
                 });
             }
 
-            List<Button> recentDocumentButtons = new ArrayList<>();
+            final List<Button> recentDocumentButtons = new ArrayList<>();
 
-            for (int row = 0; row < preferencesRecordGlobal.getRecentItemsSize(); ++row) {
+            for (var row = 0; row < preferencesRecordGlobal.getRecentItemsSize(); ++row) {
                 if (recentItems.size() < row + 1) {
                     break;
                 }
 
-                String recentItem = recentItems.get(row);
-                File recentItemFile = new File(recentItems.get(row));
-                String recentItemTitle = recentItemFile.getName();
-                Button recentDocument = new Button(recentItemTitle);
+                final var recentItem = recentItems.get(row);
+                final var recentItemFile = new File(recentItems.get(row));
+                final var recentItemTitle = recentItemFile.getName();
+                final var recentDocument = new Button(recentItemTitle);
                 recentDocument.getStyleClass().add("recent-document");
                 recentDocument.setMaxWidth(Double.MAX_VALUE);
                 recentDocument.setAlignment(Pos.BASELINE_LEFT);
@@ -215,7 +214,7 @@ public class WelcomeDialogWindowController extends TemplatesBaseWindowController
     public static WelcomeDialogWindowController getInstance() {
         if (instance == null) {
             instance = new WelcomeDialogWindowController();
-            var stage = instance.getStage();
+            final var stage = instance.getStage();
             stage.setMinWidth(800);
             stage.setMinHeight(650);
             AppSettings.setWindowIcon(stage);
@@ -223,7 +222,7 @@ public class WelcomeDialogWindowController extends TemplatesBaseWindowController
         return instance;
     }
 
-    private void fireSelectTemplate(Template template) {
+    private void fireSelectTemplate(final Template template) {
         if (sceneBuilderApp.startupTasksFinishedBinding().get()) {
             sceneBuilderApp.performNewTemplate(template);
             getStage().hide();
@@ -235,24 +234,24 @@ public class WelcomeDialogWindowController extends TemplatesBaseWindowController
         }
     }
 
-    private void fireOpenRecentProject(ActionEvent event, String projectPath) {
+    private void fireOpenRecentProject(final ActionEvent event, final String projectPath) {
         handleOpen(List.of(projectPath));
     }
 
     @FXML
     private void openDocument() {
-        FileChooser fileChooser = new FileChooser();
+        final var fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter(I18N.getString("file.filter.label.fxml"), "*.fxml")
         );
         fileChooser.setInitialDirectory(EditorController.getNextInitialDirectory());
-        List<File> fxmlFiles = fileChooser.showOpenMultipleDialog(getStage());
+        final var fxmlFiles = fileChooser.showOpenMultipleDialog(getStage());
 
         // no file was selected, so nothing to do
         if (fxmlFiles == null)
             return;
 
-        List<String> paths = fxmlFiles
+        final var paths = fxmlFiles
                 .stream()
                 .map(File::toString)
                 .collect(Collectors.toList());
@@ -260,11 +259,11 @@ public class WelcomeDialogWindowController extends TemplatesBaseWindowController
         handleOpen(paths);
     }
     
-    protected static AlertDialog questionMissingFilesCleanup(Stage stage, List<String> missingFiles) {
-        String withPath = missingFiles.stream()
+    protected static AlertDialog questionMissingFilesCleanup(final Stage stage, final List<String> missingFiles) {
+        final var withPath = missingFiles.stream()
                                       .collect(Collectors.joining(System.lineSeparator()));
-        
-        AlertDialog question = new AlertDialog(stage);
+
+        final var question = new AlertDialog(stage);
         question.setDefaultButtonID(ButtonID.CANCEL);
         question.setShowDefaultButton(true);
         question.setOKButtonTitle(I18N.getString("alert.welcome.file.not.found.okay"));
@@ -275,7 +274,7 @@ public class WelcomeDialogWindowController extends TemplatesBaseWindowController
         return question;
     }
     
-    boolean filePathExists(String filePath) {
+    boolean filePathExists(final String filePath) {
         return Files.exists(Path.of(filePath));
     }
 
@@ -287,15 +286,15 @@ public class WelcomeDialogWindowController extends TemplatesBaseWindowController
      * @param filePaths List of file paths to project files to be opened by Scene
      *                  Builder.
      */
-    private void handleOpen(List<String> filePaths) {
+    private void handleOpen(final List<String> filePaths) {
         handleOpen(filePaths, 
                    this::askUserToRemoveMissingRecentFiles,
                    this::attemptOpenExistingFiles);
     }
 
-    private void askUserToRemoveMissingRecentFiles(List<String> missingFiles) {
+    private void askUserToRemoveMissingRecentFiles(final List<String> missingFiles) {
         if (!missingFiles.isEmpty()) {
-            var questionDialog = questionMissingFilesCleanup(getStage(), missingFiles);
+            final var questionDialog = questionMissingFilesCleanup(getStage(), missingFiles);
             if (questionDialog.showAndWait() == AlertDialog.ButtonID.OK) {
                 removeMissingFilesFromPrefs(missingFiles);
                 loadAndPopulateRecentItemsInBackground();
@@ -303,7 +302,7 @@ public class WelcomeDialogWindowController extends TemplatesBaseWindowController
         }
     }
 
-    private void attemptOpenExistingFiles(List<String> paths) {
+    private void attemptOpenExistingFiles(final List<String> paths) {
         if (sceneBuilderApp.startupTasksFinishedBinding().get()) {
             openFilesAndHideStage(paths);
         } else {
@@ -311,7 +310,7 @@ public class WelcomeDialogWindowController extends TemplatesBaseWindowController
         }
     }
 
-    private void openFilesAndHideStage(List<String> files) {
+    private void openFilesAndHideStage(final List<String> files) {
         sceneBuilderApp.handleOpenFilesAction(files, () -> getStage().hide());
     }
 
@@ -323,16 +322,16 @@ public class WelcomeDialogWindowController extends TemplatesBaseWindowController
      * @param missingFilesHandler Determines how missing files are handled.
      * @param fileLoader Determines how files are loaded.
      */
-    void handleOpen(List<String> filePaths, 
-                    Consumer<List<String>> missingFilesHandler,
-                    Consumer<List<String>> fileLoader) {
+    void handleOpen(final List<String> filePaths,
+                    final Consumer<List<String>> missingFilesHandler,
+                    final Consumer<List<String>> fileLoader) {
         LOGGER.log(Level.INFO, "Attempting to open files: {0}", filePaths);
         if (filePaths.isEmpty()) {
             return;
         }
 
-        List<String> existingFiles = new ArrayList<>();
-        List<String> missingFiles = new ArrayList<>();
+        final List<String> existingFiles = new ArrayList<>();
+        final List<String> missingFiles = new ArrayList<>();
         filePaths.forEach(file -> {
             if (filePathExists(file)) {
                 existingFiles.add(file);
@@ -350,13 +349,13 @@ public class WelcomeDialogWindowController extends TemplatesBaseWindowController
         fileLoader.accept(existingFiles);
     }
 
-    private void removeMissingFilesFromPrefs(List<String> missingFiles) {
+    private void removeMissingFilesFromPrefs(final List<String> missingFiles) {
         missingFiles.forEach(fxmlFileName -> LOGGER.log(Level.INFO, "Removing missing file from recent items: {0}", fxmlFileName));
-        PreferencesRecordGlobal preferencesRecordGlobal = PreferencesController.getSingleton().getRecordGlobal();
+        final var preferencesRecordGlobal = PreferencesController.getSingleton().getRecordGlobal();
         preferencesRecordGlobal.removeRecentItems(missingFiles);
     }
 
-    private void showMasker(Runnable onEndAction) {
+    private void showMasker(final Runnable onEndAction) {
         contentPane.setDisable(true);
         masker.setVisible(true);
 

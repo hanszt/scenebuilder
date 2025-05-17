@@ -37,7 +37,6 @@ import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
-import java.net.URL;
 
 import org.junit.jupiter.api.Test;
 
@@ -49,46 +48,46 @@ public class SkeletonBufferTest {
     @Test
     public void testControllerWithoutPackageName() throws IOException {
         // given
-        SkeletonBuffer skeletonBuffer = load("ControllerWithoutPackage.fxml");
+        final var skeletonBuffer = load("ControllerWithoutPackage.fxml");
 
         // when
-        String skeleton = skeletonBuffer.toString();
+        final var skeleton = skeletonBuffer.toString();
 
         // then
-        String firstLine = skeleton.substring(0, skeleton.indexOf(AbstractSkeletonCreator.NL));
+        final var firstLine = skeleton.substring(0, skeleton.indexOf(AbstractSkeletonCreator.NL));
         assertEquals("", firstLine);
     }
 
     @Test
     public void testControllerWithSimplePackageName() throws IOException {
         // given
-        SkeletonBuffer skeletonBuffer = load("ControllerWithSimplePackage.fxml");
+        final var skeletonBuffer = load("ControllerWithSimplePackage.fxml");
 
         // when
-        String skeleton = skeletonBuffer.toString();
+        final var skeleton = skeletonBuffer.toString();
 
         // then
-        String firstLine = skeleton.substring(0, skeleton.indexOf(AbstractSkeletonCreator.NL));
+        final var firstLine = skeleton.substring(0, skeleton.indexOf(AbstractSkeletonCreator.NL));
         assertEquals("package com;", firstLine);
     }
 
     @Test
     public void testControllerWithAdvancedPackageName() throws IOException {
         // given
-        SkeletonBuffer skeletonBuffer = load("ControllerWithAdvancedPackage.fxml");
+        final var skeletonBuffer = load("ControllerWithAdvancedPackage.fxml");
 
         // when
-        String skeleton = skeletonBuffer.toString();
+        final var skeleton = skeletonBuffer.toString();
 
         // then
-        String firstLine = skeleton.substring(0, skeleton.indexOf(AbstractSkeletonCreator.NL));
+        final var firstLine = skeleton.substring(0, skeleton.indexOf(AbstractSkeletonCreator.NL));
         assertEquals("package com.example.app.view;", firstLine);
     }
 
-    private SkeletonBuffer load(String fxmlFile) throws IOException {
-        EditorController editorController = new EditorController();
-        final URL fxmlURL = SkeletonBufferTest.class.getResource(fxmlFile);
-        final String fxmlText = FXOMDocument.readContentFromURL(fxmlURL);
+    private SkeletonBuffer load(final String fxmlFile) throws IOException {
+        final var editorController = new EditorController();
+        final var fxmlURL = SkeletonBufferTest.class.getResource(fxmlFile);
+        final var fxmlText = FXOMDocument.readContentFromURL(fxmlURL);
         editorController.setFxmlTextAndLocation(fxmlText, fxmlURL, false);
         return new SkeletonBuffer(editorController.getFxomDocument(), "test");
     }

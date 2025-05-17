@@ -63,8 +63,8 @@ public class BoundsPropertyMetadata extends ComplexPropertyMetadata<Bounds> {
             DoublePropertyMetadata.DoubleKind.SIZE, true, 0.0, InspectorPath.UNUSED);
     
     
-    public BoundsPropertyMetadata(PropertyName name, boolean readWrite, 
-            Bounds defaultValue, InspectorPath inspectorPath) {
+    public BoundsPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                  final Bounds defaultValue, final InspectorPath inspectorPath) {
         super(name, Bounds.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -73,8 +73,8 @@ public class BoundsPropertyMetadata extends ComplexPropertyMetadata<Bounds> {
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(Bounds value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, value.getClass());
+    public FXOMInstance makeFxomInstanceFromValue(final Bounds value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, value.getClass());
         
         minXMetadata.setValue(result, value.getMinX());
         minYMetadata.setValue(result, value.getMinY());

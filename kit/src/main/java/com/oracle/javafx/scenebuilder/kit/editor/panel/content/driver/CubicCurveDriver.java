@@ -45,7 +45,7 @@ import javafx.scene.shape.CubicCurve;
  */
 public class CubicCurveDriver extends AbstractNodeDriver {
 
-    public CubicCurveDriver(ContentPanelController contentPanelController) {
+    public CubicCurveDriver(final ContentPanelController contentPanelController) {
         super(contentPanelController);
     }
 
@@ -54,18 +54,18 @@ public class CubicCurveDriver extends AbstractNodeDriver {
      */
     
     @Override
-    public AbstractHandles<?> makeHandles(FXOMObject fxomObject) {
+    public AbstractHandles<?> makeHandles(final FXOMObject fxomObject) {
         assert fxomObject.getSceneGraphObject() instanceof CubicCurve;
         assert fxomObject instanceof FXOMInstance;
         return new CubicCurveHandles(contentPanelController, (FXOMInstance)fxomObject);
     }
 
     @Override
-    public AbstractCurveEditor<?> makeCurveEditor(FXOMObject fxomObject) {
+    public AbstractCurveEditor<?> makeCurveEditor(final FXOMObject fxomObject) {
         assert fxomObject.getSceneGraphObject() instanceof CubicCurve;
         assert fxomObject instanceof FXOMInstance;
 
-        final CubicCurve cubicCurve = (CubicCurve) fxomObject.getSceneGraphObject();
+        final var cubicCurve = (CubicCurve) fxomObject.getSceneGraphObject();
         return new CubicCurveEditor(cubicCurve);
     }
     

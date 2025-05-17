@@ -35,8 +35,6 @@ package com.oracle.javafx.scenebuilder.kit.editor.panel.library.manager;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.net.URL;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Test;
@@ -48,11 +46,11 @@ public class DialogListItemComparatorTest {
     @Test
     public void testSortingOrArifactItems() {
 
-        DialogListItem artifactItem = new ArtifactDialogListItem(null, "net.somegroup.package:myArtifact:0.1.17");
-        DialogListItem actuallySameItem = new ArtifactDialogListItem(null, "net.somegroup.package:myArtifact:0.1.17");
+        final DialogListItem artifactItem = new ArtifactDialogListItem(null, "net.somegroup.package:myArtifact:0.1.17");
+        final DialogListItem actuallySameItem = new ArtifactDialogListItem(null, "net.somegroup.package:myArtifact:0.1.17");
 
-        DialogListItem otherRevisionItem = new ArtifactDialogListItem(null, "net.somegroup.package:myArtifact:0.2.17");
-        DialogListItem commercialItem = new ArtifactDialogListItem(null, "com.acme.main:business:4.0");
+        final DialogListItem otherRevisionItem = new ArtifactDialogListItem(null, "net.somegroup.package:myArtifact:0.2.17");
+        final DialogListItem commercialItem = new ArtifactDialogListItem(null, "com.acme.main:business:4.0");
 
         assertTrue(classUnderTest.compare(artifactItem, otherRevisionItem) < 0);
         assertTrue(classUnderTest.compare(artifactItem, commercialItem) > 0);
@@ -63,12 +61,12 @@ public class DialogListItemComparatorTest {
     @Test
     public void testLibraryDirectoriesPreceedFiles() throws Exception {
 
-        URL resource = getClass().getClassLoader().getResource("libraryManager/Empty-Dummy-Library.jar");
-        Path libFile = Paths.get(resource.toURI());
-        Path libDir = libFile.getParent();
+        final var resource = getClass().getClassLoader().getResource("libraryManager/Empty-Dummy-Library.jar");
+        final var libFile = Paths.get(resource.toURI());
+        final var libDir = libFile.getParent();
 
-        DialogListItem libraryFileItem = new LibraryDialogListItem(null, libFile);
-        DialogListItem libraryDirItem = new LibraryDialogListItem(null, libDir);
+        final DialogListItem libraryFileItem = new LibraryDialogListItem(null, libFile);
+        final DialogListItem libraryDirItem = new LibraryDialogListItem(null, libDir);
 
         assertTrue(classUnderTest.compare(libraryDirItem, libraryFileItem) < 0);
         assertTrue(classUnderTest.compare(libraryFileItem, libraryDirItem) > 0);
@@ -78,8 +76,8 @@ public class DialogListItemComparatorTest {
     @Test
     public void testLibraryFilesPreceedArtifacts() {
 
-        DialogListItem artifactItem = new ArtifactDialogListItem(null, "net.somegroup.package:myArtifact:0.1.17");
-        DialogListItem libraryFileItem = new LibraryDialogListItem(null,
+        final DialogListItem artifactItem = new ArtifactDialogListItem(null, "net.somegroup.package:myArtifact:0.1.17");
+        final DialogListItem libraryFileItem = new LibraryDialogListItem(null,
                 Paths.get("c:/mylibrary/my-special-controls.jar"));
 
         assertEquals(1, classUnderTest.compare(artifactItem, libraryFileItem));
@@ -90,12 +88,12 @@ public class DialogListItemComparatorTest {
     @Test
     public void testLibraryDirectoriesAreSortedCorrectly() throws Exception {
 
-        URL resource = getClass().getClassLoader().getResource("libraryManager/Empty-Dummy-Library.jar");
-        Path libDir = Paths.get(resource.toURI()).getParent();
-        Path parentLibDir = libDir.getParent();
+        final var resource = getClass().getClassLoader().getResource("libraryManager/Empty-Dummy-Library.jar");
+        final var libDir = Paths.get(resource.toURI()).getParent();
+        final var parentLibDir = libDir.getParent();
 
-        DialogListItem secondDir = new LibraryDialogListItem(null, libDir);
-        DialogListItem firstDir = new LibraryDialogListItem(null, parentLibDir);
+        final DialogListItem secondDir = new LibraryDialogListItem(null, libDir);
+        final DialogListItem firstDir = new LibraryDialogListItem(null, parentLibDir);
 
         assertTrue(classUnderTest.compare(secondDir, firstDir) > 0);
         assertTrue(classUnderTest.compare(firstDir, secondDir) < 0);
@@ -105,10 +103,10 @@ public class DialogListItemComparatorTest {
     @Test
     public void testLibraryFilesAreSortedCorrectly() throws Exception {
 
-        URL resource = getClass().getClassLoader().getResource("libraryManager/Empty-Dummy-Library.jar");
-        Path libFile = Paths.get(resource.toURI());
+        final var resource = getClass().getClassLoader().getResource("libraryManager/Empty-Dummy-Library.jar");
+        final var libFile = Paths.get(resource.toURI());
 
-        DialogListItem fileItem = new LibraryDialogListItem(null, libFile);
+        final DialogListItem fileItem = new LibraryDialogListItem(null, libFile);
 
         assertEquals(0, classUnderTest.compare(fileItem, fileItem));
 

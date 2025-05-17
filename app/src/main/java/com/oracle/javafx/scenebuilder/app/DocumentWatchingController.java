@@ -38,7 +38,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 import com.oracle.javafx.scenebuilder.kit.util.FileWatcher;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -59,7 +58,7 @@ public class DocumentWatchingController implements FileWatcher.Delegate {
     private final FileWatcher fileWatcher 
             = new FileWatcher(2000 /* ms */, this, DocumentWindowController.class.getSimpleName());
 
-    public DocumentWatchingController(DocumentWindowController documentWindowController) {
+    public DocumentWatchingController(final DocumentWindowController documentWindowController) {
         this.documentWindowController = documentWindowController;
         this.editorController = documentWindowController.getEditorController();
         this.resourceController = documentWindowController.getResourceController();
@@ -77,7 +76,7 @@ public class DocumentWatchingController implements FileWatcher.Delegate {
     }
 
     public void update() {
-        List<Path> targets = new ArrayList<>();
+        final List<Path> targets = new ArrayList<>();
         
         // 1)
         editorController.fxomDocument()
@@ -91,7 +90,7 @@ public class DocumentWatchingController implements FileWatcher.Delegate {
         
         // 3)
         if (editorController.getSceneStyleSheets() != null) {
-            for (File sceneStyleSheet : editorController.getSceneStyleSheets()) {
+            for (final var sceneStyleSheet : editorController.getSceneStyleSheets()) {
                 targets.add(sceneStyleSheet.toPath());
             }
         }
@@ -106,12 +105,12 @@ public class DocumentWatchingController implements FileWatcher.Delegate {
     }
 
     @Override
-    public void fileWatcherDidWatchTargetCreation(Path target) {
+    public void fileWatcherDidWatchTargetCreation(final Path target) {
         // Ignored
     }
 
     @Override
-    public void fileWatcherDidWatchTargetDeletion(Path target) {
+    public void fileWatcherDidWatchTargetDeletion(final Path target) {
         if (isPathMatchingResourceLocation(target)) {
             // Resource file has disappeared
             resourceController.performRemoveResource(); 
@@ -135,7 +134,7 @@ public class DocumentWatchingController implements FileWatcher.Delegate {
     }
 
     @Override
-    public void fileWatcherDidWatchTargetModification(Path target) {
+    public void fileWatcherDidWatchTargetModification(final Path target) {
         if (isPathMatchingResourceLocation(target)) {
             // Resource file has been modified -> refresh the scene graph
             resourceController.performReloadResource(); 
@@ -149,7 +148,7 @@ public class DocumentWatchingController implements FileWatcher.Delegate {
                     documentWindowController.reload();
                     log("log.info.reload", target);
 
-                } catch(IOException x) {
+                } catch(final IOException x) {
                     // Here we silently ignore the failure :
                     // loadFromFile() has failed but left the document unchanged.
                 }
@@ -164,18 +163,18 @@ public class DocumentWatchingController implements FileWatcher.Delegate {
         }
     }
 
-    private void log(String infoKey, Path target) {
+    private void log(final String infoKey, final Path target) {
         editorController.getMessageLog().logInfoMessage(infoKey, I18N.getBundle(), target.getFileName());
     }
 
-    private boolean isPathMatchingDocumentLocation(Path p) {
+    private boolean isPathMatchingDocumentLocation(final Path p) {
         return editorController.fxomDocument()
                 .flatMap(FXOMDocument::locationPath)
                 .map(p::equals)
                 .orElse(false);
     }
     
-    private boolean isPathMatchingResourceLocation(Path p) {
+    private boolean isPathMatchingResourceLocation(final Path p) {
         if (resourceController.getResourceFile() != null) {
             return p.equals(resourceController.getResourceFile().toPath());
         }
@@ -183,7 +182,7 @@ public class DocumentWatchingController implements FileWatcher.Delegate {
         return false;
     }
 
-    private boolean isPathMatchingSceneStyleSheet(Path p) {
+    private boolean isPathMatchingSceneStyleSheet(final Path p) {
         if (editorController.getSceneStyleSheets() != null) {
             return editorController.getSceneStyleSheets().contains(p.toFile());
         }

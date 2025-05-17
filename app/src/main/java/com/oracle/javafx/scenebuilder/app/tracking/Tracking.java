@@ -31,15 +31,13 @@
  */
 package com.oracle.javafx.scenebuilder.app.tracking;
 
-import com.oracle.javafx.scenebuilder.app.SceneBuilderApp;
 import com.oracle.javafx.scenebuilder.app.util.AppSettings;
 
 import java.io.DataInputStream;
-import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -47,33 +45,33 @@ public class Tracking {
     public static final String SCENEBUILDER_TYPE = "scenebuilder";
     public static final String SCENEBUILDER_USAGE_TYPE = "scenebuilder-usage";
 
-    public static void sendTrackingInfo(String type, String hash, String email, boolean optIn, boolean update) {
+    public static void sendTrackingInfo(final String type, final String hash, final String email, final boolean optIn, final boolean update) {
         new Thread(() -> {
             try {
-                String java = System.getProperty("java.version");
-                String os = System.getProperty("os.arch") + " " + System.getProperty("os.name") + " " + System.getProperty("os.version");
-                String urlParameters = "email=" + (email == null ? "" : URLEncoder.encode(email, "UTF-8"))
-                        + "&subscribe=" + optIn
-                        + "&os=" + URLEncoder.encode(os, "UTF-8")
-                        + "&java=" + URLEncoder.encode(java, "UTF-8")
-                        + "&type=" + type
-                        + "&id=" + hash
-                        + "&version=" + AppSettings.getSceneBuilderVersion()
-                        + (update ? "&update=true" : "");
+                final var java = System.getProperty("java.version");
+                final var os = System.getProperty("os.arch") + " " + System.getProperty("os.name") + " " + System.getProperty("os.version");
+                final var urlParameters = "email=" + (email == null ? "" : URLEncoder.encode(email, StandardCharsets.UTF_8))
+                                          + "&subscribe=" + optIn
+                                          + "&os=" + URLEncoder.encode(os, StandardCharsets.UTF_8)
+                                          + "&java=" + URLEncoder.encode(java, StandardCharsets.UTF_8)
+                                          + "&type=" + type
+                                          + "&id=" + hash
+                                          + "&version=" + AppSettings.getSceneBuilderVersion()
+                                          + (update ? "&update=true" : "");
 
-                URL url = new URL("http://usage.gluonhq.com/ul/log?" + urlParameters);
+                final var url = new URL("http://usage.gluonhq.com/ul/log?" + urlParameters);
 
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                final var conn = (HttpURLConnection) url.openConnection();
                 conn.setConnectTimeout(5000);
                 conn.setReadTimeout(5000);
                 conn.setRequestMethod("GET");
                 conn.setUseCaches(false);
                 conn.connect();
-                try (DataInputStream in = new DataInputStream(conn.getInputStream())) {
+                try (final var in = new DataInputStream(conn.getInputStream())) {
                     while (in.read() > -1) {
                     }
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 Logger.getLogger(Tracking.class.getName()).log(Level.WARNING, "Failed to send tracking info: ", e);
             }
         }, "UserRegistrationThread").start();

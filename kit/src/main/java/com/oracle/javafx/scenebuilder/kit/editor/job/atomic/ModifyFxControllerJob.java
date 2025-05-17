@@ -46,7 +46,7 @@ public class ModifyFxControllerJob extends Job {
     private final String newValue;
     private final String oldValue;
 
-    public ModifyFxControllerJob(FXOMObject fxomObject, String newValue, EditorController editorController) {
+    public ModifyFxControllerJob(final FXOMObject fxomObject, final String newValue, final EditorController editorController) {
         super(editorController);
 
         assert fxomObject != null;
@@ -61,7 +61,7 @@ public class ModifyFxControllerJob extends Job {
      */
     @Override
     public boolean isExecutable() {
-        return Objects.equals(oldValue, newValue) == false;
+        return !Objects.equals(oldValue, newValue);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class ModifyFxControllerJob extends Job {
 
     @Override
     public String getDescription() {
-        final StringBuilder result = new StringBuilder();
+        final var result = new StringBuilder();
         result.append("Set controller class on ");
         result.append(fxomObject.getGlueElement().getTagName());
         return result.toString();

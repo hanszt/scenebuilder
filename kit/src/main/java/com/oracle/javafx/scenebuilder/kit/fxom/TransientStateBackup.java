@@ -50,7 +50,7 @@ class TransientStateBackup {
     private final Map<FXOMObject, FXOMObject> tabPaneMap = new HashMap<>();
     private final Map<FXOMObject, FXOMObject> accordionMap = new HashMap<>();
 
-    public TransientStateBackup(FXOMDocument fxomDocument) {
+    public TransientStateBackup(final FXOMDocument fxomDocument) {
         assert fxomDocument != null;
         
         this.fxomDocument = fxomDocument;
@@ -60,26 +60,26 @@ class TransientStateBackup {
             candidates.add(this.fxomDocument.getFxomRoot());
         }
         
-        while (candidates.isEmpty() == false) {
-            final FXOMObject candidate = candidates.get(0);
-            candidates.remove(0);
+        while (!candidates.isEmpty()) {
+            final var candidate = candidates.getFirst();
+            candidates.removeFirst();
             
-            final Object sceneGraphObject = candidate.getSceneGraphObject();
+            final var sceneGraphObject = candidate.getSceneGraphObject();
             if (sceneGraphObject instanceof TabPane) {
-                final TabPane tabPane = (TabPane) sceneGraphObject;
-                final Tab currentTab = tabPane.getSelectionModel().getSelectedItem();
+                final var tabPane = (TabPane) sceneGraphObject;
+                final var currentTab = tabPane.getSelectionModel().getSelectedItem();
                 if (currentTab != null) {
-                    final FXOMObject tabObject 
+                    final var tabObject
                             = candidate.searchWithSceneGraphObject(currentTab);
                     if (tabObject != null) {
                         tabPaneMap.put(candidate, tabObject);
                     }
                 }
             } else if (sceneGraphObject instanceof Accordion) {
-                final Accordion accordion  = (Accordion) sceneGraphObject;
-                final TitledPane currentTitledPane = accordion.getExpandedPane();
+                final var accordion  = (Accordion) sceneGraphObject;
+                final var currentTitledPane = accordion.getExpandedPane();
                 if (currentTitledPane != null) {
-                    final FXOMObject titledPaneObject
+                    final var titledPaneObject
                             = candidate.searchWithSceneGraphObject(currentTitledPane);
                     if (titledPaneObject != null) {
                         accordionMap.put(candidate, titledPaneObject);
@@ -97,26 +97,26 @@ class TransientStateBackup {
             candidates.add(this.fxomDocument.getFxomRoot());
         }
         
-        while (candidates.isEmpty() == false) {
-            final FXOMObject candidate = candidates.get(0);
-            candidates.remove(0);
+        while (!candidates.isEmpty()) {
+            final var candidate = candidates.getFirst();
+            candidates.removeFirst();
             
-            final Object sceneGraphObject = candidate.getSceneGraphObject();
+            final var sceneGraphObject = candidate.getSceneGraphObject();
             if (sceneGraphObject instanceof TabPane) {
-                final TabPane tabPane = (TabPane) sceneGraphObject;
-                final FXOMObject tabObject = tabPaneMap.get(candidate);
+                final var tabPane = (TabPane) sceneGraphObject;
+                final var tabObject = tabPaneMap.get(candidate);
                 if ((tabObject != null) && (tabObject.getParentObject() == candidate)) {
                     assert tabObject.getSceneGraphObject() instanceof Tab;
-                    final Tab tab = (Tab) tabObject.getSceneGraphObject();
+                    final var tab = (Tab) tabObject.getSceneGraphObject();
                     assert tabPane.getTabs().contains(tab);
                     tabPane.getSelectionModel().select(tab);
                 }
             } else if (sceneGraphObject instanceof Accordion) {
-                final Accordion accordion  = (Accordion) sceneGraphObject;
-                final FXOMObject titlePaneObject = accordionMap.get(candidate);
+                final var accordion  = (Accordion) sceneGraphObject;
+                final var titlePaneObject = accordionMap.get(candidate);
                 if ((titlePaneObject != null) && (titlePaneObject.getParentObject() == candidate)) {
                     assert titlePaneObject.getSceneGraphObject() instanceof TitledPane;
-                    final TitledPane titledPane = (TitledPane) titlePaneObject.getSceneGraphObject();
+                    final var titledPane = (TitledPane) titlePaneObject.getSceneGraphObject();
                     assert accordion.getPanes().contains(titledPane);
                     accordion.setExpandedPane(titledPane);
                 }

@@ -69,7 +69,7 @@ public class GluonEditorController {
      *
      * @param theme the theme to be used in this editor
      */
-    public void setGluonTheme(EditorPlatform.Theme theme) {
+    public void setGluonTheme(final EditorPlatform.Theme theme) {
         gluonThemeProperty.set(theme);
     }
 
@@ -89,7 +89,7 @@ public class GluonEditorController {
      *
      * @param swatch the swatch to be used in this editor
      */
-    public void setGluonSwatch(EditorPlatform.Theme swatch) {
+    public void setGluonSwatch(final EditorPlatform.Theme swatch) {
         gluonSwatchProperty.set(swatch);
     }
 

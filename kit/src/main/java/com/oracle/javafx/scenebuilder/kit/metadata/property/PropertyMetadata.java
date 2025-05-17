@@ -42,7 +42,7 @@ public class PropertyMetadata implements Comparable<PropertyMetadata> {
     
     private final PropertyName name;
 
-    public PropertyMetadata(PropertyName name) {
+    public PropertyMetadata(final PropertyName name) {
         this.name = name;
     }
 
@@ -55,7 +55,7 @@ public class PropertyMetadata implements Comparable<PropertyMetadata> {
      * Comparable
      */
     @Override
-    public int compareTo(PropertyMetadata o) {
+    public int compareTo(final PropertyMetadata o) {
         return this.name.compareTo(o.name);
     }
 
@@ -65,20 +65,20 @@ public class PropertyMetadata implements Comparable<PropertyMetadata> {
     
     @Override
     public int hashCode() {
-        int hash = 5;
+        var hash = 5;
         hash = 37 * hash + Objects.hashCode(this.name);
         return hash;
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (obj == null) {
             return false;
         }
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final PropertyMetadata other = (PropertyMetadata) obj;
+        final var other = (PropertyMetadata) obj;
         if (!Objects.equals(this.name, other.name)) {
             return false;
         }

@@ -49,7 +49,7 @@ public abstract class ValuePropertyMetadata extends PropertyMetadata {
     
     private final Map<Class<?>, Object> defaultValueAlternatives = new HashMap<>();
 
-    public ValuePropertyMetadata(PropertyName name, boolean readWrite, InspectorPath inspectorPath) {
+    public ValuePropertyMetadata(final PropertyName name, final boolean readWrite, final InspectorPath inspectorPath) {
         super(name);
         this.readWrite = readWrite;
         this.inspectorPath = inspectorPath;
@@ -90,7 +90,7 @@ public abstract class ValuePropertyMetadata extends PropertyMetadata {
      * @param fxomInstance an fxom instance (never null)
      * @param value a value conform with the property typing
      */
-    public void setValueInSceneGraphObject(FXOMInstance fxomInstance, Object value) {
+    public void setValueInSceneGraphObject(final FXOMInstance fxomInstance, final Object value) {
         assert fxomInstance != null;
         assert fxomInstance.getSceneGraphObject() != null;
         getName().setValue(fxomInstance.getSceneGraphObject(), value);
@@ -108,7 +108,7 @@ public abstract class ValuePropertyMetadata extends PropertyMetadata {
      * @return value of this property in the scene graph object associated
      *         fxomInstance
      */
-    public Object getValueInSceneGraphObject(FXOMInstance fxomInstance) {
+    public Object getValueInSceneGraphObject(final FXOMInstance fxomInstance) {
         assert fxomInstance != null;
         return getName().getValue(fxomInstance.getSceneGraphObject());
     }
@@ -123,7 +123,7 @@ public abstract class ValuePropertyMetadata extends PropertyMetadata {
     }
 
     @Override
-    public boolean equals(Object obj) {  // To please FindBugs
+    public boolean equals(final Object obj) {  // To please FindBugs
         if (obj == null) {
             return false;
         }

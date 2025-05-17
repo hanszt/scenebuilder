@@ -43,7 +43,7 @@ import com.oracle.javafx.scenebuilder.kit.editor.panel.hierarchy.treeview.Hierar
  */
 public class HierarchyPanelController extends HierarchyTreeViewController {
 
-    public HierarchyPanelController(EditorController editorController) {
+    public HierarchyPanelController(final EditorController editorController) {
         super(editorController);
     }
 }

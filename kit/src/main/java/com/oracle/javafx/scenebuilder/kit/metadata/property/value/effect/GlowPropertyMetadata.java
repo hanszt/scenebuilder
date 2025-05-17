@@ -52,8 +52,8 @@ public class GlowPropertyMetadata extends ComplexPropertyMetadata<Glow> {
             = new DoublePropertyMetadata(new PropertyName("level"), //NOI18N
             DoublePropertyMetadata.DoubleKind.OPACITY, true /* readWrite */, 0.3, InspectorPath.UNUSED);
 
-    public GlowPropertyMetadata(PropertyName name, boolean readWrite, 
-            Glow defaultValue, InspectorPath inspectorPath) {
+    public GlowPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                final Glow defaultValue, final InspectorPath inspectorPath) {
         super(name, Glow.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -62,8 +62,8 @@ public class GlowPropertyMetadata extends ComplexPropertyMetadata<Glow> {
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(Glow value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, value.getClass());
+    public FXOMInstance makeFxomInstanceFromValue(final Glow value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, value.getClass());
         
         inputMetadata.setValue(result, value.getInput());
         levelMetadata.setValue(result, value.getLevel());

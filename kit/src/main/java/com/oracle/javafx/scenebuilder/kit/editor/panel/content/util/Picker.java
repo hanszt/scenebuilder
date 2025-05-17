@@ -38,7 +38,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -71,21 +70,21 @@ public class Picker {
      * @param sceneY
      * @return the list of nodes below (sceneX, sceneY).
      */
-    public List<Node> pick(Node startNode, double sceneX, double sceneY) {
+    public List<Node> pick(final Node startNode, final double sceneX, final double sceneY) {
         assert startNode != null;
         assert startNode.getScene() != null;
-        assert Double.isNaN(sceneX) == false;
-        assert Double.isNaN(sceneY) == false;
+        assert !Double.isNaN(sceneX);
+        assert !Double.isNaN(sceneY);
         
-        final Point2D localXY = startNode.sceneToLocal(sceneX, sceneY, true /* rootScene */);
+        final var localXY = startNode.sceneToLocal(sceneX, sceneY, true /* rootScene */);
         return pickInLocal(startNode, localXY.getX(), localXY.getY());
     }
     
-    public List<Node> pickInLocal(Node startNode, double localX, double localY) {
+    public List<Node> pickInLocal(final Node startNode, final double localX, final double localY) {
         assert startNode != null;
         assert startNode.getScene() != null;
-        assert Double.isNaN(localX) == false;
-        assert Double.isNaN(localY) == false;
+        assert !Double.isNaN(localX);
+        assert !Double.isNaN(localY);
         
         this.matches.clear();
         performPick(startNode, localX, localY);
@@ -97,17 +96,17 @@ public class Picker {
     }
     
 
-    private void performPick(Node startNode, double localX, double localY) {
+    private void performPick(final Node startNode, final double localX, final double localY) {
 
-        if ((excludes.contains(startNode) == false) && startNode.isVisible()){
+        if ((!excludes.contains(startNode)) && startNode.isVisible()){
             if (match(startNode, localX, localY)) {
-                matches.add(0, startNode);
+                matches.addFirst(startNode);
             }
         
             if (startNode instanceof Parent) {
-                final Parent startParent = (Parent) startNode;
-                for (Node child : startParent.getChildrenUnmodifiable()) {
-                    final Point2D childLocalXY = child.parentToLocal(localX, localY);
+                final var startParent = (Parent) startNode;
+                for (final var child : startParent.getChildrenUnmodifiable()) {
+                    final var childLocalXY = child.parentToLocal(localX, localY);
                     // Note : childLocalXY may be null.
                     // For example, child is a Button with scaleX == 0.
                     if (childLocalXY != null) {
@@ -118,16 +117,16 @@ public class Picker {
         }
     }
 
-    private boolean match(Node node, double x, double y) {
+    private boolean match(final Node node, final double x, final double y) {
         assert node != null;
         
-        final Bounds bounds = node.getLayoutBounds();
+        final var bounds = node.getLayoutBounds();
         if (bounds.isEmpty())
             return false;
         final boolean result;
         if (node instanceof Line) {
-            final Line line = (Line) node;
-            final Point2D point = new Point2D(x, y);          
+            final var line = (Line) node;
+            final var point = new Point2D(x, y);
             result = DistanceUtils.getDistFromPointToLine(point, line) < THRESHOLD;
         } else if (node instanceof Shape) {
             result = ((Shape) node).contains(x, y);

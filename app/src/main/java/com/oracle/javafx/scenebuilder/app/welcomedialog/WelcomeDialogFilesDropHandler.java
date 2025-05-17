@@ -50,18 +50,18 @@ final class WelcomeDialogFilesDropHandler {
     private Consumer<List<String>> openFiles;
     private Consumer<List<String>> handleUnsupported;
 
-    WelcomeDialogFilesDropHandler(List<File> droppedFiles) {
+    WelcomeDialogFilesDropHandler(final List<File> droppedFiles) {
         this.droppedFiles = Objects.requireNonNull(droppedFiles);
         this.toOpen = new ArrayList<>(droppedFiles.size());
         this.unsupportedItems = new ArrayList<>(droppedFiles.size());
     }
 
-    final WelcomeDialogFilesDropHandler withSupportedFiles(Consumer<List<String>> handleOpen) {
+    final WelcomeDialogFilesDropHandler withSupportedFiles(final Consumer<List<String>> handleOpen) {
         this.openFiles = handleOpen;
         return this;
     }
 
-    final WelcomeDialogFilesDropHandler withUnsupportedFiles(Consumer<List<String>> unsupportedHandler) {
+    final WelcomeDialogFilesDropHandler withUnsupportedFiles(final Consumer<List<String>> unsupportedHandler) {
         this.handleUnsupported = unsupportedHandler;
         return this;
     }
@@ -115,7 +115,7 @@ final class WelcomeDialogFilesDropHandler {
         
         if (!unsupportedItems.isEmpty()) {
             LOGGER.log(Level.WARNING, "{0} unsupported items dropped.", unsupportedItems.size());
-            for (var unsupportedItem : unsupportedItems) {
+            for (final var unsupportedItem : unsupportedItems) {
                 LOGGER.log(Level.INFO, "Unsupported file or empty directory: {0}", unsupportedItem);
             }
         }
@@ -126,11 +126,11 @@ final class WelcomeDialogFilesDropHandler {
             return;
         }
 
-        for (var file : droppedFiles) {
+        for (final var file : droppedFiles) {
             if (file.isDirectory()) {
-                File[] children = file.listFiles();
-                List<String> inDir = new ArrayList<>(children.length);
-                for (var child : children) {
+                final var children = file.listFiles();
+                final List<String> inDir = new ArrayList<>(children.length);
+                for (final var child : children) {
                     if (isFxml(child)) {
                         inDir.add(child.getAbsolutePath());
                     }
@@ -150,7 +150,7 @@ final class WelcomeDialogFilesDropHandler {
         }
     }
 
-    final boolean isFxml(File file) {
+    final boolean isFxml(final File file) {
         if (file.isDirectory()) {
             return false;
         }

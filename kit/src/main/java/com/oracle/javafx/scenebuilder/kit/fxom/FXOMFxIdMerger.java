@@ -46,7 +46,7 @@ public class FXOMFxIdMerger {
     private final Set<String> existingFxIds = new HashSet<>();
     private final Map<String, String> renamings;
     
-    public FXOMFxIdMerger(Collection<String> existingFxIds, Collection<String> importedFxIds) {
+    public FXOMFxIdMerger(final Collection<String> existingFxIds, final Collection<String> importedFxIds) {
         assert existingFxIds != null;
         assert importedFxIds != null;
         
@@ -54,7 +54,7 @@ public class FXOMFxIdMerger {
         this.renamings = makeRenamings(importedFxIds);
     }
     
-    public String getRenamedFxId(String importedFxId) {
+    public String getRenamedFxId(final String importedFxId) {
         return renamings.get(importedFxId);
     }
     
@@ -63,7 +63,7 @@ public class FXOMFxIdMerger {
      * Private
      */
     
-    private Map<String, String> makeRenamings(Collection<String> importedFxIds) {
+    private Map<String, String> makeRenamings(final Collection<String> importedFxIds) {
         final Map<String, String> result = new HashMap<>();
         
         /*
@@ -87,7 +87,7 @@ public class FXOMFxIdMerger {
         conflictingFxIds.retainAll(importedFxIds);
         
         // No renaming for items in newFxIds
-        for (String fxId : newFxIds) {
+        for (final var fxId : newFxIds) {
             result.put(fxId, fxId);
         }
         
@@ -97,13 +97,13 @@ public class FXOMFxIdMerger {
         //  - other fxIds from newFxIds
         //  - other generated fxIds
         
-        if (conflictingFxIds.isEmpty() == false) {
+        if (!conflictingFxIds.isEmpty()) {
             final Set<String> nameSpace = new HashSet<>();
             nameSpace.addAll(currentFxIds);
             nameSpace.addAll(newFxIds);
             
-            for (String fxId : conflictingFxIds) {
-                final String renamedFxId = generateFxId(fxId, nameSpace);
+            for (final var fxId : conflictingFxIds) {
+                final var renamedFxId = generateFxId(fxId, nameSpace);
                 result.put(fxId, renamedFxId);
                 nameSpace.add(renamedFxId);
             }
@@ -113,20 +113,20 @@ public class FXOMFxIdMerger {
     }
     
     
-    private String generateFxId(String conflictFxId, Set<String> nameSpace) {
+    private String generateFxId(final String conflictFxId, final Set<String> nameSpace) {
         assert conflictFxId != null;
         assert nameSpace != null;
-        assert nameSpace.contains(conflictFxId) == false;
+        assert !nameSpace.contains(conflictFxId);
         
         /*
          * We a numeric suffix to conflictFxId and checks that is not 
          * already in nameSpace. We increment the suffix and retry if there is
          * conflict.
          */
-        
-        int suffix = 1;
-        final int conflictFxIdLength = conflictFxId.length();
-        final StringBuilder sb = new StringBuilder();
+
+        var suffix = 1;
+        final var conflictFxIdLength = conflictFxId.length();
+        final var sb = new StringBuilder();
         sb.append(conflictFxId);
         sb.append(suffix);
         while (nameSpace.contains(sb.toString())) {

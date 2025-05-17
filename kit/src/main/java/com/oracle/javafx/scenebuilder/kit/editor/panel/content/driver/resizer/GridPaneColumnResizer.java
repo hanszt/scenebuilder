@@ -37,7 +37,7 @@ import com.oracle.javafx.scenebuilder.kit.util.Deprecation;
 import com.oracle.javafx.scenebuilder.kit.util.MathUtils;
 import java.util.HashMap;
 import java.util.Map;
-import javafx.geometry.Bounds;
+
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
@@ -59,7 +59,7 @@ public class GridPaneColumnResizer {
     private final boolean usePercentSizing;
     private final double x1, x2, x3, x4, xm;
 
-    public GridPaneColumnResizer(GridPane gridPane, int columnIndex) {
+    public GridPaneColumnResizer(final GridPane gridPane, final int columnIndex) {
         assert gridPane != null;
         assert columnIndex >= 0;
         assert columnIndex+1 < gridPane.getColumnConstraints().size();
@@ -83,9 +83,9 @@ public class GridPaneColumnResizer {
         //       With (x4 - xm) == (x3 - x2)
         //
 
-        final Bounds cellBounds 
+        final var cellBounds
                 = Deprecation.getGridPaneCellBounds(gridPane, columnIndex, 0);
-        final Bounds nextBounds 
+        final var nextBounds
                 = Deprecation.getGridPaneCellBounds(gridPane, columnIndex+1, 0);
         x1 = cellBounds.getMinX();
         x2 = cellBounds.getMaxX();
@@ -103,13 +103,13 @@ public class GridPaneColumnResizer {
         return columnIndex;
     }
     
-    public void updateWidth(double dx) {
+    public void updateWidth(final double dx) {
         
         // Clamp x2 + dx in [x1, xm]
-        final double newX2 = Math.max(x1, Math.min(xm, x2 + dx));
-        final double newX3 = newX2 + (x3 - x2);
-        final double newCellWidth = newX2 - x1;
-        final double newNextWidth = x4 - newX3;
+        final var newX2 = Math.max(x1, Math.min(xm, x2 + dx));
+        final var newX3 = newX2 + (x3 - x2);
+        final var newCellWidth = newX2 - x1;
+        final var newNextWidth = x4 - newX3;
         
 //        assert (newCellWidth+newNextWidth) == (downColWidths[colIndex]+downColWidths[colIndex+1]) :
 //                "newCellWidth+newNextWidth=" +  (newCellWidth+newNextWidth) + ", " +
@@ -117,18 +117,18 @@ public class GridPaneColumnResizer {
 //                (downColWidths[colIndex]+downColWidths[colIndex+1]);
 
         // Updates width of columns at columnIndex and columnIndex+1
-        final ColumnConstraints cc = gridPane.getColumnConstraints().get(columnIndex);
-        final ColumnConstraints ccNext = gridPane.getColumnConstraints().get(columnIndex+1);
+        final var cc = gridPane.getColumnConstraints().get(columnIndex);
+        final var ccNext = gridPane.getColumnConstraints().get(columnIndex + 1);
         
         if (usePercentSizing) {
-            final double ratio = newCellWidth / (xm - x1);
+            final var ratio = newCellWidth / (xm - x1);
             
-            final double base 
+            final var base
                     = originalSizing.getPercentWidth() 
                     + originalSizingNext.getPercentWidth();
             
-            final double newPercentWidth = Math.floor(ratio * base);
-            final double newPercentWidthNext = base - newPercentWidth;
+            final var newPercentWidth = Math.floor(ratio * base);
+            final var newPercentWidthNext = base - newPercentWidth;
             
             cc.setPercentWidth(newPercentWidth);
             ccNext.setPercentWidth(newPercentWidthNext);
@@ -167,8 +167,8 @@ public class GridPaneColumnResizer {
     
     public void revertToOriginalSize() {
         // Restore sizing of columns at columnIndex and columnIndex+1
-        final ColumnConstraints cc = gridPane.getColumnConstraints().get(columnIndex);
-        final ColumnConstraints ccNext = gridPane.getColumnConstraints().get(columnIndex+1);
+        final var cc = gridPane.getColumnConstraints().get(columnIndex);
+        final var ccNext = gridPane.getColumnConstraints().get(columnIndex + 1);
         
         originalSizing.applyTo(cc);
         originalSizingNext.applyTo(ccNext);
@@ -178,17 +178,17 @@ public class GridPaneColumnResizer {
     public Map<PropertyName, Object> getChangeMap() {
         final Map<PropertyName, Object> result = new HashMap<>();
         
-        final ColumnConstraints cc = gridPane.getColumnConstraints().get(columnIndex);
-        if (MathUtils.equals(cc.getMinWidth(), originalSizing.getMinWidth()) == false) {
+        final var cc = gridPane.getColumnConstraints().get(columnIndex);
+        if (!MathUtils.equals(cc.getMinWidth(), originalSizing.getMinWidth())) {
             result.put(minWidthName, cc.getMinWidth());
         }
-        if (MathUtils.equals(cc.getPrefWidth(), originalSizing.getPrefWidth()) == false) {
+        if (!MathUtils.equals(cc.getPrefWidth(), originalSizing.getPrefWidth())) {
             result.put(prefWidthName, cc.getPrefWidth());
         }
-        if (MathUtils.equals(cc.getMaxWidth(), originalSizing.getMaxWidth()) == false) {
+        if (!MathUtils.equals(cc.getMaxWidth(), originalSizing.getMaxWidth())) {
             result.put(maxWidthName, cc.getMaxWidth());
         }
-        if (MathUtils.equals(cc.getPercentWidth(), originalSizing.getPercentWidth()) == false) {
+        if (!MathUtils.equals(cc.getPercentWidth(), originalSizing.getPercentWidth())) {
             result.put(percentWidthName, cc.getPercentWidth());
         }
         return result;
@@ -198,17 +198,17 @@ public class GridPaneColumnResizer {
     public Map<PropertyName, Object> getChangeMapNext() {
         final Map<PropertyName, Object> result = new HashMap<>();
         
-        final ColumnConstraints ccNext = gridPane.getColumnConstraints().get(columnIndex+1);
-        if (MathUtils.equals(ccNext.getMinWidth(), originalSizingNext.getMinWidth()) == false) {
+        final var ccNext = gridPane.getColumnConstraints().get(columnIndex + 1);
+        if (!MathUtils.equals(ccNext.getMinWidth(), originalSizingNext.getMinWidth())) {
             result.put(minWidthName, ccNext.getMinWidth());
         }
-        if (MathUtils.equals(ccNext.getPrefWidth(), originalSizingNext.getPrefWidth()) == false) {
+        if (!MathUtils.equals(ccNext.getPrefWidth(), originalSizingNext.getPrefWidth())) {
             result.put(prefWidthName, ccNext.getPrefWidth());
         }
-        if (MathUtils.equals(ccNext.getMaxWidth(), originalSizingNext.getMaxWidth()) == false) {
+        if (!MathUtils.equals(ccNext.getMaxWidth(), originalSizingNext.getMaxWidth())) {
             result.put(maxWidthName, ccNext.getMaxWidth());
         }
-        if (MathUtils.equals(ccNext.getPercentWidth(), originalSizingNext.getPercentWidth()) == false) {
+        if (!MathUtils.equals(ccNext.getPercentWidth(), originalSizingNext.getPercentWidth())) {
             result.put(percentWidthName, ccNext.getPercentWidth());
         }
         return result;
@@ -220,8 +220,8 @@ public class GridPaneColumnResizer {
      */    
     
     private int countPercentWidths() {
-        int result = 0;
-        for (ColumnConstraints cc : gridPane.getColumnConstraints()) {
+        var result = 0;
+        for (final var cc : gridPane.getColumnConstraints()) {
             if (cc.getPercentWidth() != -1) {
                 result++;
             }
@@ -236,7 +236,7 @@ public class GridPaneColumnResizer {
         private final double prefWidth;
         private final double percentWidth;
         
-        public ColumnSizing(ColumnConstraints cc) {
+        public ColumnSizing(final ColumnConstraints cc) {
             this.minWidth = cc.getMinWidth();
             this.maxWidth = cc.getMaxWidth();
             this.prefWidth = cc.getPrefWidth();
@@ -259,7 +259,7 @@ public class GridPaneColumnResizer {
             return percentWidth;
         }
 
-        public void applyTo(ColumnConstraints cc) {
+        public void applyTo(final ColumnConstraints cc) {
             cc.setMinWidth(minWidth);
             cc.setMaxWidth(maxWidth);
             cc.setPrefWidth(prefWidth);

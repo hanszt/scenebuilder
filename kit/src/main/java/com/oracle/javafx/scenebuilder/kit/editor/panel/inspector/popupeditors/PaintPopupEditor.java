@@ -74,12 +74,12 @@ public class PaintPopupEditor extends PopupEditor {
         }
     };
 
-    public PaintPopupEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses, EditorController editorController) {
+    public PaintPopupEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses, final EditorController editorController) {
         super(propMeta, selectedClasses);
         initialize(editorController);
     }
     
-    private void initialize(EditorController editorController) {
+    private void initialize(final EditorController editorController) {
         this.editorController = editorController;
     }
 
@@ -94,7 +94,7 @@ public class PaintPopupEditor extends PopupEditor {
     }
 
     @Override
-    public String getPreviewString(Object value) {
+    public String getPreviewString(final Object value) {
         if (value == null) {
             return null;
         }
@@ -109,12 +109,12 @@ public class PaintPopupEditor extends PopupEditor {
     }
 
     @Override
-    public void setPopupContentValue(Object value) {
+    public void setPopupContentValue(final Object value) {
         assert value == null || value instanceof Paint;
         paintPicker.paintProperty().removeListener(paintChangeListener);
         paintPicker.liveUpdateProperty().removeListener(liveUpdateListener);
         if (value != null) {
-            final Paint paint = (Paint) value;
+            final var paint = (Paint) value;
             paintPicker.setPaintProperty(paint);
         }
         paintPicker.paintProperty().addListener(paintChangeListener);
@@ -128,8 +128,8 @@ public class PaintPopupEditor extends PopupEditor {
         return paintPicker;
     }
 
-    public Node getPreviewGraphic(Object value) {
-        Paint paintVal;
+    public Node getPreviewGraphic(final Object value) {
+        final Paint paintVal;
         if (value == null) {
             paintVal = null;
         } else {

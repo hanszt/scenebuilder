@@ -35,7 +35,6 @@ import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
 
 import java.lang.reflect.TypeVariable;
 import java.net.URL;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 abstract class AbstractSkeletonCreator implements SkeletonConverter {
@@ -44,8 +43,8 @@ abstract class AbstractSkeletonCreator implements SkeletonConverter {
     static final String INDENT = "    "; //NOI18N
     static final String FXML_ANNOTATION = "@FXML";
 
-    public String createFrom(SkeletonContext context) {
-        final StringBuilder sb = new StringBuilder();
+    public String createFrom(final SkeletonContext context) {
+        final var sb = new StringBuilder();
 
         appendHeaderComment(context, sb);
         appendPackage(context, sb);
@@ -55,12 +54,12 @@ abstract class AbstractSkeletonCreator implements SkeletonConverter {
         return sb.toString();
     }
 
-    void appendHeaderComment(SkeletonContext context, StringBuilder sb) {
+    void appendHeaderComment(final SkeletonContext context, final StringBuilder sb) {
         if (!context.getSettings().isWithComments()) {
             return;
         }
 
-        final String title = I18N.getString("skeleton.window.title", context.getDocumentName());
+        final var title = I18N.getString("skeleton.window.title", context.getDocumentName());
         sb.append("/**").append(NL); //NOI18N
         sb.append(" * ").append(title).append(NL); //NOI18N
         sb.append(" */").append(NL); //NOI18N
@@ -71,7 +70,7 @@ abstract class AbstractSkeletonCreator implements SkeletonConverter {
 
     abstract void appendImports(SkeletonContext context, StringBuilder sb);
 
-    void appendClass(SkeletonContext context, StringBuilder sb) {
+    void appendClass(final SkeletonContext context, final StringBuilder sb) {
         sb.append(NL);
 
         appendClassPart(context, sb);
@@ -87,13 +86,13 @@ abstract class AbstractSkeletonCreator implements SkeletonConverter {
 
     abstract void appendClassPart(SkeletonContext context, StringBuilder sb);
 
-    void appendFields(SkeletonContext context, StringBuilder sb) {
+    void appendFields(final SkeletonContext context, final StringBuilder sb) {
         appendFieldsResourcesAndLocation(context, sb);
 
         appendFieldsWithFxId(context, sb);
     }
 
-    void appendFieldsResourcesAndLocation(SkeletonContext context, StringBuilder sb) {
+    void appendFieldsResourcesAndLocation(final SkeletonContext context, final StringBuilder sb) {
         if (!context.getSettings().isFull()) {
             return;
         }
@@ -117,8 +116,8 @@ abstract class AbstractSkeletonCreator implements SkeletonConverter {
         sb.append(NL).append(NL);
     }
 
-    void appendFieldsWithFxId(SkeletonContext context, StringBuilder sb) {
-        for (Map.Entry<String, Class<?>> variable : context.getVariables().entrySet()) {
+    void appendFieldsWithFxId(final SkeletonContext context, final StringBuilder sb) {
+        for (final var variable : context.getVariables().entrySet()) {
             sb.append(INDENT).append(FXML_ANNOTATION);
             if (context.getSettings().isWithComments()) {
                 sb.append(" // fx:id=\"").append(variable.getKey()).append("\""); //NOI18N
@@ -137,12 +136,12 @@ abstract class AbstractSkeletonCreator implements SkeletonConverter {
 
     abstract void appendField(Class<?> fieldClass, String fieldName, StringBuilder sb);
 
-    void appendFieldParameters(StringBuilder sb, Class<?> fieldClazz) {
+    void appendFieldParameters(final StringBuilder sb, final Class<?> fieldClazz) {
         final TypeVariable<? extends Class<?>>[] parameters = fieldClazz.getTypeParameters();
         if (parameters.length > 0) {
             sb.append("<"); //NOI18N
-            String sep = ""; //NOI18N
-            for (TypeVariable<?> ignored : parameters) {
+            var sep = ""; //NOI18N
+            for (final TypeVariable<?> ignored : parameters) {
                 sb.append(sep);
                 appendFieldParameterType(sb);
                 sep = ", "; //NOI18N
@@ -153,18 +152,18 @@ abstract class AbstractSkeletonCreator implements SkeletonConverter {
 
     abstract void appendFieldParameterType(StringBuilder sb);
 
-    void appendMethods(SkeletonContext context, StringBuilder sb) {
+    void appendMethods(final SkeletonContext context, final StringBuilder sb) {
         appendEventHandlers(context, sb);
 
         appendInitialize(context, sb);
     }
 
-    void appendEventHandlers(SkeletonContext context, StringBuilder sb) {
-        for (Map.Entry<String, String> entry : context.getEventHandlers().entrySet()) {
-            String methodName = entry.getKey();
-            String eventClassName = entry.getValue();
+    void appendEventHandlers(final SkeletonContext context, final StringBuilder sb) {
+        for (final var entry : context.getEventHandlers().entrySet()) {
+            final var methodName = entry.getKey();
+            final var eventClassName = entry.getValue();
 
-            final String methodNamePured = methodName.replace("#", ""); //NOI18N
+            final var methodNamePured = methodName.replace("#", ""); //NOI18N
 
             sb.append(INDENT).append(FXML_ANNOTATION).append(NL).append(INDENT);
             appendEventHandler(methodNamePured, eventClassName, sb);
@@ -174,7 +173,7 @@ abstract class AbstractSkeletonCreator implements SkeletonConverter {
 
     abstract void appendEventHandler(String methodName, String eventClassName, StringBuilder sb);
 
-    void appendInitialize(SkeletonContext context, StringBuilder sb) {
+    void appendInitialize(final SkeletonContext context, final StringBuilder sb) {
         if (!context.getSettings().isFull()) {
             return;
         }

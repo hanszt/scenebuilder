@@ -68,11 +68,11 @@ public class RemoveColumnConstraintsJob extends BatchDocumentJob {
 
         // Remove column constraints job
         assert targetGridPane instanceof FXOMInstance;
-        assert targetIndexes.isEmpty() == false;
+        assert !targetIndexes.isEmpty();
 
-        final DesignHierarchyMask mask = new DesignHierarchyMask(targetGridPane);
-        for (int targetIndex : targetIndexes) {
-            final FXOMObject targetConstraints
+        final var mask = new DesignHierarchyMask(targetGridPane);
+        for (final int targetIndex : targetIndexes) {
+            final var targetConstraints
                     = mask.getColumnConstraintsAtIndex(targetIndex);
             // The target index is associated to an existing constraints value :
             // => we remove the constraints value

@@ -45,7 +45,7 @@ import javafx.scene.shape.QuadCurve;
  */
 public class QuadCurveDriver extends AbstractNodeDriver {
 
-    public QuadCurveDriver(ContentPanelController contentPanelController) {
+    public QuadCurveDriver(final ContentPanelController contentPanelController) {
         super(contentPanelController);
     }
 
@@ -54,18 +54,18 @@ public class QuadCurveDriver extends AbstractNodeDriver {
      */
     
     @Override
-    public AbstractHandles<?> makeHandles(FXOMObject fxomObject) {
+    public AbstractHandles<?> makeHandles(final FXOMObject fxomObject) {
         assert fxomObject.getSceneGraphObject() instanceof QuadCurve;
         assert fxomObject instanceof FXOMInstance;
         return new QuadCurveHandles(contentPanelController, (FXOMInstance)fxomObject);
     }
 
     @Override
-    public AbstractCurveEditor<?> makeCurveEditor(FXOMObject fxomObject) {
+    public AbstractCurveEditor<?> makeCurveEditor(final FXOMObject fxomObject) {
         assert fxomObject.getSceneGraphObject() instanceof QuadCurve;
         assert fxomObject instanceof FXOMInstance;
 
-        final QuadCurve quadCurve = (QuadCurve) fxomObject.getSceneGraphObject();
+        final var quadCurve = (QuadCurve) fxomObject.getSceneGraphObject();
         return new QuadCurveEditor(quadCurve);
     }
     

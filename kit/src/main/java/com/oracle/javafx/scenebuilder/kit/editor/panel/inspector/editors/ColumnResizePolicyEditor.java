@@ -47,14 +47,14 @@ public class ColumnResizePolicyEditor extends EnumEditor {
 
     boolean isTableView;
 
-    public ColumnResizePolicyEditor(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public ColumnResizePolicyEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super(propMeta, selectedClasses);
         isTableView = propMeta instanceof TableViewResizePolicyPropertyMetadata;
     }
 
     @Override
     public Object getValue() {
-        String policy = getComboBox().getSelectionModel().getSelectedItem();
+        final var policy = getComboBox().getSelectionModel().getSelectedItem();
         if (isTableView) {
             if (policy.equals(TableView.UNCONSTRAINED_RESIZE_POLICY.toString())) {
                 return TableView.UNCONSTRAINED_RESIZE_POLICY;
@@ -72,7 +72,7 @@ public class ColumnResizePolicyEditor extends EnumEditor {
 
 
    @Override
-    public void reset(ValuePropertyMetadata propMeta, Set<Class<?>> selectedClasses) {
+    public void reset(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super.reset(propMeta, selectedClasses);
         isTableView = propMeta instanceof TableViewResizePolicyPropertyMetadata;
     }

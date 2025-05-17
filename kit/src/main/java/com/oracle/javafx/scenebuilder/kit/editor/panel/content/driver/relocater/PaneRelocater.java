@@ -53,7 +53,7 @@ public class PaneRelocater extends AbstractRelocater<Pane> {
     private final PropertyName layoutYName = new PropertyName("layoutY"); //NOI18N
     private final List<PropertyName> propertyNames = new ArrayList<>();
     
-    public PaneRelocater(Node sceneGraphObject) {
+    public PaneRelocater(final Node sceneGraphObject) {
         super(sceneGraphObject, Pane.class);
         this.originalLayoutX = sceneGraphObject.getLayoutX();
         this.originalLayoutY = sceneGraphObject.getLayoutY();
@@ -66,13 +66,13 @@ public class PaneRelocater extends AbstractRelocater<Pane> {
      * AbstractRelocater
      */
     @Override
-    public void moveToLayoutX(double newLayoutX, Bounds newLayoutBounds) {
+    public void moveToLayoutX(final double newLayoutX, final Bounds newLayoutBounds) {
         sceneGraphObject.setLayoutX(Math.round(newLayoutX));
         // newLayoutBounds is no use for this subclass
     }
 
     @Override
-    public void moveToLayoutY(double newLayoutY, Bounds newLayoutBounds) {
+    public void moveToLayoutY(final double newLayoutY, final Bounds newLayoutBounds) {
         sceneGraphObject.setLayoutY(Math.round(newLayoutY));
         // newLayoutBounds is no use for this subclass
     }
@@ -89,7 +89,7 @@ public class PaneRelocater extends AbstractRelocater<Pane> {
     }
 
     @Override
-    public Object getValue(PropertyName propertyName) {
+    public Object getValue(final PropertyName propertyName) {
         assert propertyName != null;
         assert propertyNames.contains(propertyName);
         
@@ -109,10 +109,10 @@ public class PaneRelocater extends AbstractRelocater<Pane> {
     @Override
     public Map<PropertyName, Object> getChangeMap() {
         final Map<PropertyName, Object> result = new HashMap<>();
-        if (MathUtils.equals(sceneGraphObject.getLayoutX(), originalLayoutX) == false) {
+        if (!MathUtils.equals(sceneGraphObject.getLayoutX(), originalLayoutX)) {
             result.put(layoutXName, sceneGraphObject.getLayoutX());
         }
-        if (MathUtils.equals(sceneGraphObject.getLayoutY(), originalLayoutY) == false) {
+        if (!MathUtils.equals(sceneGraphObject.getLayoutY(), originalLayoutY)) {
             result.put(layoutYName, sceneGraphObject.getLayoutY());
         }
         return result;

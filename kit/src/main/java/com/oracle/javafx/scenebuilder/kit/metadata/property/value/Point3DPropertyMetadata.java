@@ -52,8 +52,8 @@ public class Point3DPropertyMetadata extends ComplexPropertyMetadata<Point3D> {
             = new DoublePropertyMetadata(new PropertyName("z"), //NOI18N
             DoublePropertyMetadata.DoubleKind.COORDINATE, true, 0.0, InspectorPath.UNUSED);
 
-    public Point3DPropertyMetadata(PropertyName name, boolean readWrite, 
-            Point3D defaultValue, InspectorPath inspectorPath) {
+    public Point3DPropertyMetadata(final PropertyName name, final boolean readWrite,
+                                   final Point3D defaultValue, final InspectorPath inspectorPath) {
         super(name, Point3D.class, readWrite, defaultValue, inspectorPath);
     }
 
@@ -62,8 +62,8 @@ public class Point3DPropertyMetadata extends ComplexPropertyMetadata<Point3D> {
      */
     
     @Override
-    public FXOMInstance makeFxomInstanceFromValue(Point3D value, FXOMDocument fxomDocument) {
-        final FXOMInstance result = new FXOMInstance(fxomDocument, value.getClass());
+    public FXOMInstance makeFxomInstanceFromValue(final Point3D value, final FXOMDocument fxomDocument) {
+        final var result = new FXOMInstance(fxomDocument, value.getClass());
         
         xMetadata.setValue(result, value.getX());
         yMetadata.setValue(result, value.getY());
