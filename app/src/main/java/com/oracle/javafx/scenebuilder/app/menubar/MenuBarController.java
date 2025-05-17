@@ -57,7 +57,6 @@ import com.oracle.javafx.scenebuilder.kit.util.control.effectpicker.EffectPicker
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -468,7 +467,7 @@ public class MenuBarController {
 
                 Logger.getLogger(getClass().getName()).log(Level.WARNING, logMessage, x);
 
-                throw new RuntimeException("Failed to load " + fxmlURL.getFile(), x); //NOI18N
+                throw new RuntimeException("Failed to load " + fxmlURL, x); //NOI18N
             }
         }
 
@@ -1201,8 +1200,7 @@ public class MenuBarController {
      * Generic menu and item handlers
      */
     private void setupMenuItemHandlers(final MenuItem i) {
-        if (i instanceof Menu) {
-            final var m = (Menu) i;
+        if (i instanceof final Menu m) {
             m.setOnMenuValidation(onMenuValidationEventHandler);
             for (final var child : m.getItems()) {
                 setupMenuItemHandlers(child);
@@ -1225,8 +1223,7 @@ public class MenuBarController {
         for (final var i : menu.getItems()) {
             final boolean disable, selected;
             final String title;
-            if (i.getUserData() instanceof MenuItemController) {
-                final var c = (MenuItemController) i.getUserData();
+            if (i.getUserData() instanceof final MenuItemController c) {
                 boolean canPerform;
                 try {
                     canPerform = c.canPerform();
@@ -1259,8 +1256,7 @@ public class MenuBarController {
             if (title != null) {
                 i.setText(title);
             }
-            if (i instanceof RadioMenuItem) {
-                final var ri = (RadioMenuItem) i;
+            if (i instanceof final RadioMenuItem ri) {
                 ri.setSelected(selected);
             }
         }
@@ -1298,16 +1294,14 @@ public class MenuBarController {
         zoomMenu.getItems().add(zoomOutMenuItem);
         
         zoomMenu.getItems().add(new SeparatorMenuItem());
-        
-        for (var i = 0; i < scalingTable.length; i++) {
-            final var scaling = scalingTable[i];
+
+        for (final double scaling : scalingTable) {
             final var title = String.format("%.0f%%", scaling * 100); //NOI18N
             final var mi = new RadioMenuItem(title);
             mi.setUserData(new SetZoomActionController(scaling));
             zoomMenu.getItems().add(mi);
         }
     }
-
     
     private static int findZoomScaleIndex(final double zoomScale) {
         var result = -1;
@@ -1362,7 +1356,7 @@ public class MenuBarController {
                 final var recentItemFile = new File(recentItem);
                 if (recentItemFile.exists()) {
                     final var name = recentItemFile.getName();
-                    assert recentItemsNames.keySet().contains(name);
+                    assert recentItemsNames.containsKey(name);
                     final MenuItem mi;
                     if (recentItemsNames.get(name) > 1) {
                         // Several files with same name : display full path
@@ -1403,7 +1397,7 @@ public class MenuBarController {
                 removeSceneStyleSheetMenu.getItems().clear();
                 openSceneStyleSheetMenu.getItems().clear();
 
-                if (sceneStyleSheets.size() == 0) {
+                if (sceneStyleSheets.isEmpty()) {
                     final var mi = new MenuItem(I18N.getString("scenestylesheet.none"));
                     mi.setDisable(true);
                     removeSceneStyleSheetMenu.getItems().add(mi);
@@ -1451,7 +1445,7 @@ public class MenuBarController {
             }
 
             // Make custom items visible and accessible via custom menu.
-            if (sectionItems.size() > 0) {
+            if (!sectionItems.isEmpty()) {
                 insertCustomMenu.getItems().clear();
                 
                 for (final var li : sectionItems) {
@@ -1483,11 +1477,7 @@ public class MenuBarController {
                 = new TreeMap<>(new BuiltinSectionComparator());
 
         for (final var li : BuiltinLibrary.getLibrary().getItems()) {
-            var sectionItems = sectionMap.get(li.getSection());
-            if (sectionItems == null) {
-                sectionItems = new TreeSet<>(new LibraryItemNameComparator());
-                sectionMap.put(li.getSection(), sectionItems);
-            }
+            var sectionItems = sectionMap.computeIfAbsent(li.getSection(), k -> new TreeSet<>(new LibraryItemNameComparator()));
             // Add all builtin Library items except the ContextMenu (see DTL-6831)
             if (!ContextMenu.class.getSimpleName().equals(li.getName())) {
                 sectionItems.add(li);
@@ -1583,9 +1573,8 @@ public class MenuBarController {
             // Adds the "No window" menu item
             windowMenu.getItems().add(makeWindowMenuItem(null));
         } else {
-            final List<DocumentWindowController> sortedControllers
-                    = new ArrayList<>(documentWindowControllers);
-            Collections.sort(sortedControllers, new DocumentWindowController.TitleComparator());
+            final List<DocumentWindowController> sortedControllers = new ArrayList<>(documentWindowControllers);
+            sortedControllers.sort(new DocumentWindowController.TitleComparator());
 
             for (final var dwc : sortedControllers) {
                 windowMenu.getItems().add(makeWindowMenuItem(dwc));
@@ -1626,7 +1615,7 @@ public class MenuBarController {
     /*
      * Private (MenuItemController)
      */
-    abstract class MenuItemController {
+    abstract static class MenuItemController {
 
         public abstract boolean canPerform();
 
@@ -1983,13 +1972,12 @@ public class MenuBarController {
 
         @Override
         public boolean canPerform() {
-            final var res = (documentWindowController != null)
-                            && (documentWindowController.getPreviewWindowController() != null)
-                            && documentWindowController.getPreviewWindowController().getStage().isShowing()
-                            && ! documentWindowController.getEditorController().is3D()
-                            && documentWindowController.getEditorController().isNode()
-                            && documentWindowController.getPreviewWindowController().sizeDoesFit(size);
-            return res;
+            return (documentWindowController != null)
+                   && (documentWindowController.getPreviewWindowController() != null)
+                   && documentWindowController.getPreviewWindowController().getStage().isShowing()
+                   && ! documentWindowController.getEditorController().is3D()
+                   && documentWindowController.getEditorController().isNode()
+                   && documentWindowController.getPreviewWindowController().sizeDoesFit(size);
         }
 
         @Override
@@ -2356,13 +2344,7 @@ public class MenuBarController {
 
         @Override
         public boolean isSelected() {
-            var res = false;
-            if (documentWindowController == null) {
-                res = false;
-            } else if (gluonSwatch != null) {
-                res = gluonSwatch == GluonEditorController.getInstance().getGluonSwatch();
-            }
-            return res;
+            return gluonSwatch != null && gluonSwatch == GluonEditorController.getInstance().getGluonSwatch();
         }
     }
 

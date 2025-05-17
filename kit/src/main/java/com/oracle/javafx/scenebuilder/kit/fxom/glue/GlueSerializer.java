@@ -119,8 +119,7 @@ class GlueSerializer {
     }
     
     private void serializeAuxiliary(final GlueAuxiliary auxiliary, final XMLBuffer xmlBuffer) {
-        if (auxiliary instanceof GlueCharacters) {
-            final var characters = (GlueCharacters) auxiliary;
+        if (auxiliary instanceof final GlueCharacters characters) {
             switch(characters.getType()) {
                 case TEXT:
                     xmlBuffer.addText(characters.getData());

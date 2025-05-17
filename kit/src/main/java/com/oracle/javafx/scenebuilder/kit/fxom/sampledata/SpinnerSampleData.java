@@ -62,7 +62,7 @@ class SpinnerSampleData extends AbstractSampleData {
         @SuppressWarnings("unchecked")
         final var spinner = (Spinner<String>) sceneGraphObject;
         valueFactory = spinner.getValueFactory();
-        spinner.setValueFactory(new SpinnerValueFactory<String>() {
+        spinner.setValueFactory(new SpinnerValueFactory<>() {
 
             @Override
             public void decrement(final int steps) {

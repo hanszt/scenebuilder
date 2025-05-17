@@ -52,8 +52,7 @@ public class PaintConvertUtil {
     }
 
     public static String convertPaintToCss(final Paint fxPaint) {
-        if (fxPaint instanceof LinearGradient) {
-            final var paint = (LinearGradient) fxPaint;
+        if (fxPaint instanceof final LinearGradient paint) {
             final var strBuilder = new StringBuilder("linear-gradient(from ")
                     .append(lenToStr(paint.getStartX(), paint.isProportional()))
                     .append(" ").append(lenToStr(paint.getStartY(), paint.isProportional()))
@@ -62,8 +61,7 @@ public class PaintConvertUtil {
                     .append(", ");
             connectCycleMethodAndStops(strBuilder, paint.getCycleMethod(), paint.getStops());
             return strBuilder.toString();
-        } else if (fxPaint instanceof RadialGradient) {
-            final var paint = (RadialGradient) fxPaint;
+        } else if (fxPaint instanceof final RadialGradient paint) {
             final var strBuilder = new StringBuilder("radial-gradient(focus-angle ").append(round(paint.getFocusAngle()))
                     .append("deg, focus-distance ").append(round(paint.getFocusDistance() * 100))
                     .append("% , center ").append(lenToStr(paint.getCenterX(), paint.isProportional()))
@@ -79,8 +77,7 @@ public class PaintConvertUtil {
     }
 
     public static String convertPaintToJavaCode(final Paint fxPaint) {
-        if (fxPaint instanceof LinearGradient) {
-            final var paint = (LinearGradient) fxPaint;
+        if (fxPaint instanceof final LinearGradient paint) {
             return "LinearGradient paint = new LinearGradient(" + System.lineSeparator() +
                     round(paint.getStartX()) + ", " + round(paint.getStartY()) + ", " +
                     round(paint.getEndX()) + ", " + round(paint.getEndY()) + ", " +
@@ -88,8 +85,7 @@ public class PaintConvertUtil {
                     cycleMethodToStr(paint.getCycleMethod()) + "," + System.lineSeparator() +
                     stopsToString(paint.getStops()) +
                     ");";
-        } else if (fxPaint instanceof RadialGradient) {
-            final var paint = (RadialGradient) fxPaint;
+        } else if (fxPaint instanceof final RadialGradient paint) {
             return "RadialGradient paint = new RadialGradient(" + System.lineSeparator() +
                     round(paint.getFocusAngle()) + ", " + round(paint.getFocusDistance()) + ", " + round(paint.getCenterX()) + ", "
                     + round(paint.getCenterY()) + ", " + round(paint.getRadius()) + ", " + paint.isProportional() + ", "

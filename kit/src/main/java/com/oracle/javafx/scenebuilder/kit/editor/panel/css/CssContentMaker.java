@@ -45,6 +45,7 @@ import javafx.css.Rule;
 import javafx.css.Style;
 import javafx.css.StyleOrigin;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.*;
 import javafx.css.CssMetaData;
@@ -298,10 +299,9 @@ public class CssContentMaker {
     private static void retrieveStylesFromParsedValue(
             final List<Style> lst, final CssStyle current, final ParsedValue<?, ?> parsedValue) {
         final var val = parsedValue.getValue();
-        if (val instanceof ParsedValue[][]) {
+        if (val instanceof final ParsedValue[][] layers2) {
             // If ParsedValue is a layered sequence of values, resolve the lookups for each.
 
-            final var layers2 = (ParsedValue[][]) val;
             for (final var layers : layers2) {
                 for (final var layer : layers) {
                     if (layer == null) {
@@ -310,9 +310,8 @@ public class CssContentMaker {
                     retrieveStylesFromParsedValue(lst, current, layer);
                 }
             }
-        } else if (val instanceof ParsedValue[]) {
+        } else if (val instanceof final ParsedValue[] layers) {
             // If ParsedValue is a sequence of values, resolve the lookups for each.
-            final var layers = (ParsedValue[]) val;
             for (final var layer : layers) {
                 if (layer == null) {
                     continue;
@@ -320,8 +319,7 @@ public class CssContentMaker {
                 retrieveStylesFromParsedValue(lst, current, layer);
             }
         } else {
-            if (val instanceof String) {
-                final var value = (String) val;
+            if (val instanceof final String value) {
                 for (final var info : lst) {
                     if (value.equals(info.getDeclaration().getProperty())) {
                         // Ok matching Style
@@ -568,7 +566,7 @@ public class CssContentMaker {
                     return null;
                 } else {
                     try {
-                        return new URL(rule.getStylesheet().getUrl());
+                        return URI.create(rule.getStylesheet().getUrl()).toURL();
                     } catch (final MalformedURLException ex) {
                         System.out.println(ex.getMessage() + " " + ex);
                         return null;
@@ -594,10 +592,9 @@ public class CssContentMaker {
 
             @Override
             public boolean equals(final Object obj) {
-                if (!(obj instanceof CssStyle)) {
+                if (!(obj instanceof final CssStyle cssStyle)) {
                     return false;
                 }
-                final var cssStyle = (CssStyle) obj;
                 return style.equals(cssStyle.style);
             }
         }

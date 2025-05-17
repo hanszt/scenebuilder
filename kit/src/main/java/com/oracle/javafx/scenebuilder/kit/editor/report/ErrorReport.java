@@ -87,8 +87,7 @@ public class ErrorReport {
             if (entries.get(fxomObject) != null) {
                 collected.addAll(entries.get(fxomObject));
             }
-            if (fxomObject instanceof FXOMInstance) {
-                final var fxomInstance = (FXOMInstance) fxomObject;
+            if (fxomObject instanceof final FXOMInstance fxomInstance) {
                 for (final var fxomProperty : fxomInstance.getProperties().values()) {
                     if (entries.get(fxomProperty) != null) {
                         collected.addAll(entries.get(fxomProperty));
@@ -166,8 +165,7 @@ public class ErrorReport {
     private void verifyUnresolvedObjects() {
         for (final var fxomObject : FXOMNodes.serializeObjects(fxomDocument.getFxomRoot())) {
             final Object sceneGraphObject;
-            if (fxomObject instanceof FXOMIntrinsic) {
-                final var fxomIntrinsic = (FXOMIntrinsic) fxomObject;
+            if (fxomObject instanceof final FXOMIntrinsic fxomIntrinsic) {
                 sceneGraphObject = fxomIntrinsic.getSourceSceneGraphObject();
             } else {
                 sceneGraphObject = fxomObject.getSceneGraphObject();
@@ -218,18 +216,15 @@ public class ErrorReport {
             collected.addAll(nodeEntries);
         }
         
-        if (fxomNode instanceof FXOMCollection) {
-            final var fxomCollection = (FXOMCollection) fxomNode;
+        if (fxomNode instanceof final FXOMCollection fxomCollection) {
             for (final var item : fxomCollection.getItems()) {
                 collectEntries(item, collected);
             }
-        } else if (fxomNode instanceof FXOMInstance) {
-            final var fxomInstance = (FXOMInstance) fxomNode;
+        } else if (fxomNode instanceof final FXOMInstance fxomInstance) {
             for (final var fxomProperty : fxomInstance.getProperties().values()) {
                 collectEntries(fxomProperty, collected);
             }
-        } else if (fxomNode instanceof FXOMPropertyC) {
-            final var fxomPropertyC = (FXOMPropertyC) fxomNode;
+        } else if (fxomNode instanceof final FXOMPropertyC fxomPropertyC) {
             for (final var value : fxomPropertyC.getValues()) {
                 collectEntries(value, collected);
             }

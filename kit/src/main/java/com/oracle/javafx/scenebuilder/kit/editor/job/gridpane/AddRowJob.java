@@ -214,9 +214,8 @@ public class AddRowJob extends BatchSelectionJob {
 
         // Selection == GridPane rows
         // => return the list of selected rows
-        if (asg instanceof GridSelectionGroup
-                && ((GridSelectionGroup) asg).getType() == Type.ROW) {
-            final var gsg = (GridSelectionGroup) asg;
+        if (asg instanceof final GridSelectionGroup gsg
+            && ((GridSelectionGroup) asg).getType() == Type.ROW) {
             result.addAll(gsg.getIndexes());
         } //
         // Selection == GridPanes or Selection == GridPane columns

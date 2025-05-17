@@ -75,36 +75,20 @@ public class DoublePropertyMetadata extends TextEncodablePropertyMetadata<java.l
         } else if (value == null) {
             result = false;
         } else {
-            switch(kind) {
-                case COORDINATE:
-                    result = true;
-                    break;
-                case SIZE:
-                    result = (0 <= value);
-                    break;
-                case USE_COMPUTED_SIZE:
-                    result = ((0 <= value) || (value == Region.USE_COMPUTED_SIZE));
-                    break;
-                case USE_PREF_SIZE:
-                    result = (0 <= value) 
-                            || (value == Region.USE_COMPUTED_SIZE)
-                            || (value == Region.USE_PREF_SIZE);
-                    break;
-                case PERCENTAGE:
-                    result = (value == -1) || ((0 <= value) && (value <= 100.0));
-                    break;
-                case EFFECT_SIZE:
-                case ANGLE:
-                case OPACITY:
-                case PROGRESS:
-                    result = true;
-                    break;
-
-                default:
+            result = switch (kind) {
+                case COORDINATE -> true;
+                case SIZE -> (0 <= value);
+                case USE_COMPUTED_SIZE -> ((0 <= value) || (value == Region.USE_COMPUTED_SIZE));
+                case USE_PREF_SIZE -> (0 <= value)
+                                      || (value == Region.USE_COMPUTED_SIZE)
+                                      || (value == Region.USE_PREF_SIZE);
+                case PERCENTAGE -> (value == -1) || ((0 <= value) && (value <= 100.0));
+                case EFFECT_SIZE, ANGLE, OPACITY, PROGRESS -> true;
+                default -> {
                     assert false;
-                    result = false;
-                    break;
-            }
+                    yield false;
+                }
+            };
         }
         
         return result;
@@ -116,29 +100,16 @@ public class DoublePropertyMetadata extends TextEncodablePropertyMetadata<java.l
         if (value == null) {
             result = null;
         } else {
-            switch(kind) {
-                case COORDINATE:
-                case NULLABLE_COORDINATE:
-                case SIZE:
-                case USE_COMPUTED_SIZE:
-                case USE_PREF_SIZE:
-                    result = value;
-                    break;
-                case EFFECT_SIZE:
-                    result = Math.min(255.0, Math.max(0, value));
-                    break;
-                case ANGLE:
-                    result = Math.IEEEremainder(value, 360.0);
-                    break;
-                case OPACITY:
-                case PROGRESS:
-                    result = Math.min(1, Math.max(0, value));
-                    break;
-                default:
+            result = switch (kind) {
+                case COORDINATE, NULLABLE_COORDINATE, SIZE, USE_COMPUTED_SIZE, USE_PREF_SIZE -> value;
+                case EFFECT_SIZE -> Math.min(255.0, Math.max(0, value));
+                case ANGLE -> Math.IEEEremainder(value, 360.0);
+                case OPACITY, PROGRESS -> Math.min(1, Math.max(0, value));
+                default -> {
                     assert false;
-                    result = value;
-                    break;
-            }
+                    yield value;
+                }
+            };
         }
         
         return result;

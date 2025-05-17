@@ -855,11 +855,9 @@ public class EditorController {
         // Collects all the selected objects
         final List<FXOMObject> selectedObjects = new ArrayList<>();
         final var selection = getSelection();
-        if (selection.getGroup() instanceof ObjectSelectionGroup) {
-            final var osg = (ObjectSelectionGroup) selection.getGroup();
+        if (selection.getGroup() instanceof final ObjectSelectionGroup osg) {
             selectedObjects.addAll(osg.getItems());
-        } else if (selection.getGroup() instanceof GridSelectionGroup) {
-            final var gsg = (GridSelectionGroup) selection.getGroup();
+        } else if (selection.getGroup() instanceof final GridSelectionGroup gsg) {
             selectedObjects.addAll(gsg.collectSelectedObjects());
         } else {
             assert false;
@@ -1907,9 +1905,8 @@ public class EditorController {
                 selectableObjects.addAll(mask.getSubComponents());
             }
             selection.select(selectableObjects);
-        } else if (selection.getGroup() instanceof GridSelectionGroup) {
+        } else if (selection.getGroup() instanceof final GridSelectionGroup gsg) {
             // Select ALL rows / columns
-            final var gsg = (GridSelectionGroup) selection.getGroup();
             final var gridPane = gsg.getParentObject();
             assert gridPane instanceof FXOMInstance;
             final var gridPaneMask = new DesignHierarchyMask(gridPane);
@@ -1980,8 +1977,7 @@ public class EditorController {
                     }
                 }
             }
-        } else if (selection.getGroup() instanceof GridSelectionGroup) {
-            final var gsg = (GridSelectionGroup) selection.getGroup();
+        } else if (selection.getGroup() instanceof final GridSelectionGroup gsg) {
             // GridSelectionGroup => at least 1 row/column is selected
             assert !gsg.getIndexes().isEmpty();
             return true;
@@ -2023,8 +2019,7 @@ public class EditorController {
         assert canPerformSelectNext(); // (1)
         
         final var asg = selection.getGroup();
-        if (asg instanceof ObjectSelectionGroup) {
-            final var osg = (ObjectSelectionGroup) asg;
+        if (asg instanceof final ObjectSelectionGroup osg) {
             final var items = osg.getItems();
             assert items.size() == 1; // Because of (1)
             final var selectedObject = items.iterator().next();
@@ -2071,16 +2066,14 @@ public class EditorController {
             return false;
         }
         final var asg = selection.getGroup();
-        if (asg instanceof ObjectSelectionGroup) {
-            final var osg = (ObjectSelectionGroup) asg;
+        if (asg instanceof final ObjectSelectionGroup osg) {
             final var items = osg.getItems();
             if (items.size() != 1) {
                 return false;
             }
             final var selectedObject = items.iterator().next();
             return selectedObject.getNextSlibing() != null;
-        } else if (asg instanceof GridSelectionGroup) {
-            final var gsg = (GridSelectionGroup) asg;
+        } else if (asg instanceof final GridSelectionGroup gsg) {
             final var indexes = gsg.getIndexes();
             if (indexes.size() != 1) {
                 return false;
@@ -2115,8 +2108,7 @@ public class EditorController {
         assert canPerformSelectPrevious(); // (1)
         
         final var asg = selection.getGroup();
-        if (asg instanceof ObjectSelectionGroup) {
-            final var osg = (ObjectSelectionGroup) asg;
+        if (asg instanceof final ObjectSelectionGroup osg) {
             final var items = osg.getItems();
             assert items.size() == 1; // Because of (1)
             final var selectedObject = items.iterator().next();
@@ -2150,16 +2142,14 @@ public class EditorController {
             return false;
         }
         final var asg = selection.getGroup();
-        if (asg instanceof ObjectSelectionGroup) {
-            final var osg = (ObjectSelectionGroup) asg;
+        if (asg instanceof final ObjectSelectionGroup osg) {
             final var items = osg.getItems();
             if (items.size() != 1) {
                 return false;
             }
             final var selectedObject = items.iterator().next();
             return selectedObject.getPreviousSlibing() != null;
-        } else if (asg instanceof GridSelectionGroup) {
-            final var gsg = (GridSelectionGroup) asg;
+        } else if (asg instanceof final GridSelectionGroup gsg) {
             final var indexes = gsg.getIndexes();
             if (indexes.size() != 1) {
                 return false;
@@ -2209,18 +2199,16 @@ public class EditorController {
      */
     public File getIncludedFile() {
         final var asg = getSelection().getGroup();
-        if (!(asg instanceof ObjectSelectionGroup)) {
+        if (!(asg instanceof final ObjectSelectionGroup osg)) {
             return null;
         }
-        final var osg = (ObjectSelectionGroup) asg;
         if (osg.getItems().size() != 1) {
             return null;
         }
         final var fxomObject = osg.getItems().iterator().next();
-        if (!(fxomObject instanceof FXOMIntrinsic)) {
+        if (!(fxomObject instanceof final FXOMIntrinsic fxomIntrinsic)) {
             return null;
         }
-        final var fxomIntrinsic = (FXOMIntrinsic) fxomObject;
         if (fxomIntrinsic.getType() != FXOMIntrinsic.Type.FX_INCLUDE) {
             return null;
         }
@@ -2475,8 +2463,7 @@ public class EditorController {
      */
     public boolean isSelectionNode() {
         final var asg = selection.getGroup();
-        if (asg instanceof ObjectSelectionGroup) {
-            final var osg = (ObjectSelectionGroup) asg;
+        if (asg instanceof final ObjectSelectionGroup osg) {
             for (final var fxomObject : osg.getItems()) {
                 final var isNode = fxomObject.getSceneGraphObject() instanceof Node;
                 if (!isNode) {
@@ -2495,8 +2482,7 @@ public class EditorController {
     
     private boolean isSelectionControl() {
         final var asg = selection.getGroup();
-        if (asg instanceof ObjectSelectionGroup) {
-            final var osg = (ObjectSelectionGroup) asg;
+        if (asg instanceof final ObjectSelectionGroup osg) {
             for (final var fxomObject : osg.getItems()) {
                 final var isControl = fxomObject.getSceneGraphObject() instanceof Control;
                 if (!isControl) {

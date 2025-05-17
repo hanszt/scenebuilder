@@ -191,8 +191,7 @@ public class GlueElement extends GlueNode {
                 front.add(makeIndentCharacters(depth * INDENT_STEP));
             } else {
                 for (final var auxiliary : front) {
-                    if (auxiliary instanceof GlueCharacters) {
-                        final var characters = (GlueCharacters) auxiliary;
+                    if (auxiliary instanceof final GlueCharacters characters) {
                         characters.adjustIndentBy(indentDelta);
                     }
                 }
@@ -202,8 +201,7 @@ public class GlueElement extends GlueNode {
                 tail.add(makeIndentCharacters(depth * INDENT_STEP));
             } else {
                 for (final var auxiliary : tail) {
-                    if (auxiliary instanceof GlueCharacters) {
-                        final var characters = (GlueCharacters) auxiliary;
+                    if (auxiliary instanceof final GlueCharacters characters) {
                         characters.adjustIndentBy(indentDelta);
                     }
                 }
@@ -355,8 +353,7 @@ public class GlueElement extends GlueNode {
         GlueCharacters result = null;
         for (var i = content.size() - 1; (i >= 0) && (result == null); i--) {
             final var auxiliary = content.get(i);
-            if (auxiliary instanceof GlueCharacters) {
-                final var c = (GlueCharacters) auxiliary;
+            if (auxiliary instanceof final GlueCharacters c) {
                 if (c.getType() == GlueCharacters.Type.TEXT) {
                     result = c;
                 }
@@ -372,8 +369,7 @@ public class GlueElement extends GlueNode {
         
         if (front.isEmpty()) {
             result = -1;
-        } else if (front.getFirst() instanceof GlueCharacters) {
-            final var characters = (GlueCharacters) front.getFirst();
+        } else if (front.getFirst() instanceof final GlueCharacters characters) {
             result = characters.guessIndent();
         } else {
             result = -1;

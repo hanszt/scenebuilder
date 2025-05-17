@@ -80,18 +80,13 @@ public class DeleteObjectSelectionJob extends BatchSelectionJob {
     protected String makeDescription() {
         final String result;
         final var subJobCount = getSubJobs().size();
-        
-        switch (subJobCount) {
-            case 0:
-                result = "Unexecutable Delete"; // NO18N
-                break;
-            case 1: // one delete
-                result = getSubJobs().getFirst().getDescription();
-                break;
-            default:
-                result = I18N.getString("label.action.edit.delete.n", subJobCount);
-                break;
-        }
+
+        result = switch (subJobCount) {
+            case 0 -> "Unexecutable Delete"; // NO18N
+            case 1 -> // one delete
+                    getSubJobs().getFirst().getDescription();
+            default -> I18N.getString("label.action.edit.delete.n", subJobCount);
+        };
         
         return result;
     }

@@ -57,8 +57,7 @@ public class FitToParentSelectionJob extends BatchDocumentJob {
 
         final Set<FXOMInstance> candidates = new HashSet<>();
         final var selection = getEditorController().getSelection();
-        if (selection.getGroup() instanceof ObjectSelectionGroup) {
-            final var osg = (ObjectSelectionGroup) selection.getGroup();
+        if (selection.getGroup() instanceof final ObjectSelectionGroup osg) {
             for (final var fxomObject : osg.getItems()) {
                 if (fxomObject instanceof FXOMInstance) {
                     candidates.add((FXOMInstance) fxomObject);
@@ -89,18 +88,11 @@ public class FitToParentSelectionJob extends BatchDocumentJob {
 
     @Override
     protected String makeDescription() {
-        final String result;
-        switch (getSubJobs().size()) {
-            case 0:
-                result = "Unexecutable Fit To Parent"; // NO18N
-                break;
-            case 1:
-                result = getSubJobs().getFirst().getDescription();
-                break;
-            default:
-                result = makeMultipleSelectionDescription();
-                break;
-        }
+        final String result = switch (getSubJobs().size()) {
+            case 0 -> "Unexecutable Fit To Parent"; // NO18N
+            case 1 -> getSubJobs().getFirst().getDescription();
+            default -> makeMultipleSelectionDescription();
+        };
         return result;
     }
 

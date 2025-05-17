@@ -97,24 +97,12 @@ public class FXOMIntrinsic extends FXOMObject {
     }
 
     public Type getType() {
-        final Type result;
-        
-        switch(getGlueElement().getTagName()) {
-            case "fx:include":
-                result = Type.FX_INCLUDE;
-                break;
-            case "fx:reference":
-                result = Type.FX_REFERENCE;
-                break;
-            case "fx:copy":
-                result = Type.FX_COPY;
-                break;
-            default:
-                result = Type.UNDEFINED;
-                break;
-        }
-        
-        return result;
+        return switch (getGlueElement().getTagName()) {
+            case "fx:include" -> Type.FX_INCLUDE;
+            case "fx:reference" -> Type.FX_REFERENCE;
+            case "fx:copy" -> Type.FX_COPY;
+            default -> Type.UNDEFINED;
+        };
     }
     
     public String getSource() {
@@ -227,8 +215,7 @@ public class FXOMIntrinsic extends FXOMObject {
     @Override
     protected void collectReferences(final String source, final FXOMObject scope, final List<FXOMNode> result) {
         assert result != null;
-        
-        if ((scope == null) || (scope != this)) {
+        if ((scope != this)) {
             if ((getType() == Type.FX_REFERENCE) 
                     && ((source == null) || source.equals(getSource()))) {
                 result.add(this);
@@ -279,23 +266,11 @@ public class FXOMIntrinsic extends FXOMObject {
      */
     
     private static String makeTagNameFromType(final Type type) {
-        final String result;
-        
-        switch(type) {
-            case FX_COPY:
-                result = "fx:copy";
-                break;
-            case FX_REFERENCE:
-                result = "fx:reference";
-                break;
-            case FX_INCLUDE:
-                result = "fx:include";
-                break;
-            default:
-                assert false;
-                throw new IllegalStateException("Unexpected intrinsic type " + type);
-        }
-        
-        return result;
+        return switch (type) {
+            case FX_COPY -> "fx:copy";
+            case FX_REFERENCE -> "fx:reference";
+            case FX_INCLUDE -> "fx:include";
+            case UNDEFINED -> throw new IllegalStateException("Unexpected intrinsic type " + type);
+        };
     }
 }

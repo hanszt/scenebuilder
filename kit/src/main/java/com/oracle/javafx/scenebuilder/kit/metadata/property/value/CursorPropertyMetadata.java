@@ -107,8 +107,7 @@ public class CursorPropertyMetadata extends ComplexPropertyMetadata<Cursor> {
             // It's a standard cursor
             result = new FXOMInstance(fxomDocument, Cursor.class);
             result.setFxConstant(cursorName);
-        } else if (value instanceof ImageCursor) {
-            final var imageCursor = (ImageCursor) value;
+        } else if (value instanceof final ImageCursor imageCursor) {
             result = new FXOMInstance(fxomDocument, ImageCursor.class);
             hotspotXMetadata.setValue(result, imageCursor.getHotspotX());
             hotspotYMetadata.setValue(result, imageCursor.getHotspotY());

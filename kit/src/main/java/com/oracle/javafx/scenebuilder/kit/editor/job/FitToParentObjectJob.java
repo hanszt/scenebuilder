@@ -90,13 +90,12 @@ public class FitToParentObjectJob extends BatchDocumentJob {
         }
         // Object must be a node
         final var childObject = fxomInstance.getSceneGraphObject();
-        if (!(childObject instanceof Node)) {
+        if (!(childObject instanceof final Node childNode)) {
             return result; // subJobs is empty => isExecutable will return false
         }
         // Preview version : Node must be resizable (as in SB 1.1)
         // TODO : if the object is not resizable, 
         // update its bounds but do not anchor it.
-        final var childNode = (Node) childObject;
         if (!childNode.isResizable()) {
             return result; // subJobs is empty => isExecutable will return false
         }
@@ -104,11 +103,10 @@ public class FitToParentObjectJob extends BatchDocumentJob {
         // TODO : if the object container is a Pane, 
         // update its bounds but do not anchor it.
         final var parentObject = parentInstance.getSceneGraphObject();
-        if (!(parentObject instanceof AnchorPane)) {
+        if (!(parentObject instanceof final AnchorPane parentNode)) {
             return result; // subJobs is empty => isExecutable will return false
         }
 
-        final var parentNode = (AnchorPane) parentObject;
         final var childBounds = childNode.getLayoutBounds();
         final var parentBounds = parentNode.getLayoutBounds();
         Scale scale = null;
@@ -199,18 +197,15 @@ public class FitToParentObjectJob extends BatchDocumentJob {
         final Set<Sizing> result;
 
         // ScrollBar
-        if (node instanceof ScrollBar) {
-            final var scrollBar = (ScrollBar) node;
+        if (node instanceof final ScrollBar scrollBar) {
             result = getSizingMask(scrollBar.getOrientation());
         } //
         // Separator
-        else if (node instanceof Separator) {
-            final var separator = (Separator) node;
+        else if (node instanceof final Separator separator) {
             result = getSizingMask(separator.getOrientation());
         } //
         // Slider
-        else if (node instanceof Slider) {
-            final var slider = (Slider) node;
+        else if (node instanceof final Slider slider) {
             result = getSizingMask(slider.getOrientation());
         } //
         else {
@@ -221,18 +216,14 @@ public class FitToParentObjectJob extends BatchDocumentJob {
 
     private Set<Sizing> getSizingMask(final Orientation orientation) {
         assert orientation != null;
-        final Set<Sizing> result;
-        switch (orientation) {
-            case HORIZONTAL:
-                result = EnumSet.of(Sizing.HORIZONTAL);
-                break;
-            case VERTICAL:
-                result = EnumSet.of(Sizing.VERTICAL);
-                break;
-            default:
+        final Set<Sizing> result = switch (orientation) {
+            case HORIZONTAL -> EnumSet.of(Sizing.HORIZONTAL);
+            case VERTICAL -> EnumSet.of(Sizing.VERTICAL);
+            default -> {
                 assert false : "unexpected orientation: " + orientation;
-                result = null;
-        }
+                yield null;
+            }
+        };
         return result;
     }
 }

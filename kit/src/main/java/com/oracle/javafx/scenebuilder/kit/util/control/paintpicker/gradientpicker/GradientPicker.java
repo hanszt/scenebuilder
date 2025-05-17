@@ -166,8 +166,7 @@ public class GradientPicker extends VBox {
 
     public void updateUI(final Paint value) {
         assert value instanceof LinearGradient || value instanceof RadialGradient;
-        if (value instanceof LinearGradient) {
-            final var linear = (LinearGradient) value;
+        if (value instanceof final LinearGradient linear) {
             startX_slider.setValue(linear.getStartX());
             startY_slider.setValue(linear.getStartY());
             endX_slider.setValue(linear.getEndX());

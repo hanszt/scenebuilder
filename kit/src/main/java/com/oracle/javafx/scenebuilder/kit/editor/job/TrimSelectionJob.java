@@ -127,8 +127,7 @@ public class TrimSelectionJob extends BatchSelectionJob {
         final var selection = getEditorController().getSelection();
         final boolean result;
 
-        if (selection.getGroup() instanceof ObjectSelectionGroup) {
-            final var osg = (ObjectSelectionGroup) selection.getGroup();
+        if (selection.getGroup() instanceof final ObjectSelectionGroup osg) {
             if (osg.getItems().size() == 1) {
                 // We can trim if:
                 //  - object is an FXOMInstance

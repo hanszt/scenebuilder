@@ -64,8 +64,7 @@ public class ModifyCacheHintJob extends ModifySelectionJob {
         final List<Job> result = new ArrayList<>();
         final Set<FXOMInstance> candidates = new HashSet<>();
         final var selection = getEditorController().getSelection();
-        if (selection.getGroup() instanceof ObjectSelectionGroup) {
-            final var osg = (ObjectSelectionGroup) selection.getGroup();
+        if (selection.getGroup() instanceof final ObjectSelectionGroup osg) {
             for (final var fxomObject : osg.getItems()) {
                 if (fxomObject instanceof FXOMInstance) {
                     candidates.add((FXOMInstance) fxomObject);
@@ -101,21 +100,14 @@ public class ModifyCacheHintJob extends ModifySelectionJob {
 
     @Override
     protected String makeDescription() {
-        final String result;
-
-        switch (subJobCount) {
-            case 0:
-                result = "Unexecutable Set"; //NOI18N
-                break;
-            case 1: // Single selection
-                result = getSubJobs().getFirst().getDescription();
-                break;
-            default:
-                result = I18N.getString("label.action.edit.set.n",
-                        propertyMetadata.getName().toString(),
-                        subJobCount);
-                break;
-        }
+        final String result = switch (subJobCount) {
+            case 0 -> "Unexecutable Set"; //NOI18N
+            case 1 -> // Single selection
+                    getSubJobs().getFirst().getDescription();
+            default -> I18N.getString("label.action.edit.set.n",
+                    propertyMetadata.getName().toString(),
+                    subJobCount);
+        };
 
         return result;
     }

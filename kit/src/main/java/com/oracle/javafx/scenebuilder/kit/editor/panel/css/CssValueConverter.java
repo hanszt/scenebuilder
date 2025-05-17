@@ -119,8 +119,7 @@ public class CssValueConverter {
 
     // Retrieve the value for a sub property.
     public static Object getSubPropertyValue(final String property, final Object value) {
-        if (value instanceof Collection) {
-            final var values = (Collection<?>) value;
+        if (value instanceof final Collection<?> values) {
             final List<Object> subValues = new ArrayList<>();
             for (final var bf : values) {
                 subValues.add(getSubPropertyValue(property, bf));
@@ -136,8 +135,7 @@ public class CssValueConverter {
             //
             // Background
             //
-        } else if (value instanceof Background) {
-            final var background = (Background) value;
+        } else if (value instanceof final Background background) {
             if (background.getFills() != null) {
                 return getSubPropertyValue(property, background.getFills());
             } else if (background.getImages() != null) {
@@ -151,8 +149,7 @@ public class CssValueConverter {
             //
             // Border
             //
-        } else if (value instanceof Border) {
-            final var border = (Border) value;
+        } else if (value instanceof final Border border) {
             if (border.getStrokes() != null) {
                 return getSubPropertyValue(property, border.getStrokes());
             } else if (border.getImages() != null) {
@@ -260,8 +257,7 @@ public class CssValueConverter {
         if (isLadder) {
             builder.append("ladder("); //NOI18N
         }
-        if (obj instanceof ParsedValue[]) {
-            final var array = (ParsedValue[]) obj;
+        if (obj instanceof final ParsedValue[] array) {
             var isArrayValue = false;
             if (array.length >= 1) {
                 final var pval = array[0];
@@ -314,8 +310,7 @@ public class CssValueConverter {
 
             builder.append(b.toString());
         } else {
-            if (obj instanceof ParsedValue[][]) {
-                final var arr = (ParsedValue[][]) obj;
+            if (obj instanceof final ParsedValue[][] arr) {
                 for (var i = 0; i < arr.length; i++) {
                     final var val = retrieveValue(property, arr[i]);
                     builder.append(val);
@@ -342,10 +337,9 @@ public class CssValueConverter {
         assert property.equals("-fx-background-radius") || property.equals("-fx-border-radius"); //NOI18N
         final var sbAll = new StringBuilder();
         var obj = value.getValue();
-        if (!(obj instanceof ParsedValue[])) {
+        if (!(obj instanceof final ParsedValue[] pvArray)) {
             return null;
         }
-        final var pvArray = (ParsedValue[]) obj;
         var index = 0;
         for (final var pvItem : pvArray) {
             // We have a CornerRadii representation here:
@@ -354,10 +348,9 @@ public class CssValueConverter {
             // 2- value per corner
             // If all the values are identical, only a single value is used.
             obj = pvItem.getValue();
-            if (!(obj instanceof ParsedValue[][])) {
+            if (!(obj instanceof final ParsedValue[][] pvArray2)) {
                 return null;
             }
-            final var pvArray2 = (ParsedValue[][]) obj;
             final var sbCornerRadii = new StringBuilder();
             Size initSize = null;
             var areEquals = true;
@@ -366,10 +359,9 @@ public class CssValueConverter {
                 // horizontal or vertical list 
                 for (final var pvItem2 : pvArray1) {
                     obj = pvItem2.getValue();
-                    if (!(obj instanceof Size)) {
+                    if (!(obj instanceof final Size size)) {
                         return null;
                     }
-                    final var size = (Size) obj;
                     sbCornerRadii.append(size).append(" "); //NOI18N
                     if (initSize == null) {
                         initSize = size;
@@ -405,8 +397,7 @@ public class CssValueConverter {
             return "null"; //NOI18N
         }
         final var builder = new StringBuilder();
-        if (eventValue instanceof List) {
-            final var values = (List<?>) eventValue;
+        if (eventValue instanceof final List<?> values) {
             final var length = values.size();
             for (var i = 0; i < length; i++) {
                 final var val = retrieveValue(property, values.get(i));
@@ -424,15 +415,13 @@ public class CssValueConverter {
                     builder.append(", "); //NOI18N
                 }
             }
-        } else if (eventValue instanceof Background) {
-            final var background = (Background) eventValue;
+        } else if (eventValue instanceof final Background background) {
             if (background.getFills() != null) {
                 return retrieveValue(property, background.getFills());
             } else if (background.getImages() != null) {
                 return retrieveValue(property, background.getImages());
             }
-        } else if (eventValue instanceof Border) {
-            final var border = (Border) eventValue;
+        } else if (eventValue instanceof final Border border) {
             if (border.getStrokes() != null) {
                 return retrieveValue(property, border.getStrokes());
             } else if (border.getImages() != null) {

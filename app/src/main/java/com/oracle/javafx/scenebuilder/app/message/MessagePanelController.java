@@ -37,7 +37,6 @@ import com.oracle.javafx.scenebuilder.kit.editor.messagelog.MessageLogEntry;
 import com.oracle.javafx.scenebuilder.kit.editor.panel.util.AbstractFxmlPanelController;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMDocument;
 
-import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
@@ -120,8 +119,8 @@ public class MessagePanelController extends AbstractFxmlPanelController {
         assert clearButton != null;
                 
         // Listens to the message log 
-        getEditorController().getMessageLog().revisionProperty().addListener(
-                (ChangeListener<Number>) (ov, t, t1) -> messageLogDidChange());
+        getEditorController().getMessageLog().revisionProperty()
+            .addListener((ov, t, t1) -> messageLogDidChange());
         
         updateScrollPaneWidth();
         messageLogDidChange();

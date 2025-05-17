@@ -84,20 +84,17 @@ public abstract class ListValuePropertyMetadata<T> extends ValuePropertyMetadata
                 // We return the default value specified in the metadata of the
                 // property
                 result = defaultValue;
-            } else if (fxomProperty instanceof FXOMPropertyT) {
-                final var fxomPropertyT = (FXOMPropertyT) fxomProperty;
+            } else if (fxomProperty instanceof final FXOMPropertyT fxomPropertyT) {
                 final var pv = new PrefixedValue(fxomPropertyT.getValue());
                 if (pv.isBindingExpression()) {
                     result = getDefaultValue();
                 } else {
                     result = makeValueFromString(fxomPropertyT.getValue());
                 }
-            } else if (fxomProperty instanceof FXOMPropertyC) {
-                final var fxomPropertyC = (FXOMPropertyC) fxomProperty;
+            } else if (fxomProperty instanceof final FXOMPropertyC fxomPropertyC) {
                 result = new ArrayList<>();
                 for (final var itemFxomObject : fxomPropertyC.getValues()) {
-                    if (itemFxomObject instanceof FXOMInstance) {
-                        final var itemFxomInstance = (FXOMInstance) itemFxomObject;
+                    if (itemFxomObject instanceof final FXOMInstance itemFxomInstance) {
                         result.add(itemMetadata.makeValueFromFxomInstance(itemFxomInstance));
                     } else {
                         assert false;

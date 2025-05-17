@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -200,12 +201,10 @@ public class CssInternal {
 
     // Retrieve the styClasses in the fx object scene graph
     private static Map<String, String> getFxObjectClassesMap(final Object fxObject, final Object fxRoot) {
-        final Map<String, String> classesMap = new HashMap<>();
-        classesMap.putAll(getSingleFxObjectClassesMap(fxObject));
-        if (!(fxObject instanceof Node)) {
+        final Map<String, String> classesMap = new HashMap<>(getSingleFxObjectClassesMap(fxObject));
+        if (!(fxObject instanceof Node node)) {
             return classesMap;
         }
-        var node = (Node) fxObject;
         if (node == fxRoot) {
             return classesMap;
         }
@@ -228,7 +227,7 @@ public class CssInternal {
             final List<String> stylesheets = ((Parent) fxObject).getStylesheets();
             for (final var stylesheet : stylesheets) {
                 try {
-                    for (final var styleClass : getStyleClasses(new URL(stylesheet))) {
+                    for (final var styleClass : getStyleClasses(URI.create(stylesheet).toURL())) {
                         classesMap.put(styleClass, stylesheet);
                     }
                 } catch (final MalformedURLException ex) {
@@ -246,10 +245,6 @@ public class CssInternal {
             s = new CssParser().parse(url);
         } catch (final IOException ex) {
             System.out.println("Warning: Invalid Stylesheet " + url); //NOI18N
-            return styleClasses;
-        }
-        if (s == null) {
-            // The parsed CSS file was empty. No parsing occurred.
             return styleClasses;
         }
         for (final var r : s.getRules()) {
@@ -304,8 +299,8 @@ public class CssInternal {
     }
 
     private static CssPropAuthorInfo getCssInfoForNode(final Node node, final ValuePropertyMetadata prop) {
-        @SuppressWarnings("rawtypes") final var map = collectCssState(node);
-        for (@SuppressWarnings("rawtypes") final var entry : map.entrySet()) {//NOI18N
+        final var map = collectCssState(node);
+        for (final var entry : map.entrySet()) {//NOI18N
             final StyleableProperty<?> beanProp = entry.getKey();
             final List<Style> styles = new ArrayList<>(entry.getValue());
             final var name = getBeanPropertyName(beanProp);
@@ -391,7 +386,7 @@ public class CssInternal {
                     return null;
                 } else {
                     try {
-                        return new URL(rule.getStylesheet().getUrl());
+                        return URI.create(rule.getStylesheet().getUrl()).toURL();
                     } catch (final MalformedURLException ex) {
                         System.out.println(ex.getMessage() + " " + ex);
                         return null;

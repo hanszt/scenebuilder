@@ -452,7 +452,7 @@ public class EditorUtils {
     // Specific swap() function for an ObservableList:
     // Collections.swap() directly on the ObservableList generates a "duplicate children added" error
     public static void swap(final ObservableList<Node> list, final int i, final int j) {
-        final var children = new ArrayList<Node>(list);
+        final var children = new ArrayList<>(list);
         Collections.swap(children, i, j);
         // Workaround for RT-31965: list re-arrangement is not detected...
         // list.setAll(children);
@@ -492,7 +492,7 @@ public class EditorUtils {
     public static String getFileName(final String urlStr) {
         final URL url;
         try {
-            url = new URL(urlStr);
+            url = URI.create(urlStr).toURL();
         } catch (final MalformedURLException ex) {
             System.err.println("Invalid URL: " + urlStr); //NOI18N
             assert false;

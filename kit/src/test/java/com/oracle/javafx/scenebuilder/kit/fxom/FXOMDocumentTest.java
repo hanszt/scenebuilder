@@ -283,7 +283,7 @@ public class FXOMDocumentTest {
     }
 
     private <T> T waitFor(final Callable<T> callable) throws Exception {
-        final var task = new FutureTask<T>(callable);
+        final var task = new FutureTask<>(callable);
         if (Platform.isFxApplicationThread()) {
             return callable.call();
         } else {

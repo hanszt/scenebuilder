@@ -129,8 +129,7 @@ public class SelectionBarController extends AbstractFxmlPanelController {
         if (selection.isEmpty()) {
             pathBox.getChildren().add(new Label(I18N.getString("selectionbar.no.selected")));
         } else {
-            if (selection.getGroup() instanceof ObjectSelectionGroup) {
-                final var osg = (ObjectSelectionGroup) selection.getGroup();
+            if (selection.getGroup() instanceof final ObjectSelectionGroup osg) {
                 assert !osg.getItems().isEmpty();
 
                 var fxomObject = osg.getItems().iterator().next();

@@ -88,8 +88,7 @@ public class GlueDocument extends GlueNode {
         assert target != null;
         
         for (final var auxiliary : header) {
-            if (auxiliary instanceof GlueInstruction) {
-                final var i = (GlueInstruction) auxiliary;
+            if (auxiliary instanceof final GlueInstruction i) {
                 if (target.equals(i.getTarget())) {
                     result.add(i);
                 }

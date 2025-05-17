@@ -60,6 +60,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.MessageFormat;
@@ -513,7 +514,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
                                            final boolean applied, final boolean isLookup) {
         if (isLookup) {
             final var cssValue = CssValueConverter.toCssString(style.getCssProperty(), style.getCssRule(), style.getParsedValue());
-            final var item = new TreeItem<Node>(getContent(style.getCssProperty(), cssValue, style.getParsedValue(), applied));
+            final var item = new TreeItem<>(getContent(style.getCssProperty(), cssValue, style.getParsedValue(), applied));
             parent.getChildren().add(item);
         } else {
             attachStylePropertyNoLookup(parent, cssProp, style, applied);
@@ -736,8 +737,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
             parentItem.getChildren().add(ni);
             parentItem = ni;
         }
-        if (node instanceof Parent && !isOtherComponentNode) {
-            final var parentNode = (Parent) node;
+        if (node instanceof final Parent parentNode && !isOtherComponentNode) {
             for (final var child : parentNode.getChildrenUnmodifiable()) {
                 addSubStructure(componentRootNode, parentItem, child);
             }
@@ -796,8 +796,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
     private void attachProperty(final TreeItem<Node> parent, final PropertyState ss) {
         final var hasSubs = !ss.getSubProperties().isEmpty();
         if (hasSubs) {
-            if (ss instanceof CssPropertyState) {
-                final var cssProp = (CssPropertyState) ss;
+            if (ss instanceof final CssPropertyState cssProp) {
                 if (cssProp.getStyle() != null) {
                     // Need to add the container, not the sub properties
                     final var content = getContent(ss.getCssProperty(), ss.getCssValue(), ss.getFxValue(), true);
@@ -815,12 +814,10 @@ public class CssPanelController extends AbstractFxmlPanelController {
             final var content = getContent(ss.getCssProperty(), ss.getCssValue(), ss.getFxValue(), true);
             final var ti = newTreeItem(content, ss);
             parent.getChildren().add(ti);
-            if (ss instanceof CssPropertyState) {
-                final var css = (CssPropertyState) ss;
+            if (ss instanceof final CssPropertyState css) {
                 attachStyles(css, ti);
             } else {
-                if (ss instanceof BeanPropertyState) {
-                    final var beanProp = (BeanPropertyState) ss;
+                if (ss instanceof final BeanPropertyState beanProp) {
                     final var source = beanProp.getPropertyMeta().getName().toString();
                     final var contentBuilder = new StringBuilder();
                     contentBuilder.append(source);
@@ -1522,8 +1519,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
         if (selection == null) {
             return null;
         }
-        if (selection.getGroup() instanceof ObjectSelectionGroup) {
-            final var osg = (ObjectSelectionGroup) selection.getGroup();
+        if (selection.getGroup() instanceof final ObjectSelectionGroup osg) {
             for (final var item : osg.getItems()) {
                 if (item instanceof FXOMInstance) {
                     fxomInstance = (FXOMInstance) item;
@@ -1590,8 +1586,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
 
     private static Node getCustomContent(Object value) {
         Node ret = null;
-        if (value instanceof ParsedValue) {
-            final var pv = (ParsedValue<?, ?>) value;
+        if (value instanceof final ParsedValue<?, ?> pv) {
             value = CssValueConverter.convert(pv);
         }
         if (value != null) {
@@ -1611,9 +1606,8 @@ public class CssPanelController extends AbstractFxmlPanelController {
                     ret = hbox;
                 }
             } else {
-                if (value instanceof Collection) {
+                if (value instanceof final Collection<?> collection) {
                     final var hbox = new HBox(5);
-                    final var collection = (Collection<?>) value;
                     final var it = collection.iterator();
                     while (it.hasNext()) {
                         final var obj = it.next();
@@ -1873,7 +1867,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
     }
 
     private static TreeItem<Node> newTreeItem(final Node content, final PropertyState ss) {
-        final var ti = new TreeItem<Node>(content);
+        final var ti = new TreeItem<>(content);
         return ti;
     }
 
@@ -1892,7 +1886,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
         // Workaround!
         if (rule != null) {
             try {
-                url = new URL(rule.getStylesheet().getUrl());
+                url = URI.create(rule.getStylesheet().getUrl()).toURL();
             } catch (final MalformedURLException ex) {
                 System.out.println("Invalid URL: " + ex);
             }
@@ -1977,8 +1971,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
 
     private static Node createValueUI(final CssProperty item, final PropertyState ps, Object value, final CssStyle style, final ParsedValue<?, ?>[] parsedValues) {
         Node ret = null;
-        if (value instanceof ParsedValue) {
-            final var pv = (ParsedValue<?, ?>) value;
+        if (value instanceof final ParsedValue<?, ?> pv) {
             value = CssValueConverter.convert(pv);
         }
         if (value != null) {
@@ -2033,10 +2026,9 @@ public class CssPanelController extends AbstractFxmlPanelController {
                     ret = hbox;
                 }
             } else {
-                if (value instanceof Collection) {
+                if (value instanceof final Collection<?> collection) {
                     final var hbox = new HBox(5);
                     var lookupIndex = 0;
-                    final var collection = (Collection<?>) value;
                     final var it = collection.iterator();
                     var index = 0;
                     while (it.hasNext()) {
@@ -2172,7 +2164,7 @@ public class CssPanelController extends AbstractFxmlPanelController {
         final var cssStyle = applied ? ps.getStyle() : style;
         final var value = applied ? ps.getFxValue() : style.getParsedValue();
         final var cssValue = CssValueConverter.toCssString(cssStyle.getCssProperty(), cssStyle.getCssRule(), cssStyle.getParsedValue());
-        final var item = new TreeItem<Node>(getContent(ps.getCssProperty(), cssValue, value, applied));
+        final var item = new TreeItem<>(getContent(ps.getCssProperty(), cssValue, value, applied));
         parent.getChildren().add(item);
     }
 

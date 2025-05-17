@@ -115,8 +115,7 @@ public class MoveWithKeyGesture extends AbstractKeyGesture {
         // then we see if the new job can be merged with it.
         final var jobManager = editorController.getJobManager();
         final var currentJob = jobManager.getCurrentJob();
-        if (currentJob instanceof RelocateSelectionJob) {
-            final var currentRelocateJob = (RelocateSelectionJob) currentJob;
+        if (currentJob instanceof final RelocateSelectionJob currentRelocateJob) {
             if (currentRelocateJob.canBeMergedWith(newRelocateJob)) {
                 newRelocateJob.execute();
                 currentRelocateJob.mergeWith(newRelocateJob);

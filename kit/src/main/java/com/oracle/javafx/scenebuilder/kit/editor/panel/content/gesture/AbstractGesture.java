@@ -48,7 +48,7 @@ public abstract class AbstractGesture {
 
     public abstract void start(InputEvent e, Observer observer);
     
-    public static interface Observer {
-        public void gestureDidTerminate(AbstractGesture gesture);
+    public interface Observer {
+        void gestureDidTerminate(AbstractGesture gesture);
     }
 }

@@ -335,10 +335,9 @@ public abstract class PropertyEditor extends Editor {
         } else {
             removeCssVisual();
         }
-        if (!(value instanceof String)) {
+        if (!(value instanceof final String val)) {
             return;
         }
-        final var val = (String) value;
 
         // Handle generic binding case
         if (isBindingExpression(val)) {
@@ -751,11 +750,10 @@ public abstract class PropertyEditor extends Editor {
             if (event.getCode() != KeyCode.UP && event.getCode() != KeyCode.DOWN) {
                 return;
             }
-            if (!(control instanceof TextField)) {
+            if (!(control instanceof final TextField textField)) {
                 // Apply only for text field based controls
                 return;
             }
-            final var textField = (TextField) control;
             var incDecVal = 1;
             final var shiftDown = event.isShiftDown();
             if (shiftDown) {

@@ -55,13 +55,10 @@ public class ResourceUtils {
     }
 
     public static String getToolStylesheet(final ToolTheme theme) {
-        switch(theme) {
-            case DARK:
-                return THEME_DARK_STYLESHEET;
-            case DEFAULT:
-                return THEME_DEFAULT_STYLESHEET;
-        }
-        return null;
+        return switch (theme) {
+            case DARK -> THEME_DARK_STYLESHEET;
+            case DEFAULT -> THEME_DEFAULT_STYLESHEET;
+        };
     }
 
     public static void setToolTheme(final ToolTheme theme, final Scene scene) {

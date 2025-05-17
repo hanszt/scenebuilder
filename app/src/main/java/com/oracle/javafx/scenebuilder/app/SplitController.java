@@ -44,9 +44,8 @@ import javafx.scene.control.SplitPane.Divider;
 public class SplitController {
 
     public enum Target {
-
         FIRST, LAST
-    };
+    }
 
     private final SplitPane splitPane;
     private final Target target;
@@ -55,7 +54,7 @@ public class SplitController {
 
     public SplitController(final SplitPane splitPane, final Target target) {
         assert splitPane != null;
-        assert splitPane.getItems().size() >= 1;
+        assert !splitPane.getItems().isEmpty();
 
         this.splitPane = splitPane;
         this.target = target;

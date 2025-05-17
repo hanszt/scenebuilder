@@ -290,8 +290,7 @@ public abstract class FXOMObject extends FXOMNode {
     public Scene getScene() {
         final Scene result;
         
-        if (sceneGraphObject instanceof Node) {
-            final var sceneGraphNode = (Node) sceneGraphObject;
+        if (sceneGraphObject instanceof final Node sceneGraphNode) {
             result = sceneGraphNode.getScene();
         } else  {
             result = null;
@@ -647,8 +646,7 @@ public abstract class FXOMObject extends FXOMNode {
                 }
                 // #3
                 for (final var o : FXOMNodes.serializeObjects(this)) {
-                    if (o instanceof FXOMIntrinsic) {
-                        final var i = (FXOMIntrinsic) o;
+                    if (o instanceof final FXOMIntrinsic i) {
                         switch(i.getType()) {
                             case FX_REFERENCE:
                             case FX_COPY:

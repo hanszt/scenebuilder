@@ -152,7 +152,7 @@ public class PreferencesWindowController extends AbstractFxmlWindowController {
     private PaintPicker alignmentColorPicker;
     private PaintPicker parentRingColorPicker;
 
-    private Stage ownerWindow;
+    private final Stage ownerWindow;
 
     public PreferencesWindowController(final Stage ownerWindow) {
         super(PreferencesWindowController.class.getResource("Preferences.fxml"), //NOI18N
@@ -176,7 +176,7 @@ public class PreferencesWindowController extends AbstractFxmlWindowController {
         rootContainerHeight.setText(String.valueOf(recordGlobal.getRootContainerHeight()));
         rootContainerHeight.setOnAction(t -> {
             final var value = rootContainerHeight.getText();
-            recordGlobal.setRootContainerHeight(Double.valueOf(value));
+            recordGlobal.setRootContainerHeight(Double.parseDouble(value));
             rootContainerHeight.selectAll();
             // Update preferences
             recordGlobal.writeToJavaPreferences(ROOT_CONTAINER_HEIGHT);
@@ -187,7 +187,7 @@ public class PreferencesWindowController extends AbstractFxmlWindowController {
         rootContainerWidth.setText(String.valueOf(recordGlobal.getRootContainerWidth()));
         rootContainerWidth.setOnAction(t -> {
             final var value = rootContainerWidth.getText();
-            recordGlobal.setRootContainerWidth(Double.valueOf(value));
+            recordGlobal.setRootContainerWidth(Double.parseDouble(value));
             rootContainerWidth.selectAll();
             // Update preferences
             recordGlobal.writeToJavaPreferences(ROOT_CONTAINER_WIDTH);
@@ -228,7 +228,7 @@ public class PreferencesWindowController extends AbstractFxmlWindowController {
         scenebuilderTheme.getSelectionModel().selectedItemProperty().addListener(new ToolThemeListener());
 
         // Library view option
-        final DISPLAY_MODE availableDisplayMode[] = new DISPLAY_MODE[]{
+        final DISPLAY_MODE[] availableDisplayMode = new DISPLAY_MODE[]{
             DISPLAY_MODE.LIST, DISPLAY_MODE.SECTIONS};
         libraryDisplayOption.getItems().setAll(Arrays.asList(availableDisplayMode));
         libraryDisplayOption.setValue(recordGlobal.getLibraryDisplayOption());

@@ -62,9 +62,8 @@ public abstract class CallbackPropertyMetadata extends ValuePropertyMetadata {
         
         if (isReadWrite()) {
             final var fxomProperty = fxomInstance.getProperties().get(getName());
-            if (fxomProperty instanceof FXOMPropertyC) {
-                
-                final var fxomPropertyC = (FXOMPropertyC) fxomProperty;
+            if (fxomProperty instanceof final FXOMPropertyC fxomPropertyC) {
+
                 assert fxomPropertyC.getValues().size() == 1;
 
                 final var valueFxomObject = fxomPropertyC.getValues().getFirst();

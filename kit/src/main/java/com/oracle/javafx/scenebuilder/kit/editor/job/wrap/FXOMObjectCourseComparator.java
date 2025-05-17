@@ -64,58 +64,43 @@ public class FXOMObjectCourseComparator {
      * The COL_BY_COL course run through the grid column by column, from top
      * to bottom and left to right.
      */
-    static enum GridCourse {
+    enum GridCourse {
 
         ROW_BY_ROW, COL_BY_COL;
 
         public double getMinX(final Bounds b) {
-            switch (this) {
-                case ROW_BY_ROW:
-                    return b.getMinX();
-                case COL_BY_COL:
-                    return b.getMinY();
-            }
-            throw new IllegalArgumentException(String.valueOf(this));
+            return switch (this) {
+                case ROW_BY_ROW -> b.getMinX();
+                case COL_BY_COL -> b.getMinY();
+            };
         }
 
         public double getMaxX(final Bounds b) {
-            switch (this) {
-                case ROW_BY_ROW:
-                    return b.getMaxX();
-                case COL_BY_COL:
-                    return b.getMaxY();
-            }
-            throw new IllegalArgumentException(String.valueOf(this));
+            return switch (this) {
+                case ROW_BY_ROW -> b.getMaxX();
+                case COL_BY_COL -> b.getMaxY();
+            };
         }
 
         public double getMinY(final Bounds b) {
-            switch (this) {
-                case ROW_BY_ROW:
-                    return b.getMinY();
-                case COL_BY_COL:
-                    return b.getMinX();
-            }
-            throw new IllegalArgumentException(String.valueOf(this));
+            return switch (this) {
+                case ROW_BY_ROW -> b.getMinY();
+                case COL_BY_COL -> b.getMinX();
+            };
         }
 
         public double getMaxY(final Bounds b) {
-            switch (this) {
-                case ROW_BY_ROW:
-                    return b.getMaxY();
-                case COL_BY_COL:
-                    return b.getMaxX();
-            }
-            throw new IllegalArgumentException(String.valueOf(this));
+            return switch (this) {
+                case ROW_BY_ROW -> b.getMaxY();
+                case COL_BY_COL -> b.getMaxX();
+            };
         }
 
         public int index() {
-            switch (this) {
-                case ROW_BY_ROW:
-                    return 0;
-                case COL_BY_COL:
-                    return 1;
-            }
-            throw new IllegalArgumentException(String.valueOf(this));
+            return switch (this) {
+                case ROW_BY_ROW -> 0;
+                case COL_BY_COL -> 1;
+            };
         }
     }
 
@@ -194,13 +179,10 @@ public class FXOMObjectCourseComparator {
         }
 
         public static UnidimensionalComparator of(final Orientation orientation) {
-            switch (orientation) {
-                case HORIZONTAL:
-                    return new UnidimensionalComparator(GridCourse.ROW_BY_ROW);
-                case VERTICAL:
-                    return new UnidimensionalComparator(GridCourse.COL_BY_COL);
-            }
-            throw new IllegalArgumentException(String.valueOf(orientation));
+            return switch (orientation) {
+                case HORIZONTAL -> new UnidimensionalComparator(GridCourse.ROW_BY_ROW);
+                case VERTICAL -> new UnidimensionalComparator(GridCourse.COL_BY_COL);
+            };
         }
 
         @Override

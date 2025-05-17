@@ -36,6 +36,7 @@ import com.oracle.javafx.scenebuilder.kit.metadata.property.value.list.StringLis
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PrefixedValue;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.PropertyName;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +45,7 @@ import java.util.List;
  *
  * 
  */
-public class FXOMPropertyT extends FXOMProperty {
+public final class FXOMPropertyT extends FXOMProperty {
     
     /*
      * A FXOMPropertyT represents a property with a single value that
@@ -281,7 +282,7 @@ public class FXOMPropertyT extends FXOMProperty {
                  */
                 assert newLocation != null;
                 try {
-                    final var assetURL = new URL(pv.getSuffix());
+                    final var assetURL = URI.create(pv.getSuffix()).toURL();
                     final var pv2 = PrefixedValue.makePrefixedValue(assetURL, newLocation);
                     newItems.add(pv2.toString());
                     changeCount++;

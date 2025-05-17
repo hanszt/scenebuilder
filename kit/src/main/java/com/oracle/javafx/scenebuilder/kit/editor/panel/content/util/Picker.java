@@ -103,8 +103,7 @@ public class Picker {
                 matches.addFirst(startNode);
             }
         
-            if (startNode instanceof Parent) {
-                final var startParent = (Parent) startNode;
+            if (startNode instanceof final Parent startParent) {
                 for (final var child : startParent.getChildrenUnmodifiable()) {
                     final var childLocalXY = child.parentToLocal(localX, localY);
                     // Note : childLocalXY may be null.
@@ -124,8 +123,7 @@ public class Picker {
         if (bounds.isEmpty())
             return false;
         final boolean result;
-        if (node instanceof Line) {
-            final var line = (Line) node;
+        if (node instanceof final Line line) {
             final var point = new Point2D(x, y);
             result = DistanceUtils.getDistFromPointToLine(point, line) < THRESHOLD;
         } else if (node instanceof Shape) {

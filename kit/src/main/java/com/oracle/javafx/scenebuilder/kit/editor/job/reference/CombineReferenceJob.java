@@ -47,11 +47,9 @@ public class CombineReferenceJob  extends Job {
     
     public CombineReferenceJob(final FXOMNode reference, final EditorController editorController) {
         super(editorController);
-        if (reference instanceof FXOMIntrinsic) {
-            final var fxomIntrinsic = (FXOMIntrinsic) reference;
+        if (reference instanceof final FXOMIntrinsic fxomIntrinsic) {
             subJob = new CombineIntrinsicReferenceJob(fxomIntrinsic, getEditorController());
-        } else if (reference instanceof FXOMPropertyT) {
-            final var fxomProperty = (FXOMPropertyT) reference;
+        } else if (reference instanceof final FXOMPropertyT fxomProperty) {
             subJob = new CombineExpressionReferenceJob(fxomProperty, getEditorController());
         } else {
             throw new RuntimeException("Bug"); //NOI18N

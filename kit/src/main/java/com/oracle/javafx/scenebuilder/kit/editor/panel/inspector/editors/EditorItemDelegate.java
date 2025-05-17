@@ -39,10 +39,10 @@ import javafx.event.EventHandler;
  * 
  */
 public interface EditorItemDelegate {
-    public void commit(EditorItem source);
-    public void editing(boolean editing, EventHandler<?> editingHandler);
-    public void add(EditorItem previousItem, EditorItem newItem);
-    public void remove(EditorItem source);
-    public void up(EditorItem source);
-    public void down(EditorItem source);
+    void commit(EditorItem source);
+    void editing(boolean editing, EventHandler<?> editingHandler);
+    void add(EditorItem previousItem, EditorItem newItem);
+    void remove(EditorItem source);
+    void up(EditorItem source);
+    void down(EditorItem source);
 }

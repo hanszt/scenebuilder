@@ -83,9 +83,8 @@ public class ModifySelectionToggleGroupJob extends BatchDocumentJob {
             if (toggleGroupObject == null) {
                 // Case #1
                 executable = true;
-            } else if (toggleGroupObject instanceof FXOMInstance) {
+            } else if (toggleGroupObject instanceof final FXOMInstance toggleGroupInstance) {
                 // Case #2
-                final var toggleGroupInstance = (FXOMInstance) toggleGroupObject;
                 executable = toggleGroupInstance.getDeclaredClass() == ToggleGroup.class;
             } else {
                 executable = false;
@@ -97,8 +96,7 @@ public class ModifySelectionToggleGroupJob extends BatchDocumentJob {
          */
         if (executable) {
             final var selection = getEditorController().getSelection();
-            if (selection.getGroup() instanceof ObjectSelectionGroup) {
-                final var osg = (ObjectSelectionGroup) selection.getGroup();
+            if (selection.getGroup() instanceof final ObjectSelectionGroup osg) {
                 for (final var fxomObject : osg.getItems()) {
                     final Job subJob
                             = new ModifyToggleGroupJob(fxomObject, toggleGroupId, getEditorController());

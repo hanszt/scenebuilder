@@ -69,8 +69,7 @@ public class FXOMFxIdIndex {
         
         for (final var e : fxIds.entrySet()) {
             final var fxomObject = e.getValue();
-            if (fxomObject instanceof FXOMInstance) {
-                final var fxomInstance = (FXOMInstance) fxomObject;
+            if (fxomObject instanceof final FXOMInstance fxomInstance) {
                 if (fxomInstance.getDeclaredClass() == ToggleGroup.class) {
                     result.add(fxomInstance);
                 }

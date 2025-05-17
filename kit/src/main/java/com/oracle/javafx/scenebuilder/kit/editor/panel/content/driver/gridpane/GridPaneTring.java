@@ -71,32 +71,16 @@ public class GridPaneTring extends AbstractNodeTring<GridPane> {
         if ((targetColumnArea == ColumnArea.CENTER) && (targetRowArea == RowArea.CENTER)) {
             mosaic.setTargetCell(targetColumnIndex, targetRowIndex);
         } else {
-            final int targetGapColumnIndex;
-            switch(targetColumnArea) {
-                case LEFT:
-                    targetGapColumnIndex = targetColumnIndex;
-                    break;
-                default:
-                case CENTER:
-                    targetGapColumnIndex = -1;
-                    break;
-                case RIGHT:
-                    targetGapColumnIndex = targetColumnIndex+1;
-                    break;
-            }
-            final int targetGapRowIndex;
-            switch(targetRowArea) {
-                case TOP:
-                    targetGapRowIndex = targetRowIndex;
-                    break;
-                default:
-                case CENTER:
-                    targetGapRowIndex = -1;
-                    break;
-                case BOTTOM:
-                    targetGapRowIndex = targetRowIndex+1;
-                    break;
-            }
+            final int targetGapColumnIndex = switch (targetColumnArea) {
+                case LEFT -> targetColumnIndex;
+                default -> -1;
+                case RIGHT -> targetColumnIndex + 1;
+            };
+            final int targetGapRowIndex = switch (targetRowArea) {
+                case TOP -> targetRowIndex;
+                default -> -1;
+                case BOTTOM -> targetRowIndex + 1;
+            };
             mosaic.setTargetGap(targetGapColumnIndex, targetGapRowIndex);
         }
     }

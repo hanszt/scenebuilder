@@ -65,17 +65,15 @@ public class PrunePropertiesJob extends BatchDocumentJob {
         final List<Job> result = new ArrayList<>();
         final var metadata = Metadata.getMetadata();
         
-        if (fxomObject instanceof FXOMInstance) {
-            final var fxomInstance = (FXOMInstance) fxomObject;
-            
+        if (fxomObject instanceof final FXOMInstance fxomInstance) {
+
             for (final var p : fxomInstance.getProperties().values()) {
                 if (metadata.isPropertyTrimmingNeeded(p.getName())) {
                     final var residentClass = p.getName().getResidenceClass();
                     final boolean prune;
                     if (residentClass == null) {
                         prune = true;
-                    } else if (targetParent instanceof FXOMInstance) {
-                        final var parentInstance = (FXOMInstance) targetParent;
+                    } else if (targetParent instanceof final FXOMInstance parentInstance) {
                         prune = residentClass != parentInstance.getDeclaredClass();
                     } else {
                         assert (targetParent == null) || (targetParent instanceof FXOMCollection);

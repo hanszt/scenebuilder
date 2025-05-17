@@ -404,12 +404,11 @@ public class HierarchyDNDController {
 
         AbstractDropTarget result = null;
 
-        if (dropTargetObject instanceof FXOMInstance) {
+        if (dropTargetObject instanceof final FXOMInstance dropTargetInstance) {
             final var dragController
                     = panelController.getEditorController().getDragController();
             final var dragSource = dragController.getDragSource();
             assert dragSource != null;
-            final var dropTargetInstance = (FXOMInstance) dropTargetObject;
             if (accessory != null) {
                 result = new AccessoryDropTarget(dropTargetInstance, accessory);
             } else {

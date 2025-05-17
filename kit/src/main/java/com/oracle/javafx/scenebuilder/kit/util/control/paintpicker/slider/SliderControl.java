@@ -31,21 +31,20 @@
  */
 package com.oracle.javafx.scenebuilder.kit.util.control.paintpicker.slider;
 
+import com.oracle.javafx.scenebuilder.kit.editor.panel.inspector.editors.EditorUtils;
 import com.oracle.javafx.scenebuilder.kit.util.control.paintpicker.gradientpicker.GradientPicker;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javafx.beans.value.ChangeListener;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Slider;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.GridPane;
 
 public class SliderControl extends GridPane {
 
@@ -90,7 +89,7 @@ public class SliderControl extends GridPane {
         slider_slider.setValue(initVal);
         slider_textfield.setText(Double.toString(initVal));
 
-        slider_slider.valueProperty().addListener((ChangeListener<Number>) (ov, oldValue, newValue) -> {
+        slider_slider.valueProperty().addListener((ov, oldValue, newValue) -> {
             final var rounded = round(newValue.doubleValue(), roundingFactor);
             slider_textfield.setText(Double.toString(rounded));
         });
@@ -98,7 +97,7 @@ public class SliderControl extends GridPane {
 
     @FXML
     void sliderAction(final ActionEvent event) {
-        final double value = Double.valueOf(slider_textfield.getText());
+        final double value = Double.parseDouble(slider_textfield.getText());
         var rounded = round(value, roundingFactor);
         slider_slider.setValue(rounded);
         if (rounded > slider_slider.getMax()) {
@@ -129,11 +128,10 @@ public class SliderControl extends GridPane {
 
     private void incOrDecFieldValue(final KeyEvent e, final double x) {
 
-        if (!(e.getSource() instanceof TextField)) {
+        if (!(e.getSource() instanceof final TextField tf)) {
             return; // check it's a textField
         }        // increment or decrement the value
-        final var tf = (TextField) e.getSource();
-        final Double newValue = Double.valueOf(tf.getText()) + x;
+        final double newValue = Double.parseDouble(tf.getText()) + x;
         final var rounded = round(newValue, roundingFactor);
         slider_slider.setValue(rounded);
         tf.setText(Double.toString(newValue));
@@ -149,7 +147,6 @@ public class SliderControl extends GridPane {
     }
 
     private double round(final double value, final int roundingFactor) {
-        final double doubleRounded = Math.round(value * roundingFactor);
-        return doubleRounded / roundingFactor;
+        return EditorUtils.round(value, roundingFactor);
     }
 }

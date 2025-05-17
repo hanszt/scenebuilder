@@ -41,6 +41,7 @@ import javafx.scene.shape.Rectangle;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.logging.Level;
@@ -155,7 +156,7 @@ public class GluonEditorPlatform {
     private static Color getSwatchColor(final EditorPlatform.Theme theme) {
         if (color == null) {
             try {
-                final var url = new URL(theme.getStylesheetURLs().getFirst());
+                final var url = URI.create(theme.getStylesheetURLs().getFirst()).toURL();
                 try (final var reader = new BufferedReader(new InputStreamReader(url.openStream()))) {
                     var s = reader.readLine();
                     while (s != null) {

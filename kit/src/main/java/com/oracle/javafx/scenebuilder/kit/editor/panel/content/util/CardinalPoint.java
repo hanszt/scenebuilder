@@ -44,39 +44,21 @@ public enum CardinalPoint {
     
     
     public CardinalPoint getOpposite() {
-        final CardinalPoint result;
-        
-        switch(this) {
-            case N:
-                result = S;
-                break;
-            case NE:
-                result = SW;
-                break;
-            case E:
-                result = W;
-                break;
-            case SE:
-                result = NW;
-                break;
-            case S:
-                result = N;
-                break;
-            case SW:
-                result = NE;
-                break;
-            case W:
-                result = E;
-                break;
-            case NW:
-                result = SE;
-                break;
-            default:
+        final CardinalPoint result = switch (this) {
+            case N -> S;
+            case NE -> SW;
+            case E -> W;
+            case SE -> NW;
+            case S -> N;
+            case SW -> NE;
+            case W -> E;
+            case NW -> SE;
+            default -> {
                 assert false : "unexpected cardinal point:" + this;
-                result = N;
-                break;
-        }
-        
+                yield N;
+            }
+        };
+
         return result;
     }
     
@@ -212,23 +194,21 @@ public enum CardinalPoint {
     
     public Point2D clampVector(final double dx, final double dy) {
         final double resultDX, resultDY;
-        
-        switch(this) {
-            case N:
-            case S:
+
+        resultDY = switch (this) {
+            case N, S -> {
                 resultDX = 0.0;
-                resultDY = dy;
-                break;
-            case E:
-            case W:
+                yield dy;
+            }
+            case E, W -> {
                 resultDX = dx;
-                resultDY = 0.0;
-                break;
-            default:
+                yield 0.0;
+            }
+            default -> {
                 resultDX = dx;
-                resultDY = dy;
-                break;
-        }
+                yield dy;
+            }
+        };
         
         return new Point2D(resultDX, resultDY);
     }

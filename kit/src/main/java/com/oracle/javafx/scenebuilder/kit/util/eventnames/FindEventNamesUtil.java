@@ -10,7 +10,7 @@ import java.util.TreeMap;
  */
 public class FindEventNamesUtil {
 
-    private static Map<String, String> events = new TreeMap<String, String>();
+    private static Map<String, String> events = new TreeMap<>();
 
     // should be used in a static way
     private FindEventNamesUtil() {

@@ -440,27 +440,21 @@ public class ResizeGesture extends AbstractMouseGesture {
     
     private void setupResizingGuideController() {
         final boolean matchWidth, matchHeight;
-        
-        switch(tunable) {
-            case N:
-            case S:
+
+        matchHeight = switch (tunable) {
+            case N, S -> {
                 matchWidth = false;
-                matchHeight = true;
-                break;
-            case E:
-            case W:
+                yield true;
+            }
+            case E, W -> {
                 matchWidth = true;
-                matchHeight = false;
-                break;
-            default:
-            case SE:
-            case SW:
-            case NE:
-            case NW:
+                yield false;
+            }
+            default -> {
                 matchWidth = true;
-                matchHeight = true;
-                break;
-        }
+                yield true;
+            }
+        };
         resizingGuideController = new ResizingGuideController(
                 matchWidth, matchHeight, contentPanelController.getGuidesColor());
         
@@ -477,8 +471,7 @@ public class ResizeGesture extends AbstractMouseGesture {
         assert fxomObject != null;
         
         if (fxomObject != fxomInstance) {
-            if (fxomObject.getSceneGraphObject() instanceof Node) {
-                final var sceneGraphNode = (Node) fxomObject.getSceneGraphObject();
+            if (fxomObject.getSceneGraphObject() instanceof final Node sceneGraphNode) {
                 resizingGuideController.addSampleBounds(sceneGraphNode);
             }
 

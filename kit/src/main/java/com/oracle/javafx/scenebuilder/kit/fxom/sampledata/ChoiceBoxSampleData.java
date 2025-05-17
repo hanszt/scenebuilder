@@ -66,10 +66,11 @@ class ChoiceBoxSampleData extends AbstractSampleData {
     
     @Override
     public void removeFrom(final Object sceneGraphObject) {
-        assert sceneGraphObject != null;
+        //noinspection rawtypes
+        if (!(sceneGraphObject instanceof ChoiceBox cb)) throw new AssertionError();
         
         @SuppressWarnings("unchecked")        
-        final var choiceBox = (ChoiceBox<String>) sceneGraphObject;
+        final var choiceBox = (ChoiceBox<String>) cb;
         choiceBox.getItems().clear();
     }
     

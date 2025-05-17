@@ -218,8 +218,7 @@ public class ContextMenuController {
         for (final var menuItem : menuItems) {
             final boolean disable, selected;
             final String title;
-            if (menuItem.getUserData() instanceof MenuItemController) {
-                final var c = (MenuItemController) menuItem.getUserData();
+            if (menuItem.getUserData() instanceof final MenuItemController c) {
                 disable = !c.canPerform();
                 title = c.getTitle();
                 selected = c.isSelected();
@@ -238,8 +237,7 @@ public class ContextMenuController {
             if (title != null) {
                 menuItem.setText(title);
             }
-            if (menuItem instanceof RadioMenuItem) {
-                final var ri = (RadioMenuItem) menuItem;
+            if (menuItem instanceof final RadioMenuItem ri) {
                 ri.setSelected(selected);
             }
         }
@@ -269,8 +267,7 @@ public class ContextMenuController {
         final var selection = editorController.getSelection();
         final var asg = selection.getGroup();
 
-        if (asg instanceof ObjectSelectionGroup) {
-            final var osg = (ObjectSelectionGroup) asg;
+        if (asg instanceof final ObjectSelectionGroup osg) {
             result = true;
             for (final var obj : osg.getItems()) {
                 if (!(obj.getSceneGraphObject() instanceof GridPane)) {
@@ -292,8 +289,7 @@ public class ContextMenuController {
         final var selection = editorController.getSelection();
         final var asg = selection.getGroup();
 
-        if (asg instanceof ObjectSelectionGroup) {
-            final var osg = (ObjectSelectionGroup) asg;
+        if (asg instanceof final ObjectSelectionGroup osg) {
             result = true;
             for (final var obj : osg.getItems()) {
                 final var parent = obj.getParentObject();

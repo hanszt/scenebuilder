@@ -419,8 +419,7 @@ implements AbstractGesture.Observer {
                         break;
                 }
                 // If h is grid pane handles reset the selected columns/rows
-                if (h instanceof GridPaneHandles) {
-                    final var gph = (GridPaneHandles) h;
+                if (h instanceof final GridPaneHandles gph) {
                     gph.updateColumnRowSelection(null);
                 }
             } else {
@@ -825,8 +824,7 @@ implements AbstractGesture.Observer {
                 break;
             case ENTER:
                 final var selection = contentPanelController.getEditorController().getSelection();
-                if (selection.getGroup() instanceof ObjectSelectionGroup) {
-                    final var osg = (ObjectSelectionGroup) selection.getGroup();
+                if (selection.getGroup() instanceof final ObjectSelectionGroup osg) {
                     if (osg.getItems().size() == 1) {
                         final var mask = new DesignHierarchyMask(osg.getSortedItems().getFirst());
                         final var nodeFxomObject = mask.getClosestFxNode();

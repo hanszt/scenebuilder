@@ -98,8 +98,7 @@ class FXOMRefresher {
         final var fxomRoot = (FXOMInstance) document.getFxomRoot();
         if (fxomRoot != null) {
             final var propertyC = (FXOMPropertyC) fxomRoot.getProperties().get(new PropertyName("children"));
-            if (propertyC.getValues().getFirst() instanceof FXOMIntrinsic) {
-                final var fxomIntrinsic = (FXOMIntrinsic) propertyC.getValues().getFirst();
+            if (propertyC.getValues().getFirst() instanceof final FXOMIntrinsic fxomIntrinsic) {
                 fxomIntrinsic.removeCharsetProperty();
             }
         }
@@ -118,8 +117,7 @@ class FXOMRefresher {
         currentDocument.setDisplayStylesheets(newDocument.getDisplayStylesheets());
         // Simulates Scene's behavior : automatically adds "root" styleclass if
         // if the scene graph root is a Parent instance or wraps a Parent instance
-        if (currentDocument.getSceneGraphRoot() instanceof Parent) {
-            final var rootParent = (Parent) currentDocument.getSceneGraphRoot();
+        if (currentDocument.getSceneGraphRoot() instanceof final Parent rootParent) {
             rootParent.getStyleClass().addFirst("root");
         } else if (currentDocument.getSceneGraphRoot() instanceof Scene
                 || currentDocument.getSceneGraphRoot() instanceof Window) {
@@ -266,8 +264,7 @@ class FXOMRefresher {
                     = fxomRoot.collectObjectWithSceneGraphObjectClass(SplitPane.class);
 
             for (final var fxomObject : candidates) {
-                if (fxomObject instanceof FXOMInstance) {
-                    final var fxomInstance = (FXOMInstance) fxomObject;
+                if (fxomObject instanceof final FXOMInstance fxomInstance) {
                     assert fxomInstance.getSceneGraphObject() instanceof SplitPane;
                     final var splitPane
                             = (SplitPane) fxomInstance.getSceneGraphObject();

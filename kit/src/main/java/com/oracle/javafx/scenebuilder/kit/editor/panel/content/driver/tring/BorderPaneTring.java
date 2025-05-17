@@ -235,30 +235,19 @@ public class BorderPaneTring extends AbstractNodeTring<BorderPane> {
         final var rightBounds = computeAreaBounds(layoutBounds, centerBounds, Accessory.RIGHT);
         rightLabel.setPrefSize(rightBounds.getWidth(), rightBounds.getHeight());
         
-        final Label targetLabel;
-        switch (targetAccessory.name()) {
-            case "TOP":
-                targetLabel = topLabel;
-                break;
-            case "BOTTOM":
-                targetLabel = bottomLabel;
-                break;
-            case "LEFT":
-                targetLabel = leftLabel;
-                break;
-            case "RIGHT":
-                targetLabel = rightLabel;
-                break;
-            case "CENTER":
-                targetLabel = centerLabel;
-                break;
-            default:
+        final Label targetLabel = switch (targetAccessory.name()) {
+            case "TOP" -> topLabel;
+            case "BOTTOM" -> bottomLabel;
+            case "LEFT" -> leftLabel;
+            case "RIGHT" -> rightLabel;
+            case "CENTER" -> centerLabel;
+            default -> {
                 // Emergency code
                 assert false;
-                targetLabel = centerLabel;
-                break;
-        }
-                
+                yield centerLabel;
+            }
+        };
+
         setupSelectedStyleClass(topLabel, topLabel == targetLabel);
         setupSelectedStyleClass(bottomLabel, bottomLabel == targetLabel);
         setupSelectedStyleClass(leftLabel, leftLabel == targetLabel);

@@ -44,7 +44,7 @@ import java.util.prefs.BackingStoreException;
 /**
  * Defines preferences for Scene Builder App.
  */
-public class PreferencesController extends PreferencesControllerBase {
+public final class PreferencesController extends PreferencesControllerBase {
 
     /***************************************************************************
      *                                                                         *

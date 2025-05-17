@@ -166,8 +166,7 @@ public class FXOMInstance extends FXOMObject {
         final List<FXOMObject> result = new ArrayList<>();
         
         for (final var p : properties.values()) {
-            if (p instanceof FXOMPropertyC) {
-                final var pc = (FXOMPropertyC) p;
+            if (p instanceof final FXOMPropertyC pc) {
                 result.addAll(pc.getValues());
             }
         }
@@ -184,8 +183,7 @@ public class FXOMInstance extends FXOMObject {
             final var it = properties.values().iterator();
             while ((result == null) && it.hasNext()) {
                 final var property = it.next();
-                if (property instanceof FXOMPropertyC) {
-                    final var propertyC = (FXOMPropertyC) property;
+                if (property instanceof final FXOMPropertyC propertyC) {
                     final var itValue = propertyC.getValues().iterator();
                     while ((result == null) && itValue.hasNext()) {
                         final var value = itValue.next();
@@ -207,8 +205,7 @@ public class FXOMInstance extends FXOMObject {
             final var it = properties.values().iterator();
             while ((result == null) && it.hasNext()) {
                 final var property = it.next();
-                if (property instanceof FXOMPropertyC) {
-                    final var propertyC = (FXOMPropertyC) property;
+                if (property instanceof final FXOMPropertyC propertyC) {
                     final var itValue = propertyC.getValues().iterator();
                     while ((result == null) && itValue.hasNext()) {
                         final var value = itValue.next();
@@ -286,8 +283,7 @@ public class FXOMInstance extends FXOMObject {
         assert result != null;
         
         for (final var p : properties.values()) {
-            if (p instanceof FXOMPropertyT) {
-                final var tp = (FXOMPropertyT) p;
+            if (p instanceof final FXOMPropertyT tp) {
                 if (tp.getValue().equals("$null")) {
                     result.add(tp);
                 }
@@ -305,8 +301,7 @@ public class FXOMInstance extends FXOMObject {
         assert result != null;
         
         for (final var p : properties.values()) {
-            if (p instanceof FXOMPropertyT) {
-                final var tp = (FXOMPropertyT) p;
+            if (p instanceof final FXOMPropertyT tp) {
                 result.add(tp);
             } else {
                 assert p instanceof FXOMPropertyC;
@@ -336,8 +331,7 @@ public class FXOMInstance extends FXOMObject {
                     for (final var v : ((FXOMPropertyC)p).getValues()) {
                         v.collectReferences(source, scope, result);
                     }
-                } else if (p instanceof FXOMPropertyT) {
-                    final var pt = (FXOMPropertyT) p;
+                } else if (p instanceof final FXOMPropertyT pt) {
                     final var pv = new PrefixedValue(pt.getValue());
                     if (pv.isExpression()) {
                         final var suffix = pv.getSuffix();
@@ -399,8 +393,7 @@ public class FXOMInstance extends FXOMObject {
     protected void collectEventHandlers(final List<FXOMPropertyT> result) {
         if (getSceneGraphObject() != null) {
             for (final var p : properties.values()) {
-                if (p instanceof FXOMPropertyT) {
-                    final var pt = (FXOMPropertyT) p;
+                if (p instanceof final FXOMPropertyT pt) {
                     if (pt.getName().getName().startsWith("on") && pt.getValue().startsWith("#")) {
                         result.add(pt);
                     }

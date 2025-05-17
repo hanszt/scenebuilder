@@ -110,11 +110,9 @@ public class Deprecation {
             }
         }
         for (final var child : parent.getChildrenUnmodifiable()) {
-            if (child instanceof Parent) {
-                final var childParent = (Parent) child;
+            if (child instanceof final Parent childParent) {
                 reapplyCSS(childParent, stylesheetPath);
-            } else if (child instanceof SubScene) {
-                final var childSubScene = (SubScene) child;
+            } else if (child instanceof final SubScene childSubScene) {
                 reapplyCSS(childSubScene.getRoot(), stylesheetPath);
             }
         }

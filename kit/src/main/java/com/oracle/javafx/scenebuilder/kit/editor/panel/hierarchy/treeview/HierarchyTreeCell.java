@@ -271,9 +271,8 @@ public class HierarchyTreeCell<T extends HierarchyItem> extends TreeCell<Hierarc
                 // Border is set either on the accessory place holder cell
                 // or on the accessory owner cell.
                 //==========================================================
-                if (dropTarget instanceof AccessoryDropTarget) {
+                if (dropTarget instanceof final AccessoryDropTarget accessoryDropTarget) {
 
-                    final var accessoryDropTarget = (AccessoryDropTarget) dropTarget;
                     final TreeCell<?> cell;
 
                     // TreeItem is null when dropping below the datas
@@ -620,8 +619,7 @@ public class HierarchyTreeCell<T extends HierarchyItem> extends TreeCell<Hierarc
                 switch (option) {
                     case INFO:
                     case NODEID:
-                        if (fxomObject instanceof FXOMInstance) {
-                            final var fxomInstance = (FXOMInstance) fxomObject;
+                        if (fxomObject instanceof final FXOMInstance fxomInstance) {
                             final var propertyName = item.getPropertyNameForDisplayInfo(option);
                             assert propertyName != null;
                             final var vpm
@@ -789,14 +787,11 @@ public class HierarchyTreeCell<T extends HierarchyItem> extends TreeCell<Hierarc
                 break;
         }
         result.append(" "); //NOI18N
-        if (fxomNode instanceof FXOMPropertyT) {
-            final var fxomProperty = (FXOMPropertyT) fxomNode;
+        if (fxomNode instanceof final FXOMPropertyT fxomProperty) {
             result.append(fxomProperty.getValue());
-        } else if (fxomNode instanceof FXOMIntrinsic) {
-            final var fxomIntrinsic = (FXOMIntrinsic) fxomNode;
+        } else if (fxomNode instanceof final FXOMIntrinsic fxomIntrinsic) {
             result.append(fxomIntrinsic.getSource());
-        } else if (fxomNode instanceof FXOMObject) {
-            final var fxomObject = (FXOMObject) fxomNode;
+        } else if (fxomNode instanceof final FXOMObject fxomObject) {
             final var mask = new DesignHierarchyMask(fxomObject);
             result.append(mask.getClassNameInfo());
         }

@@ -287,8 +287,7 @@ class MetadataIntrospector {
                 try {
                     final var method = sample.getClass().getMethod(methodName);
                     final var type = method.getGenericReturnType();
-                    if (type instanceof ParameterizedType) {
-                        final var parameterizedType = (ParameterizedType) type;
+                    if (type instanceof final ParameterizedType parameterizedType) {
                         final var genericType = parameterizedType.getActualTypeArguments()[0];
                         if (genericType instanceof Class) {
                             final var genericClass = (Class) parameterizedType.getActualTypeArguments()[0];

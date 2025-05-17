@@ -65,8 +65,7 @@ class TransientStateBackup {
             candidates.removeFirst();
             
             final var sceneGraphObject = candidate.getSceneGraphObject();
-            if (sceneGraphObject instanceof TabPane) {
-                final var tabPane = (TabPane) sceneGraphObject;
+            if (sceneGraphObject instanceof final TabPane tabPane) {
                 final var currentTab = tabPane.getSelectionModel().getSelectedItem();
                 if (currentTab != null) {
                     final var tabObject
@@ -75,8 +74,7 @@ class TransientStateBackup {
                         tabPaneMap.put(candidate, tabObject);
                     }
                 }
-            } else if (sceneGraphObject instanceof Accordion) {
-                final var accordion  = (Accordion) sceneGraphObject;
+            } else if (sceneGraphObject instanceof final Accordion accordion) {
                 final var currentTitledPane = accordion.getExpandedPane();
                 if (currentTitledPane != null) {
                     final var titledPaneObject
@@ -102,8 +100,7 @@ class TransientStateBackup {
             candidates.removeFirst();
             
             final var sceneGraphObject = candidate.getSceneGraphObject();
-            if (sceneGraphObject instanceof TabPane) {
-                final var tabPane = (TabPane) sceneGraphObject;
+            if (sceneGraphObject instanceof final TabPane tabPane) {
                 final var tabObject = tabPaneMap.get(candidate);
                 if ((tabObject != null) && (tabObject.getParentObject() == candidate)) {
                     assert tabObject.getSceneGraphObject() instanceof Tab;
@@ -111,8 +108,7 @@ class TransientStateBackup {
                     assert tabPane.getTabs().contains(tab);
                     tabPane.getSelectionModel().select(tab);
                 }
-            } else if (sceneGraphObject instanceof Accordion) {
-                final var accordion  = (Accordion) sceneGraphObject;
+            } else if (sceneGraphObject instanceof final Accordion accordion) {
                 final var titlePaneObject = accordionMap.get(candidate);
                 if ((titlePaneObject != null) && (titlePaneObject.getParentObject() == candidate)) {
                     assert titlePaneObject.getSceneGraphObject() instanceof TitledPane;

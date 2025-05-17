@@ -168,16 +168,10 @@ public class AdjustDividerGesture extends AbstractMouseGesture {
         hudWindowController.setNameAtRowIndex("dividerPosition", 0); //NOI18N
         updateHudWindow();
         
-        final CardinalPoint cp;
-        switch(getSplitPane().getOrientation()) {
-            default:
-            case HORIZONTAL:
-                cp = CardinalPoint.S;
-                break;
-            case VERTICAL:
-                cp = CardinalPoint.E;
-                break;
-        }
+        final CardinalPoint cp = switch (getSplitPane().getOrientation()) {
+            default -> CardinalPoint.S;
+            case VERTICAL -> CardinalPoint.E;
+        };
         hudWindowController.setRelativePosition(cp);
         hudWindowController.openWindow(getSplitPane());
     }

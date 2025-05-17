@@ -34,6 +34,8 @@ package com.oracle.javafx.scenebuilder.kit.fxom.sampledata;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
 import javafx.scene.chart.PieChart;
 
 /**
@@ -43,10 +45,14 @@ class PieChartSampleData extends AbstractSampleData {
     
     private final List<PieChart.Data> samples = new ArrayList<>();
 
-    public PieChartSampleData() {
+    public PieChartSampleData(Random random) {
         for (var i = 0; i < 20; i++) {
-            samples.add(new PieChart.Data(lorem(i), Math.random() * 100.0));
+            samples.add(new PieChart.Data(lorem(i), random.nextDouble(100.0)));
         }
+    }
+
+    public PieChartSampleData() {
+        this(AbstractSampleData.random);
     }
 
     /*

@@ -94,11 +94,9 @@ public class FXOMAssetIndex {
              * Collects URL instances.
              */
             for (final var fxomObject : fxomRoot.collectObjectWithSceneGraphObjectClass(URL.class)) {
-                if (fxomObject instanceof FXOMInstance) {
-                    final var urlInstance = (FXOMInstance) fxomObject;
+                if (fxomObject instanceof final FXOMInstance urlInstance) {
                     final var valueProperty = urlInstance.getProperties().get(valueName);
-                    if (valueProperty instanceof FXOMPropertyT) {
-                        final var valuePropertyT = (FXOMPropertyT) valueProperty;
+                    if (valueProperty instanceof final FXOMPropertyT valuePropertyT) {
                         final var path = extractPath(valuePropertyT.getValue());
                         if (path != null) {
                             result.put(path, valuePropertyT);

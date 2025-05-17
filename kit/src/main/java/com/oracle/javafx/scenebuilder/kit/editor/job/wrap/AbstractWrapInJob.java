@@ -130,10 +130,9 @@ public abstract class AbstractWrapInJob extends BatchSelectionJob {
             return false;
         }
         final var asg = selection.getGroup();
-        if (!(asg instanceof ObjectSelectionGroup)) {
+        if (!(asg instanceof final ObjectSelectionGroup osg)) {
             return false;
         }
-        final var osg = (ObjectSelectionGroup) asg;
         if (!osg.hasSingleParent()) {
             return false;
         }
@@ -355,8 +354,7 @@ public abstract class AbstractWrapInJob extends BatchSelectionJob {
             }
 
             // Remove static properties from child
-            if (child instanceof FXOMInstance) {
-                final var fxomInstance = (FXOMInstance) child;
+            if (child instanceof final FXOMInstance fxomInstance) {
                 for (final var p : fxomInstance.getProperties().values()) {
                     final var residentClass = p.getName().getResidenceClass();
                     if (residentClass != null) {
@@ -394,8 +392,7 @@ public abstract class AbstractWrapInJob extends BatchSelectionJob {
         if (children.size() == 1) {
             final var metadata = Metadata.getMetadata();
             final var child = children.getFirst();
-            if (child instanceof FXOMInstance) {
-                final var fxomInstance = (FXOMInstance) child;
+            if (child instanceof final FXOMInstance fxomInstance) {
                 for (final var p : fxomInstance.getProperties().values()) {
                     final var residentClass = p.getName().getResidenceClass();
                     if (residentClass != null) {

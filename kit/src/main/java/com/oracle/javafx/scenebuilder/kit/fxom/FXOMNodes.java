@@ -282,15 +282,11 @@ public class FXOMNodes {
         final var currentProperty = fxomInstance.getProperties().get(sourceProperty.getName());
         if (currentProperty == null) {
             sourceProperty.addToParentInstance(-1, fxomInstance);
-        } else if ((currentProperty instanceof FXOMPropertyT)
-                && (sourceProperty instanceof FXOMPropertyT)) {
-            final var currentPropertyT = (FXOMPropertyT) currentProperty;
-            final var newPropertyT = (FXOMPropertyT) sourceProperty;
+        } else if ((currentProperty instanceof final FXOMPropertyT currentPropertyT)
+                && (sourceProperty instanceof final FXOMPropertyT newPropertyT)) {
             updateProperty(currentPropertyT, newPropertyT);
-        } else if ((currentProperty instanceof FXOMPropertyC)
-                && (sourceProperty instanceof FXOMPropertyC)) {
-            final var currentPropertyC = (FXOMPropertyC) currentProperty;
-            final var newPropertyC = (FXOMPropertyC) sourceProperty;
+        } else if ((currentProperty instanceof final FXOMPropertyC currentPropertyC)
+                && (sourceProperty instanceof final FXOMPropertyC newPropertyC)) {
             updateProperty(currentPropertyC, newPropertyC);
         } else {
             final var index = currentProperty.getIndexInParentInstance();
@@ -326,24 +322,18 @@ public class FXOMNodes {
         for (var i = 0; i < updateCount; i++) {
             final var currentValue = currentValues.get(i);
             final var newValue = sourceValues.get(i);
-            if ((currentValue instanceof FXOMInstance) &&
-                    (newValue instanceof FXOMInstance)) {
-                final var currentInstance = (FXOMInstance) currentValue;
-                final var newInstance = (FXOMInstance) newValue;
+            if ((currentValue instanceof final FXOMInstance currentInstance) &&
+                (newValue instanceof final FXOMInstance newInstance)) {
                 if (currentInstance.getDeclaredClass() == newInstance.getDeclaredClass()) {
                     updateInstance(currentInstance, newInstance);
                 } else {
                     replacePropertyValue(currentValue, newValue);
                 }
-            } else if ((currentValue instanceof FXOMCollection) &&
-                    (newValue instanceof FXOMCollection)) {
-                final var currentCollection = (FXOMCollection) currentValue;
-                final var newCollection = (FXOMCollection) newValue;
+            } else if ((currentValue instanceof final FXOMCollection currentCollection) &&
+                       (newValue instanceof final FXOMCollection newCollection)) {
                 updateCollection(currentCollection, newCollection);
-            } else if ((currentValue instanceof FXOMIntrinsic) &&
-                    (newValue instanceof FXOMIntrinsic)) {
-                final var currentIntrinsic = (FXOMIntrinsic) currentValue;
-                final var newIntrinsic = (FXOMIntrinsic) newValue;
+            } else if ((currentValue instanceof final FXOMIntrinsic currentIntrinsic) &&
+                       (newValue instanceof final FXOMIntrinsic newIntrinsic)) {
                 updateIntrinsic(currentIntrinsic, newIntrinsic);
             } else {
                 replacePropertyValue(currentValue, newValue);
@@ -410,20 +400,14 @@ public class FXOMNodes {
         for (var i = 0; i < updateCount; i++) {
             final var currentValue = fxomCollection.getItems().get(i);
             final var newValue = sourceCollection.getItems().get(i);
-            if ((currentValue instanceof FXOMInstance) &&
-                    (newValue instanceof FXOMInstance)) {
-                final var currentInstance = (FXOMInstance) currentValue;
-                final var newInstance = (FXOMInstance) newValue;
+            if ((currentValue instanceof final FXOMInstance currentInstance) &&
+                (newValue instanceof final FXOMInstance newInstance)) {
                 updateInstance(currentInstance, newInstance);
-            } else if ((currentValue instanceof FXOMCollection) &&
-                    (newValue instanceof FXOMCollection)) {
-                final var currentCollection = (FXOMCollection) currentValue;
-                final var newCollection = (FXOMCollection) newValue;
+            } else if ((currentValue instanceof final FXOMCollection currentCollection) &&
+                       (newValue instanceof final FXOMCollection newCollection)) {
                 updateCollection(currentCollection, newCollection);
-            } else if ((currentValue instanceof FXOMIntrinsic) &&
-                    (newValue instanceof FXOMIntrinsic)) {
-                final var currentIntrinsic = (FXOMIntrinsic) currentValue;
-                final var newIntrinsic = (FXOMIntrinsic) newValue;
+            } else if ((currentValue instanceof final FXOMIntrinsic currentIntrinsic) &&
+                       (newValue instanceof final FXOMIntrinsic newIntrinsic)) {
                 updateIntrinsic(currentIntrinsic, newIntrinsic);
             } else {
                 final var index = currentValue.getIndexInParentProperty();
@@ -531,18 +515,12 @@ public class FXOMNodes {
     public static String extractReferenceSource(final FXOMNode node) {
         final String result;
         
-        if (node instanceof FXOMIntrinsic) {
-            final var intrinsic = (FXOMIntrinsic) node;
-            switch(intrinsic.getType()) {
-                case FX_REFERENCE:
-                case FX_COPY:
-                    result = intrinsic.getSource();
-                    break;
-                default:
-                    result = null;
-            }
-        } else if (node instanceof FXOMPropertyT) {
-            final var property = (FXOMPropertyT) node;
+        if (node instanceof final FXOMIntrinsic intrinsic) {
+            result = switch (intrinsic.getType()) {
+                case FX_REFERENCE, FX_COPY -> intrinsic.getSource();
+                default -> null;
+            };
+        } else if (node instanceof final FXOMPropertyT property) {
             final var pv = new PrefixedValue(property.getValue());
             if (pv.isExpression() && JavaLanguage.isIdentifier(pv.getSuffix())) {
                 result = pv.getSuffix();
@@ -565,16 +543,14 @@ public class FXOMNodes {
         if (extractReferenceSource(node) == null) {
             result = false;
         } else {
-            if (node instanceof FXOMIntrinsic) {
-                final var intrinsic = (FXOMIntrinsic) node;
+            if (node instanceof final FXOMIntrinsic intrinsic) {
                 final FXOMProperty parentProperty = intrinsic.getParentProperty();
                 if (parentProperty == null) {
                     result = false;
                 } else {
                     result = parentProperty.getName().equals(toggleGroupName);
                 }
-            } else if (node instanceof FXOMPropertyT) {
-                final var property = (FXOMPropertyT) node;
+            } else if (node instanceof final FXOMPropertyT property) {
                 result = property.getName().equals(toggleGroupName);
             } else {
                 result = false;
@@ -595,8 +571,7 @@ public class FXOMNodes {
     public static boolean isWeakReference(final FXOMNode node) {
         final boolean result;
         
-        if (node instanceof FXOMIntrinsic) {
-            final var intrinsic = (FXOMIntrinsic) node;
+        if (node instanceof final FXOMIntrinsic intrinsic) {
             switch(intrinsic.getType()) {
                 case FX_REFERENCE:
                 case FX_COPY:
@@ -614,8 +589,7 @@ public class FXOMNodes {
                 default:
                     result = false;
             }
-        } else if (node instanceof FXOMPropertyT) {
-            final var property = (FXOMPropertyT) node;
+        } else if (node instanceof final FXOMPropertyT property) {
             final var pv = new PrefixedValue(property.getValue());
             if (pv.isExpression() && JavaLanguage.isIdentifier(pv.getSuffix())) {
                 final var propertyName = property.getName();
@@ -661,21 +635,18 @@ public class FXOMNodes {
             result.add(from);
         }
         
-        if (from instanceof FXOMCollection) {
-            final var collection = (FXOMCollection) from;
+        if (from instanceof final FXOMCollection collection) {
             for (final var item : collection.getItems()) {
                 sort(item, objects, result);
             }
-        } else if (from instanceof FXOMInstance) {
-            final var instance = (FXOMInstance) from;
-            final List<PropertyName> propertyNames 
+        } else if (from instanceof final FXOMInstance instance) {
+            final List<PropertyName> propertyNames
                     = new ArrayList<>(instance.getProperties().keySet());
             Collections.sort(propertyNames);
             for (final var name : propertyNames) {
                 final var property = instance.getProperties().get(name);
                 assert property != null;
-                if (property instanceof FXOMPropertyC) {
-                    final var propertyC = (FXOMPropertyC) property;
+                if (property instanceof final FXOMPropertyC propertyC) {
                     for (final var v : propertyC.getValues()) {
                         sort(v, objects, result);
                     }
@@ -885,18 +856,15 @@ public class FXOMNodes {
         
         result.add(fxomObject);
         
-        if (fxomObject instanceof FXOMInstance) {
-            final var fxomInstance = (FXOMInstance) fxomObject;
+        if (fxomObject instanceof final FXOMInstance fxomInstance) {
             for (final var p : fxomInstance.getProperties().values()) {
-                if (p instanceof FXOMPropertyC) {
-                    final var pc = (FXOMPropertyC) p;
+                if (p instanceof final FXOMPropertyC pc) {
                     for (final var v : pc.getValues()) {
                         serializeObjects(v, result);
                     }
                 }
             }
-        } else if (fxomObject instanceof FXOMCollection) {
-            final var fxomCollection = (FXOMCollection) fxomObject;
+        } else if (fxomObject instanceof final FXOMCollection fxomCollection) {
             for (final var i : fxomCollection.getItems()) {
                 serializeObjects(i, result);
             }

@@ -1336,44 +1336,31 @@ public class InspectorPanelController extends AbstractFxmlPanelController {
         final PropertyEditor propertyEditor;
 
         if (propMeta instanceof StringPropertyMetadata) {
-            switch (propMeta.getName().getName()) {
-                case "style": //NOI18N
-                    propertyEditor = makePropertyEditor(StyleEditor.class, propMeta);
-                    break;
-                case "id": //NOI18N
-                    propertyEditor = makePropertyEditor(StringEditor.class, propMeta);
-                    break;
-                case "charset":
-                    propertyEditor = makePropertyEditor(CharsetEditor.class, propMeta);
-                    break;
-                default:
-                    propertyEditor = makePropertyEditor(I18nStringEditor.class, propMeta);
-                    break;
-            }
+            propertyEditor = switch (propMeta.getName().getName()) {
+                case "style" -> //NOI18N
+                    makePropertyEditor(StyleEditor.class, propMeta);
+                case "id" -> //NOI18N
+                    makePropertyEditor(StringEditor.class, propMeta);
+                case "charset" -> makePropertyEditor(CharsetEditor.class, propMeta);
+                default -> makePropertyEditor(I18nStringEditor.class, propMeta);
+            };
         } else if (propMeta instanceof ListValuePropertyMetadata) {
-            switch (propMeta.getName().getName()) {
-                case "styleClass": //NOI18N
-                    propertyEditor = makePropertyEditor(StyleClassEditor.class, propMeta);
-                    break;
-                case "stylesheets": //NOI18N
-                    propertyEditor = makePropertyEditor(StylesheetEditor.class, propMeta);
-                    break;
-                case "buttonTypes": //NOI18N
-                    propertyEditor = makePropertyEditor(ButtonTypeEditor.class, propMeta);
-                    break;
-                case "dividerPositions": //NOI18N
-                    propertyEditor = makePropertyEditor(DividerPositionsEditor.class, propMeta);
-                    break;
-                case "source": //NOI18N
-                    propertyEditor = makePropertyEditor(IncludeFxmlEditor.class, propMeta);
-                    break;
-                default:
-                    propertyEditor = makePropertyEditor(propMeta instanceof StringListPropertyMetadata? StringListEditor.class : GenericEditor.class, propMeta);
-                    break;
-            }
-        } else if (propMeta instanceof DoublePropertyMetadata) {
+            propertyEditor = switch (propMeta.getName().getName()) {
+                case "styleClass" -> //NOI18N
+                    makePropertyEditor(StyleClassEditor.class, propMeta);
+                case "stylesheets" -> //NOI18N
+                    makePropertyEditor(StylesheetEditor.class, propMeta);
+                case "buttonTypes" -> //NOI18N
+                    makePropertyEditor(ButtonTypeEditor.class, propMeta);
+                case "dividerPositions" -> //NOI18N
+                    makePropertyEditor(DividerPositionsEditor.class, propMeta);
+                case "source" -> //NOI18N
+                    makePropertyEditor(IncludeFxmlEditor.class, propMeta);
+                default ->
+                    makePropertyEditor(propMeta instanceof StringListPropertyMetadata ? StringListEditor.class : GenericEditor.class, propMeta);
+            };
+        } else if (propMeta instanceof final DoublePropertyMetadata doublePropMeta) {
             // Double editors
-            final var doublePropMeta = (DoublePropertyMetadata) propMeta;
             final var kind = doublePropMeta.getKind();
             if ((kind == DoubleKind.OPACITY) || (kind == DoubleKind.PROGRESS) || isBoundedByProperties(propMeta)) {
                 propertyEditor = makePropertyEditor(BoundedDoubleEditor.class, propMeta);
@@ -1396,14 +1383,11 @@ public class InspectorPanelController extends AbstractFxmlPanelController {
             // Boolean editor
             propertyEditor = makePropertyEditor(BooleanEditor.class, propMeta);
         } else if (propMeta instanceof EnumerationPropertyMetadata) {
-            switch (propMeta.getName().getName()) {
-                case "textAlignment": //NOI18N
-                    propertyEditor = makePropertyEditor(TextAlignmentEditor.class, propMeta);
-                    break;
-                default:
-                    propertyEditor = makePropertyEditor(EnumEditor.class, propMeta);
-                    break;
-            }
+            propertyEditor = switch (propMeta.getName().getName()) {
+                case "textAlignment" -> //NOI18N
+                    makePropertyEditor(TextAlignmentEditor.class, propMeta);
+                default -> makePropertyEditor(EnumEditor.class, propMeta);
+            };
         } else if (propMeta instanceof InsetsPropertyMetadata) {
             // Insets editor
             propertyEditor = makePropertyEditor(InsetsEditor.class, propMeta);
@@ -1671,20 +1655,12 @@ public class InspectorPanelController extends AbstractFxmlPanelController {
 
     private GridPane getSectionContent(final SectionId sectionId) {
         assert sectionId != SectionId.NONE;
-        final GridPane gp;
-        switch (sectionId) {
-            case PROPERTIES:
-                gp = propertiesSection;
-                break;
-            case LAYOUT:
-                gp = layoutSection;
-                break;
-            case CODE:
-                gp = codeSection;
-                break;
-            default:
-                throw new IllegalStateException("Unexpected section id " + sectionId); //NOI18N
-        }
+        final GridPane gp = switch (sectionId) {
+            case PROPERTIES -> propertiesSection;
+            case LAYOUT -> layoutSection;
+            case CODE -> codeSection;
+            default -> throw new IllegalStateException("Unexpected section id " + sectionId); //NOI18N
+        };
         return gp;
     }
 
@@ -2302,8 +2278,7 @@ public class InspectorPanelController extends AbstractFxmlPanelController {
         }
 
         private void handleFxomIntrincis(final FXOMObject obj) {
-            if(obj instanceof  FXOMIntrinsic) {
-                final var intrinsic = (FXOMIntrinsic) obj;
+            if(obj instanceof final FXOMIntrinsic intrinsic) {
                 selectedIntrinsics.add(intrinsic);
                 final var fxomInstance = intrinsic.createFxomInstanceFromIntrinsic();
                 selectedInstances.add(fxomInstance);

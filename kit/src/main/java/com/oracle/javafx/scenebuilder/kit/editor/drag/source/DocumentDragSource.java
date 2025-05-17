@@ -147,8 +147,7 @@ public class DocumentDragSource extends AbstractDragSource {
     
     private static Point2D computeDefaultHit(final FXOMObject fxomObject) {
         final double hitX, hitY;
-        if (fxomObject.getSceneGraphObject() instanceof Node) {
-            final var sceneGraphNode = (Node) fxomObject.getSceneGraphObject();
+        if (fxomObject.getSceneGraphObject() instanceof final Node sceneGraphNode) {
             final var lb = sceneGraphNode.getLayoutBounds();
             hitX = (lb.getMinX() + lb.getMaxX()) / 2.0;
             hitY = (lb.getMinY() + lb.getMaxY()) / 2.0;
@@ -247,8 +246,7 @@ public class DocumentDragSource extends AbstractDragSource {
         result.getStylesheets().add(EditorController.getStylesheet().toString());
 
         for (final var draggedObject : draggedObjects) {
-            if (draggedObject.getSceneGraphObject() instanceof Node) {
-                final var sceneGraphNode = (Node) draggedObject.getSceneGraphObject();
+            if (draggedObject.getSceneGraphObject() instanceof final Node sceneGraphNode) {
                 final var shadowNode = new DragSourceShadow();
                 shadowNode.setupForNode(sceneGraphNode);
 //                assert shadowNode.getLayoutBounds().equals(sceneGraphNode.getLayoutBounds());
@@ -259,8 +257,7 @@ public class DocumentDragSource extends AbstractDragSource {
         
         // Translate the group so that it renders (hitX, hitY) above (layoutX, layoutY).
         final Point2D hitPoint;
-        if (hitObject.getSceneGraphObject() instanceof Node) {
-            final var hitNode = (Node) hitObject.getSceneGraphObject();
+        if (hitObject.getSceneGraphObject() instanceof final Node hitNode) {
             hitPoint = hitNode.localToParent(hitX, hitY);
         } else {
             hitPoint = Point2D.ZERO;

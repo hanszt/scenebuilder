@@ -116,8 +116,7 @@ class FXOMNormalizer {
                 = fxomDocument.getFxomRoot().collectProperties(expandedPaneName);
         
         for (final var p : expandedPaneProperties) {
-            if (p instanceof FXOMPropertyC) {
-                final var pc = (FXOMPropertyC) p;
+            if (p instanceof final FXOMPropertyC pc) {
                 assert !pc.getValues().isEmpty();
                 final var v0 = pc.getValues().getFirst();
                 if (v0 instanceof FXOMInstance) {

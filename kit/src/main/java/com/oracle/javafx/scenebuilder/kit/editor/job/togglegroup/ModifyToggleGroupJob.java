@@ -78,8 +78,7 @@ public class ModifyToggleGroupJob extends BatchDocumentJob {
     protected List<Job> makeSubJobs() {
         final List<Job> result = new ArrayList<>();
 
-        if (targetObject instanceof FXOMInstance) {
-            final var targetInstance = (FXOMInstance) targetObject;
+        if (targetObject instanceof final FXOMInstance targetInstance) {
             final var vpm
                     = Metadata.getMetadata().queryValueProperty(targetInstance, toggleGroupName);
             if (vpm instanceof ToggleGroupPropertyMetadata) {

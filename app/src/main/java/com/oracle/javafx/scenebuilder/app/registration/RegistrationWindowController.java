@@ -54,9 +54,9 @@ import java.util.regex.Pattern;
 /**
  *
  */
-public class RegistrationWindowController extends AbstractFxmlWindowController {
+public final class RegistrationWindowController extends AbstractFxmlWindowController {
 
-    private static final Pattern emailPattern = Pattern.compile("[a-zA-Z0-9[!#$%&'()*+,/\\-_\\.\"]]+@[a-zA-Z0-9[!#$%&'()*+,/\\-_\"]]+\\.[a-zA-Z0-9[!#$%&'()*+,/\\-_\"\\.]]+"); //NOI18N
+    private static final Pattern emailPattern = Pattern.compile("[a-zA-Z0-9[!#$%&'()*+,/\\-_.\"]]+@[a-zA-Z0-9[!#$%&'()*+,/\\-_\"]]+\\.[a-zA-Z0-9[!#$%&'()*+,/\\-_\".]]+"); //NOI18N
 
     @FXML
     private Label lbAlert;
@@ -181,12 +181,12 @@ public class RegistrationWindowController extends AbstractFxmlWindowController {
             final var digest = messageDigest.digest();
 
             // Convert the byte to hex format
-            var hexStr = "";
-            for (var i = 0; i < digest.length; i++) {
-                hexStr +=  Integer.toString((digest[i] & 0xff) + 0x100, 16).substring(1);
+            StringBuilder hexStr = new StringBuilder();
+            for (final byte b : digest) {
+                hexStr.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
             }
 
-            return hexStr;
+            return hexStr.toString();
         } catch (final NoSuchAlgorithmException e) {
             // Intentionally blank catch
         }

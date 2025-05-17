@@ -107,11 +107,9 @@ public class ErrorReportEntry {
                 result.append(",expression="); //NOI18N
                 break;
         }
-        if (fxomNode instanceof FXOMPropertyT) {
-            final var fxomProperty = (FXOMPropertyT) fxomNode;
+        if (fxomNode instanceof final FXOMPropertyT fxomProperty) {
             result.append(fxomProperty.getValue());
-        } else if (fxomNode instanceof FXOMIntrinsic) {
-            final var fxomIntrinsic = (FXOMIntrinsic) fxomNode;
+        } else if (fxomNode instanceof final FXOMIntrinsic fxomIntrinsic) {
             result.append(fxomIntrinsic.getSource());
         } else {
             result.append("?"); //NOI18N

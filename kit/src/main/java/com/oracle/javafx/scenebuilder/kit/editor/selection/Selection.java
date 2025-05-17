@@ -168,8 +168,7 @@ public class Selection {
         assert fxomObject != null;
         
         final ObjectSelectionGroup newGroup;
-        if (group instanceof ObjectSelectionGroup) {
-            final var osg = (ObjectSelectionGroup) group;
+        if (group instanceof final ObjectSelectionGroup osg) {
             final var currentItems = osg.getItems();
             if (currentItems.contains(fxomObject)) {
                 if (currentItems.size() == 1) {
@@ -226,8 +225,7 @@ public class Selection {
         
         assert fxomObject != null;
         
-        if (group instanceof ObjectSelectionGroup) {
-            final var osg = (ObjectSelectionGroup) group;
+        if (group instanceof final ObjectSelectionGroup osg) {
             result = osg.getItems().contains(fxomObject);
         } else {
             result = false;
@@ -240,11 +238,9 @@ public class Selection {
     public FXOMObject getHitItem() {
         final FXOMObject result;
         
-        if (group instanceof ObjectSelectionGroup) {
-            final var osg = (ObjectSelectionGroup) group;
+        if (group instanceof final ObjectSelectionGroup osg) {
             result = osg.getHitItem();
-        } else if (group instanceof GridSelectionGroup) {
-            final var gsg = (GridSelectionGroup) group;
+        } else if (group instanceof final GridSelectionGroup gsg) {
             result = gsg.getParentObject();
         } else {
             result = null;
@@ -256,8 +252,7 @@ public class Selection {
     public Node getCheckedHitNode() {
         final Node result;
         
-        if (group instanceof ObjectSelectionGroup) {
-            final var osg = (ObjectSelectionGroup) group;
+        if (group instanceof final ObjectSelectionGroup osg) {
             result = osg.getCheckedHitNode();
         } else {
             result = null;
@@ -296,8 +291,7 @@ public class Selection {
         assert gridPaneObject.getSceneGraphObject() instanceof GridPane;
         
         final AbstractSelectionGroup newGroup;
-        if (group instanceof GridSelectionGroup) {
-            final var gsg = (GridSelectionGroup) group;
+        if (group instanceof final GridSelectionGroup gsg) {
             if (gsg.getType() == feature) {
                 final var indexes = gsg.getIndexes();
                 if (indexes.contains(featureIndex)) {
@@ -346,8 +340,7 @@ public class Selection {
         assert gridPaneObject != null;
         assert gridPaneObject.getSceneGraphObject() instanceof GridPane;
         
-        if (group instanceof GridSelectionGroup) {
-            final var gsg = (GridSelectionGroup) group;
+        if (group instanceof final GridSelectionGroup gsg) {
             result = (gsg.getType() == feature)
                     && (gsg.getIndexes().contains(featureIndex));
         } else {

@@ -261,8 +261,7 @@ public class LibraryDialogController extends AbstractFxmlWindowController {
 
     private void deleteFile(final DialogListItem dialogListItem) {
         try {
-            if (dialogListItem instanceof LibraryDialogListItem) {
-                final var item = (LibraryDialogListItem) dialogListItem;
+            if (dialogListItem instanceof final LibraryDialogListItem item) {
                 final var path = item.getFilePath();
 
                 if (Files.exists(path)) {
@@ -300,8 +299,7 @@ public class LibraryDialogController extends AbstractFxmlWindowController {
     }
     
     public void processJarFXMLFolderEdit(final DialogListItem dialogListItem) {
-        if (dialogListItem instanceof LibraryDialogListItem) {
-            final var item = (LibraryDialogListItem) dialogListItem;
+        if (dialogListItem instanceof final LibraryDialogListItem item) {
             if (Files.exists(item.getFilePath())) {
                 if (LibraryUtil.isJarPath(item.getFilePath()) || Files.isDirectory(item.getFilePath())) {
                     final var iwc = new ImportWindowController(

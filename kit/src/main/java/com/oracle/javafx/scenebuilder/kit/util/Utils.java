@@ -43,7 +43,7 @@ public class Utils {
         // no-op
     }
 
-    public static final String makeTitle(final FXOMDocument fxomDocument) {
+    public static String makeTitle(final FXOMDocument fxomDocument) {
         final String title;
 
         if (fxomDocument == null) {

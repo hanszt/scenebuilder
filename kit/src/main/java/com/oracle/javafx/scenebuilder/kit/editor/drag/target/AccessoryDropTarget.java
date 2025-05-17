@@ -117,11 +117,9 @@ public class AccessoryDropTarget extends AbstractDropTarget {
         result.addSubJob(j);
         
         if ((targetContainer.getSceneGraphObject() instanceof BorderPane) 
-                && (draggedObject instanceof FXOMInstance)) {
+                && (draggedObject instanceof final FXOMInstance draggedInstance)) {
             
             // We add a job which sets BorderPane.alignment=CENTER on draggedObject
-            final var draggedInstance
-                    = (FXOMInstance) draggedObject;
             final var alignmentName
                     = new PropertyName("alignment", BorderPane.class); //NOI18N
             final var alignmentMeta

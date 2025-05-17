@@ -35,6 +35,7 @@ import com.oracle.javafx.scenebuilder.app.util.AppSettings;
 
 import java.io.DataInputStream;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -59,7 +60,7 @@ public class Tracking {
                                           + "&version=" + AppSettings.getSceneBuilderVersion()
                                           + (update ? "&update=true" : "");
 
-                final var url = new URL("http://usage.gluonhq.com/ul/log?" + urlParameters);
+                final var url = URI.create("http://usage.gluonhq.com/ul/log?" + urlParameters).toURL();
 
                 final var conn = (HttpURLConnection) url.openConnection();
                 conn.setConnectTimeout(5000);

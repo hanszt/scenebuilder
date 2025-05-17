@@ -36,6 +36,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -425,7 +426,7 @@ public class LibraryPanelController extends AbstractFxmlPanelController {
     private void populateLibraryPanel() {
         // libData is backend structure for all that we put in the Accordion.
         final var libData = new LinkedHashMap<String, ArrayList<LibraryItem>>();
-        final var sectionNames = new TreeSet<String>(getEditorController().getLibrary().getSectionComparator());
+        final var sectionNames = new TreeSet<>(getEditorController().getLibrary().getSectionComparator());
         final List<TitledPane> panes = libAccordion.getPanes();
         
         searchData.clear();
@@ -766,8 +767,7 @@ public class LibraryPanelController extends AbstractFxmlPanelController {
                     // From there the import dialog window, which is application modal,
                     // should come on top of it.
                     final var window = getPanelRoot().getScene().getWindow();
-                    if (window instanceof Stage) {
-                        final var stage = (Stage) window;
+                    if (window instanceof final Stage stage) {
                         stage.toFront();
                     }
 
@@ -794,8 +794,7 @@ public class LibraryPanelController extends AbstractFxmlPanelController {
                 // From there the import dialog window, which is application modal,
                 // should come on top of it.
                 final var window = getPanelRoot().getScene().getWindow();
-                if (window instanceof Stage) {
-                    final var stage = (Stage) window;
+                if (window instanceof final Stage stage) {
                     stage.toFront();
                 }
 
@@ -1025,11 +1024,9 @@ public class LibraryPanelController extends AbstractFxmlPanelController {
         }
         
         for (final var fxomObject : rootFxomObject.collectObjectWithSceneGraphObjectClass(URL.class)) {
-            if (fxomObject instanceof FXOMInstance) {
-                final var urlInstance = (FXOMInstance) fxomObject;
+            if (fxomObject instanceof final FXOMInstance urlInstance) {
                 final var valueProperty = urlInstance.getProperties().get(valueName);
-                if (valueProperty instanceof FXOMPropertyT) {
-                    final var valuePropertyT = (FXOMPropertyT) valueProperty;
+                if (valueProperty instanceof final FXOMPropertyT valuePropertyT) {
                     final var path = extractPath(valuePropertyT);
                     if (path != null) {
                         targetPaths.add(path);
@@ -1049,12 +1046,8 @@ public class LibraryPanelController extends AbstractFxmlPanelController {
         
         final var pv = new PrefixedValue(p.getValue());
         if (pv.isPlainString()) {
-            try {
-                final var url = new URL(pv.getSuffix());
-                result = Paths.get(url.toURI());
-            } catch(final MalformedURLException | URISyntaxException x) {
-                result = null;
-            }
+                final var url = URI.create(pv.getSuffix());
+                result = Path.of(url);
         } else if (pv.isDocumentRelativePath()) {
             final var documentLocation = p.getFxomDocument().getLocation();
             if (documentLocation == null) {

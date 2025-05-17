@@ -51,11 +51,11 @@ class TreeViewSampleData extends AbstractSampleData {
         for (var j = 0; j < 10; j++) {
             final var r = new Rectangle(10, 10);
             r.setFill(color(i));
-            final var child = new TreeItem<String>(lorem(i++));
+            final var child = new TreeItem<>(lorem(i++));
             child.setExpanded(true);
             child.setGraphic(r);
             for (var k = 0; k < 3; k++) {
-                final var child2 = new TreeItem<String>(lorem(i++));
+                final var child2 = new TreeItem<>(lorem(i++));
                 child2.setExpanded(true);
                 final var c = new Circle(5);
                 c.setFill(color(i));
@@ -73,7 +73,7 @@ class TreeViewSampleData extends AbstractSampleData {
     
     @Override
     public void applyTo(final Object sceneGraphObject) {
-        assert sceneGraphObject instanceof TreeView;
+        if (!(sceneGraphObject instanceof TreeView)) throw new AssertionError();
         @SuppressWarnings("unchecked")        
         final var treeView = (TreeView<String>) sceneGraphObject;
         treeView.setRoot(sampleRoot);
@@ -81,7 +81,7 @@ class TreeViewSampleData extends AbstractSampleData {
 
     @Override
     public void removeFrom(final Object sceneGraphObject) {
-        assert sceneGraphObject instanceof TreeView;
+        if (!(sceneGraphObject instanceof TreeView)) throw new AssertionError();
         @SuppressWarnings("unchecked")        
         final var treeView = (TreeView<String>) sceneGraphObject;
         treeView.setRoot(null);

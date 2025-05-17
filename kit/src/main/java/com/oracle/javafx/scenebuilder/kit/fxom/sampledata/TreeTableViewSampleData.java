@@ -55,11 +55,11 @@ class TreeTableViewSampleData extends AbstractSampleData {
         for (var j = 0; j < 10; j++) {
             final var r = new Rectangle(10, 10);
             r.setFill(TreeTableViewSampleData.color(i));
-            final var child = new TreeItem<SampleDataItem>(new SampleDataItem(i++));
+            final var child = new TreeItem<>(new SampleDataItem(i++));
             child.setExpanded(true);
             child.setGraphic(r);
             for (var k = 0; k < 3; k++) {
-                final var child2 = new TreeItem<SampleDataItem>(new SampleDataItem(i++));
+                final var child2 = new TreeItem<>(new SampleDataItem(i++));
                 child2.setExpanded(true);
                 final var c = new Circle(5);
                 c.setFill(TreeTableViewSampleData.color(i));
@@ -82,8 +82,7 @@ class TreeTableViewSampleData extends AbstractSampleData {
         if (treeTableView.getRoot() != null) {
             result = false;
         } else {
-            final List<TreeTableColumn<?, ?>> columns = new ArrayList<>();
-            columns.addAll(treeTableView.getColumns());
+            final List<TreeTableColumn<?, ?>> columns = new ArrayList<>(treeTableView.getColumns());
             while (!columns.isEmpty()) {
                 final var tc = columns.getFirst();
                 if (tc.getCellValueFactory() == null) {
@@ -128,14 +127,13 @@ class TreeTableViewSampleData extends AbstractSampleData {
 
     @Override
     public void removeFrom(final Object sceneGraphObject) {
-        assert sceneGraphObject instanceof TreeTableView;
+        if (!(sceneGraphObject instanceof TreeTableView tb)) throw new AssertionError();
         
         @SuppressWarnings("unchecked")        
-        final TreeTableView<SampleDataItem> tableView = TreeTableView.class.cast(sceneGraphObject);
+        final TreeTableView<SampleDataItem> tableView = tb;
         tableView.setRoot(null);
-        
-        final List<TreeTableColumn<SampleDataItem, ?>> columns = new ArrayList<>();
-        columns.addAll(tableView.getColumns());
+
+        final List<TreeTableColumn<SampleDataItem, ?>> columns = new ArrayList<>(tableView.getColumns());
         while (!columns.isEmpty()) {
             @SuppressWarnings("unchecked")        
             final var tc

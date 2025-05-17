@@ -192,8 +192,7 @@ public class LightControl extends VBox {
             lightProperties.getChildren().add(getColorPicker());
             colorPicker.setPaintProperty(getValue().getColor());
 
-            if (getValue() instanceof Distant) {
-                final var distant = (Distant) getValue();
+            if (getValue() instanceof final Distant distant) {
 
                 final var azimuthEditor = new SliderControl(
                         effectPickerController, "azimuth", 0, 360.0, distant.getAzimuth(), 1.0, false); //NOI18N

@@ -104,8 +104,7 @@ public class ModifySelectionJob extends BatchDocumentJob {
     }
 
     private void handleFxomIntrinsic(final FXOMObject fxomObject, final Set<FXOMInstance> candidates) {
-        if(fxomObject instanceof FXOMIntrinsic) {
-            final var intrinsic = (FXOMIntrinsic) fxomObject;
+        if(fxomObject instanceof final FXOMIntrinsic intrinsic) {
             final var fxomInstance = intrinsic.createFxomInstanceFromIntrinsic();
             candidates.add(fxomInstance);
         }
@@ -139,19 +138,14 @@ public class ModifySelectionJob extends BatchDocumentJob {
         final var subJobs = getSubJobs();
         final var subJobCount = subJobs.size();
 
-        switch (subJobCount) {
-            case 0:
-                result = "Unexecutable Set"; //NOI18N
-                break;
-            case 1: // Single selection
-                result = subJobs.getFirst().getDescription();
-                break;
-            default:
-                result = I18N.getString("label.action.edit.set.n",
-                        propertyMetadata.getName().toString(),
-                        subJobCount);
-                break;
-        }
+        result = switch (subJobCount) {
+            case 0 -> "Unexecutable Set"; //NOI18N
+            case 1 -> // Single selection
+                    subJobs.getFirst().getDescription();
+            default -> I18N.getString("label.action.edit.set.n",
+                    propertyMetadata.getName().toString(),
+                    subJobCount);
+        };
         
         return result;
     }

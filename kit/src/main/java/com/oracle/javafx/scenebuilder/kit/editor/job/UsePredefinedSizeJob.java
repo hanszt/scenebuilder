@@ -142,8 +142,7 @@ public class UsePredefinedSizeJob extends Job {
 
     private void buildSubJobs() {
 
-        if (editorController.getFxomDocument() != null && (fxomObject instanceof FXOMInstance)) {
-            final var fxomInstance = (FXOMInstance) fxomObject;
+        if (editorController.getFxomDocument() != null && (fxomObject instanceof final FXOMInstance fxomInstance)) {
             final var sceneGraphObject = fxomInstance.getSceneGraphObject();
             
             if (sceneGraphObject instanceof WebView

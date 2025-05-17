@@ -28,11 +28,10 @@ public class AbstractWrapInWindowJob extends AbstractWrapInJob {
         }
 
         final var asg = selection.getGroup();
-        if (!(asg instanceof ObjectSelectionGroup)) {
+        if (!(asg instanceof final ObjectSelectionGroup osg)) {
             return false;
         }
 
-        final var osg = (ObjectSelectionGroup) asg;
         if (!osg.hasSingleParent()) {
             return false;
         }

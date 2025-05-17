@@ -73,16 +73,14 @@ public abstract class SingleValuePropertyMetadata<T> extends ValuePropertyMetada
                 // We return the default value specified in the metadata of the
                 // property
                 result = defaultValue;
-            } else if (fxomProperty instanceof FXOMPropertyT) {
-                final var fxomPropertyT = (FXOMPropertyT) fxomProperty;
+            } else if (fxomProperty instanceof final FXOMPropertyT fxomPropertyT) {
                 final var pv = new PrefixedValue(fxomPropertyT.getValue());
                 if (pv.isBindingExpression()) {
                     result = getDefaultValue();
                 } else {
                     result = makeValueFromProperty(fxomPropertyT);
                 }
-            } else if (fxomProperty instanceof FXOMPropertyC) {
-                final var fxomPropertyC = (FXOMPropertyC) fxomProperty;
+            } else if (fxomProperty instanceof final FXOMPropertyC fxomPropertyC) {
                 assert !fxomPropertyC.getValues().isEmpty();
                 final var firstValue = fxomPropertyC.getValues().getFirst();
                 if (firstValue instanceof FXOMInstance) {

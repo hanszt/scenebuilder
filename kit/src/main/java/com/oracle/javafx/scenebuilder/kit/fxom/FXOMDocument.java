@@ -45,6 +45,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -207,11 +208,7 @@ public class FXOMDocument {
         
         final SampleDataGenerator newSampleDataGenerator;
         if (sampleDataEnabled) {
-            if (sampleDataGenerator != null) {
-                newSampleDataGenerator = sampleDataGenerator;
-            } else {
-                newSampleDataGenerator = new SampleDataGenerator();
-            }
+            newSampleDataGenerator = Objects.requireNonNullElseGet(sampleDataGenerator, SampleDataGenerator::new);
         } else {
             newSampleDataGenerator = null;
         }
@@ -481,9 +478,9 @@ public class FXOMDocument {
         return sceneGraphHolder;
     }
     
-    public static interface SceneGraphHolder {
-        public void fxomDocumentWillRefreshSceneGraph(FXOMDocument fxomDocument);
-        public void fxomDocumentDidRefreshSceneGraph(FXOMDocument fxomDocument);
+    public interface SceneGraphHolder {
+        void fxomDocumentWillRefreshSceneGraph(FXOMDocument fxomDocument);
+        void fxomDocumentDidRefreshSceneGraph(FXOMDocument fxomDocument);
     }
     
     /**

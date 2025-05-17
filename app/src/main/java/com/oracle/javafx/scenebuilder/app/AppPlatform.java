@@ -38,6 +38,7 @@ import static com.oracle.javafx.scenebuilder.kit.editor.EditorPlatform.IS_LINUX;
 import static com.oracle.javafx.scenebuilder.kit.editor.EditorPlatform.IS_MAC;
 import static com.oracle.javafx.scenebuilder.kit.editor.EditorPlatform.IS_WINDOWS;
 import java.io.IOException;
+import java.io.Serial;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -119,10 +120,10 @@ public class AppPlatform {
     }
     
     public interface AppNotificationHandler {
-        public void handleLaunch(List<String> files);
-        public void handleOpenFilesAction(List<String> files);
-        public void handleMessageBoxFailure(Exception x);
-        public void handleQuitAction();
+        void handleLaunch(List<String> files);
+        void handleOpenFilesAction(List<String> files);
+        void handleMessageBoxFailure(Exception x);
+        void handleQuitAction();
     }
     
     
@@ -177,8 +178,9 @@ public class AppPlatform {
         return messageBoxFolder;
     }
     
-    private static class MessageBoxMessage extends ArrayList<String> {
-        static final long serialVersionUID = 10;
+    private static final class MessageBoxMessage extends ArrayList<String> {
+        @Serial
+        private static final long serialVersionUID = 10;
         public MessageBoxMessage(final List<String> strings) {
             super(strings);
         };

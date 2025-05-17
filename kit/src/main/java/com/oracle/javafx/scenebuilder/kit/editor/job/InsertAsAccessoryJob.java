@@ -80,14 +80,13 @@ public class InsertAsAccessoryJob extends BatchSelectionJob {
     @Override
     protected List<Job> makeSubJobs() {
         final List<Job> result = new ArrayList<>();
-        if (targetObject instanceof FXOMInstance) {
+        if (targetObject instanceof final FXOMInstance targetInstance) {
 
             final var mask = new DesignHierarchyMask(targetObject);
             if (mask.isAcceptingAccessory(accessory, newObject)
                     && mask.getAccessory(accessory) == null) { // (1)
 
                 final var fxomDocument = getEditorController().getFxomDocument();
-                final var targetInstance = (FXOMInstance) targetObject;
                 final var accessoryName = mask.getPropertyNameForAccessory(accessory);
                 assert accessoryName != null;
 

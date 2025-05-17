@@ -166,8 +166,8 @@ public class MessageBox<T extends Serializable> {
     }
     
     public interface Delegate<T> {
-        public void messageBoxDidGetMessage(T message);
-        public void messageBoxDidCatchException(Exception x);
+        void messageBoxDidGetMessage(T message);
+        void messageBoxDidCatchException(Exception x);
     }
     
     public Path getMessagePath() {

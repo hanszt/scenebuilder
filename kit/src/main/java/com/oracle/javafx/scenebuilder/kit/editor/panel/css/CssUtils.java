@@ -755,17 +755,15 @@ public class CssUtils {
         if (styleable != null) {
             node = styleable.getStyleableNode();
             if (node == null) {
-                if (target instanceof MenuItem) {
-                    final var mi = (MenuItem) target;
+                if (target instanceof final MenuItem mi) {
                     final PopupControl pc = mi.getParentPopup();
 
                     if (pc != null) { // can be null for Menu.
                         node = pc.getStyleableNode();
                     }
                 } else {
-                    if (target instanceof Tab) {
+                    if (target instanceof final Tab tab) {
                         // Access the Skin Node
-                        final var tab = (Tab) target;
                         final var tp = tab.getTabPane();
                         final var tabs = tp.lookupAll(".tab"); //NOI18N
                         for (final var n : tabs) {

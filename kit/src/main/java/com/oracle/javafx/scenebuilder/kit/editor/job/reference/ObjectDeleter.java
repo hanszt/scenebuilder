@@ -139,18 +139,15 @@ public class ObjectDeleter {
         }
         
         if (result == node) {
-            if (node instanceof FXOMInstance) {
-                final var fxomInstance = (FXOMInstance) node;
+            if (node instanceof final FXOMInstance fxomInstance) {
                 for (final var p : new LinkedList<>(fxomInstance.getProperties().values())) {
-                    if (p instanceof FXOMPropertyC) {
-                        final var cp = (FXOMPropertyC) p;
+                    if (p instanceof final FXOMPropertyC cp) {
                         for (final var value : new LinkedList<>(cp.getValues())) {
                             prepareDeleteObject(value, target);
                         }
                     }
                 }
-            } else if (result instanceof FXOMCollection) {
-                final var fxomCollection = (FXOMCollection) result;
+            } else if (result instanceof final FXOMCollection fxomCollection) {
                 for (final var i : new LinkedList<>(fxomCollection.getItems())) {
                     prepareDeleteObject(i, target);
                 }

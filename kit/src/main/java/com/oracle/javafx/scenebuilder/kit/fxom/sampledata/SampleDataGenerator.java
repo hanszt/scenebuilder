@@ -185,18 +185,15 @@ public class SampleDataGenerator {
             sampleDataMap.put(startObject, newData);
         }
         
-        if (startObject instanceof FXOMInstance) {
-            final var fxomInstance = (FXOMInstance) startObject;
+        if (startObject instanceof final FXOMInstance fxomInstance) {
             for (final var p : fxomInstance.getProperties().values()) {
-                if (p instanceof FXOMPropertyC) {
-                    final var pc = (FXOMPropertyC) p;
+                if (p instanceof final FXOMPropertyC pc) {
                     for (final var v : pc.getValues()) {
                         assignSampleData(v);
                     }
                 }
             }
-        } else if (startObject instanceof FXOMCollection) {
-            final var fxomCollection = (FXOMCollection) startObject;
+        } else if (startObject instanceof final FXOMCollection fxomCollection) {
             for (final var i : fxomCollection.getItems()) {
                 assignSampleData(i);
             }
@@ -210,18 +207,15 @@ public class SampleDataGenerator {
             currentData.removeFrom(startObject.getSceneGraphObject());
         }
         
-        if (startObject instanceof FXOMInstance) {
-            final var fxomInstance = (FXOMInstance) startObject;
+        if (startObject instanceof final FXOMInstance fxomInstance) {
             for (final var p : fxomInstance.getProperties().values()) {
-                if (p instanceof FXOMPropertyC) {
-                    final var pc = (FXOMPropertyC) p;
+                if (p instanceof final FXOMPropertyC pc) {
                     for (final var v : pc.getValues()) {
                         removeSampleData(v);
                     }
                 }
             }
-        } else if (startObject instanceof FXOMCollection) {
-            final var fxomCollection = (FXOMCollection) startObject;
+        } else if (startObject instanceof final FXOMCollection fxomCollection) {
             for (final var i : fxomCollection.getItems()) {
                 removeSampleData(i);
             }

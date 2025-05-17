@@ -81,7 +81,7 @@ public abstract class AutoSuggestEditor extends PropertyEditor {
     private Type type = Type.ALPHA; // Default is a simple text field
     private boolean showMenuButton = true;
 
-    public static enum Type {
+    public enum Type {
 
         ALPHA, // TextField
         DOUBLE, // DoubleField

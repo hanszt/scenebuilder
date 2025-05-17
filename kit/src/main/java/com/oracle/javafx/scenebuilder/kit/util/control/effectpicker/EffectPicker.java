@@ -150,7 +150,7 @@ public class EffectPicker extends Pane {
         return menuItems;
     }
     
-    public static interface Delegate {
-        public void handleError(String warningKey, Object... arguments);
+    public interface Delegate {
+        void handleError(String warningKey, Object... arguments);
     }
 }

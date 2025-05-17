@@ -71,7 +71,7 @@ public enum DocumentationUrls {
     
     private final String url;
     
-    private DocumentationUrls(final String defaultValue) {
+    DocumentationUrls(final String defaultValue) {
         url = defaultValue;
     }
     

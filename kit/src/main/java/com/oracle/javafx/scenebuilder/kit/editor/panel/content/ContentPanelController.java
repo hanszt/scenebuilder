@@ -358,8 +358,7 @@ public class ContentPanelController extends AbstractFxmlPanelController
         // Walk through the selected objects and computes the enclosing bounds.
         final var union = new BoundsUnion();
         final var selection = getEditorController().getSelection();
-        if (selection.getGroup() instanceof ObjectSelectionGroup) {
-            final var osg = (ObjectSelectionGroup) selection.getGroup();
+        if (selection.getGroup() instanceof final ObjectSelectionGroup osg) {
             for (final var i : osg.getItems()) {
                 final var mask = new DesignHierarchyMask(i);
                 final var nodeFxomObject = mask.getClosestFxNode();
@@ -392,15 +391,12 @@ public class ContentPanelController extends AbstractFxmlPanelController
         while (fxomObject != null) {
             final var sceneGraphObject = fxomObject.getSceneGraphObject();
             
-            if (sceneGraphObject instanceof Tab) {
-                final var tab = (Tab) sceneGraphObject;
+            if (sceneGraphObject instanceof final Tab tab) {
                 final var tabPane = tab.getTabPane();
                 assert tabPane != null;
                 tabPane.getSelectionModel().select(tab);
-            } else if (sceneGraphObject instanceof TitledPane) {
-                final var titledPane = (TitledPane) sceneGraphObject;
-                if (titledPane.getParent() instanceof Accordion) {
-                    final var accordion = (Accordion) titledPane.getParent();
+            } else if (sceneGraphObject instanceof final TitledPane titledPane) {
+                if (titledPane.getParent() instanceof final Accordion accordion) {
                     accordion.setExpandedPane(titledPane);
                 }
             }
@@ -1040,8 +1036,7 @@ public class ContentPanelController extends AbstractFxmlPanelController
         sb.append(e.getEventType());
         sb.append(", target="); //NOI18N
         sb.append(e.getTarget());
-        if (e instanceof KeyEvent) {
-            final var ke = (KeyEvent) e;
+        if (e instanceof final KeyEvent ke) {
             sb.append(", keyCode="); //NOI18N
             sb.append(ke.getCode());
         }

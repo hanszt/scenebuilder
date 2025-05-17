@@ -398,7 +398,7 @@ public class PrefixedValue {
             } else {
                 final var tmpPath = Paths.get(System.getProperty("java.io.tmpdir")); //NOI18N
                 final var tmpPathURL = tmpPath.toFile().toURI().toURL();
-                final var absoluteURL = new URL(tmpPathURL.toString() + "/" + encoding); //NOI18N
+                final var absoluteURL = URI.create(tmpPathURL.toString() + "/" + encoding).toURL(); //NOI18N
                 final var absoluteFile = new File(absoluteURL.toURI());
                 final var absolutePath = absoluteFile.toPath();
                 assert absolutePath.startsWith(tmpPath);

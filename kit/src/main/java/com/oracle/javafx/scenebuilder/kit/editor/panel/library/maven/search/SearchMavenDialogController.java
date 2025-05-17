@@ -128,10 +128,10 @@ public class SearchMavenDialogController extends AbstractFxmlWindowController {
             }
         });
         
-        installService = new Service<MavenArtifact>() {
+        installService = new Service<>() {
             @Override
             protected Task<MavenArtifact> createTask() {
-                return new Task<MavenArtifact>() {
+                return new Task<>() {
                     @Override
                     protected MavenArtifact call() throws Exception {
                         return resolveArtifacts();
@@ -223,10 +223,10 @@ public class SearchMavenDialogController extends AbstractFxmlWindowController {
             }
         });
         
-        resultsListView.setCellFactory(p -> new ListCell<DefaultArtifact>() {
+        resultsListView.setCellFactory(p -> new ListCell<>() {
             @Override
             protected void updateItem(final DefaultArtifact item, final boolean empty) {
-                super.updateItem(item, empty); 
+                super.updateItem(item, empty);
                 if (item != null && !empty) {
                     setText(item.getGroupId() + ":" + item.getArtifactId());
                 } else {

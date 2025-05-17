@@ -32,17 +32,18 @@
 
 package com.oracle.javafx.scenebuilder.kit.fxom.sampledata;
 
-import java.util.ArrayList;
-import java.util.List;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
  */
 class TableViewSampleData extends AbstractSampleData {
-    
+
     private final List<SampleDataItem> sampleItems = new ArrayList<>();
 
     public TableViewSampleData() {
@@ -53,13 +54,13 @@ class TableViewSampleData extends AbstractSampleData {
 
     public static boolean canApplyTo(final TableView<?> tableView) {
         final boolean result;
-        
+
         /*
          * We can insert sample data if:
          * 1) TableView.items() is empty
          * 2) TableView columns have no cell factory set
          */
-        
+
         if (!tableView.getItems().isEmpty()) {
             result = false;
         } else {
@@ -74,34 +75,32 @@ class TableViewSampleData extends AbstractSampleData {
                     break;
                 }
             }
-            
+
             result = columns.isEmpty();
         }
-        
+
         return result;
     }
-    
-    
+
+
     /*
      * AbstractSampleData
      */
-    
-    
+
+
     @Override
     public void applyTo(final Object sceneGraphObject) {
         assert sceneGraphObject instanceof TableView;
-        
-        @SuppressWarnings("unchecked")        
-        final var tableView = (TableView<SampleDataItem>) sceneGraphObject;
-        
+
+        @SuppressWarnings("unchecked") final var tableView = (TableView<SampleDataItem>) sceneGraphObject;
+
         tableView.getItems().clear();
         tableView.getItems().addAll(sampleItems);
-        
+
         final List<TableColumn<SampleDataItem, ?>> columns = new ArrayList<>(tableView.getColumns());
         while (!columns.isEmpty()) {
-            @SuppressWarnings("unchecked")        
-            final var tc
-                    = (TableColumn<SampleDataItem,String>)columns.getFirst();
+            @SuppressWarnings("unchecked") final var tc
+                = (TableColumn<SampleDataItem, String>) columns.getFirst();
             tc.setCellValueFactory(SampleDataItem.FACTORY);
             columns.removeFirst();
             columns.addAll(tc.getColumns());
@@ -110,40 +109,37 @@ class TableViewSampleData extends AbstractSampleData {
 
     @Override
     public void removeFrom(final Object sceneGraphObject) {
-        assert sceneGraphObject instanceof TableView;
-        
-        @SuppressWarnings("unchecked")        
-        final TableView<SampleDataItem> tableView = TableView.class.cast(sceneGraphObject);
+        if (!(sceneGraphObject instanceof @SuppressWarnings("rawtypes")TableView tb)) throw new AssertionError();
+
+        @SuppressWarnings("unchecked") final TableView<SampleDataItem> tableView = tb;
         tableView.getItems().clear();
-        
-        final List<TableColumn<SampleDataItem, ?>> columns = new ArrayList<>();
-        columns.addAll(tableView.getColumns());
+
+        final List<TableColumn<SampleDataItem, ?>> columns = new ArrayList<>(tableView.getColumns());
         while (!columns.isEmpty()) {
-            @SuppressWarnings("unchecked")        
-            final var tc
-                    = (TableColumn<SampleDataItem,String>)columns.getFirst();
+            @SuppressWarnings("unchecked") final var tc
+                = (TableColumn<SampleDataItem, String>) columns.getFirst();
             tc.setCellValueFactory(null);
             columns.removeFirst();
             columns.addAll(tc.getColumns());
         }
     }
-  
-    
+
+
     /*
      * Private
      */
-    
-    
+
+
     public static class SampleDataItem {
         int index;
-        
+
         public final static PropertyValueFactory<SampleDataItem, String> FACTORY
-                = new PropertyValueFactory<>("prop"); //NOI18N
-        
+            = new PropertyValueFactory<>("prop"); //NOI18N
+
         public SampleDataItem(final int index) {
             this.index = index;
         }
-        
+
         public String getProp() {
             return TableViewSampleData.lorem(index);
         }

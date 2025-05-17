@@ -47,7 +47,7 @@ public class EnumEditor extends PropertyEditor {
 
     public EnumEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super(propMeta, selectedClasses);
-        comboBox = new ComboBox<String>();
+        comboBox = new ComboBox<>();
         comboBox.disableProperty().bind(disableProperty());
         EditorUtils.makeWidthStretchable(comboBox);
         comboBox.getSelectionModel().selectedItemProperty().addListener((InvalidationListener) o -> {

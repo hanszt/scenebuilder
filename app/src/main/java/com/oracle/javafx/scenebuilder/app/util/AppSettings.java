@@ -46,6 +46,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Properties;
 import java.util.function.Consumer;
@@ -127,19 +128,19 @@ public class AppSettings {
         }
     }
 
-    private static final Task<String> createFetchTask(final Consumer<String> consumer) {
-        return new Task<String>() {
+    private static Task<String> createFetchTask(final Consumer<String> consumer) {
+        return new Task<>() {
             @Override
             protected String call() throws Exception {
                 LOGGER.log(Level.FINE, "Fetching latest Scenebuilder version from: {0}", LATEST_VERSION_CHECK_URL);
                 final var prop = new Properties();
                 String onlineVersionNumber = null;
 
-                URL url = null;
+                final URL url;
                 try {
-                    url = new URL(LATEST_VERSION_CHECK_URL);
+                    url = URI.create(LATEST_VERSION_CHECK_URL).toURL();
                 } catch (final MalformedURLException e) {
-                    LOGGER.log(Level.WARNING, "Failed to construct version check URL: ", e);
+                    throw new IllegalStateException("Failed to construct version check URL: ", e);
                 }
 
                 try (final var inputStream = url.openStream()) {
@@ -170,7 +171,7 @@ public class AppSettings {
 
     private static void updateLatestVersionInfo() {
         try {
-            final var url = new URL(LATEST_VERSION_INFORMATION_URL);
+            final var url = URI.create(LATEST_VERSION_INFORMATION_URL).toURL();
 
             try (final var reader = readerFactory.createReader(new InputStreamReader(url.openStream()))) {
                 final var object = reader.readObject();

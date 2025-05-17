@@ -276,8 +276,7 @@ public class NodeCssState {
 
         public StyleOrigin getCurrentStyleOrigin() {
             final var state = getCurrentStyle();
-            if (state instanceof CssContentMaker.CssPropertyState) {
-                final var cssState = (CssContentMaker.CssPropertyState) state;
+            if (state instanceof final CssPropertyState cssState) {
                 return cssState.getStyle().getOrigin();
             } else {
                 if (state instanceof CssContentMaker.BeanPropertyState) {
@@ -370,8 +369,7 @@ public class NodeCssState {
                 }
             }
 
-            if (node instanceof Skinnable) {
-                final var skinnable = (Skinnable) node;
+            if (node instanceof final Skinnable skinnable) {
                 final var skinNode = skinnable.getSkin().getNode();
                 final var skinList = skinNode.getCssMetaData();
                 for (final var skinCssMeta : skinList) {
@@ -495,10 +493,9 @@ public class NodeCssState {
 
         @Override
         public boolean equals(final Object obj) {
-            if (!(obj instanceof MatchingRule)) {
+            if (!(obj instanceof final MatchingRule mr)) {
                 return false;
             }
-            final var mr = (MatchingRule) obj;
             return rule.equals(mr.rule);
         }
 

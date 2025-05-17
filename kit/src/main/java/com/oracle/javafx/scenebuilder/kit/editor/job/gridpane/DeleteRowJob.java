@@ -86,19 +86,11 @@ public class DeleteRowJob extends BatchSelectionJob {
 
     @Override
     protected String makeDescription() {
-        final String result;
-        switch (targetIndexes.size()) {
-            case 0:
-                result = "Unexecutable Delete"; //NO18N
-                break;
-            case 1:
-                result = "Delete Row"; //NO18N
-                break;
-            default:
-                result = makeMultipleSelectionDescription();
-                break;
-        }
-        return result;
+        return switch (targetIndexes.size()) {
+            case 0 -> "Unexecutable Delete"; //NO18N
+            case 1 -> "Delete Row"; //NO18N
+            default -> makeMultipleSelectionDescription();
+        };
     }
 
     @Override
@@ -158,12 +150,6 @@ public class DeleteRowJob extends BatchSelectionJob {
     }
 
     private String makeMultipleSelectionDescription() {
-        final var result = new StringBuilder();
-
-        result.append("Delete ");
-        result.append(targetIndexes.size());
-        result.append(" Rows");
-
-        return result.toString();
+        return "Delete " + targetIndexes.size() + " Rows";
     }
 }

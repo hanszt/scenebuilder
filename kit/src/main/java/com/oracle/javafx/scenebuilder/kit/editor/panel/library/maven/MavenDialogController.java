@@ -120,10 +120,10 @@ public class MavenDialogController extends AbstractFxmlWindowController {
         maven = new MavenRepositorySystem(false, userM2Repository,
                 preferencesControllerBase.getRepositoryPreferences());
         
-        versionsService = new Service<ObservableList<Version>>() {
+        versionsService = new Service<>() {
             @Override
             protected Task<ObservableList<Version>> createTask() {
-                return new Task<ObservableList<Version>>() {
+                return new Task<>() {
                     @Override
                     protected ObservableList<Version> call() throws Exception {
                         return FXCollections.observableArrayList(getVersions());
@@ -136,10 +136,10 @@ public class MavenDialogController extends AbstractFxmlWindowController {
             if (nv.equals(Worker.State.SUCCEEDED)) {
                 versionsCombo.getItems().setAll(versionsService.getValue()
                         .sorted((v1, v2) -> v2.compareTo(v1)));
-                versionsCombo.setCellFactory(p -> new ListCell<Version>() {
+                versionsCombo.setCellFactory(p -> new ListCell<>() {
                     @Override
                     protected void updateItem(final Version item, final boolean empty) {
-                        super.updateItem(item, empty); 
+                        super.updateItem(item, empty);
                         if (item != null && !empty) {
                             final var remote = maven.getRemoteRepository(item);
                             setText(item + " [" + remote.getId() + "]");
@@ -147,7 +147,7 @@ public class MavenDialogController extends AbstractFxmlWindowController {
                             setText(null);
                         }
                     }
-                    
+
                 });
                 versionsCombo.getSelectionModel().selectedItemProperty().addListener(comboBoxListener);
                 versionsCombo.setDisable(false);
@@ -156,10 +156,10 @@ public class MavenDialogController extends AbstractFxmlWindowController {
             }
         });
         
-        installService = new Service<MavenArtifact>() {
+        installService = new Service<>() {
             @Override
             protected Task<MavenArtifact> createTask() {
-                return new Task<MavenArtifact>() {
+                return new Task<>() {
                     @Override
                     protected MavenArtifact call() throws Exception {
                         return resolveArtifacts();

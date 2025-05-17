@@ -86,18 +86,11 @@ public class DeleteColumnJob extends BatchSelectionJob {
 
     @Override
     protected String makeDescription() {
-        final String result;
-        switch (targetIndexes.size()) {
-            case 0:
-                result = "Unexecutable Delete"; //NO18N
-                break;
-            case 1:
-                result = "Delete Column"; //NO18N
-                break;
-            default:
-                result = makeMultipleSelectionDescription();
-                break;
-        }
+        final String result = switch (targetIndexes.size()) {
+            case 0 -> "Unexecutable Delete"; //NO18N
+            case 1 -> "Delete Column"; //NO18N
+            default -> makeMultipleSelectionDescription();
+        };
         return result;
     }
 

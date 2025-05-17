@@ -79,8 +79,7 @@ public class ClipboardEncoder {
         
         // DataFormat.IMAGE
         final var fxomObject0 = fxomObjects.getFirst();
-        if (fxomObject0.getSceneGraphObject() instanceof ImageView) {
-            final var imageView = (ImageView) fxomObject0.getSceneGraphObject();
+        if (fxomObject0.getSceneGraphObject() instanceof final ImageView imageView) {
             if (imageView.getImage() != null) {
                 result.put(DataFormat.IMAGE, imageView.getImage());
             }

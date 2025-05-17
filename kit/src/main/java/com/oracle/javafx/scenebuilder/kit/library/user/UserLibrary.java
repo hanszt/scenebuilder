@@ -408,8 +408,7 @@ public class UserLibrary extends Library {
          * so that it releases its associated jar files.
          */
         final var classLoader = getClassLoader();
-        if (classLoader instanceof URLClassLoader) {
-            final var urlClassLoader = (URLClassLoader) classLoader;
+        if (classLoader instanceof final URLClassLoader urlClassLoader) {
             try {
                 urlClassLoader.close();
             } catch(final IOException e) {

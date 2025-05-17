@@ -213,9 +213,8 @@ public class AddColumnJob extends BatchSelectionJob {
 
         // Selection == GridPane columns
         // => return the list of selected columns
-        if (asg instanceof GridSelectionGroup
-                && ((GridSelectionGroup) asg).getType() == Type.COLUMN) {
-            final var gsg = (GridSelectionGroup) asg;
+        if (asg instanceof final GridSelectionGroup gsg
+            && ((GridSelectionGroup) asg).getType() == Type.COLUMN) {
             result.addAll(gsg.getIndexes());
         } //
         // Selection == GridPanes or Selection == GridPane rows

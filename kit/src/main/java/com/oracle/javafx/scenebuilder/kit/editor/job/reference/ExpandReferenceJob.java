@@ -48,11 +48,9 @@ public class ExpandReferenceJob  extends Job {
     
     public ExpandReferenceJob(final FXOMNode reference, final FXOMCloner cloner, final EditorController editorController) {
         super(editorController);
-        if (reference instanceof FXOMIntrinsic) {
-            final var fxomIntrinsic = (FXOMIntrinsic) reference;
+        if (reference instanceof final FXOMIntrinsic fxomIntrinsic) {
             subJob = new ExpandIntrinsicReferenceJob(fxomIntrinsic, cloner, getEditorController());
-        } else if (reference instanceof FXOMPropertyT) {
-            final var fxomProperty = (FXOMPropertyT) reference;
+        } else if (reference instanceof final FXOMPropertyT fxomProperty) {
             subJob = new ExpandExpressionReferenceJob(fxomProperty, cloner, getEditorController());
         } else {
             throw new RuntimeException("Bug"); //NOI18N

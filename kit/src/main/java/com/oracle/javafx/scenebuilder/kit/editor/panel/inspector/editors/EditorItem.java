@@ -43,24 +43,24 @@ import javafx.scene.control.MenuItem;
  */
 public interface EditorItem {
 
-    public Node getNode();
+    Node getNode();
 
-    public Object getValue();
+    Object getValue();
 
-    public void setValue(Object value);
+    void setValue(Object value);
 
-    public void reset();
+    void reset();
 
-    public void setValueAsIndeterminate();
+    void setValueAsIndeterminate();
     
-    public MenuItem getMoveUpMenuItem();
+    MenuItem getMoveUpMenuItem();
     
-    public MenuItem getMoveDownMenuItem();
+    MenuItem getMoveDownMenuItem();
     
-    public MenuItem getRemoveMenuItem();
+    MenuItem getRemoveMenuItem();
     
-    public Button getPlusButton();
+    Button getPlusButton();
     
-    public Button getMinusButton();
+    Button getMinusButton();
     
 }

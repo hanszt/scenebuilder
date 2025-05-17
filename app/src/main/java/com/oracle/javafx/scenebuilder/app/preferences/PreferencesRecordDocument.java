@@ -746,13 +746,12 @@ public class PreferencesRecordDocument {
     /**
      * Generates a document node key for the specified document file name.
      * Preferences keys are limited to 80 chars so we cannot use the document path.
-     *
+     * <p>
      * If there is no document key matching the specified document file name,
      * we use it as this document key.
      * Otherwise, we prepend the document file name with an index.
      *
      * @param name The document file name
-     * @return
      */
     private String generateKey(final String name) throws BackingStoreException {
 

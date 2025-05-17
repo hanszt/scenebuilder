@@ -54,7 +54,7 @@ import static com.oracle.javafx.scenebuilder.app.preferences.PreferencesControll
 /**
  * Defines preferences global to the SB application.
  */
-public class PreferencesRecordGlobal extends PreferencesRecordGlobalBase {
+public final class PreferencesRecordGlobal extends PreferencesRecordGlobalBase {
 
     /***************************************************************************
      *                                                                         *

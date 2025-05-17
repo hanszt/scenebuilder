@@ -107,8 +107,7 @@ class TransientProperty extends TransientNode {
                 result = new FXOMPropertyT(fxomDocument, name,
                         propertyElement, null, propertyElement.getContentText());
             }
-            else if ((values.size() == 1) && (values.getFirst() instanceof FXOMInstance)) {
-                final var value = (FXOMInstance) values.getFirst();
+            else if ((values.size() == 1) && (values.getFirst() instanceof final FXOMInstance value)) {
                 final var fxValue = value.getFxValue();
                 if (fxValue != null) {
                     // Case #2

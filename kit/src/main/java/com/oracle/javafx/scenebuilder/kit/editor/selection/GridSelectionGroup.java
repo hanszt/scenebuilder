@@ -95,36 +95,22 @@ public class GridSelectionGroup extends AbstractSelectionGroup {
     }    
     
     public List<FXOMInstance> collectConstraintInstances() {
-        final List<FXOMInstance> result;
-        
-        switch(type) {
-            case ROW:
-                result = collectRowConstraintsInstances();
-                break;
-            case COLUMN:
-                result = collectColumnConstraintsInstances();
-                break;
-            default:
-                throw new RuntimeException("Bug");
-        }
-        
+        final List<FXOMInstance> result = switch (type) {
+            case ROW -> collectRowConstraintsInstances();
+            case COLUMN -> collectColumnConstraintsInstances();
+            default -> throw new RuntimeException("Bug");
+        };
+
         return result;
     }
     
     public List<FXOMObject> collectSelectedObjects() {
-        final List<FXOMObject> result;
-        
-        switch(type) {
-            case ROW:
-                result = collectSelectedObjectsInRow();
-                break;
-            case COLUMN:
-                result = collectSelectedObjectsInColumn();
-                break;
-            default:
-                throw new RuntimeException("Bug");
-        }
-        
+        final List<FXOMObject> result = switch (type) {
+            case ROW -> collectSelectedObjectsInRow();
+            case COLUMN -> collectSelectedObjectsInColumn();
+            default -> throw new RuntimeException("Bug");
+        };
+
         return result;
     }
     
@@ -268,8 +254,7 @@ public class GridSelectionGroup extends AbstractSelectionGroup {
         
         for (int i = 0, count = m.getSubComponentCount(); i <  count; i++) {
             final var childObject = m.getSubComponentAtIndex(i);
-            if (childObject instanceof FXOMInstance) {
-                final var childInstance = (FXOMInstance) childObject;
+            if (childObject instanceof final FXOMInstance childInstance) {
                 if (indexes.contains(columnIndexMeta.getValue(childInstance))) {
                     // child belongs to a selected column
                     result.add(childInstance);
@@ -295,8 +280,7 @@ public class GridSelectionGroup extends AbstractSelectionGroup {
         
         for (int i = 0, count = m.getSubComponentCount(); i <  count; i++) {
             final var childObject = m.getSubComponentAtIndex(i);
-            if (childObject instanceof FXOMInstance) {
-                final var childInstance = (FXOMInstance) childObject;
+            if (childObject instanceof final FXOMInstance childInstance) {
                 if (indexes.contains(rowIndexMeta.getValue(childInstance))) {
                     // child belongs to a selected column
                     result.add(childInstance);

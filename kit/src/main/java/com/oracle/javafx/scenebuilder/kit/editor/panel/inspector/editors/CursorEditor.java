@@ -159,11 +159,10 @@ public class CursorEditor extends PropertyEditor {
     // Select the menu item corresponding to a cursor string.
     private void selectCursor(final String cursorStr) {
         for (final var menuItem : cursorMb.getItems()) {
-            if (!(menuItem instanceof CheckMenuItem)) {
+            if (!(menuItem instanceof final CheckMenuItem checkMenuItem)) {
                 // inherited action
                 continue;
             }
-            final var checkMenuItem = (CheckMenuItem) menuItem;
             assert checkMenuItem.getGraphic() instanceof Label;
             if (cursorStr.equals(((Label) checkMenuItem.getGraphic()).getText())) {
                 checkMenuItem.setSelected(true);

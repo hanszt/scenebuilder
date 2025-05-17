@@ -331,8 +331,7 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
         final var panelControl = getPanelControl();
         final var scrollBars = panelControl.lookupAll(".scroll-bar"); //NOI18N
         for (final var node : scrollBars) {
-            if (node instanceof ScrollBar) {
-                final var scrollBar = (ScrollBar) node;
+            if (node instanceof final ScrollBar scrollBar) {
                 if (scrollBar.getOrientation() == orientation) {
                     return scrollBar;
                 }
@@ -560,11 +559,9 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
         final List<FXOMObject> selectedFxomObjects = new ArrayList<>();
 
         if (getPanelControl() != null) {
-            if (selection.getGroup() instanceof ObjectSelectionGroup) {
-                final var osg = (ObjectSelectionGroup) selection.getGroup();
+            if (selection.getGroup() instanceof final ObjectSelectionGroup osg) {
                 selectedFxomObjects.addAll(osg.getItems());
-            } else if (selection.getGroup() instanceof GridSelectionGroup) {
-                final var gsg = (GridSelectionGroup) selection.getGroup();
+            } else if (selection.getGroup() instanceof final GridSelectionGroup gsg) {
                 selectedFxomObjects.add(gsg.getParentObject());
             }
 
@@ -631,7 +628,7 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
 
     private TreeItem<HierarchyItem> makeTreeItem(final FXOMObject fxomObject) {
         final var item = new HierarchyItem(fxomObject);
-        final var treeItem = new TreeItem<HierarchyItem>(item);
+        final var treeItem = new TreeItem<>(item);
         // Set back the TreeItem expanded property if any
         final var expanded = treeItemsExpandedMapProperty.get(fxomObject);
         if (expanded != null) {
@@ -642,7 +639,7 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
     }
 
     private TreeItem<HierarchyItem> makeTreeItem(final HierarchyItem item, final FXOMObject fxomObject) {
-        final var treeItem = new TreeItem<HierarchyItem>(item);
+        final var treeItem = new TreeItem<>(item);
         // Set back the TreeItem expanded property if any
         final var expanded = treeItemsExpandedMapProperty.get(fxomObject);
         if (expanded != null) {
@@ -1064,10 +1061,9 @@ public abstract class AbstractHierarchyPanelController extends AbstractFxmlPanel
 
         final var selection = getEditorController().getSelection();
         if (!selection.isEmpty()) { // (1)
-            if (selection.getGroup() instanceof ObjectSelectionGroup) {
+            if (selection.getGroup() instanceof final ObjectSelectionGroup osg) {
                 // A set of regular component (ie fxom objects) are selected
-                final var osg = (ObjectSelectionGroup) selection.getGroup();
-                
+
                 // Abort dragging an empty place holder
                 for (final var selectedTreeItem : selectedTreeItems) {
                     final var item = selectedTreeItem.getValue();

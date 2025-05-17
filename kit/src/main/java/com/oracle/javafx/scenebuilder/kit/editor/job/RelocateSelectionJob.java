@@ -73,8 +73,7 @@ public class RelocateSelectionJob extends BatchDocumentJob {
          */
         
         final boolean result;
-        if (other instanceof RelocateSelectionJob) {
-            final var otherRelocate = (RelocateSelectionJob)other;
+        if (other instanceof final RelocateSelectionJob otherRelocate) {
             final var timeDifference = otherRelocate.time - this.time;
             if ((0 <= timeDifference) && (timeDifference < MERGE_PERIOD)) {
                 final var thisKeys = this.locationMap.keySet();
@@ -137,8 +136,7 @@ public class RelocateSelectionJob extends BatchDocumentJob {
         final boolean result;
         
         final var selection = editorController.getSelection();
-        if (selection.getGroup() instanceof ObjectSelectionGroup) {
-            final var osg = (ObjectSelectionGroup) selection.getGroup();
+        if (selection.getGroup() instanceof final ObjectSelectionGroup osg) {
             if (osg.hasSingleParent()) {
                 final var parent = osg.getAncestor();
                 final var m = new DesignHierarchyMask(parent);

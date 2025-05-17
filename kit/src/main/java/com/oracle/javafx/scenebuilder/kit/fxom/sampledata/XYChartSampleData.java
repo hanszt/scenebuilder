@@ -34,6 +34,8 @@ package com.oracle.javafx.scenebuilder.kit.fxom.sampledata;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.random.RandomGenerator;
+
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.Axis;
 import javafx.scene.chart.BarChart;
@@ -50,11 +52,20 @@ import javafx.scene.chart.XYChart;
  *
  */
 class XYChartSampleData extends AbstractSampleData {
-    
+
+    private final RandomGenerator random;
     private final List<XYChart.Series<Object,Object>> samples = new ArrayList<>();
     private final List<String> categories = new ArrayList<>();
-    private Class<?> sampleXAxisClass;
-    private Class<?> sampleYAxisClass;
+    private Axis<?> sampleXAxis;
+    private Axis<?> sampleYAxis;
+
+    XYChartSampleData(final RandomGenerator random) {
+        this.random = random;
+    }
+
+    XYChartSampleData() {
+        this(AbstractSampleData.random);
+    }
 
     public static boolean isKnownXYChart(final Object obj) {
         final boolean result;
@@ -122,19 +133,19 @@ class XYChartSampleData extends AbstractSampleData {
     
     private void updateSamples(final XYChart<?,?> xyChart) {
         
-        final Class<?> xAxisClass = xyChart.getXAxis().getClass();
-        final Class<?> yAxisClass = xyChart.getYAxis().getClass();
+        final var xAxisClass = xyChart.getXAxis();
+        final var yAxisClass = xyChart.getYAxis();
         
-        if ((xAxisClass != sampleXAxisClass) || (yAxisClass != sampleYAxisClass)) {
-            sampleXAxisClass = xAxisClass;
-            sampleYAxisClass = yAxisClass;
+        if ((xAxisClass != sampleXAxis) || (yAxisClass != sampleYAxis)) {
+            sampleXAxis = xAxisClass;
+            sampleYAxis = yAxisClass;
             
             for (var i = 0; i < 3; i++) {
-                final var serie = new XYChart.Series<Object, Object>();
+                final var serie = new XYChart.Series<>();
                 for (var j = 0; j < 10; j++) {
-                    final var xValue = makeValue(sampleXAxisClass, i);
-                    final var yValue = makeValue(sampleYAxisClass, i);
-                    final var data = new XYChart.Data<Object, Object>(xValue, yValue);
+                    final var xValue = makeValue(sampleXAxis, i);
+                    final var yValue = makeValue(sampleYAxis, i);
+                    final var data = new XYChart.Data<>(xValue, yValue);
                     serie.getData().add(data);
 
                 }
@@ -142,7 +153,7 @@ class XYChartSampleData extends AbstractSampleData {
             }
             
             categories.clear();
-            if ((sampleXAxisClass == CategoryAxis.class) || (sampleYAxisClass == CategoryAxis.class)) {
+            if ((sampleXAxis.getClass() == CategoryAxis.class) || (sampleYAxis.getClass() == CategoryAxis.class)) {
                 for (var j = 0; j < 10; j++) {
                     categories.add(String.valueOf(2000 + j));
                 }
@@ -150,18 +161,11 @@ class XYChartSampleData extends AbstractSampleData {
         }
     }
     
-    private Object makeValue(final Class<?> axisClass, final int index) {
-        final Object result;
-        
-        if (axisClass == NumberAxis.class) {
-            result = Math.random() * 100.0;
-        } else if (axisClass == CategoryAxis.class) {
-            result = String.valueOf(2000 + index);
-        } else {
-            assert false : "Unexpected Axis subclass" + axisClass;
-            result = String.valueOf(index);
-        }
-        
-        return result;
+    private Object makeValue(final Axis<?> axis, final int index) {
+        return switch (axis) {
+            case NumberAxis numberAxis -> random.nextDouble(100.0);
+            case CategoryAxis categoryAxis -> String.valueOf(2000 + index);
+            default -> throw new IllegalStateException("Unexpected Axis subclass" + axis);
+        };
     }
 }

@@ -57,8 +57,7 @@ public class DesignHierarchyPath {
     
     @Override
     public boolean equals(final Object obj) {
-        if (obj instanceof DesignHierarchyPath) {
-            final var path = (DesignHierarchyPath) obj;
+        if (obj instanceof final DesignHierarchyPath path) {
             return this.pathItems.equals(path.pathItems);
         } else {
             return false;

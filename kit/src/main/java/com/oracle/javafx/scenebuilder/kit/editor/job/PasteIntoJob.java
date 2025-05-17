@@ -73,8 +73,7 @@ public class PasteIntoJob extends BatchSelectionJob {
 
             // Retrieve the target FXOMObject
             final var selection = getEditorController().getSelection();
-            if (selection.getGroup() instanceof ObjectSelectionGroup) {
-                final var osg = (ObjectSelectionGroup) selection.getGroup();
+            if (selection.getGroup() instanceof final ObjectSelectionGroup osg) {
                 // Single target selection
                 if (osg.getItems().size() == 1) {
                     final var targetObject = osg.getItems().iterator().next();

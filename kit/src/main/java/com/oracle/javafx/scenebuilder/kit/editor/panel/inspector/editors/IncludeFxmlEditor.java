@@ -84,8 +84,7 @@ public class IncludeFxmlEditor extends InlineListEditor {
 
     @Override
     public void setValue(final Object value) {
-        if (value instanceof Collection) {
-            final var collection = (Collection<?>) value;
+        if (value instanceof final Collection<?> collection) {
             final var it = collection.iterator();
             while (it.hasNext()) {
                 final var obj = it.next();

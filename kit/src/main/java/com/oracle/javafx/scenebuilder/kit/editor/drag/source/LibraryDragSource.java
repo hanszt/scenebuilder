@@ -86,11 +86,10 @@ public class LibraryDragSource extends AbstractDragSource {
             libraryItemObject.moveToFxomDocument(targetDocument);
             assert itemDocument.getFxomRoot() == null;
             
-            if (libraryItemObject.getSceneGraphObject() instanceof Node) {
+            if (libraryItemObject.getSceneGraphObject() instanceof final Node sceneGraphNode) {
                 // We put the library item node in a Scene and layout it.
                 // This will allow ContainerXYDropTarget to measure this
                 // library item by calling Node.getLayoutBounds().
-                final var sceneGraphNode = (Node) libraryItemObject.getSceneGraphObject();
                 final var group = new Group();
                 group.getChildren().add(sceneGraphNode);
                 final var scene = new Scene(group); // Not used but required
@@ -201,8 +200,7 @@ public class LibraryDragSource extends AbstractDragSource {
         
         result.getStylesheets().add(EditorController.getStylesheet().toString());
 
-        if (getLibraryItemObject().getSceneGraphObject() instanceof Node) {
-            final var sceneGraphNode = (Node) getLibraryItemObject().getSceneGraphObject();
+        if (getLibraryItemObject().getSceneGraphObject() instanceof final Node sceneGraphNode) {
             final var shadowNode = new DragSourceShadow();
             shadowNode.setupForNode(sceneGraphNode);
             result.getChildren().add(shadowNode);

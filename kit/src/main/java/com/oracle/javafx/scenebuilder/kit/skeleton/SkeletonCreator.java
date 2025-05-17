@@ -41,15 +41,12 @@ class SkeletonCreator {
      * @return a code skeleton for the given context
      */
     String createFrom(final SkeletonContext context) {
-        switch (context.getSettings().getLanguage()) {
-            case JAVA:
-                return skeletonCreatorJava.createFrom(context);
-            case KOTLIN:
-                return skeletonCreatorKotlin.createFrom(context);
-            case JRUBY:
-                return skeletonCreatorJRuby.createFrom(context);
-            default:
+        return switch (context.getSettings().getLanguage()) {
+            case JAVA -> skeletonCreatorJava.createFrom(context);
+            case KOTLIN -> skeletonCreatorKotlin.createFrom(context);
+            case JRUBY -> skeletonCreatorJRuby.createFrom(context);
+            default ->
                 throw new IllegalArgumentException("Language not supported: " + context.getSettings().getLanguage());
-        }
+        };
     }
 }

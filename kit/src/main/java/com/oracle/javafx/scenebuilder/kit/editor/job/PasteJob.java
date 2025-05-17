@@ -198,8 +198,7 @@ public class PasteJob extends BatchSelectionJob {
         
         final var undoStack = getEditorController().getJobManager().getUndoStack();
         for (final var job : undoStack) {
-            if (job instanceof PasteJob) {
-                final var pasteJob = (PasteJob) job;
+            if (job instanceof final PasteJob pasteJob) {
                 if (this.targetObject == pasteJob.targetObject) {
                     result++;
                 } else {

@@ -138,27 +138,23 @@ public class JarAnalysisReportController extends AbstractFxmlWindowController {
                         if (entry.getKlass() != null && entry.getException() != null) {
                             // We use a Text instance for header and another one
                             // for full stack in order to style them separately
-                            final var sb = new StringBuilder();
-                            sb.append(getSectionPrefix()).append(I18N.getString("jar.analysis.exception"));
-                            sb.append(" ").append(entry.getName()); //NOI18N
+                            final String sb = getSectionPrefix() + I18N.getString("jar.analysis.exception") +
+                                              " " + entry.getName(); //NOI18N
                             final var text = new Text();
-                            text.setText(sb.toString());
+                            text.setText(sb);
                             text.getStyleClass().add("header"); //NOI18N
                             textFlow.getChildren().add(text);
 
-                            final var sb2 = new StringBuilder();
-                            sb2.append(getFullStack(entry.getException()));
                             final var text2 = new Text();
-                            text2.setText(sb2.toString());
+                            text2.setText(String.valueOf(getFullStack(entry.getException())));
                             text2.getStyleClass().add("body"); //NOI18N
                             textFlow.getChildren().add(text2);
                         }
                     } else if (! entry.isNode()) {
-                        final var sb = new StringBuilder();
-                        sb.append(getSectionPrefix()).append(I18N.getString("jar.analysis.not.node"));
-                        sb.append(" ").append(entry.getName()); //NOI18N
+                        final String sb = getSectionPrefix() + I18N.getString("jar.analysis.not.node") +
+                                          " " + entry.getName(); //NOI18N
                         final var text = new Text();
-                        text.setText(sb.toString());
+                        text.setText(sb);
                         text.getStyleClass().add("header"); //NOI18N
                         textFlow.getChildren().add(text);
                     }

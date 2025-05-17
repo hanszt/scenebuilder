@@ -105,8 +105,8 @@ public class ImportWindowController extends AbstractModalDialog {
     double builtinPrefWidth;
     double builtinPrefHeight;
     private int numOfImportedJar;
-    private boolean copyFilesToUserLibraryDir;
-    private Stage owner;
+    private final boolean copyFilesToUserLibraryDir;
+    private final Stage owner;
     
     // At first we put in this collection the items which are already excluded,
     // basically all which are listed in the filter file.
@@ -253,13 +253,13 @@ public class ImportWindowController extends AbstractModalDialog {
                 if (!files.isEmpty())
                     libPanelController.copyFilesToUserLibraryDir(files);
 
-                final var foldersMarkerPath = Paths.get(userLib.getPath().toString(), LibraryUtil.FOLDERS_LIBRARY_FILENAME);
+                final var foldersMarkerPath = Paths.get(userLib.getPath(), LibraryUtil.FOLDERS_LIBRARY_FILENAME);
 
                 if (!Files.exists(foldersMarkerPath))
                     Files.createFile(foldersMarkerPath);
 
                 final Set<String> lines = new TreeSet<>(Files.readAllLines(foldersMarkerPath));
-                lines.addAll(folders.stream().map(f -> f.getAbsolutePath()).collect(Collectors.toList()));
+                lines.addAll(folders.stream().map(File::getAbsolutePath).toList());
 
                 Files.write(foldersMarkerPath, lines);
             }
@@ -387,7 +387,7 @@ public class ImportWindowController extends AbstractModalDialog {
     }
 
     private void work() {
-        exploringTask = new Task<List<JarReport>>() {
+        exploringTask = new Task<>() {
 
             @Override
             protected List<JarReport> call() throws Exception {
@@ -409,8 +409,7 @@ public class ImportWindowController extends AbstractModalDialog {
                         final var explorer = new FolderExplorer(file.toPath());
                         final var jarReport = explorer.explore(classLoader);
                         res.add(jarReport);
-                    }
-                    else {
+                    } else {
                         final var explorer = new JarExplorer(Paths.get(file.getAbsolutePath()));
                         final var jarReport = explorer.explore(classLoader);
                         res.add(jarReport);
@@ -459,8 +458,7 @@ public class ImportWindowController extends AbstractModalDialog {
                 alreadyExcludedItems = userLib.getFilter();
 
                 final var jarReportList = exploringTask.get(); // blocking call
-                final Callback<ImportRow, ObservableValue<Boolean>> importRequired
-                        = row -> row.importRequired();
+                final Callback<ImportRow, ObservableValue<Boolean>> importRequired = ImportRow::importRequired;
                 importList.setCellFactory(CheckBoxListCell.forListView(importRequired));
 
                 var importingControlsFromExternalPlugin = false;
@@ -599,7 +597,7 @@ public class ImportWindowController extends AbstractModalDialog {
         });
 
         // We avoid to get an empty Preview area at first.
-        if (importList.getItems().size() > 0) {
+        if (!importList.getItems().isEmpty()) {
             importList.getSelectionModel().selectFirst();
         }
     }

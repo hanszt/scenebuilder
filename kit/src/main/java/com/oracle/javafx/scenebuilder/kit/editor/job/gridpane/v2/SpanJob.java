@@ -97,24 +97,13 @@ public class SpanJob extends BatchDocumentJob {
 
     @Override
     protected String makeDescription() {
-        var description = ""; //NOI18N
-        
-        switch (editAction) {
-            default:
-            case DECREASE_COLUMN_SPAN:
-                description = I18N.getString("job.decrease.column.span");
-                break;
-            case INCREASE_COLUMN_SPAN:
-                description = I18N.getString("job.increase.column.span");
-                break;
-            case DECREASE_ROW_SPAN:
-                description = I18N.getString("job.decrease.row.span");
-                break;
-            case INCREASE_ROW_SPAN:
-                description = I18N.getString("job.increase.row.span");
-                break;
-        }
-        
+        var description = switch (editAction) {
+            default -> I18N.getString("job.decrease.column.span");
+            case INCREASE_COLUMN_SPAN -> I18N.getString("job.increase.column.span");
+            case DECREASE_ROW_SPAN -> I18N.getString("job.decrease.row.span");
+            case INCREASE_ROW_SPAN -> I18N.getString("job.increase.row.span");
+        }; //NOI18N
+
         assert ! description.isEmpty();
         return description;
     }
@@ -122,34 +111,33 @@ public class SpanJob extends BatchDocumentJob {
     private Job createJob(final FXOMInstance candidate, final int columnCount, final int rowCount) {
         PropertyName propName = null;
         var newSpan = 1;
-        
-        switch (editAction) {
-            default:
-            case DECREASE_COLUMN_SPAN:
+
+        propName = switch (editAction) {
+            default -> {
                 newSpan = getNewSpan(TREND.DECREASE,
-                        getValue(PROPERTY.COLUMN_INDEX, candidate),
-                        getValue(PROPERTY.COLUMN_SPAN, candidate), columnCount);
-                propName = new PropertyName(getName(PROPERTY.COLUMN_SPAN), GridPane.class);
-                break;
-            case INCREASE_COLUMN_SPAN:
+                    getValue(PROPERTY.COLUMN_INDEX, candidate),
+                    getValue(PROPERTY.COLUMN_SPAN, candidate), columnCount);
+                yield new PropertyName(getName(PROPERTY.COLUMN_SPAN), GridPane.class);
+            }
+            case INCREASE_COLUMN_SPAN -> {
                 newSpan = getNewSpan(TREND.INCREASE,
-                        getValue(PROPERTY.COLUMN_INDEX, candidate),
-                        getValue(PROPERTY.COLUMN_SPAN, candidate), columnCount);
-                propName = new PropertyName(getName(PROPERTY.COLUMN_SPAN), GridPane.class);
-                break;
-            case DECREASE_ROW_SPAN:
+                    getValue(PROPERTY.COLUMN_INDEX, candidate),
+                    getValue(PROPERTY.COLUMN_SPAN, candidate), columnCount);
+                yield new PropertyName(getName(PROPERTY.COLUMN_SPAN), GridPane.class);
+            }
+            case DECREASE_ROW_SPAN -> {
                 newSpan = getNewSpan(TREND.DECREASE,
-                        getValue(PROPERTY.ROW_INDEX, candidate),
-                        getValue(PROPERTY.ROW_SPAN, candidate), rowCount);
-                propName = new PropertyName(getName(PROPERTY.ROW_SPAN), GridPane.class);
-                break;
-            case INCREASE_ROW_SPAN:
+                    getValue(PROPERTY.ROW_INDEX, candidate),
+                    getValue(PROPERTY.ROW_SPAN, candidate), rowCount);
+                yield new PropertyName(getName(PROPERTY.ROW_SPAN), GridPane.class);
+            }
+            case INCREASE_ROW_SPAN -> {
                 newSpan = getNewSpan(TREND.INCREASE,
-                        getValue(PROPERTY.ROW_INDEX, candidate),
-                        getValue(PROPERTY.ROW_SPAN, candidate), rowCount);
-                propName = new PropertyName(getName(PROPERTY.ROW_SPAN), GridPane.class);
-                break;
-        }
+                    getValue(PROPERTY.ROW_INDEX, candidate),
+                    getValue(PROPERTY.ROW_SPAN, candidate), rowCount);
+                yield new PropertyName(getName(PROPERTY.ROW_SPAN), GridPane.class);
+            }
+        };
 
         final var vpm
                 = Metadata.getMetadata().queryValueProperty(candidate, propName);
@@ -198,23 +186,13 @@ public class SpanJob extends BatchDocumentJob {
     }
     
     private String getName(final PROPERTY property) {
-        var propertyName = ""; //NOI18N
-        
-        switch (property) {
-            case COLUMN_INDEX:
-                propertyName = "columnIndex"; //NOI18N
-                break;
-            case COLUMN_SPAN:
-                propertyName = "columnSpan"; //NOI18N
-                break;
-            case ROW_INDEX:
-                propertyName = "rowIndex"; //NOI18N
-                break;
-            case ROW_SPAN:
-                propertyName = "rowSpan"; //NOI18N
-                break;
-        }
-        
+        var propertyName = switch (property) {
+            case COLUMN_INDEX -> "columnIndex"; //NOI18N
+            case COLUMN_SPAN -> "columnSpan"; //NOI18N
+            case ROW_INDEX -> "rowIndex"; //NOI18N
+            case ROW_SPAN -> "rowSpan"; //NOI18N
+        }; //NOI18N
+
         assert ! propertyName.isEmpty();
         return propertyName;
     }

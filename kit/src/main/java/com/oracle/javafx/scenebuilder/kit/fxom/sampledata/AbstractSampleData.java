@@ -34,10 +34,14 @@ package com.oracle.javafx.scenebuilder.kit.fxom.sampledata;
 
 import javafx.scene.paint.Color;
 
+import java.util.Random;
+
 /**
  *
  */
 abstract class AbstractSampleData {
+
+    protected static final Random random = new Random();
     
     private static final String[] lorem = {
         "Lorem ipsum ", //NOI18N
@@ -90,7 +94,7 @@ abstract class AbstractSampleData {
     
     
     /*
-     * Utilites for subclasses
+     * Utilities for subclasses
      */
     
     protected static String lorem(final int index) {

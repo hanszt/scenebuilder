@@ -149,8 +149,7 @@ public class SceneBuilderTest {
             result = null;
         } else {
             final var selection = dwc.getEditorController().getSelection();
-            if (selection.getGroup() instanceof ObjectSelectionGroup) {
-                final var osg = (ObjectSelectionGroup) selection.getGroup();
+            if (selection.getGroup() instanceof final ObjectSelectionGroup osg) {
                 result = Collections.unmodifiableSet(osg.getItems());
             } else {
                 // TODO(elp) : will implement later
@@ -357,8 +356,7 @@ public class SceneBuilderTest {
             
             final var cpc = dwc.getContentPanelController();
             final var h = cpc.lookupHandles(fxomObject);
-            if (h instanceof AbstractGenericHandles<?>) {
-                final var gh = (AbstractGenericHandles<?>) h;
+            if (h instanceof final AbstractGenericHandles<?> gh) {
                 result = gh.getHandleNode(cp);
             } else {
                 result = null;

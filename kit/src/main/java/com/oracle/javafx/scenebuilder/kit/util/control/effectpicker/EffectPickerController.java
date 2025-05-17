@@ -360,8 +360,8 @@ public class EffectPickerController {
         final var blend = (Blend) effect;
         final var vBox = new VBox(8.0);
 
-        final var modeEditor = new EnumControl<BlendMode>(
-                this, "mode", BlendMode.values(), blend.getMode()); //NOI18N
+        final var modeEditor = new EnumControl<>(
+            this, "mode", BlendMode.values(), blend.getMode()); //NOI18N
         blend.modeProperty().bind(modeEditor.valueProperty());
         vBox.getChildren().add(modeEditor);
 
@@ -515,8 +515,8 @@ public class EffectPickerController {
         final var dropShadow = (DropShadow) effect;
         final var vBox = new VBox(8.0);
 
-        final var blurTypeEditor = new EnumControl<BlurType>(
-                this, "blurType", BlurType.values(), dropShadow.getBlurType()); //NOI18N
+        final var blurTypeEditor = new EnumControl<>(
+            this, "blurType", BlurType.values(), dropShadow.getBlurType()); //NOI18N
         dropShadow.blurTypeProperty().bind(blurTypeEditor.valueProperty());
         vBox.getChildren().add(blurTypeEditor);
 
@@ -614,8 +614,8 @@ public class EffectPickerController {
         final var innerShadow = (InnerShadow) effect;
         final var vBox = new VBox(8.0);
 
-        final var blurTypeEditor = new EnumControl<BlurType>(
-                this, "blurType", BlurType.values(), innerShadow.getBlurType()); //NOI18N
+        final var blurTypeEditor = new EnumControl<>(
+            this, "blurType", BlurType.values(), innerShadow.getBlurType()); //NOI18N
         innerShadow.blurTypeProperty().bind(blurTypeEditor.valueProperty());
         vBox.getChildren().add(blurTypeEditor);
 
@@ -805,7 +805,7 @@ public class EffectPickerController {
         final var shadow = (Shadow) effect;
         final var vBox = new VBox(8.0);
 
-        final var blurTypeEditor = new EnumControl<BlurType>(
+        final var blurTypeEditor = new EnumControl<>(
                 this, "blurType", BlurType.values(), shadow.getBlurType()); //NOI18N
         shadow.blurTypeProperty().bind(blurTypeEditor.valueProperty());
         vBox.getChildren().add(blurTypeEditor);

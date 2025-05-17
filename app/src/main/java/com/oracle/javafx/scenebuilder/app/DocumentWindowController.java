@@ -79,6 +79,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -515,19 +516,14 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
 
     public void refreshToolTheme(final PreferencesRecordGlobal preferences) {
         final var app = SceneBuilderApp.getSingleton();
-        final SceneBuilderApp.ApplicationControlAction aca;
-        switch(preferences.getToolTheme()) {
-            case DEFAULT:
-                aca = SceneBuilderApp.ApplicationControlAction.USE_DEFAULT_THEME;
-                break;
-            case DARK:
-                aca = SceneBuilderApp.ApplicationControlAction.USE_DARK_THEME;
-                break;
-            default:
+        final SceneBuilderApp.ApplicationControlAction aca = switch (preferences.getToolTheme()) {
+            case DEFAULT -> SceneBuilderApp.ApplicationControlAction.USE_DEFAULT_THEME;
+            case DARK -> SceneBuilderApp.ApplicationControlAction.USE_DARK_THEME;
+            default -> {
                 assert false;
-                aca = null;
-                break;
-        }
+                yield null;
+            }
+        };
         app.performControlAction(aca, this);
     }
 
@@ -1465,8 +1461,7 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
     void onLibraryImportSelection(final ActionEvent event) {
         final var asg = getEditorController().getSelection().getGroup();
 
-        if (asg instanceof ObjectSelectionGroup) {
-            final var osg = (ObjectSelectionGroup)asg;
+        if (asg instanceof final ObjectSelectionGroup osg) {
             assert !osg.getItems().isEmpty();
             final List<FXOMObject> selection = new ArrayList<>(osg.getItems());
             libraryPanelController.performImportSelection(selection);
@@ -2015,7 +2010,7 @@ public class DocumentWindowController extends AbstractFxmlWindowController {
                 final var path = fxmlFile.getPath();
                 if (!path.endsWith(".fxml")) { //NOI18N
                     try {
-                        final var alternateURL = new URL(fxmlFile.toURI().toURL().toExternalForm() + ".fxml"); //NOI18N
+                        final var alternateURL = URI.create(fxmlFile.toURI().toURL().toExternalForm() + ".fxml").toURL(); //NOI18N
                         final var alternateFxmlFile = new File(alternateURL.toURI());
                         final var d = new AlertDialog(getStage());
                         d.setMessage(I18N.getString("alert.save.noextension.message", fxmlFile.getName()));

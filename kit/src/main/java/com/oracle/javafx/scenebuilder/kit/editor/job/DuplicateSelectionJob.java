@@ -31,21 +31,22 @@
  */
 package com.oracle.javafx.scenebuilder.kit.editor.job;
 
-import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.RelocateNodeJob;
 import com.oracle.javafx.scenebuilder.kit.editor.EditorController;
-import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
+import com.oracle.javafx.scenebuilder.kit.editor.job.atomic.RelocateNodeJob;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.AbstractSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.editor.selection.ObjectSelectionGroup;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMCollection;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMInstance;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMNodes;
 import com.oracle.javafx.scenebuilder.kit.fxom.FXOMObject;
+import com.oracle.javafx.scenebuilder.kit.i18n.I18N;
 import com.oracle.javafx.scenebuilder.kit.metadata.util.DesignHierarchyMask;
+import javafx.scene.Node;
+
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import javafx.scene.Node;
 
 /**
  *
@@ -64,7 +65,7 @@ public class DuplicateSelectionJob extends BatchSelectionJob {
         final List<Job> result = new LinkedList<>();
 
         if (canDuplicate()) { // (1)
-            
+
             final var selection = getEditorController().getSelection();
             final var asg = selection.getGroup();
             assert asg instanceof ObjectSelectionGroup; // Because of (1)
@@ -90,23 +91,15 @@ public class DuplicateSelectionJob extends BatchSelectionJob {
                     final var selectedFxomObject = entry.getKey();
                     final var newFxomObject = entry.getValue();
                     final var insertSubJob = new InsertAsSubComponentJob(
-                            newFxomObject,
-                            targetObject,
-                            targetMask.getSubComponentCount() + index++,
-                            getEditorController());
+                        newFxomObject,
+                        targetObject,
+                        targetMask.getSubComponentCount() + index++,
+                        getEditorController());
                     result.add(insertSubJob);
                     final var selectedSceneGraphObject = selectedFxomObject.getSceneGraphObject();
                     // Relocate duplicated objects if needed
-                    if (selectedSceneGraphObject instanceof Node) {
-                        final var selectedNode = (Node) selectedSceneGraphObject;
-                        final double newLayoutX = Math.round(selectedNode.getLayoutX() + offset);
-                        final double newLayoutY = Math.round(selectedNode.getLayoutY() + offset);
-                        assert newFxomObject instanceof FXOMInstance;
-                        final var relocateSubJob = new RelocateNodeJob(
-                                (FXOMInstance) newFxomObject,
-                                newLayoutX,
-                                newLayoutY,
-                                getEditorController());
+                    if (selectedSceneGraphObject instanceof final Node selectedNode) {
+                        final var relocateSubJob = getRelocateNodeJob(selectedNode, newFxomObject);
                         result.add(relocateSubJob);
                     }
                 }
@@ -115,11 +108,24 @@ public class DuplicateSelectionJob extends BatchSelectionJob {
         return result;
     }
 
+    private RelocateNodeJob getRelocateNodeJob(final Node selectedNode, final FXOMObject newFxomObject) {
+        final double newLayoutX = Math.round(selectedNode.getLayoutX() + offset);
+        final double newLayoutY = Math.round(selectedNode.getLayoutY() + offset);
+        if (!(newFxomObject instanceof FXOMInstance fxomInstance)) {
+            throw new IllegalStateException("Unexpected FXOMObject type: " + newFxomObject.getClass().getSimpleName());
+        }
+        return new RelocateNodeJob(
+            fxomInstance,
+            newLayoutX,
+            newLayoutY,
+            getEditorController());
+    }
+
     @Override
     protected String makeDescription() {
         final String result;
-        assert !newFxomObjects.values().isEmpty();
-        if (newFxomObjects.values().size() == 1) {
+        assert !newFxomObjects.isEmpty();
+        if (newFxomObjects.size() == 1) {
             result = makeSingleSelectionDescription();
         } else {
             result = makeMultipleSelectionDescription();
@@ -130,7 +136,6 @@ public class DuplicateSelectionJob extends BatchSelectionJob {
 
     @Override
     protected AbstractSelectionGroup getNewSelectionGroup() {
-        assert newFxomObjects != null; // But possibly empty
         if (newFxomObjects.isEmpty()) {
             return null;
         } else {
@@ -152,10 +157,9 @@ public class DuplicateSelectionJob extends BatchSelectionJob {
             return false;
         }
         final var asg = selection.getGroup();
-        if (!(asg instanceof ObjectSelectionGroup)) {
+        if (!(asg instanceof final ObjectSelectionGroup osg)) {
             return false;
         }
-        final var osg = (ObjectSelectionGroup) asg;
         for (final var fxomObject : osg.getItems()) {
             if (fxomObject.getSceneGraphObject() == null) { // Unresolved custom type
                 return false;
@@ -186,6 +190,6 @@ public class DuplicateSelectionJob extends BatchSelectionJob {
     }
 
     private String makeMultipleSelectionDescription() {
-        return I18N.getString("label.action.edit.duplicate.n", newFxomObjects.values().size());
+        return I18N.getString("label.action.edit.duplicate.n", newFxomObjects.size());
     }
 }

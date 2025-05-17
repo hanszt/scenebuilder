@@ -170,18 +170,11 @@ public class HierarchyItem {
             // For now, handle display label for scenegraph objects only
             return null;
         }
-        String info = null;
-        switch (option) {
-            case INFO:
-                info = getSingleLineDescription();
-                break;
-            case FXID:
-                info = getFxId();
-                break;
-            case NODEID:
-                info = getNodeId();
-                break;
-        }
+        String info = switch (option) {
+            case INFO -> getSingleLineDescription();
+            case FXID -> getFxId();
+            case NODEID -> getNodeId();
+        };
         return info;
     }
 

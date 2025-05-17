@@ -37,6 +37,7 @@ import java.nio.channels.FileLock;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -125,12 +126,12 @@ class FileMutex {
         }
     }
     
-//    public static void main(String[] args) throws IOException {
-//        final Path mutexPath = Paths.get(System.getProperty("user.home"), "test.mtx");
-//        final FileMutex fm = new FileMutex(mutexPath);
-//        for (int i = 0; i < 100000; i++) {
-//            fm.lock();
-//            fm.unlock();
-//        }
-//    }
+    public static void main(String[] args) throws IOException {
+        final Path mutexPath = Paths.get(System.getProperty("user.home"), "test.mtx");
+        final FileMutex fm = new FileMutex(mutexPath);
+        for (int i = 0; i < 100000; i++) {
+            fm.lock(10);
+            fm.unlock();
+        }
+    }
 }

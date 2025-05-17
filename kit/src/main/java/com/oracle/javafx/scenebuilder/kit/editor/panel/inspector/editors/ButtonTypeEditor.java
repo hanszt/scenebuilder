@@ -66,7 +66,7 @@ import com.oracle.javafx.scenebuilder.kit.metadata.property.value.ButtonTypeProp
 public class ButtonTypeEditor extends InlineListEditor {
 
     private static Map<String, ButtonType> predefinedButtonsNames = new TreeMap<>();
-    private Collection<ButtonType> buttonList = new TreeSet<ButtonType>(getButtonTypeComparator());
+    private Collection<ButtonType> buttonList = new TreeSet<>(getButtonTypeComparator());
 
     public ButtonTypeEditor(final ValuePropertyMetadata propMeta, final Set<Class<?>> selectedClasses) {
         super(propMeta, selectedClasses);
@@ -232,12 +232,14 @@ public class ButtonTypeEditor extends InlineListEditor {
             root = EditorUtils.loadFxml("ButtonTypeEditorItem.fxml", this);//NOI18N
 
             buttonTypeCb.setConverter(getButtonTypeConverter());
-            buttonTypeCb.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<ButtonType>() {
+            buttonTypeCb.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<>() {
                 public void changed(final javafx.beans.value.ObservableValue<? extends ButtonType> value,
                                     final ButtonType prevValue, final ButtonType newValue) {
                     editor.commit(ButtonTypeItem.this);
                     updatePlusMinusButtons();
-                };
+                }
+
+                ;
             });
 
             updateButtonList(buttonList);
@@ -252,7 +254,7 @@ public class ButtonTypeEditor extends InlineListEditor {
                     buttonTypeCb.getItems().add(buttonType);
                 }
             }
-            final var currentItems = new ArrayList<ButtonType>(buttonTypeCb.getItems());
+            final var currentItems = new ArrayList<>(buttonTypeCb.getItems());
             for (final var buttonType : currentItems) {
                 if (!buttonList.contains(buttonType) && buttonType != getValue()) {
                     buttonTypeCb.getItems().remove(buttonType);
@@ -370,7 +372,7 @@ public class ButtonTypeEditor extends InlineListEditor {
 
         private StringConverter<ButtonType> getButtonTypeConverter() {
             final var predefinedButtons = ButtonTypePropertyMetadata.getButtonTypeMap();
-            return new StringConverter<ButtonType>() {
+            return new StringConverter<>() {
 
                 @Override
                 public String toString(final ButtonType buttonType) {

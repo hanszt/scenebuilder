@@ -136,39 +136,21 @@ public abstract class AbstractGenericHandles<T> extends AbstractHandles<T> {
     }
     
     public Node getHandleNode(final CardinalPoint cp) {
-        final Node result;
-        
-        switch(cp) {
-            case N:
-                result = handleNN;
-                break;
-            case S:
-                result = handleSS;
-                break;
-            case E:
-                result = handleEE;
-                break;
-            case W:
-                result = handleWW;
-                break;
-            case NW:
-                result = handleNW;
-                break;
-            case NE:
-                result = handleNE;
-                break;
-            case SW:
-                result = handleSW;
-                break;
-            case SE:
-                result = handleSE;
-                break;
-            default:
+        final Node result = switch (cp) {
+            case N -> handleNN;
+            case S -> handleSS;
+            case E -> handleEE;
+            case W -> handleWW;
+            case NW -> handleNW;
+            case NE -> handleNE;
+            case SW -> handleSW;
+            case SE -> handleSE;
+            default -> {
                 assert false;
-                result = null;
-                break;
-        }
-        
+                yield null;
+            }
+        };
+
         return result;
     }
     

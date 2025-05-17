@@ -307,8 +307,7 @@ class WorkspaceController {
             statusStyleClass = "stage-prompt"; //NOI18N
         } else {
             final var userSceneGraph = fxomDocument.getDisplayNodeOrSceneGraphRoot();
-            if (userSceneGraph instanceof Node) {
-                final var rootNode = (Node) userSceneGraph;
+            if (userSceneGraph instanceof final Node rootNode) {
                 assert rootNode.getParent() == null;
                 contentGroup.getChildren().add(rootNode);
                 layoutContent(true /* applyCSS */);
@@ -338,14 +337,12 @@ class WorkspaceController {
 
             Paint backgroundPaneFillPaint = Color.WHITE;
 
-            if (fxomDocument.getFxomRoot().getSceneGraphObject() instanceof Window) {
-                final var window = (Window) fxomDocument.getFxomRoot().getSceneGraphObject();
+            if (fxomDocument.getFxomRoot().getSceneGraphObject() instanceof final Window window) {
                 final var scene = window.getScene();
                 if (scene != null && scene.getFill() != null) {
                     backgroundPaneFillPaint = scene.getFill();
                 }
-            } else if (fxomDocument.getFxomRoot().getSceneGraphObject() instanceof Scene) {
-                final var scene = (Scene) fxomDocument.getFxomRoot().getSceneGraphObject();
+            } else if (fxomDocument.getFxomRoot().getSceneGraphObject() instanceof final Scene scene) {
                 if (scene.getFill() != null) {
                     backgroundPaneFillPaint = scene.getFill();
                 }
@@ -395,9 +392,8 @@ class WorkspaceController {
         } else {
             userSceneGraph = fxomDocument.getDisplayNodeOrSceneGraphRoot();
         }
-        if ((userSceneGraph instanceof Node) && (layoutException == null)) {
-            final var rootNode = (Node) userSceneGraph;
-            
+        if ((userSceneGraph instanceof final Node rootNode) && (layoutException == null)) {
+
             final var rootBounds = rootNode.getLayoutBounds();
             
             if (rootBounds.isEmpty() 
@@ -465,9 +461,7 @@ class WorkspaceController {
         minZ = layoutBounds.getMinZ();
         maxZ = layoutBounds.getMaxZ();
         
-        if (node instanceof Parent) {
-            final var parent = (Parent) node;
-            
+        if (node instanceof final Parent parent) {
             for (final var child : parent.getChildrenUnmodifiable()) {
                 final var childBounds = child.getBoundsInParent();
                 minX = Math.min(minX, childBounds.getMinX());

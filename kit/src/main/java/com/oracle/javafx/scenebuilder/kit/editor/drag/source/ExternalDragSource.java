@@ -133,8 +133,7 @@ public class ExternalDragSource extends AbstractDragSource {
             final var group = new Group();
             var dxy = 0.0;
             for (final var o : draggedObjects) {
-                if (o.getSceneGraphObject() instanceof Node) {
-                    final var sceneGraphNode = (Node) o.getSceneGraphObject();
+                if (o.getSceneGraphObject() instanceof final Node sceneGraphNode) {
                     sceneGraphNode.setLayoutX(dxy);
                     sceneGraphNode.setLayoutY(dxy);
                     dxy += 20.0;
@@ -236,8 +235,7 @@ public class ExternalDragSource extends AbstractDragSource {
         result.getStylesheets().add(EditorController.getStylesheet().toString());
 
         for (final var draggedObject : getDraggedObjects()) {
-            if (draggedObject.getSceneGraphObject() instanceof Node) {
-                final var sceneGraphNode = (Node) draggedObject.getSceneGraphObject();
+            if (draggedObject.getSceneGraphObject() instanceof final Node sceneGraphNode) {
                 final var shadowNode = new DragSourceShadow();
                 shadowNode.setupForNode(sceneGraphNode);
                 shadowNode.getTransforms().add(sceneGraphNode.getLocalToSceneTransform());

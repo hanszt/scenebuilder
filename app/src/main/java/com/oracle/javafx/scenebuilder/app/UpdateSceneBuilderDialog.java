@@ -48,7 +48,7 @@ import javafx.stage.Window;
 
 import java.time.LocalDate;
 
-public class UpdateSceneBuilderDialog extends Dialog {
+public class UpdateSceneBuilderDialog extends Dialog<Object> {
 
     public UpdateSceneBuilderDialog(final String latestVersion, final String latestVersionTextString, final String announcementURL, final Window owner) {
         initOwner(owner);

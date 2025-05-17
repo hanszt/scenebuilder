@@ -120,13 +120,13 @@ public class RepositoryDialogController extends AbstractFxmlWindowController {
         this.userM2Repository = userM2Repository;
         this.preferencesControllerBase = preferencesControllerBase;
         
-        testService = new Service<String>() {
+        testService = new Service<>() {
             @Override
             protected Task<String> createTask() {
-                return new Task<String>() {
+                return new Task<>() {
                     @Override
                     protected String call() throws Exception {
-                        return maven.validateRepository(new Repository(nameIDTextfield.getText(), 
+                        return maven.validateRepository(new Repository(nameIDTextfield.getText(),
                             typeTextfield.getText(), urlTextfield.getText(),
                             userTextfield.getText(), passwordTextfield.getText()));
                     }

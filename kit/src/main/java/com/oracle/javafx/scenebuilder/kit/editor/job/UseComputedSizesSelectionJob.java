@@ -58,15 +58,13 @@ public class UseComputedSizesSelectionJob extends BatchDocumentJob {
 
         final Set<FXOMInstance> candidates = new HashSet<>();
         final var selection = getEditorController().getSelection();
-        if (selection.getGroup() instanceof ObjectSelectionGroup) {
-            final var osg = (ObjectSelectionGroup) selection.getGroup();
+        if (selection.getGroup() instanceof final ObjectSelectionGroup osg) {
             for (final var fxomObject : osg.getItems()) {
                 if (fxomObject instanceof FXOMInstance) {
                     candidates.add((FXOMInstance) fxomObject);
                 }
             }
-        } else if (selection.getGroup() instanceof GridSelectionGroup) {
-            final var gsg = (GridSelectionGroup) selection.getGroup();
+        } else if (selection.getGroup() instanceof final GridSelectionGroup gsg) {
             final var gridPane = gsg.getParentObject();
             final var mask = new DesignHierarchyMask(gridPane);
             for (final int index : gsg.getIndexes()) {
@@ -103,18 +101,11 @@ public class UseComputedSizesSelectionJob extends BatchDocumentJob {
 
     @Override
     protected String makeDescription() {
-        final String result;
-        switch (getSubJobs().size()) {
-            case 0:
-                result = "Unexecutable Use Computed Sizes"; // NO18N
-                break;
-            case 1:
-                result = getSubJobs().getFirst().getDescription();
-                break;
-            default:
-                result = makeMultipleSelectionDescription();
-                break;
-        }
+        final String result = switch (getSubJobs().size()) {
+            case 0 -> "Unexecutable Use Computed Sizes"; // NO18N
+            case 1 -> getSubJobs().getFirst().getDescription();
+            default -> makeMultipleSelectionDescription();
+        };
         return result;
     }
 

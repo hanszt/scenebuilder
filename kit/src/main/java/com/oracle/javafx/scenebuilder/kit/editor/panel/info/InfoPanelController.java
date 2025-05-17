@@ -136,11 +136,9 @@ public class InfoPanelController extends AbstractFxmlPanelController {
         final var selection = getEditorController().getSelection();
         
         final Set<IndexEntry> selectedEntries = new HashSet<>();
-        if (selection.getGroup() instanceof ObjectSelectionGroup) {
-            final var osg = (ObjectSelectionGroup) selection.getGroup();
+        if (selection.getGroup() instanceof final ObjectSelectionGroup osg) {
             selectedEntries.addAll(searchIndexEntries(osg.getItems()));
-        } else if (selection.getGroup() instanceof GridSelectionGroup) {
-            final var gsg = (GridSelectionGroup) selection.getGroup();
+        } else if (selection.getGroup() instanceof final GridSelectionGroup gsg) {
             selectedEntries.addAll(searchIndexEntries(Collections.singleton(gsg.getParentObject())));
         }
         
@@ -340,20 +338,13 @@ public class InfoPanelController extends AbstractFxmlPanelController {
             
             // Update bottom label
             final var count = newEntries.size();
-            final String labelText;
-            switch(count) {
-                case 0:
-                    labelText = ""; //NOI18N
-                    break;
-                case 1:
-                    labelText = "1 " //NOI18N
-                            + I18N.getString("info.label.item");
-                    break;
-                default:
-                    labelText = count + " " //NOI18N
-                            + I18N.getString("info.label.items");
-                    break;
-            }
+            final String labelText = switch (count) {
+                case 0 -> ""; //NOI18N
+                case 1 -> "1 " //NOI18N
+                          + I18N.getString("info.label.item");
+                default -> count + " " //NOI18N
+                           + I18N.getString("info.label.items");
+            };
             bottomLabel.setText(labelText);
             
             // Setup selection again

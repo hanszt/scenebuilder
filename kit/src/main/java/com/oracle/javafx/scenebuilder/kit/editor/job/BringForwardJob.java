@@ -50,10 +50,9 @@ public class BringForwardJob extends InlineDocumentJob {
     @Override
     public boolean isExecutable() {
         final var selection = getEditorController().getSelection();
-        if (!(selection.getGroup() instanceof ObjectSelectionGroup)) {
+        if (!(selection.getGroup() instanceof final ObjectSelectionGroup osg)) {
             return false;
         }
-        final var osg = (ObjectSelectionGroup) selection.getGroup();
         for (final var item : osg.getSortedItems()) {
             final var nextSlibing = item.getNextSlibing();
             if (nextSlibing == null) {
@@ -93,18 +92,12 @@ public class BringForwardJob extends InlineDocumentJob {
 
     @Override
     protected String makeDescription() {
-        final String result;
-        switch (getSubJobs().size()) {
-            case 0:
-                result = "Unexecutable Bring Forward"; // NO18N
-                break;
-            case 1: // one arrange Z order
-                result = getSubJobs().getFirst().getDescription();
-                break;
-            default:
-                result = makeMultipleSelectionDescription();
-                break;
-        }
+        final String result = switch (getSubJobs().size()) {
+            case 0 -> "Unexecutable Bring Forward"; // NO18N
+            case 1 -> // one arrange Z order
+                    getSubJobs().getFirst().getDescription();
+            default -> makeMultipleSelectionDescription();
+        };
         return result;
     }
 

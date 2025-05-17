@@ -141,13 +141,11 @@ class FXOMLoader implements LoadListener {
         document.setDisplayNode(null);
         document.setDisplayStylesheets(Collections.emptyList());
 
-        if (sceneGraphRoot instanceof Scene) {
-            final var scene = (Scene) sceneGraphRoot;
+        if (sceneGraphRoot instanceof final Scene scene) {
             document.setDisplayNode(scene.getRoot());
             document.setDisplayStylesheets(scene.getStylesheets());
             scene.setRoot(new Pane()); // ensure displayNode is only part of one scene
-        } else if (sceneGraphRoot instanceof Window) {
-            final var window = (Window) sceneGraphRoot;
+        } else if (sceneGraphRoot instanceof final Window window) {
             if (window.getScene() != null) {
                 document.setDisplayNode(window.getScene().getRoot());
                 document.setDisplayStylesheets(window.getScene().getStylesheets());
@@ -306,14 +304,11 @@ class FXOMLoader implements LoadListener {
         final var pname = new PropertyName(name, staticClass);
         final var fxomProperty = new FXOMPropertyT(document, pname, null, null, fxmlValue);
 
-        if (currentTransientNode instanceof TransientObject) {
-            final var transientInstance = (TransientObject) currentTransientNode;
+        if (currentTransientNode instanceof final TransientObject transientInstance) {
             transientInstance.getProperties().add(fxomProperty);
-        } else if (currentTransientNode instanceof TransientProperty) {
-            final var transientProperty = (TransientProperty) currentTransientNode;
+        } else if (currentTransientNode instanceof final TransientProperty transientProperty) {
             transientProperty.getCollectedProperties().add(fxomProperty);
-        } else if(currentTransientNode instanceof  TransientIntrinsic) {
-            final var transientIntrinsic = (TransientIntrinsic) currentTransientNode;
+        } else if(currentTransientNode instanceof final TransientIntrinsic transientIntrinsic) {
             transientIntrinsic.getProperties().add(fxomProperty);
         }
     }
@@ -334,15 +329,12 @@ class FXOMLoader implements LoadListener {
 
         currentTransientNode.setSceneGraphObject(sceneGraphObject);
 
-        if (currentTransientNode instanceof TransientObject) {
-            final var currentInstance = (TransientObject) currentTransientNode;
+        if (currentTransientNode instanceof final TransientObject currentInstance) {
             final var currentFxomObject = currentInstance.makeFxomObject(document);
             final var currentParent = currentInstance.getParentNode();
-            if (currentParent instanceof TransientProperty) {
-                final var parentProperty = (TransientProperty) currentParent;
+            if (currentParent instanceof final TransientProperty parentProperty) {
                 parentProperty.getValues().add(currentFxomObject);
-            } else if (currentParent instanceof TransientObject) {
-                final var parentInstance = (TransientObject) currentParent;
+            } else if (currentParent instanceof final TransientObject parentInstance) {
                 parentInstance.getCollectedItems().add(currentFxomObject);
             } else if (currentParent instanceof TransientIgnored) {
                 // currentObject is an object inside an fx:define section
@@ -352,16 +344,13 @@ class FXOMLoader implements LoadListener {
                 document.updateRoots(currentFxomObject, currentFxomObject.getSceneGraphObject());
             }
 
-        } else if (currentTransientNode instanceof TransientIntrinsic) {
-            final var currentIntrinsic = (TransientIntrinsic) currentTransientNode;
+        } else if (currentTransientNode instanceof final TransientIntrinsic currentIntrinsic) {
             final var currentFxomIntrinsic = currentIntrinsic.makeFxomIntrinsic(document);
             final var currentParent = currentIntrinsic.getParentNode();
 
-            if (currentParent instanceof TransientProperty) {
-                final var parentProperty = (TransientProperty) currentParent;
+            if (currentParent instanceof final TransientProperty parentProperty) {
                 parentProperty.getValues().add(currentFxomIntrinsic);
-            } else if (currentParent instanceof TransientObject) {
-                final var parentInstance = (TransientObject) currentParent;
+            } else if (currentParent instanceof final TransientObject parentInstance) {
                 parentInstance.getCollectedItems().add(currentFxomIntrinsic);
             } else if (currentParent instanceof TransientIgnored) {
                 // currentObject is an object inside an fx:define section
@@ -370,17 +359,14 @@ class FXOMLoader implements LoadListener {
                 assert currentParent == null;
                 document.updateRoots(currentFxomIntrinsic, currentFxomIntrinsic.getSceneGraphObject());
             }
-        } else if (currentTransientNode instanceof TransientProperty) {
-            final var currentProperty = (TransientProperty) currentTransientNode;
+        } else if (currentTransientNode instanceof final TransientProperty currentProperty) {
             final var currentParent = currentProperty.getParentNode();
             final var currentFxomProperty = currentProperty.makeFxomProperty(document);
             assert currentParent instanceof TransientObject;
-            if (currentParent instanceof TransientObject){
-            final var parentObject = (TransientObject) currentParent;
-            parentObject.getProperties().add(currentFxomProperty);
+            if (currentParent instanceof final TransientObject parentObject){
+                parentObject.getProperties().add(currentFxomProperty);
         }
-        else if(currentParent instanceof TransientIntrinsic) {
-                final var transientIntrinsic = (TransientIntrinsic) currentParent;
+        else if(currentParent instanceof final TransientIntrinsic transientIntrinsic) {
                 transientIntrinsic.getProperties().add(currentFxomProperty);
             }
 

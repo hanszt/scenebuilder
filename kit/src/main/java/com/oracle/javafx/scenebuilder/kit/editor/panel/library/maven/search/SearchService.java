@@ -99,7 +99,7 @@ public class SearchService extends Service<Void> {
     
     @Override
     protected Task<Void> createTask() {
-        return new Task<Void>() {
+        return new Task<>() {
             @Override
             protected Void call() throws Exception {
                 if (query == null || query.isEmpty()) {
@@ -107,7 +107,7 @@ public class SearchService extends Service<Void> {
                 }
                 // TODO: Manage other search engines
                 // TODO: Retrieve user/password from Preferences
-        
+
                 tasks = Arrays.asList(
                     createSearchTask(new MavenSearch()),
                     createSearchTask(new NexusSearch(MavenPresets.SONATYPE, "http://oss.sonatype.org", "", "")),
@@ -115,7 +115,7 @@ public class SearchService extends Service<Void> {
                     createSearchTask(new LocalSearch(userM2Repository)));
 
                 final var count = new AtomicInteger();
-                tasks.forEach(task -> 
+                tasks.forEach(task ->
                     task.stateProperty().addListener((obs, oldState, newState) -> {
                         if (newState == Worker.State.SUCCEEDED || newState == Worker.State.CANCELLED ||
                             newState == Worker.State.FAILED) {
@@ -125,15 +125,15 @@ public class SearchService extends Service<Void> {
                             if (newState == Worker.State.SUCCEEDED && task.getValue() != null) {
                                 final List<DefaultArtifact> list = new ArrayList<>(result);
                                 list.addAll(task.getValue());
-                                
+
                                 result.setAll(getLatestVersions(
-                                            list.stream()
-                                                .distinct()
-                                                .collect(Collectors.groupingBy(a -> a.getGroupId() + ":" + a.getArtifactId()))));
+                                    list.stream()
+                                        .distinct()
+                                        .collect(Collectors.groupingBy(a -> a.getGroupId() + ":" + a.getArtifactId()))));
                             }
                         }
                     }));
-                
+
                 Platform.runLater(() -> {
                     result.clear();
                     searching.set(true);
@@ -145,7 +145,7 @@ public class SearchService extends Service<Void> {
     }
     
     private Task<ObservableList<DefaultArtifact>> createSearchTask(final Search search) {
-        return new Task<ObservableList<DefaultArtifact>>() {
+        return new Task<>() {
             @Override
             protected ObservableList<DefaultArtifact> call() throws Exception {
                 return FXCollections.observableArrayList(search.getCoordinates(query));

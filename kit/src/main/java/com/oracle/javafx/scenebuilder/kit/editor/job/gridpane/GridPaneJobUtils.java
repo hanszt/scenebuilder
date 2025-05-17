@@ -73,13 +73,11 @@ public class GridPaneJobUtils {
         final List<FXOMObject> result = new ArrayList<>();
 
         // Selection == GridPanes
-        if (asg instanceof ObjectSelectionGroup) {
-            final var osg = (ObjectSelectionGroup) asg;
+        if (asg instanceof final ObjectSelectionGroup osg) {
             result.addAll(osg.getItems());
         } //
         // Selection == GridPane rows or columns
-        else if (asg instanceof GridSelectionGroup) {
-            final var gsg = (GridSelectionGroup) asg;
+        else if (asg instanceof final GridSelectionGroup gsg) {
             result.add(gsg.getParentObject());
         }
 
@@ -141,8 +139,7 @@ public class GridPaneJobUtils {
         final var selection = editorController.getSelection();
         final var asg = selection.getGroup();
 
-        if (asg instanceof ObjectSelectionGroup) {
-            final var osg = (ObjectSelectionGroup) asg;
+        if (asg instanceof final ObjectSelectionGroup osg) {
             result = true;
             for (final var obj : osg.getItems()) {
                 if (!(obj.getSceneGraphObject() instanceof GridPane)) {
@@ -186,8 +183,7 @@ public class GridPaneJobUtils {
         final var selection = editorController.getSelection();
         final var asg = selection.getGroup();
 
-        if (asg instanceof GridSelectionGroup) {
-            final var gsg = (GridSelectionGroup) asg;
+        if (asg instanceof final GridSelectionGroup gsg) {
             final var gridPane = gsg.getParentObject();
             final var type = gsg.getType();
             final var mask = new DesignHierarchyMask(gridPane);

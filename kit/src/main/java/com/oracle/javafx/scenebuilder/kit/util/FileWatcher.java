@@ -130,10 +130,10 @@ public class FileWatcher {
         return started;
     }
     
-    public static interface Delegate {
-        public void fileWatcherDidWatchTargetCreation(Path target);
-        public void fileWatcherDidWatchTargetDeletion(Path target);
-        public void fileWatcherDidWatchTargetModification(Path target);
+    public interface Delegate {
+        void fileWatcherDidWatchTargetCreation(Path target);
+        void fileWatcherDidWatchTargetDeletion(Path target);
+        void fileWatcherDidWatchTargetModification(Path target);
     }
     
     

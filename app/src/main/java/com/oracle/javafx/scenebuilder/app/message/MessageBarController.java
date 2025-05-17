@@ -263,20 +263,17 @@ public class MessageBarController extends AbstractFxmlPanelController {
     
     private void setStyle(final MessageLogEntry.Type type) {
         resetStyle();
-        
         switch (type) {
-            case INFO:
+            case INFO -> {
                 messageLabel.getStyleClass().add("message-info"); //NOI18N
                 statusLabel.getStyleClass().add("message-info"); //NOI18N
                 iconsHbox.getStyleClass().add("message-info"); //NOI18N
-                break;
-            case WARNING:
+            }
+            case WARNING -> {
                 messageLabel.getStyleClass().add("message-warning"); //NOI18N
                 statusLabel.getStyleClass().add("message-warning"); //NOI18N
                 iconsHbox.getStyleClass().add("message-warning"); //NOI18N
-                break;
-            default:
-                break;
+            }
         }
     }
 }
